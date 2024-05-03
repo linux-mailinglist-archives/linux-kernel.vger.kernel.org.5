@@ -1,137 +1,121 @@
-Return-Path: <linux-kernel+bounces-167900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF128BB0D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:23:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52AEA8BB0D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:24:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 461091F204E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:23:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83BE81C21ADA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DC3155343;
-	Fri,  3 May 2024 16:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF15C155389;
+	Fri,  3 May 2024 16:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrW1Rvth"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="LBH6VMKf"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FF8155342
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09ED06FCA
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714753405; cv=none; b=jcdLXB4e2nCsOP0738SDYt3HhlbCxJEsKzHBZ19NdUdyeuKLKwkKIJSvOJuIX2WzdlREkzYSOnsPkqHGpUMTP4c3KvfdZs7xlcHviKe7Hg2TiSoEvFkMUEFy1dDPqPb41T9XhoWoilih1GKmtHoFedE1CYW68d8b8mM8gPVPnU4=
+	t=1714753447; cv=none; b=mZtKl8NENmFEj3vGV7/aaUCMD2D46unQPv/nngc04WUllT45r23+AxzoU/PAFWOPeQ0VcbtbcaXQoad5vNfrfXQey5miIscoCqq04kI/hv3cfAgh/009LPByDJCk18VH0k9eFlTggc5wsBTvKWnMtJDlaMEepi8zvcQrrn8glew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714753405; c=relaxed/simple;
-	bh=2TK0WfyT+uobla4qoKzP2gAKcDWPP/VYNZP4PYQFP0I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gcZ3iTEBjfkrDu9MhVUWV0pn6z+MHn1Ct92vxjRQhf9xBrh1VB9SeN9nNh41YL5zR6weuo6zxNfvY2Svk0DZrvyv1HQ68fI52JJqh2+kOJgcc9iatbu5/Nf38EYGuY9zs/VRyRkpQ3ClURE8rW2xMCTAX46c/OaJB/lNZkGi+O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrW1Rvth; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso8508364b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:23:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714753403; x=1715358203; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mwKDafe28MIieMSNGIPW3eOTsHHrwRXu1m7RhuwOcZc=;
-        b=mrW1RvthgHzIVZ4kN045WXM/fhPCmMc/Rm+6Xv+rkewGVy1kS4uiPcgpFLWjMBmZw5
-         ne6uHunDYyK1Lmr2UBJ81uI8ODy8VMmWN6hIKADn26n1Gjqi3WqjT3KNJByLbml9BNrI
-         tG2+4YjZ1FEh18bPj2ErjQcssAOGQEi+4oMogWAWuaqfkkGS/0vRCCIn8YU7uXyO6XRC
-         Xm4cFt7Ud6SUuJ8f10M2nCOAEHtqMavBhLSxrTd3pfDxAKD9E/eeBnioPzZ7lbIHbMbr
-         x8S1DnSd25Wgc9U40kSKbFZyFwVssFeyzxx4d00OXedlCuGBhGfbUFO4XwqjSxSkHLSq
-         mMRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714753403; x=1715358203;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mwKDafe28MIieMSNGIPW3eOTsHHrwRXu1m7RhuwOcZc=;
-        b=lVX/jlav6nmSA78V0/R+FXxRc2v2GCl6jhNwZGnd508Jm8KYUMsAOdH97eRWWs3jlF
-         HdQHk1YxE2VJ7nVBCcvG7K9cb2/TE+OAaUFxTyv8jgIf+d/MuBn7+eqPZRca50ddw4Gi
-         RIvLVjamR/TD5VQMNEq8bQaW/Z4NpIkCR6B/5mZ6p/jIFmZCjWR4Gotun0H9SZLh2yfF
-         TlLIL8MZEPh4AGNOC9V892aJ5R+dyUBagBr8ugBMLQjOWstIeCzEfQeUUgpWgy+sZ30L
-         rXC4ASL4QZUI0/lbH4EJ+8GqmB31EvDe2daof0Cd3ksmhcfBD3k+XTWiWn2eajFx1E0U
-         /8kA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2hiDM94VflGmxrnzwC/qtTCtsRGN6V+JQ9T60ttaFi1Vpzhn+jbA0+qtuk1Ru/nz4cdIJHfWk4KgFdNvqdrVBJwRcSWNO62Sh2UPC
-X-Gm-Message-State: AOJu0Yyf21s2N2kaS2WKbMIsmT++/YXoruzDzmN6erfbbVUjC0hu+RLU
-	YpfIEQIuMumwjtlCADnOkqwYaKs31vHkFe/RV+wPHRfNeydDPYdE
-X-Google-Smtp-Source: AGHT+IGuqVde44+OlfespuDSTAfHKUhnMDH3dyay8UhKf4umdgctT17gfataxz2qw5xl3u+0CdUBww==
-X-Received: by 2002:a05:6a00:130a:b0:6f3:e6e0:d9fb with SMTP id j10-20020a056a00130a00b006f3e6e0d9fbmr3124846pfu.11.1714753403334;
-        Fri, 03 May 2024 09:23:23 -0700 (PDT)
-Received: from ?IPV6:2402:e280:214c:86:b096:5d6e:50c3:70e5? ([2402:e280:214c:86:b096:5d6e:50c3:70e5])
-        by smtp.gmail.com with ESMTPSA id w17-20020a639351000000b0061cf79eab38sm1612625pgm.37.2024.05.03.09.23.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 09:23:23 -0700 (PDT)
-Message-ID: <f87bfbb1-b80f-46a5-be85-058a406de99d@gmail.com>
-Date: Fri, 3 May 2024 21:53:19 +0530
+	s=arc-20240116; t=1714753447; c=relaxed/simple;
+	bh=lWHMKTA8AI5dQka1opJ8AqlNGbIDIajTwjCFEN6wnHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=OyqHhCGdC0Te0juj/uqAxyQEdaQZ8IcmGRUsrD9elVowYRr1ijkooQjPzKiABZxR5P2kaCZQUtOaWZF68I9TCe3tMH50gpbKs1tcaZOUM7wBujHQYlrfoe6BHdv3XUfrfOWqR+/13tqOvlsJjFvhHluaUBZqFnDMfiI0/My8K+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=LBH6VMKf; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from fedor-21d0 (unknown [5.228.116.47])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 704DD4076733;
+	Fri,  3 May 2024 16:23:55 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 704DD4076733
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1714753435;
+	bh=j0BypKPSgd111WFp/2PqwbTfAeOP3LB0h8x+mRVyzVY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=LBH6VMKfSXwCi14lfVx4WN3+o9fayl1EoQI8tugzGjdlX8Mot/ewT8cCqJcwEEczz
+	 SjGkDo0v8cgkFOuZCIgOPzCi37pZhW8CqPuq1xHMc0fu+z2O0ZvRloHwVpMhsXN6cB
+	 tCu/XwQgjRhBVLqU+2lQFxl6gN4wrKx/Yxfp3FoI=
+Date: Fri, 3 May 2024 19:23:48 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Xiang Chen <chenxiang66@hisilicon.com>, Christoph Hellwig <hch@lst.de>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Barry Song <21cnbao@gmail.com>, iommu@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>, 
+	lvc-project@linuxtesting.org
+Subject: Re: [PATCH 1/2] dma-mapping: benchmark: fix up kthread creation
+ error handling
+Message-ID: <20240503-d09628dce22e71e600ebd907-pchelkin@ispras.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next] gpu:ipu-v3:pre: replace of_node_put() with
- __free
-To: p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org, javier.carrasco.cruz@gmail.com,
- Julia Lawall <julia.lawall@inria.fr>
-References: <20240427045024.7083-1-prosunofficial@gmail.com>
-Content-Language: en-US
-From: R Sundar <prosunofficial@gmail.com>
-In-Reply-To: <20240427045024.7083-1-prosunofficial@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3c474453-fc89-42b2-9ddc-fdc3a2893064@arm.com>
 
-On 27/04/24 10:20, R Sundar wrote:
-> use the new cleanup magic to replace of_node_put() with
-> __free(device_node) marking to auto release when they get out of scope.
+Robin Murphy wrote:
+> On 2024-05-02 5:18 pm, Fedor Pchelkin wrote:
+> > If a kthread creation fails for some reason then uninitialized members of
+> > the tasks array will be accessed on the error path since it is allocated
+> > by kmalloc_array().
+> > 
+> > Limit the bound in such case.
 > 
-> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-> Signed-off-by: R Sundar <prosunofficial@gmail.com>
-> ---
->   drivers/gpu/ipu-v3/ipu-pre.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/ipu-v3/ipu-pre.c b/drivers/gpu/ipu-v3/ipu-pre.c
-> index aef984a43190..95830cf8fa3e 100644
-> --- a/drivers/gpu/ipu-v3/ipu-pre.c
-> +++ b/drivers/gpu/ipu-v3/ipu-pre.c
-> @@ -113,8 +113,8 @@ int ipu_pre_get_available_count(void)
->   struct ipu_pre *
->   ipu_pre_lookup_by_phandle(struct device *dev, const char *name, int index)
->   {
-> -	struct device_node *pre_node = of_parse_phandle(dev->of_node,
-> -							name, index);
-> +	struct device_node *pre_node __free(device_node) =
-> +		of_parse_phandle(dev->of_node, name, index);
->   	struct ipu_pre *pre;
->   
->   	mutex_lock(&ipu_pre_list_mutex);
-> @@ -123,14 +123,11 @@ ipu_pre_lookup_by_phandle(struct device *dev, const char *name, int index)
->   			mutex_unlock(&ipu_pre_list_mutex);
->   			device_link_add(dev, pre->dev,
->   					DL_FLAG_AUTOREMOVE_CONSUMER);
-> -			of_node_put(pre_node);
->   			return pre;
->   		}
->   	}
->   	mutex_unlock(&ipu_pre_list_mutex);
->   
-> -	of_node_put(pre_node);
-> -
->   	return NULL;
->   }
->   
-Hi,
+> I don't think this is right... The put_task_struct() calls on the error 
+> path are supposed to balance the get_task_struct() calls which only 
+> happen *after* all the threads are successfully created - see commit 
 
-Any feedback on this patch.
+Thanks, Robin! You're right. Now I see this..
 
-Thanks,
-Sundar
+> d17405d52bac ("dma-mapping: benchmark: fix kernel crash when 
+> dma_map_single fails") - although I now wonder whether that might have 
+> been better done by replacing kthread_stop() with kthread_stop_put(). It 
+> doesn't look like we've ever actually tried to free any previous threads 
+> from the point of allocation failure.
+
+It should have looked like the diff below, as you say. And it's probably
+better to merge the two patches together so that we eliminate task leaks
+in case kthread_stop_put() returns error like it is below.
+
+Will rework that in v2.
+
+diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
+index 02205ab53b7e..3b7658ce1599 100644
+--- a/kernel/dma/map_benchmark.c
++++ b/kernel/dma/map_benchmark.c
+@@ -118,6 +118,8 @@ static int do_map_benchmark(struct map_benchmark_data *map)
+                if (IS_ERR(tsk[i])) {
+                        pr_err("create dma_map thread failed\n");
+                        ret = PTR_ERR(tsk[i]);
++                       while (--i >= 0)
++                               kthread_stop(tsk[i]);
+                        goto out;
+                }
+ 
+@@ -141,7 +143,7 @@ static int do_map_benchmark(struct map_benchmark_data *map)
+ 
+        /* wait for the completion of benchmark threads */
+        for (i = 0; i < threads; i++) {
+-               ret = kthread_stop(tsk[i]);
++               ret = kthread_stop_put(tsk[i]);
+                if (ret)
+                        goto out;
+        }
+@@ -170,8 +172,6 @@ static int do_map_benchmark(struct map_benchmark_data *map)
+        }
+ 
+ out:
+-       for (i = 0; i < threads; i++)
+-               put_task_struct(tsk[i]);
+        put_device(map->dev);
+        kfree(tsk);
+        return ret;
 
