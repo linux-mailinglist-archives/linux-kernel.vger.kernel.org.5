@@ -1,238 +1,167 @@
-Return-Path: <linux-kernel+bounces-167823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8131D8BAFD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:31:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C8E8BAFD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED4631F22BDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:31:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84666283464
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F178153816;
-	Fri,  3 May 2024 15:30:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C44434CE5;
-	Fri,  3 May 2024 15:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A857153589;
+	Fri,  3 May 2024 15:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Dr9O6AP+"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179FE4F898;
+	Fri,  3 May 2024 15:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714750252; cv=none; b=Jrxu7frbIDfGeHSLWEHKrfyV253qNoteqjFfiD/rkRbwKRNhrYozdE2JXYA/uVoqq8gv1TcwaYviW+8tShY9X8U5B5l1B3/wkc9WbQ/Ws3SZ4zc6p+GYS0QeTehIcDC9dhyBvpa6DV5L3lV7NJTUhBLNb2XtIP5TjBF/MmoSAuM=
+	t=1714750288; cv=none; b=LIYh8N3vsmcA/gIJPrsq/HKCgAxFfXjuWaqF7mMcI57A6S+r2shmDqpdEeUSu68JCFTfLigTYSv/+66qlPyQs6BnW+vqXhGs69WvpncRs3C4ZsfP+lTQVJs6z5b8YIMzU5j9cD1gQHIbI4qjBgHjIACswtCvfZz62W4UHjoLUdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714750252; c=relaxed/simple;
-	bh=1aQlonbVAgsgcIdHNo1NA5QIZoTWbdRcdVbJDKxtuMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O0p3Oa5o1m41icmqryZf/BtBUM+NyPSB08R9ucnkXrbjDSM3QsPmv7D+9i9RtkPCOCzahhSusYZhO5cSFohzsssw3byD9IUFUdTWRryl5iGfmfCAD/pRpJNohe9W2XXkINYVnfDPPbOQNHkrAHWHVMRd7yXzaaKsPtoaPpt23s4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3BDF13D5;
-	Fri,  3 May 2024 08:31:14 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.34.156])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41B943F73F;
-	Fri,  3 May 2024 08:30:47 -0700 (PDT)
-Date: Fri, 3 May 2024 16:30:44 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Sumit Garg <sumit.garg@linaro.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, puranjay12@gmail.com
-Subject: Re: [PATCH v2 2/2] arm64: implement raw_smp_processor_id() using
- thread_info
-Message-ID: <ZjUDJFbdMlnLho5M@FVFF77S0Q05N>
-References: <20240502123449.2690-1-puranjay@kernel.org>
- <20240502123449.2690-2-puranjay@kernel.org>
+	s=arc-20240116; t=1714750288; c=relaxed/simple;
+	bh=ZTeqTIx6NtGxx8vrxI3M+OcWZ4Fj8MiLEDhysehAouk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Aa6/l00rx9rms93RB5zQuqit2YwmTiBxI0T2sPWypkClKvOEkzEC9YI1P2JWmRRsTu8W/twfP3PWK1bpKmg1pxT2V/zj+N8Z0m+La4ikpYnIJuDJnqs/Bf7qZ4pcLKsK3cT1D3xJMKOVOVeOVdALQu8sqkqCjZYO9q7evJI/SxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Dr9O6AP+; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4436hOkY022022;
+	Fri, 3 May 2024 10:31:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=pMP28VeqYfHHwml5T9dmOpi3+UZclYD9X6K1JwLGHJo=; b=
+	Dr9O6AP+oXJuidoEdBkHvdZCO3Bzt0nNAUUADrXr1Y1kDQsMpNmHzFxhVc9Q1K6h
+	5izS3niLeL8BO1z77Thvvj7KiaAiZrvW2lFqstbkEE5P6+HYeiU3Dtg907wworxv
+	M6A0Tk2aYXJzV8roem1kCWwgWhSbtR3+a1wIxQxHiPNno+ASYDc3ovhsuLO89Lz0
+	FLlaz2MKtCD6UAaUBsbnNQHBNHoefLac8xiURenWE6sOE7BMdlNKOSAyXeC8IA1h
+	1LaJUoNpdeqgXa3hxwdf8y4TUGS1SyB7xQ6GDLN8Arxig5t49ueVbekrFkMy59ZF
+	elrlc2ltlAjPW0x7uR7bhw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xrxry6xm0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 10:31:17 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 16:31:15 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Fri, 3 May 2024 16:31:15 +0100
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 55FED82026C;
+	Fri,  3 May 2024 15:31:15 +0000 (UTC)
+Message-ID: <d9c5b863-53a5-4255-ab15-9ac3cb10ec10@opensource.cirrus.com>
+Date: Fri, 3 May 2024 16:31:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502123449.2690-2-puranjay@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ALSA: hda/cs_dsp_ctl: Actually remove ALSA controls
+To: Takashi Iwai <tiwai@suse.de>
+CC: <tiwai@suse.com>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>
+References: <20240503144920.61075-1-rf@opensource.cirrus.com>
+ <87msp79b7o.wl-tiwai@suse.de>
+Content-Language: en-GB
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <87msp79b7o.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: BAPHobn_D-X9cL0eHn5O9nS7ov3uewiI
+X-Proofpoint-GUID: BAPHobn_D-X9cL0eHn5O9nS7ov3uewiI
+X-Proofpoint-Spam-Reason: safe
 
-On Thu, May 02, 2024 at 12:34:49PM +0000, Puranjay Mohan wrote:
-> Historically, arm64 implemented raw_smp_processor_id() as a read of
-> current_thread_info()->cpu. This changed when arm64 moved thread_info
-> into task struct, as at the time CONFIG_THREAD_INFO_IN_TASK made core
-> code use thread_struct::cpu for the cpu number, and due to header
-> dependencies prevented using this in raw_smp_processor_id(). As a
-> workaround, we moved to using a percpu variable in commit:
+On 03/05/2024 16:17, Takashi Iwai wrote:
+> On Fri, 03 May 2024 16:49:20 +0200,
+> Richard Fitzgerald wrote:
+>>
+>> hda_cs_dsp_control_remove() must remove the ALSA control when
+>> deleting all the infrastructure for handling the control.
+>>
+>> Without this it is possible for ALSA controls to be left in
+>> the Soundcard after the amp driver module has been unloaded.
+>> So the get/set callbacks point to code that no longer exists.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> Fixes: 3233b978af23 ("ALSA: hda: hda_cs_dsp_ctl: Add Library to support CS_DSP ALSA controls")
+>> ---
+>> Note: it would be better to use the control private_free to do the
+>> cleanup, and that is my plan long-term. But that is a larger change
+>> to the code.
+>>
+>> I like to keep bugfix patches as simple as possible so they are
+>> low-risk and easy to cherry-pick into older kernels. So this patch
+>> fixes the bug. Sometime I will send a patch for future kernel
+>> versions that reworks the cleanup to use private_free.
 > 
-> commit 57c82954e77f ("arm64: make cpu number a percpu variable")
+> I also like to keep as simple as possible :)
 > 
-> Since then, thread_info::cpu was reintroduced, and core code was made to
-> use this in commits:
+> One slight concern is whether cs_dsp kctls can be deleted at the
+> snd_card removal (disconnect) before this function gets called.
+> That is, snd_card_free() of the main card may delete all associated
+> kctls, and may this function be called afterwards?
+> If yes, this change would lead to a UAF.
 > 
-> commit 001430c1910d ("arm64: add CPU field to struct thread_info")
-> commit bcf9033e5449 ("sched: move CPU field back into thread_info if
-> THREAD_INFO_IN_TASK=y")
-> 
-> Consequently it is possible to use current_thread_info()->cpu again.
- 
-Minor nits:
 
-* There's no need to say "commit" before each of these when the previous line
-  ends with "commit:" or "commits:"
+That's a good question. This is is safe for the cs35l56 driver because
+if the soundcard (or HDA codec driver) is removed, the HDA codec will
+destroy the component binding in its HDA_FIXUP_ACT_FREE. This will cause
+an unbind() call to the amp driver, which will (indirectly) call this
+function to remove all the controls. So they will have been removed
+before the soundcard is cleaned up.
 
-* It'd be better for these to each be single lines, even if they go over the
-  usual line limit.
+But it turns out that the cs35l41 driver doesn't clean up the cs_dsp
+instance in its unbind() call so the controls _won't_ be cleaned up
+and a double-free is possible. The firmware handling in the cs35l41
+driver is strange and confusing so I'm not sure whether this is a bug
+or something necessary.
 
-* I'd deliberately indented those commit lines with double-spaces to
-  distinguish them from regular text in the commit message.
+> The structure is so complex and I can't follow immediately,
+> unfortunately...
+> 
 
-.. so if you could use that text as-is (minus the "| " prefix on each line)
-from:
+Yes, I know. When this hda_cs_dsp_ctl code was first submitted to the
+kernel you suggested using private_free instead of this manual cleanup
+but for some reason that wasn't implemented.
 
-  https://lore.kernel.org/linux-arm-kernel/ZjJwos7KpvzhoK_f@FVFF77S0Q05N.cambridge.arm.com/
+> 
+> thanks,
+> 
+> Takashi
+> 
+>> ---
+>>   sound/pci/hda/hda_cs_dsp_ctl.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
+>> index 463ca06036bf..a42653d3473d 100644
+>> --- a/sound/pci/hda/hda_cs_dsp_ctl.c
+>> +++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+>> @@ -203,6 +203,10 @@ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
+>>   {
+>>   	struct hda_cs_dsp_coeff_ctl *ctl = cs_ctl->priv;
+>>   
+>> +	/* Only public firmware controls will have an associated kcontrol */
+>> +	if (ctl && ctl->kctl)
+>> +		snd_ctl_remove(ctl->card, ctl->kctl);
+>> +
+>>   	kfree(ctl);
+>>   }
+>>   EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_remove, SND_HDA_CS_DSP_CONTROLS);
+>> -- 
+>> 2.39.2
+>>
 
-.. that'd be preferable.
-
-> This decreases the number of emitted instructions like in the following
-> example:
-> 
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffff8000802cd608 <+0>:     nop
->    0xffff8000802cd60c <+4>:     nop
->    0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
->    0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
->    0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
->    0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
->    0xffff8000802cd620 <+24>:    ret
-> 
-> After this patch:
-> 
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffff8000802c9130 <+0>:     nop
->    0xffff8000802c9134 <+4>:     nop
->    0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
->    0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
->    0xffff8000802c9140 <+16>:    ret
-> 
-> A microbenchmark[1] was built to measure the performance improvement
-> provided by this change. It calls the following function given number of
-> times and finds the runtime overhead:
-> 
-> static noinline int get_cpu_id(void)
-> {
-> 	return smp_processor_id();
-> }
-> 
-> Run the benchmark like:
->  modprobe smp_processor_id nr_function_calls=1000000000
-> 
->       +--------------------------+------------------------+
->       |        | Number of Calls |    Time taken          |
->       +--------+-----------------+------------------------+
->       | Before |   1000000000    |   1602888401ns         |
->       +--------+-----------------+------------------------+
->       | After  |   1000000000    |   1206212658ns         |
->       +--------+-----------------+------------------------+
->       |  Difference (decrease)   |   396675743ns (24.74%) |
->       +---------------------------------------------------+
-> 
-> Remove the percpu variable cpu_number as it is used only in
-> set_smp_ipi_range() as a dummy variable to be passed to ipi_handler().
-> Use irq_stat in place of cpu_number here.
-> 
-> [1] https://github.com/puranjaymohan/linux/commit/77d3fdd
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
-> Changes in v1 -> v2:
-> v1: https://lore.kernel.org/all/20240501154236.10236-1-puranjay@kernel.org/
-> - Remove the percpu variable cpu_number
-> - Add more information to the commit message.
-> ---
->  arch/arm64/include/asm/smp.h | 13 +------------
->  arch/arm64/kernel/smp.c      |  9 ++-------
->  2 files changed, 3 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-> index efb13112b408..2510eec026f7 100644
-> --- a/arch/arm64/include/asm/smp.h
-> +++ b/arch/arm64/include/asm/smp.h
-> @@ -25,22 +25,11 @@
->  
->  #ifndef __ASSEMBLY__
->  
-> -#include <asm/percpu.h>
-> -
->  #include <linux/threads.h>
->  #include <linux/cpumask.h>
->  #include <linux/thread_info.h>
->  
-> -DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
-> -
-> -/*
-> - * We don't use this_cpu_read(cpu_number) as that has implicit writes to
-> - * preempt_count, and associated (compiler) barriers, that we'd like to avoid
-> - * the expense of. If we're preemptible, the value can be stale at use anyway.
-> - * And we can't use this_cpu_ptr() either, as that winds up recursing back
-> - * here under CONFIG_DEBUG_PREEMPT=y.
-> - */
-> -#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
-> +#define raw_smp_processor_id() (current_thread_info()->cpu)
->  
->  /*
->   * Logical CPU mapping.
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 4ced34f62dab..98d4e352c3d0 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -55,9 +55,6 @@
->  
->  #include <trace/events/ipi.h>
->  
-> -DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
-> -EXPORT_PER_CPU_SYMBOL(cpu_number);
-> -
->  /*
->   * as from 2.5, kernels no longer have an init_tasks structure
->   * so we need some other way of telling a new secondary core
-> @@ -742,8 +739,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  	 */
->  	for_each_possible_cpu(cpu) {
->  
-> -		per_cpu(cpu_number, cpu) = cpu;
-> -
->  		if (cpu == smp_processor_id())
->  			continue;
->  
-> @@ -1021,12 +1016,12 @@ void __init set_smp_ipi_range(int ipi_base, int n)
->  
->  		if (ipi_should_be_nmi(i)) {
->  			err = request_percpu_nmi(ipi_base + i, ipi_handler,
-> -						 "IPI", &cpu_number);
-> +						 "IPI", &irq_stat);
->  			WARN(err, "Could not request IPI %d as NMI, err=%d\n",
->  			     i, err);
->  		} else {
->  			err = request_percpu_irq(ipi_base + i, ipi_handler,
-> -						 "IPI", &cpu_number);
-> +						 "IPI", &irq_stat);
-
-I was going to say that it might be worth having a dummy percpu variable
-specifically for these, but given this is what 32-bit arm does, it makse sense
-to do the same thing.
-
-This looks good to me, so:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
->  			WARN(err, "Could not request IPI %d as IRQ, err=%d\n",
->  			     i, err);
->  		}
-> -- 
-> 2.40.1
-> 
 
