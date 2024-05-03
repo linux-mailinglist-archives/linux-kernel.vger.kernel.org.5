@@ -1,114 +1,106 @@
-Return-Path: <linux-kernel+bounces-167589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A79D8BABA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 548598BABA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:35:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF623281CC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09B302845C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092A0152DE3;
-	Fri,  3 May 2024 11:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DAA1534E7;
+	Fri,  3 May 2024 11:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EXuP307l"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R4cdNHva"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7A4152180;
-	Fri,  3 May 2024 11:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FCB6152DFB
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 11:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714736111; cv=none; b=q2fLiPD8gEl/o91Ew48Pi8cLDB3S5CS7Lev/PI6M6/MRKuuQ+do3Z83IrYeXc7ehrzovpZbF6dlWZ3ZDsDi84dY168coxPuZNUJ60mx+ZGS8j5LrRCDhG5oGPwjNanQRMKLYS91MOl7oframZjFIr8dkGvfnzvXT8tPuTobH/hw=
+	t=1714736114; cv=none; b=Lp6oqdXb7IA53JfwVzaZlZ7axaZdftX6dIkCPvcT+gIOth0WRIdVxOAWERRujTh/+oxoGolQBTvKAV8MotR6MUx8gLPBFP140ObWD1AmwpxW4lYT8UbalH+tn9yhY98xyc4lC42u7BwgCW9nMN2Rbk0/X5PgykYUnkYm+1Y8u2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714736111; c=relaxed/simple;
-	bh=NGCnV/jwRUnhIBk4eqhuNe7GPUCIIScfqyZphbH1u3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WC+Y8zT6rOAqVqaUCs+rPfz6UCXVZAQFfXBOtXxWJg480qGvRMsVsnlB6MOBSx33NM1VHA0dmH0764rarVpFZ0ygoNLODwz88zl1s6qB4d/Dz1KQQnQI0JeDm7SjiZEa5hqwzmkIuLagK2Nx/n8nhHMFihiM/gzYIsZKmGF0ONA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EXuP307l; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=sxVQ/UPJFlyGRDmIkbFV8gUftaJHcE4mZegeO9XShts=; b=EXuP307lalwf/R+RmqAOGe5qq7
-	fd0cZn6+STJkV0IVWQAvGai3Xv8VqeUTQDeTM+eLovrpsJdA9poPUUo9ixiHOuhGjF9pcTh0+BcBV
-	5tY53XLfIFtG8bdHSl+1j9o/lYoG40IWQwJXh/T4LNo3GVaieoUX1gaYBiWvHUgUzv0coI0C1AwoQ
-	FTHXpzpbryJZzYtmVfrCsQ/kB/mf/OJNoRS+FnZaKoFOmdQd1sQiDqi+9UOkh2/g1INakPnV9JkRg
-	t1bIFnHXZ6bizin2WR/1+A43kT8i2CgTUPF7wwMczJZyPxRRftalTK75WgFLre8CBtjD9ChyoDKe3
-	1nL5c0vg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2rBl-00000003z6t-33bZ;
-	Fri, 03 May 2024 11:34:53 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 62FD73001FD; Fri,  3 May 2024 13:34:53 +0200 (CEST)
-Date: Fri, 3 May 2024 13:34:53 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	rick.p.edgecombe@intel.com
-Subject: Re: [PATCHv4 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up
- return probe
-Message-ID: <20240503113453.GK40213@noisy.programming.kicks-ass.net>
-References: <20240502122313.1579719-1-jolsa@kernel.org>
- <20240502122313.1579719-3-jolsa@kernel.org>
+	s=arc-20240116; t=1714736114; c=relaxed/simple;
+	bh=Vy6tlTc++EeXxdDB7kgFB3QOL4xnaDzS0cwQuZ2VSG8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RFlfBnfBBD/9K73IDlAh1yAcFFOiTfQd5aY38+32MWxcEriJQjuRbgj+h43kjPcpOY9RkfDUOr/k4CI15IIiL065BkOvnyWW5XdiX9VcyDFma0BhrpwMP4qWQJ2YYAAIAas9tICwuHDzlmAnek404sMdcmhHYZClIXIhYI4lmuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R4cdNHva; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4affeacaff9so1929042e0c.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 04:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714736112; x=1715340912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vy6tlTc++EeXxdDB7kgFB3QOL4xnaDzS0cwQuZ2VSG8=;
+        b=R4cdNHva5GHHamKwsequFquIU8TtCROMmZs0dMu/PdPI/npquslFC8nuYhIXkPFY5o
+         rrBQVkYZkQxb5YquHWbhjtZ5fFVOsQcMu+N24KyvArzx8uhbwJC9PNOQNNGrUI7h2X2j
+         FT5yPvJcq2kn7GmgR/11BUhH7oByBds/doceLincTJqzRab7aI0gNg6tkp2qpTBdmhcy
+         589ru/HImritDdengeAad4mqFb9SsiyEOInnYqBqxQsA+35Lnkt45ISLEX86sm9WApJj
+         6/wGJWczpQhzlfSYVGZFvB5S0NEfbxy7TT+r7Z6DG6MlreI7h5Xw0auJOay4chPvC1Bc
+         naOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714736112; x=1715340912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vy6tlTc++EeXxdDB7kgFB3QOL4xnaDzS0cwQuZ2VSG8=;
+        b=O2UYAcPA2SUbCxTFHJnAzjJvo5RBrlcf0yFgejywte1/xu+TfjTHihD504lhKIdKfV
+         hO0bO7PUwyD1XrcZXBSWZsHHrq1kp4hXqDfwXHKIVVQNy/XN1Znm5ZIGOIiHUz2UXBkV
+         BFYSrais7QxbU/xXnI/a02txssiBK9TKaZPtsxZP0VOMDlTj+XwTTnynS53idmRGhGoH
+         IjHhGuvBQ0pfBo/4oKjmpw6K1dcCPfaZsTRYdzYvy8ZzeI1zEqe+ItYB8Z0WGJSZSvfk
+         hBLoMuNMCS8cyosqKixlcK/Pvr2cdMfpxu8hVBmCTgz34plnX3RMO379nidPUCCH3JOb
+         OKNg==
+X-Forwarded-Encrypted: i=1; AJvYcCUxoEjTa2jREWl7ZgslKLOeYy4daqQFY5jW7Q+2cdP7mDY8aJN1KLZ1x+nxTzhcCpwBGrmPQWqtTVsVIN5Jyo3lrUCXo3Xbk3BpF5xj
+X-Gm-Message-State: AOJu0Yy7fFeDi4FWQbeYIzm4lJt6wFDz0lLIJPMTdVPn0TW7CoaiETTJ
+	vCV0TWjgpHNCoea19wjpeO2S64lloRkBclNZQRzx/8mtZDxQyXwnbymCUBlUvC29abS96dKmHm2
+	by7cO4hj9RVVoBeag1RqHdF4QYwFXVjz8fO5N
+X-Google-Smtp-Source: AGHT+IHJ5LLav1WoS1LCMCU5SIOeeC4JL8vo1qtUmeAbGsYQ5VrRHqnDzkVTZMJTzAdRJU0fbrCaR7G4XGw3/A7ZOLI=
+X-Received: by 2002:a05:6122:2094:b0:4d8:75ca:8cbe with SMTP id
+ i20-20020a056122209400b004d875ca8cbemr2446452vkd.16.1714736112253; Fri, 03
+ May 2024 04:35:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502122313.1579719-3-jolsa@kernel.org>
+References: <20240425213419.3904105-1-benno.lossin@proton.me> <20240425213419.3904105-2-benno.lossin@proton.me>
+In-Reply-To: <20240425213419.3904105-2-benno.lossin@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Fri, 3 May 2024 13:34:59 +0200
+Message-ID: <CAH5fLggj_MT=njdieD9BX_gV+4A02m0+zMyzPTJ9DR6hSkQhEg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: init: add re-initialization functions
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 02, 2024 at 02:23:08PM +0200, Jiri Olsa wrote:
-> Adding uretprobe syscall instead of trap to speed up return probe.
-> 
-> At the moment the uretprobe setup/path is:
-> 
->   - install entry uprobe
-> 
->   - when the uprobe is hit, it overwrites probed function's return address
->     on stack with address of the trampoline that contains breakpoint
->     instruction
-> 
->   - the breakpoint trap code handles the uretprobe consumers execution and
->     jumps back to original return address
-> 
-> This patch replaces the above trampoline's breakpoint instruction with new
-> ureprobe syscall call. This syscall does exactly the same job as the trap
-> with some more extra work:
-> 
->   - syscall trampoline must save original value for rax/r11/rcx registers
->     on stack - rax is set to syscall number and r11/rcx are changed and
->     used by syscall instruction
-> 
->   - the syscall code reads the original values of those registers and
->     restore those values in task's pt_regs area
-> 
->   - only caller from trampoline exposed in '[uprobes]' is allowed,
->     the process will receive SIGILL signal otherwise
-> 
+On Thu, Apr 25, 2024 at 11:34=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
+me> wrote:
+>
+> Sometimes it is necessary to split allocation and initialization into
+> two steps. One such situation is when reusing existing allocations
+> obtained via `Box::drop_contents`. See [1] for an example.
+> In order to support this use case add `re_[pin_]init` functions to the
+> pin-init API. These functions operate on already allocated smart
+> pointers that contain `MaybeUninit<T>`.
+>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> Link: https://lore.kernel.org/rust-for-linux/f026532f-8594-4f18-9aa5-57ad=
+3f5bc592@proton.me/ [1]
 
-Did you consider shadow stacks? IIRC we currently have userspace shadow
-stack support available, and that will utterly break all of this.
+I'm not a big fan of the name. Perhaps we can use a name similar to
+`Box::write`?
 
-It would be really nice if the new scheme would consider shadow stacks.
+Alice
 
