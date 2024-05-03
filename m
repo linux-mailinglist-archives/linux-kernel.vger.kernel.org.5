@@ -1,526 +1,213 @@
-Return-Path: <linux-kernel+bounces-167423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BBE8BA969
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 082458BA970
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:05:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604E31F222C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:04:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73D661F22BC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724B714F10C;
-	Fri,  3 May 2024 09:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214E914BFA8;
+	Fri,  3 May 2024 09:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DpJu4Ale"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="TfPJXFaK"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2046.outbound.protection.outlook.com [40.107.212.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACEF14E2F2;
-	Fri,  3 May 2024 09:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727070; cv=none; b=UQoa7XlkFuMZcdhyZBTiUopF5L9ipYAc5SIf03yZkv/HfuvJb6RrIE3PO2Fv8HFj2NXugylRXCKKd5/UEeiCX3VvTSUFOf9tZZgs5DhjHx95AlC3sL58I2qC2E14nAD2o3ONLzRaowhqNSOg3ua0YOEcuB7b/bpnIasZQ7DEU34=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727070; c=relaxed/simple;
-	bh=L9mym5HUs0jB6zHpWIWPd24vsCgaxBi+qB3rwEwqx+4=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=iloD9fj/ET/pb9HqNoAyGmtdaDZlnyZjuV2urylxmM/AHYFE4CvnQiIuMtjvO7Trf6QfXh+1hLvHnjgh7KspTtR501Xaz3+O+jtaV/WrilORGzxAprzE0bDuyPMKuh0eW7tU217fkJBvC597zUfm4/i+1V204Z5loNiv11l0QZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DpJu4Ale; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714727068; x=1746263068;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=L9mym5HUs0jB6zHpWIWPd24vsCgaxBi+qB3rwEwqx+4=;
-  b=DpJu4AleBOfF70xFTWgfTbZQ//Ci8+LHB2eqgJG2v3tDxcphFJxZWFd6
-   FAcuHnLfklP5Ji7X/lm18HAkJQD7CHEwEVvF1gqriQDQf+fpB4mCHh70P
-   c5WT/3TaU6IbeaXJriuth0SJtTC8pyYvuIEH8NysX+zTg+Igkn3cRcwgg
-   yv/PcMvzk/ZD0c/dFb9DtThYD9uKXyXbog+oPgwF+/EqIvJetn2GhTp0K
-   cX+poqaAVL3ZwqZZaa2rAp+JJSm1ke6UBmc7HgV0OzX7ubmmfy3mMznDn
-   fICK4+8fM3giTqixY5kX5Wp/EC1//xlQVIZ9UM1anc+YOCin8v9/+KexF
-   Q==;
-X-CSE-ConnectionGUID: 7wgEkiC/RqCSbqtcyOxXaA==
-X-CSE-MsgGUID: RhRWtEHdQ/+tr3Nn2QrKHg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10656572"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="10656572"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 02:04:27 -0700
-X-CSE-ConnectionGUID: gyWdPFp4S9u31rhTod4NBQ==
-X-CSE-MsgGUID: 5hkp3xgURZetLduywtwaLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="27369361"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.56])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 02:04:24 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 3 May 2024 12:04:19 +0300 (EEST)
-To: "David E. Box" <david.e.box@linux.intel.com>
-cc: linux-doc@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 1/2] platform/x86/intel/sdsi: Add ioctl SPDM transport
-In-Reply-To: <20240503025727.10254-1-david.e.box@linux.intel.com>
-Message-ID: <9a91ca6e-99cd-d53a-0ea1-228ac555cd02@linux.intel.com>
-References: <20240503025727.10254-1-david.e.box@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB1A1367;
+	Fri,  3 May 2024 09:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714727147; cv=fail; b=fSOLihjnvlybJXOsdqxI13nV0sdJDuoZ+BoeIOBiYiJsOZ5SwuWi67ByARA3X8NVgnEciP9qOefJwrJQBNGDy12X4vcjEKsteg5BlTiot+G4RwVFIDJ9cSKANz/aU2YzKXFGAsxyIsd1AyuqBeplyLcHis4uvHBJg9z37OXALzk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714727147; c=relaxed/simple;
+	bh=eGanRzW2DpqC1ZPOQOBwlWHOzTec2dsds26uIFdQMCU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=q3Ck64+PVwHcB4MK4cqxbhBFVD3dbp3WCp/K3p3Sm4L5Si3HqPf1y11iZsStzjmjJaH2NrLHuOcvHm7vfwb6rtPFpWsRnx9HGcZ7ylkjxQGWu3XzkadfslBqmWVEsW6KngKVcM+EEVo/9EjNJ3+UTJUMlVa/OfR+mxrr/MAlKE8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=TfPJXFaK; arc=fail smtp.client-ip=40.107.212.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HTOHHAl8wTj00Gpac1koivtAX2A+VtTNycPTEOGmi0fEIauH9eRe7vQY3SlF73gZHn0rJWiOI2Ht0gqyhqsQobXMGl+pHzcn8uaZjH3z1sRF2gcNovuxhYBPe7bmyCDr9133GqSGYuhvTNLebyduPAgUpkNsI+o8KaV+ciBS/TgID9orqhk6O3XNfuI1vrPwXTiifqOCqoSeX9b51rIIro7JgzCfUPtbdKd/4YvyO/qamfXoljvlye6SRFlE/FaT8aJu5ku7N9P3vqVx3FOE5KSPB5DEE5R9/L4HiI889zC2U26K9mrrAqc+C8F1nhjDVoV6cTjCTRPPesvEIza8+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=50+MNcL2qQZZrxw+84dMTJ22XJJCXR76gKq+nKjeLfg=;
+ b=aX1KEhTo21cspbC9GhBik4YwiEFCzr9bWBS0Ha+B0IFeJW7CHLWPnpjFu6RWdp11M6vQdTedUl94eOCPcYtFcXJZHmytXg+IYowdb/HyJDtng9pOAUNiMyy5JQZznRaGsSFpRjLLyBR1dZa0wKicg3IlHT14GvCYtaH9FFQ8vRwB7kp0h1OtgjJq9s3FCJqOYKsRz+/vxTZ4Q31M4Q6XkziYZIJYDozxSHqJ/aKsxigwb047ZpVejNxFBqH4UF15g293X0V6f640N8jwUurF4S2lC6lUmg/lVQrCY/UxtT7WMS7VJEfpSiT34RS8U+hhnh7VAnug7LgWuGL1T+BYzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=50+MNcL2qQZZrxw+84dMTJ22XJJCXR76gKq+nKjeLfg=;
+ b=TfPJXFaKPoune73McTSvj2RKrE5GKFTlluDXTlrV6trQqHnOjCD8c2/djIxtQ8cj3XY1eC50nroT8wYyMKCyPUWZaGZNr1KeCsLg5xehV3blzqZX/lop3s4VUuuXus3Qtc6O74U07xP+3ztYfm4M2K+8E7vfVvW5HagSIEieaY0=
+Received: from DS7PR12MB5741.namprd12.prod.outlook.com (2603:10b6:8:70::7) by
+ PH0PR12MB8052.namprd12.prod.outlook.com (2603:10b6:510:28b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30; Fri, 3 May
+ 2024 09:05:38 +0000
+Received: from DS7PR12MB5741.namprd12.prod.outlook.com
+ ([fe80::4a06:1053:ead5:ef39]) by DS7PR12MB5741.namprd12.prod.outlook.com
+ ([fe80::4a06:1053:ead5:ef39%5]) with mapi id 15.20.7544.029; Fri, 3 May 2024
+ 09:05:37 +0000
+From: "Boddu, Sai Pavan" <sai.pavan.boddu@amd.com>
+To: Andi Shyti <andi.shyti@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "Simek, Michal"
+	<michal.simek@amd.com>, Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang
+	<wsa@kernel.org>
+Subject: RE: [PATCH] i2c: cadence: Avoid fifo clear after start
+Thread-Topic: [PATCH] i2c: cadence: Avoid fifo clear after start
+Thread-Index: AQHaSUfcsQJjTnMwH0iIfDUOatck5LDeSs0AgAA0hYCApibR8A==
+Date: Fri, 3 May 2024 09:05:37 +0000
+Message-ID:
+ <DS7PR12MB5741674CE218A971F52F3604B61F2@DS7PR12MB5741.namprd12.prod.outlook.com>
+References: <20240105125258.2470397-1-sai.pavan.boddu@amd.com>
+ <lzvb6oyinlmdrbaat6ayxioca5r2qf7wi3kt63lzorbjytmmbn@wfuz63znrzbr>
+ <DS7PR12MB5741FC0E92875C8DB7BFEEDFB6722@DS7PR12MB5741.namprd12.prod.outlook.com>
+ <pi4mct77spgoef3mfth7qcha73qrzlmvxhjrqrdf5rjfcxzlb4@zwxbyxf3httv>
+In-Reply-To: <pi4mct77spgoef3mfth7qcha73qrzlmvxhjrqrdf5rjfcxzlb4@zwxbyxf3httv>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS7PR12MB5741:EE_|PH0PR12MB8052:EE_
+x-ms-office365-filtering-correlation-id: 399d12ed-6c54-4ffb-53e3-08dc6b5032ef
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|38070700009;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?LiIE4KMA4IGuqctaIJI3gqnxtxoYubHLVta+A3yKSHaQGWGFIZ3pcT2eCUDi?=
+ =?us-ascii?Q?sYbMaWl2+AvXlYaWpix9KxgZdSH96E0UGZ6n1sfnFw45+1ylhMB66ktFuI8m?=
+ =?us-ascii?Q?qBQ5MzUgYUg7xWmB5LA9y7E3sXVCRcuYnvd7qddbkfJ0cjXp6+glqSdWKoBX?=
+ =?us-ascii?Q?WFiIUysrPTYUCJSSdteUidQNED6nGfluLyeQAjNMzFpH9i96juunhTJlmU/Z?=
+ =?us-ascii?Q?CJ0o2M3d/QWzGho8tyFFcbEKTmcAx/U2EhjjP7ebIEOQ/irR6YFnqAr6d0za?=
+ =?us-ascii?Q?dIgzdw+l8PfNFTShvsIQyLbRZUDIiAy01JCWEXOgA7xx8DevCa03yQHuWai3?=
+ =?us-ascii?Q?XWTlgzUgtXo0yJ4iyRi9vFOR2nOdAHV1sBzR8yM377OLWop9375fa6iltr2n?=
+ =?us-ascii?Q?Y+UndaslmjfRoCO+IKoP4tR883KvDjrR4zWKAsE3CPejrnwZ9ZX8+P26wbOW?=
+ =?us-ascii?Q?1FfqNrhpFbIqrAajHyf/qBvTqb/vlJ8TQo/pJHco30P/tnN9rZG55a+rOxNX?=
+ =?us-ascii?Q?8iWo8CC64WY1mG5feX9XVjcb+/KKXX3CcM6lfWdNDqWI+5zCly4jR/BRqCYJ?=
+ =?us-ascii?Q?tJk6MF1EbxJvncwubxqlfje2jMPMjMEtsvyBqZ1RbZGqdQUGoq5Vd5n4Ox+z?=
+ =?us-ascii?Q?lIUAiaGKpKhka9Xw5dNO9yD315aRgh5krz+uId5vjTyOGzIplo2ERBDqrhBe?=
+ =?us-ascii?Q?j7JGMSpT6MvmzZ1809f3qxovH9CbTrd6e0SDjeSgpNl2pe7JsLgsTqwarcOH?=
+ =?us-ascii?Q?HH2ga574ZPrEQnfdCiw2Qh2AJVCLY+8aV/ylsWbFbsg+7DvABboszVcGsf+b?=
+ =?us-ascii?Q?8WG5mQPoITHBgiXutFnbaQdMAn86mbNNBxUeyn6touIx3GyzoW3V9qlIya12?=
+ =?us-ascii?Q?cpG287O9pE0PK7K4+pfSaAk/Vuft37ISTYjB9SmsRzjdOlZ7Re2VFf9JyUZx?=
+ =?us-ascii?Q?9btwRk5G9dLFsb7VTMkB4druq+Po3kP7pQ/BY1OXRavBoQ0Fw4UWFna1jXxZ?=
+ =?us-ascii?Q?4uUR+jWQ5vYVpr1QGvX++WohW4YUhi3nUl95Uft35QDBgu7TdKUSx5HTIXfF?=
+ =?us-ascii?Q?+MwFfhKi94GEJDBi88+36hvrQ4JOto0B7tck7mS7SvjMAbH2KbIc+ljxoo0o?=
+ =?us-ascii?Q?J8stvVqHk4kDktvbBQWuNHtwuHfISxZBaWwvk86sRvE9bDO+vylNvmWFyDTP?=
+ =?us-ascii?Q?jLvtz9PClDyRY6tuumWK6p5xeyJ/pXa3/Xc8JVI1qvZUN1s0Piy+BTCGazKr?=
+ =?us-ascii?Q?ZKu1Myd0zAe5qMN3kM0X2x12Wum0zfaK9nrnRrK2lkwegmKyxpHlK6tiuwSj?=
+ =?us-ascii?Q?zCUTUllZIil2tJVjEZPCiyy60jGHLdLnOBEGwwHD8dS1SQ=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5741.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?Nh/C3pm4zMpvXyDH6DIKw13o1UUgVdxsTLTb+ZZJxx5I/LIDiAeoVc5h6FcP?=
+ =?us-ascii?Q?XFX+v9mqFND/gWTStdFEof3P5Qg8jf2+iZe2tACVAGxuIf6j7K8NEUX4FHm9?=
+ =?us-ascii?Q?U8hFbQ/T97T0SzouwVgz7Mv8M8eudmBqW1ckGtLPXmyqgrIBC/J/TaQkYb0O?=
+ =?us-ascii?Q?2tfxOw9EU7TrRa1PoxfsnTC8G5sxy/ydp278+iI5CGhcZEbA0WD5ZOlx6IXz?=
+ =?us-ascii?Q?IrW4ytKoVAK7/ZWfrmxBUY0gQnj+fjWdxXrxLhG7p0miBv/OWvK3HDSbIriI?=
+ =?us-ascii?Q?S6Pkvyf7vujLf6FMAB1qC+O5Ja5/mvWgMITTvNmDiRxCyB6MD59G1XwsGDmN?=
+ =?us-ascii?Q?217ix242Zt1BAduqJFFLzihM6YkEX8GzXXqfCWKX1Trv2Lon8TH7lGfOUMBe?=
+ =?us-ascii?Q?+AxKxfGR9Y57P1r49IN+mPZm89haQ8co+kwMDCBvutalmjm0bxgMz4s6wBOb?=
+ =?us-ascii?Q?p30/ehNkJgHOhAsviVmZ7xKxP8tlz9y3hZmyLpxB2TnUetCkzTY9iHy1b42Z?=
+ =?us-ascii?Q?+RaX6I2UfFqAmvK9IBu8J95OCcjfT+ubzKE/Fec08ArX7GXgamibX4hvofr7?=
+ =?us-ascii?Q?jEdlTHRbPozJjMbL6EWIAu8JFm3HymnFRy5EfcT/+MaJKaMJIFZNM9xg2B1c?=
+ =?us-ascii?Q?Rtlpc2Ek8sNlMGMFmz9Qzg4f6bN8usWhIauwrJZyMNuUUjgWVTb2RKaexetk?=
+ =?us-ascii?Q?mWfCTNBfLTEBUOSnVV6cv3iFgEk4ju5LsXvOV2L6Eil7TNgMiSGL3/Y8B8cU?=
+ =?us-ascii?Q?1PuM6QF4TFjZM1oewmZ30ZAML3rPyuBRqXKNArCXPwqmOBtnLmLFHVQ0YPgY?=
+ =?us-ascii?Q?t0svlK/JwLd9KsCHk+zt6bBoy3KaLxnsnfm0TTVqCFG2gizf1Wg/0ntBbesK?=
+ =?us-ascii?Q?Tvr2PY2Wp2MsHQykIB1W/4CcOHqr8KmKRM1NP2VQw7WRKsxZH6k7wyzShqUK?=
+ =?us-ascii?Q?E+4gqNijlfVPNvZw/0LXcc4Nubr76Pxi0PaOifpVYXyDfybwd24vxZedO+n7?=
+ =?us-ascii?Q?Q2VQPcnNEyw0FawYt0Rb6b0U3vWW8irpZZHDiuTbvvFpmWoGPcro5AkXD4NS?=
+ =?us-ascii?Q?/XkGnjhpJ8HV2KaYcWosMvfp78NutJ25KTrStx4Sp7MTcxbfMvyBTEdA60U7?=
+ =?us-ascii?Q?spy9v7Ov1jp2scT9xT44Nc0Bdck9XqDcifrTFPKZwYTiEftEwmV8nSwBm0G2?=
+ =?us-ascii?Q?W9IUoFJ79WvhCUCN6waLsmD3hnyVreFO4AUuHqgL77s+OojMCQyTA6F++Eow?=
+ =?us-ascii?Q?QLv/73Ygy9GG1Ryk7qKSkF0O7IGEGBUlz+HU92tR+tKZ9jIZBlfFNSmIC6Ip?=
+ =?us-ascii?Q?7fOHYpOJpvQz03OdYFRflX6Fu47CC6ZV6Xi9YeMBlL0Ppx3fBg8WuPAUAn1+?=
+ =?us-ascii?Q?/LoIpBpZyL5hsPz0x3tScBdf/nqcb5KwVR027+EbhlnxH82/E63WVrxg+Z8u?=
+ =?us-ascii?Q?c7hht2aaYR/6TA/IR8D0EWxXFNv8B8v38VaVahfYNF+REkIOrUCpa9JEV3mn?=
+ =?us-ascii?Q?yOSXQ1+IeE8GdQ4vzPFP+LEbDftke4c0gmpGpyLrTD2JdlPA/b3sIzTpC6mI?=
+ =?us-ascii?Q?mQ2gx1CB5zEXrHh3sVU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5741.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 399d12ed-6c54-4ffb-53e3-08dc6b5032ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2024 09:05:37.5249
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zNIs7grajkecOSoFnlcDKaf4IxIS8PjxbxJoGNAvgO2klK8jtTOiLyFQJl1/H2oZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8052
 
-On Thu, 2 May 2024, David E. Box wrote:
+Hi Andi,
 
-> Intel On Demand adds attestation and firmware measurement retrieval
-> services through use of the protocols defined the Security Protocols and
-> Data Measurement (SPDM) specification. SPDM messages exchanges are used to
-> authenticate On Demand hardware and to retrieve signed measurements of the
-> NVRAM state used to track feature provisioning and the NVRAM state used for
-> metering services. These allow software to verify the authenticity of the
-> On Demand hardware as well as the integrity of the reported silicon
-> configuration.
-> 
-> Add an ioctl interface for sending SPDM messages through the On Demand
-> mailbox. Provides commands to get a list of SPDM enabled devices, get the
-> message size limits for SPDM Requesters and Responders, and perform an SPDM
-> message exchange.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Link: https://www.dmtf.org/sites/default/files/standards/documents/DSP0274_1.0.1.pdf [1]
-> ---
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  MAINTAINERS                                   |   1 +
->  drivers/platform/x86/intel/sdsi.c             | 210 +++++++++++++++++-
->  include/uapi/linux/intel_sdsi.h               |  72 ++++++
->  4 files changed, 283 insertions(+), 1 deletion(-)
->  create mode 100644 include/uapi/linux/intel_sdsi.h
-> 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index c472423412bf..20dcc2dbcaf6 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -382,6 +382,7 @@ Code  Seq#    Include File                                           Comments
->                                                                       <mailto:mathieu.desnoyers@efficios.com>
->  0xF8  all    arch/x86/include/uapi/asm/amd_hsmp.h                    AMD HSMP EPYC system management interface driver
->                                                                       <mailto:nchatrad@amd.com>
-> +0xFC  all    linux/intel_sdsi.h
->  0xFD  all    linux/dm-ioctl.h
->  0xFE  all    linux/isst_if.h
->  ====  =====  ======================================================= ================================================================
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3fb0fa67576d..e3865e61f302 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11165,6 +11165,7 @@ INTEL SDSI DRIVER
->  M:	David E. Box <david.e.box@linux.intel.com>
->  S:	Supported
->  F:	drivers/platform/x86/intel/sdsi.c
-> +F:	include/uapi/linux/intel_sdsi.h
->  F:	tools/arch/x86/intel_sdsi/
->  F:	tools/testing/selftests/drivers/sdsi/
->  
-> diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
-> index 277e4f4b20ac..bab6df0521b4 100644
-> --- a/drivers/platform/x86/intel/sdsi.c
-> +++ b/drivers/platform/x86/intel/sdsi.c
-> @@ -11,9 +11,12 @@
->  #include <linux/auxiliary_bus.h>
->  #include <linux/bits.h>
->  #include <linux/bitfield.h>
-> +#include <linux/cleanup.h>
->  #include <linux/device.h>
->  #include <linux/iopoll.h>
-> +#include <linux/intel_sdsi.h>
->  #include <linux/kernel.h>
-> +#include <linux/miscdevice.h>
->  #include <linux/module.h>
->  #include <linux/overflow.h>
->  #include <linux/pci.h>
-> @@ -42,6 +45,7 @@
->  
->  #define SDSI_ENABLED_FEATURES_OFFSET	16
->  #define SDSI_FEATURE_SDSI		BIT(3)
-> +#define SDSI_FEATURE_ATTESTATION	BIT(12)
->  #define SDSI_FEATURE_METERING		BIT(26)
->  
->  #define SDSI_SOCKET_ID_OFFSET		64
-> @@ -91,6 +95,7 @@ enum sdsi_command {
->  	SDSI_CMD_PROVISION_CAP		= 0x0008,
->  	SDSI_CMD_READ_STATE		= 0x0010,
->  	SDSI_CMD_READ_METER		= 0x0014,
-> +	SDSI_CMD_ATTESTATION		= 0x1012,
->  };
->  
->  struct sdsi_mbox_info {
-> @@ -109,12 +114,14 @@ struct disc_table {
->  struct sdsi_priv {
->  	struct mutex		mb_lock;	/* Mailbox access lock */
->  	struct device		*dev;
-> +	struct miscdevice	miscdev;
->  	void __iomem		*control_addr;
->  	void __iomem		*mbox_addr;
->  	void __iomem		*regs_addr;
->  	int			control_size;
->  	int			maibox_size;
->  	int			registers_size;
-> +	int			id;
->  	u32			guid;
->  	u32			features;
->  };
-> @@ -582,6 +589,94 @@ static const struct attribute_group sdsi_group = {
->  };
->  __ATTRIBUTE_GROUPS(sdsi);
->  
-> +/* SPDM transport  */
-> +static int sdsi_spdm_exchange(void *private, const void *request,
-> +			      size_t request_sz, void *response,
-> +			      size_t response_sz)
-> +{
-> +	struct sdsi_priv *priv = private;
-> +	struct sdsi_mbox_info info = {};
-> +	size_t spdm_msg_size, size;
-> +	int ret;
-> +
-> +	/*
-> +	 * For the attestation command, the mailbox write size is the sum of:
-> +	 *     Size of the SPDM request payload, padded for qword alignment
-> +	 *     8 bytes for the mailbox command
-> +	 *     8 bytes for the actual (non-padded) size of the SPDM request
-> +	 */
-> +	if (request_sz > (SDSI_SIZE_WRITE_MSG - (2 * sizeof(u64))))
+Sorry, I did not close on this one.
+Anyway I will re-spin fixing the commit message issues. More comments inlin=
+e below.
 
-This looks way more readable when unnecessary parethesis are eliminated:
-
-	if (request_sz > SDSI_SIZE_WRITE_MSG - 2 * sizeof(u64))
-
-> +		return -EOVERFLOW;
-> +
-> +	info.size = round_up(request_sz, sizeof(u64)) + 2 * sizeof(u64);
+>-----Original Message-----
+>From: Andi Shyti <andi.shyti@kernel.org>
+>Sent: Thursday, January 18, 2024 2:36 AM
+>To: Boddu, Sai Pavan <sai.pavan.boddu@amd.com>
+>Cc: linux-kernel@vger.kernel.org; linux-i2c@vger.kernel.org; linux-arm-
+>kernel@lists.infradead.org; Simek, Michal <michal.simek@amd.com>; Lars-
+>Peter Clausen <lars@metafoo.de>; Wolfram Sang <wsa@kernel.org>
+>Subject: Re: [PATCH] i2c: cadence: Avoid fifo clear after start
 >
-> +	u64 *payload __free(kfree) = kzalloc(info.size, GFP_KERNEL);
-> +	if (!payload)
-> +		return -ENOMEM;
-> +
-> +	memcpy(payload, request, request_sz);
-> +
-> +	/* The non-padded SPDM payload size is the 2nd-to-last qword */
-> +	payload[(info.size / sizeof(u64)) - 2] = request_sz;
-> +
-> +	/* Attestation mailbox command is the last qword of payload buffer */
-> +	payload[(info.size / sizeof(u64)) - 1] = SDSI_CMD_ATTESTATION;
-> +
-> +	info.payload = payload;
-> +	info.buffer = response;
-> +
-> +	ret = mutex_lock_interruptible(&priv->mb_lock);
-> +	if (ret)
-> +		return ret;
-> +	ret = sdsi_mbox_write(priv, &info, &size);
-> +	mutex_unlock(&priv->mb_lock);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/*
-> +	 * The read size is the sum of:
-> +	 *     Size of the SPDM response payload, padded for qword alignment
-> +	 *     8 bytes for the actual (non-padded) size of the SPDM payload
-> +	 */
-> +
-> +	if (size < sizeof(u64)) {
-> +		dev_err(priv->dev,
-> +			"Attestation error: Mailbox reply size, %ld, too small\n",
-> +			size);
-> +		return -EPROTO;
-> +	}
-> +
-> +	if (!IS_ALIGNED(size, sizeof(u64))) {
-> +		dev_err(priv->dev,
-> +			"Attestation error: Mailbox reply size, %ld, is not aligned\n",
-> +			size);
-> +		return -EPROTO;
-> +	}
-> +
-> +	/*
-> +	 * Get the SPDM response size from the last QWORD and check it fits
-> +	 * with no more than 7 bytes of padding
-> +	 */
-> +	spdm_msg_size = ((u64 *)info.buffer)[(size - sizeof(u64)) / sizeof(u64)];
-> +	if (!in_range(size - spdm_msg_size - sizeof(u64), 0, 8)) {
-> +		dev_err(priv->dev,
-> +			"Attestation error: Invalid SPDM response size, %ld\n",
-> +			spdm_msg_size);
-> +		return -EPROTO;
-> +	}
-> +
-> +	if (spdm_msg_size > response_sz) {
-> +		dev_err(priv->dev, "Attestation error: Expected response size %ld, got %ld\n",
-> +			 response_sz, spdm_msg_size);
-> +		return -EOVERFLOW;
-> +	}
-> +
-> +	memcpy(response, info.buffer, spdm_msg_size);
-> +
-> +	return spdm_msg_size;
-> +}
-> +
->  static int sdsi_get_layout(struct sdsi_priv *priv, struct disc_table *table)
->  {
->  	switch (table->guid) {
-> @@ -649,6 +744,92 @@ static int sdsi_map_mbox_registers(struct sdsi_priv *priv, struct pci_dev *paren
->  	return 0;
->  }
->  
-> +#define SDSI_SPDM_DRIVER_VERSION	1
-> +
-> +static int sdsi_spdm_get_info(struct sdsi_priv *priv,
-> +			      struct sdsi_spdm_info __user *argp)
-> +{
-> +	struct sdsi_spdm_info info;
-> +
-> +	info.driver_version = SDSI_SPDM_DRIVER_VERSION;
-> +	info.api_version = priv->guid;
-> +	info.dev_no = priv->id;
-> +	info.max_request_size = SDSI_SIZE_WRITE_MSG - (2 * sizeof(u64));
-> +	info.max_response_size = SDSI_SIZE_READ_MSG - (sizeof(u64));
+>Hi,
+>
+>> >> b/drivers/i2c/busses/i2c-cadence.c
+>> >> index de3f58b60dce..6f7d753a8197 100644
+>> >> --- a/drivers/i2c/busses/i2c-cadence.c
+>> >> +++ b/drivers/i2c/busses/i2c-cadence.c
+>> >> @@ -633,6 +633,7 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
+>> >>
+>> >>  	if (hold_clear) {
+>> >>  		ctrl_reg &=3D ~CDNS_I2C_CR_HOLD;
+>> >> +		ctrl_reg &=3D ~CDNS_I2C_CR_CLR_FIFO;
+>> >
+>> >I'm wondering whether the whole ctrl_reg should be reset after the firs=
+t
+>write.
+>
+>> [Boddu, Sai Pavan] previous implementation of read-modify-write was good
+>then ?
+>
+>I don't know, I'm just asking... because rather than read-modify-write, th=
+is is
+>read-modify-write-modify-write :-)
+>
+>I'm just wondering if after the first write ctrl_reg is still holding a va=
+lid value.
+[Boddu, Sai Pavan] Yes, all bits in ctrl_reg stay as configured except CLR_=
+FIFO which is self-clearing.
+None of the other bits would change state.
 
-Unnecessary parenthesis on both lines.
+CLR_FIFO post start of transactions should not be allowed; this patch addre=
+ss the same.
 
-> +
-> +	if (copy_to_user(argp, &info, sizeof(info)))
-> +		return -EFAULT;
-> +
-> +	return 0;
-> +}
-> +
-> +static int sdsi_spdm_do_command(struct sdsi_priv *priv,
-> +				struct sdsi_spdm_command __user *argp)
-> +{
-> +	u32 req_size, rsp_size;
-> +
-> +	if (get_user(req_size, &argp->size))
-> +		return -EFAULT;
-> +
-> +	if (req_size < 4 || req_size > sizeof(struct sdsi_spdm_message))
-> +		return -EINVAL;
-> +
-> +	struct sdsi_spdm_message *request __free(kfree) =
-> +		kmalloc(req_size, GFP_KERNEL);
-> +	if (!request)
-> +		return -ENOMEM;
-> +
-> +	struct sdsi_spdm_command *response __free(kfree) =
-> +		kmalloc(SDSI_SIZE_READ_MSG, GFP_KERNEL);
-> +	if (!response)
-> +		return -ENOMEM;
-> +
-> +	if (copy_from_user(request, &argp->message, req_size))
-> +		return -EFAULT;
-> +
-> +	rsp_size = sdsi_spdm_exchange(priv, request, req_size, response,
-> +				      SDSI_SIZE_READ_MSG);
-> +	if (rsp_size < 4)
-> +		return rsp_size;
-
-Hmm, what the return value of this function actually means? Here it can 
-returns -inf..3 but in the end you return 0. So clearly the return value 
-isn't size. Is it something "work remaining to do" or what? Consider 
-adding function comment about the return value because it looks a bit 
-odd from the code alone.
-
-> +
-> +	if (put_user(rsp_size, &argp->size))
-> +		return -EFAULT;
-> +
-> +	if (copy_to_user(&argp->message, response, rsp_size))
-> +		return -EFAULT;
-> +
-> +	return 0;
-> +}
-> +
-> +static long sdsi_spdm_ioctl(struct file *file, unsigned int cmd,
-> +			    unsigned long arg)
-> +{
-> +	struct sdsi_priv *priv;
-> +	long ret = -ENOTTY;
-> +
-> +	priv = container_of(file->private_data, struct sdsi_priv, miscdev);
-> +
-> +	switch (cmd) {
-> +	case SDSI_IF_SPDM_INFO:
-> +		ret = sdsi_spdm_get_info(priv,
-> +				(struct sdsi_spdm_info __user *)arg);
-> +		break;
-> +	case SDSI_IF_SPDM_COMMAND:
-> +		ret = sdsi_spdm_do_command(priv,
-> +				(struct sdsi_spdm_command __user *)arg);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct file_operations sdsi_spdm_ops = {
-> +	.owner = THIS_MODULE,
-> +	.unlocked_ioctl = sdsi_spdm_ioctl,
-> +};
-> +
->  static int sdsi_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
->  {
->  	struct intel_vsec_device *intel_cap_dev = auxdev_to_ivdev(auxdev);
-> @@ -663,6 +844,7 @@ static int sdsi_probe(struct auxiliary_device *auxdev, const struct auxiliary_de
->  		return -ENOMEM;
->  
->  	priv->dev = &auxdev->dev;
-> +	priv->id = auxdev->id;
->  	mutex_init(&priv->mb_lock);
->  	auxiliary_set_drvdata(auxdev, priv);
->  
-> @@ -686,9 +868,35 @@ static int sdsi_probe(struct auxiliary_device *auxdev, const struct auxiliary_de
->  	if (ret)
->  		return ret;
->  
-> +	/* Attestation miscdevice */
-> +	if (priv->features & SDSI_FEATURE_ATTESTATION) {
-> +		priv->miscdev.name = kasprintf(GFP_KERNEL, "isdsi%d", priv->id);
-
-devm_kasprintf() ?
-
-> +		if (!priv->miscdev.name)
-> +			return -ENOMEM;
-> +
-> +		priv->miscdev.minor = MISC_DYNAMIC_MINOR;
-> +		priv->miscdev.fops = &sdsi_spdm_ops;
-> +
-> +		ret = misc_register(&priv->miscdev);
-> +		if (!ret) {
-> +			kfree_const(priv->miscdev.name);
-> +			return ret;
-> +		}
-> +	}
-> +
->  	return 0;
->  }
->  
-> +static void sdsi_remove(struct auxiliary_device *auxdev)
-> +{
-> +	struct sdsi_priv *priv = auxiliary_get_drvdata(auxdev);
-> +
-> +	if (priv->features & SDSI_FEATURE_ATTESTATION) {
-> +		misc_deregister(&priv->miscdev);
-> +		kfree_const(priv->miscdev.name);
-> +	}
-> +}
-> +
->  static const struct auxiliary_device_id sdsi_aux_id_table[] = {
->  	{ .name = "intel_vsec.sdsi" },
->  	{}
-> @@ -701,7 +909,7 @@ static struct auxiliary_driver sdsi_aux_driver = {
->  	},
->  	.id_table	= sdsi_aux_id_table,
->  	.probe		= sdsi_probe,
-> -	/* No remove. All resources are handled under devm */
-> +	.remove		= sdsi_remove,
->  };
->  module_auxiliary_driver(sdsi_aux_driver);
->  
-> diff --git a/include/uapi/linux/intel_sdsi.h b/include/uapi/linux/intel_sdsi.h
-> new file mode 100644
-> index 000000000000..de9e7f6c44c5
-> --- /dev/null
-> +++ b/include/uapi/linux/intel_sdsi.h
-> @@ -0,0 +1,72 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Intel On Demand (SDSi) Interface for SPDM based attestation.
-> + * Copyright (c) 2019, Intel Corporation.
-> + * All rights reserved.
-> + *
-> + * Author: David E. Box <david.e.box@linux.intel.com>
-> + */
-> +
-> +#ifndef __SDSI_H
-> +#define __SDSI_H
-> +
-> +#include <linux/types.h>
-> +
-> +/**
-> + * struct sdsi_spdm_info - Define platform information
-> + * @api_version:	Version of the firmware document, which this driver
-> + *			can communicate
-> + * @driver_version:	Driver version, which will help user to send right
-> + *			commands. Even if the firmware is capable, driver may
-> + *			not be ready
-> + * @dev_no:		Returns the auxiliary device number the corresponding
-> + *			sdsi instance
-> + * @max_request_size:	Returns the maximum allowed size for SPDM request
-> + *			messages
-> + * @max_response_size:	Returns the maximum size of an SPDM response message
-> + *
-> + * Used to return output of IOCTL SDSI_SPDM_INFO. This
-> + * information can be used by the user space, to get the driver, firmware
-> + * support and also number of commands to send in a single IOCTL request.
-> + */
-> +struct sdsi_spdm_info {
-> +	__u32 api_version;
-> +	__u16 driver_version;
-> +	__u16 dev_no;
-> +	__u16 max_request_size;
-> +	__u16 max_response_size;
-> +};
-> +
-> +/**
-> + * struct sdsi_spdm_message - The SPDM message sent and received from the device
-> + * @spdm_version:		Supported SPDM version
-> + * @request_response_code:	The SPDM message code for requests and responses
-> + * @param1:			Parameter 1
-> + * @param2:			Parameter 2
-> + * @buffer:			SDPM message specific buffer
-> + *
-> + */
-> +struct sdsi_spdm_message {
-> +	__u8 spdm_version;
-> +	__u8 request_response_code;
-> +	__u8 param1;
-> +	__u8 param2;
-> +	__u8 buffer[4092];
-
-How about SZ_4K - 4 * sizeof(__u8) ?
-
-Or move those header/metadata fields into another struct which is 
-anonymously embedded into this one so you could do SZ_4K - sizeof(struct 
-sdsi_spdm_message_header).
-
-Remember to add #include for SZ_4K.
-
--- 
- i.
-
-> +};
-> +
-> +/**
-> + * struct sdsi_spdm_command - The SPDM command
-> + * @ size:		The size of the SPDM message
-> + * @ message:		The SPDM message
-> + *
-> + * Used to return output of IOCTL SDSI_SPDM_COMMAND.
-> + */
-> +struct sdsi_spdm_command {
-> +	__u32 size;
-> +	struct sdsi_spdm_message message;
-> +};
-> +
-> +#define SDSI_IF_MAGIC		0xFC
-> +#define SDSI_IF_SPDM_INFO	_IOR(SDSI_IF_MAGIC, 0, struct sdsi_spdm_info *)
-> +#define SDSI_IF_SPDM_COMMAND	_IOWR(SDSI_IF_MAGIC, 1, struct sdsi_spdm_command *)
-> +#endif
-> 
-> base-commit: 36dc58c367149680bed334e83ec54728f980a96e
-> 
+Regards,
+Sai Pavan=20
+>
+>Andi
 
