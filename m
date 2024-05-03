@@ -1,105 +1,175 @@
-Return-Path: <linux-kernel+bounces-168212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353C08BB52E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA3A8BB536
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:04:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2018E283376
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:04:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EF85283312
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493543F8F1;
-	Fri,  3 May 2024 21:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B390038DDD;
+	Fri,  3 May 2024 21:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="R2lQxVma"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31994134B1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="R95ODi0E"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E654F88C;
+	Fri,  3 May 2024 21:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714770253; cv=none; b=kMS3K+CWvAsgTTsYoSNo1heKXg70a8HmImG8iIfOccRc0CfE8C8CHdvNVQ1T4fHKAL2PR2RNV3szx1Om7D4x7OGf3XvojgqH7IH1H9xQ0MtHJyiHVCvugnGvyytDkdKI2GrpkQYvbtpK7VmFUMWS52ZnYXUdlUpuW/Yjt+jR1yE=
+	t=1714770258; cv=none; b=jSM59hrgP4VABD28zjgdicY86hAo9yJ9S8+DQlip9f/fi3ayInjZbJP6h671jaf+NVdADGuanC/zsoekjJQrnXY7iUR+fZ7Y2r8I8PIlFU90+zKoosq5Egl2AtBJZb09tveoBcWH9K15FaZDxKF6MC9jaQJwYeeqqeTGywM1wC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714770253; c=relaxed/simple;
-	bh=kr8q0vJdMraPMNcp9YTW0aQV6wa6XsOli4AJVOGN+FU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X0R05LGl/ihApJo+qRlZd7Ms8xO86dQq3/w8k9VSQWcsKAn1hltbud8uLQKawgVsV1tXO4iSDhUS2aEoQ5ktPPWCkdRKrq1v8VAyNPLzfx+6i+w3GhTMAz6gekUxDlUpQfCYBQ9pMijAl/+/EoeMTufO+UfXEUxE1q/Q13Olwos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=R2lQxVma; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2db13ca0363so1475571fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714770250; x=1715375050; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kr8q0vJdMraPMNcp9YTW0aQV6wa6XsOli4AJVOGN+FU=;
-        b=R2lQxVmayNXUHwpKuRfC9YkGCKDIAp5W8O9Yeeo+wqgch81Jy9t5kaPmvPOs5WPnah
-         PeyMPrbSqcei6cnBDnI7vDqAfq+39oT0gvEpq3ItwllkJmOcZQRqNM43yYCP+djgfWc/
-         Ow8ILvCF1e9+5p4g+PWj4/OY3Cr5k0cvHlRvNBD/HRwF0sl6TGqUiUaH1XqEFtqh9FNX
-         676PvH8MknEyR5Bt2CITcm3W0ZEuCi32hgpOK0Gf10wyPW+UEOgbwu1cTekn2lsP7Bux
-         VfMqb+puY9Y5nnadlXbap4ZWY6Ljm7BfysRwyoS5putn8uHux/fQgtDgTrkvFBq4EUk7
-         i6Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714770250; x=1715375050;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kr8q0vJdMraPMNcp9YTW0aQV6wa6XsOli4AJVOGN+FU=;
-        b=SlNe0fdXt6KVfvzufvEYsHxase4FXeykAkm5YrNk213GRoJcvQi52I0waJ89HVmJQO
-         vOFxpn92/hiEAQmPtMx2N4ka4sXwTxMgeU8YpbNOF6U1NFovDcj3MXog0d8J0fL+MCM5
-         uAVkmYRUvZtPv4VJ/i5X+M07n4Gda+pCbWomNwwk7NqCb+zEB0OAu/iYTQUmeE1ir9dv
-         pn6L/AN8+RC/YnlYy6XMcGDgB9z6RSVH8v1z5Qh1ZDQl/Se/4N7jUdeL38e1AoPJ7tta
-         2JwaGJf3yDNlgvX1dArAyoHdA09NcD+jNSV6RYi6a9u8lxn+F5d4+ZDS8yLjTxCaXfNW
-         /rvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV/sSAcUw0bKVQwaIS9rNxPA0IfCRD3eVeY00uF7frNYMw00yvuz2Sd/DuzeSo0Km2MCHUXvNYF5hor+YLazzjUXIm2K+S02TSX5leb
-X-Gm-Message-State: AOJu0Ywne8+WioUuQkMy8gcYhBWPDBqeGZgFFr5JAKYVnTKgmtfIgdvq
-	cwuQlvJXBboMVwZeRUD8msJsXobjIAiml4YtSa5HmBeOGVHRcnAZnlXOHjLLvbj2woxGFTjTakH
-	9tbR9uUZMcAu20+mS/3uTzlG06E2MW0pUeIacqQ==
-X-Google-Smtp-Source: AGHT+IFVGeh8LKuvAXn0wbATQFthajoGa9wA2FpRSy48ryw0IkU/MmVyuccePKcDYu88/CEm2wRejt72X+QG3nu2ZVk=
-X-Received: by 2002:a2e:a71f:0:b0:2e1:f255:6673 with SMTP id
- s31-20020a2ea71f000000b002e1f2556673mr3009473lje.13.1714770245520; Fri, 03
- May 2024 14:04:05 -0700 (PDT)
+	s=arc-20240116; t=1714770258; c=relaxed/simple;
+	bh=Nbscw4yqCbNyXzKumjiJ6SnfGBiOJh1OdsY1PrcQhD4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cYHbhLiYZr+vjwqN3i1sGHdg+JvQ2FpS1OyuPO6BT5zF1RR9Q1LN94ec70RakJ0cxtfYK1KC8um4aT/WGnwx+XprqzW8mlXNabmmDgO6haAYAA0+SN4Ijg4UA3KFO5yL9PKK+awIaYiIwr4z+UbJZBKwOkjRHtB71qxxImIB8/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=R95ODi0E; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.65.192.193] (unknown [20.236.11.102])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 63C2320B2C82;
+	Fri,  3 May 2024 14:04:15 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 63C2320B2C82
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1714770255;
+	bh=9otFudNnFQ6Fo0AyB5+q1vjaZY01jz77AOepixB8ajU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=R95ODi0EifMs1TvCW5Xi0ANNjrXhlylciEvEb+9fFDkejLw2UxdIH3aGbHKy7QAHQ
+	 NWlrzEfHb6xtWLUH40yuYEifdcRcVe9EtnlzXoUvrNfv8Q272I9YgK7RtIx4+a2iR3
+	 bBhVE+Q3+pDSWqYdVXn/BDnCIJulJzU3uuDx3v5E=
+Message-ID: <4f1e429c-794b-457c-ab1d-85eb97dc81c3@linux.microsoft.com>
+Date: Fri, 3 May 2024 14:04:15 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240503-dev-charlie-support_thead_vector_6_9-v6-0-cb7624e65d82@rivosinc.com>
- <20240503-dev-charlie-support_thead_vector_6_9-v6-6-cb7624e65d82@rivosinc.com>
-In-Reply-To: <20240503-dev-charlie-support_thead_vector_6_9-v6-6-cb7624e65d82@rivosinc.com>
-From: Evan Green <evan@rivosinc.com>
-Date: Fri, 3 May 2024 14:03:29 -0700
-Message-ID: <CALs-HsuH5KM4OEH3Uo58cq=3Zgr-gd43hhtOuP2tQFDyDUjq2w@mail.gmail.com>
-Subject: Re: [PATCH v6 06/17] riscv: Add vendor extensions to /proc/cpuinfo
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/12] drm/i915: Make I2C terminology more inclusive
+To: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Zhenyu Wang <zhenyuw@linux.intel.com>,
+ Zhi Wang <zhi.wang.linux@gmail.com>,
+ "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
+ <intel-gfx@lists.freedesktop.org>,
+ "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
+ <intel-xe@lists.freedesktop.org>,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:INTEL GVT-g DRIVERS (Intel GPU Virtualization)"
+ <intel-gvt-dev@lists.freedesktop.org>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
+ "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
+ <nouveau@lists.freedesktop.org>,
+ "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+ "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+ Zhi Wang <zhiwang@kernel.org>
+References: <20240503181333.2336999-1-eahariha@linux.microsoft.com>
+ <20240503181333.2336999-4-eahariha@linux.microsoft.com>
+ <ZjU8NB-71xWI2X73@intel.com>
+Content-Language: en-CA
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <ZjU8NB-71xWI2X73@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 3, 2024 at 11:18=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> All of the supported vendor extensions that have been listed in
-> riscv_isa_vendor_ext_list can be exported through /proc/cpuinfo.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+On 5/3/2024 12:34 PM, Rodrigo Vivi wrote:
+> On Fri, May 03, 2024 at 06:13:24PM +0000, Easwar Hariharan wrote:
+>> I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced "master/slave"
+>> with more appropriate terms. Inspired by and following on to Wolfram's
+>> series to fix drivers/i2c/[1], fix the terminology for users of
+>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+>> in the specification.
+>>
+>> Compile tested, no functionality changes intended
+>>
+>> [1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
+>>
+>> Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>> Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> 
+> It looks like the ack is not needed since we are merging this through
+> drm-intel-next. But I'm planing to merge this only after seeing the
+> main drivers/i2c accepting the new terminology. So we don't have a
+> risk of that getting push back and new names there and we having
+> to rename it once again.
 
-Reviewed-by: Evan Green <evan@rivosinc.com>
+Just to be explicit, did you want me to remove the Acked-by in v3, or will you when you pull
+the patch into drm-intel-next?
+
+> 
+> (more below)
+> 
+>> Acked-by: Zhi Wang <zhiwang@kernel.org>
+>> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+> 
+> Cc: Jani Nikula <jani.nikula@intel.com>
+> 
+> Jani, what bits were you concerned that were not necessarily i2c?
+> I believe although not necessarily/directly i2c, I believe they
+> are related and could benefit from the massive single shot renable.
+> or do you have any better split to suggest here?
+> 
+> (more below)
+> 
+>> ---
+>>  drivers/gpu/drm/i915/display/dvo_ch7017.c     | 14 ++++-----
+>>  drivers/gpu/drm/i915/display/dvo_ch7xxx.c     | 18 +++++------
+>>  drivers/gpu/drm/i915/display/dvo_ivch.c       | 16 +++++-----
+>>  drivers/gpu/drm/i915/display/dvo_ns2501.c     | 18 +++++------
+>>  drivers/gpu/drm/i915/display/dvo_sil164.c     | 18 +++++------
+>>  drivers/gpu/drm/i915/display/dvo_tfp410.c     | 18 +++++------
+>>  drivers/gpu/drm/i915/display/intel_bios.c     | 22 +++++++-------
+>>  drivers/gpu/drm/i915/display/intel_ddi.c      |  2 +-
+>>  .../gpu/drm/i915/display/intel_display_core.h |  2 +-
+>>  drivers/gpu/drm/i915/display/intel_dsi.h      |  2 +-
+>>  drivers/gpu/drm/i915/display/intel_dsi_vbt.c  | 20 ++++++-------
+>>  drivers/gpu/drm/i915/display/intel_dvo.c      | 14 ++++-----
+>>  drivers/gpu/drm/i915/display/intel_dvo_dev.h  |  2 +-
+>>  drivers/gpu/drm/i915/display/intel_gmbus.c    |  4 +--
+>>  drivers/gpu/drm/i915/display/intel_sdvo.c     | 30 +++++++++----------
+>>  drivers/gpu/drm/i915/display/intel_vbt_defs.h |  4 +--
+>>  drivers/gpu/drm/i915/gvt/edid.c               | 28 ++++++++---------
+>>  drivers/gpu/drm/i915/gvt/edid.h               |  4 +--
+>>  drivers/gpu/drm/i915/gvt/opregion.c           |  2 +-
+>>  19 files changed, 119 insertions(+), 119 deletions(-)
+>>
+
+<snip>
+
+>> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+>> index c17462b4c2ac..64db211148a8 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_ddi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+>> @@ -4332,7 +4332,7 @@ static int intel_ddi_compute_config_late(struct intel_encoder *encoder,
+>>  									connector->tile_group->id);
+>>  
+>>  	/*
+>> -	 * EDP Transcoders cannot be ensalved
+>> +	 * EDP Transcoders cannot be slaves
+> 
+>                                      ^ here
+> perhaps you meant 'targeted' ?
+> 
+>>  	 * make them a master always when present
+
+<snip>
+
+This is not actually I2C related as far as I could tell when I was making the change, so this was more of a typo fix.
+
+If we want to improve this, a quick check with the eDP v1.5a spec suggests using primary/secondary instead,
+though in a global fashion rather than specifically for eDP transcoders. There is also source/sink terminology
+in the spec related to DP encoders.
+
+Which would be a more acceptable change here?
+
+Thanks,
+Easwar
 
