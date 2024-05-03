@@ -1,199 +1,94 @@
-Return-Path: <linux-kernel+bounces-167647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F023F8BACB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:41:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186E78BACB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE3C4B20C38
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:41:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C899D282FC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76C9153518;
-	Fri,  3 May 2024 12:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C855152788;
+	Fri,  3 May 2024 12:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Am26v1GM"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWRVh/1m"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3B7F9EB
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 12:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A75AB67E;
+	Fri,  3 May 2024 12:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714740050; cv=none; b=Q22iJk45MVre+EnozmC68nOHNvs6dqhBUGbNWb/FatkHOeFjNE9n04TYNDWbODwLXlMFuLdxhrvbMyo5rC/5fWZH8gAzKzrg8z6QLuq78ldKU/L49cdPxvQY7DnEaWjIwvgzXNTMSboXbhqYWCPZRKggid3DVY97gz9i9+cBpVc=
+	t=1714740126; cv=none; b=C0WLHV82EcLRiapX59+/aHyuWHngQcMwhHQ6KR/1KAepNBnAWKD5eHPlUoyfZm+j0ghbLaTQzDrPk3EIDHJBOhsE5w9RnLPaDJgQ72u1ZGNDDSFGaJBJuH1C8bMYQVUoX7fMEIyuMX0Dc0oWefEHfGNrOjJasKb6y4lyVdvgxhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714740050; c=relaxed/simple;
-	bh=L3pjM0L4rV6XPqTfk9qjTehijQ26iKFLr7SuET11yHg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PPzUOm5eoiS5RwCWtOYbfbQNqTMmetxEwgG9kcZ4CN7hm37/qsVqqSBChi9jMCNTBsnj/LW2dTRFkRYq2/wy36TebLdnYjVKDaeb7JkFQjE9RmIjNPYMVl0HlRlB3H1uLolTfVeAUPG8apFMvnQzQtYBjAMHVS4csLHixb6S6Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Am26v1GM; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso5393166b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 05:40:46 -0700 (PDT)
+	s=arc-20240116; t=1714740126; c=relaxed/simple;
+	bh=G/J9eaup46Lp2wuzVuRbYPvwBBE0WENMMV8HyGmYxFg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TFmFySjL11L3OLjAkSpA8KC87ltO1iK8xbhs3MdM6DBClGlILVq2n4IYWwJS9sLatWTQRBtZGC6j1+9K7hu+qShXDK9POVDni5e+Kk+vb9uqZ5Sapz2cSzRHg03rrQtMMO85hNDNSgLlRNj7THNTYwJ8WEPohaQlASWOBcu3HaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWRVh/1m; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51fa75d54a4so348838e87.0;
+        Fri, 03 May 2024 05:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714740046; x=1715344846; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rYwSNDI9QgFV+fd05nUh9/SdEfqos7OFNMtSW+S8lRs=;
-        b=Am26v1GMVZWnTWOOKeoh+uq73P2UrVjrFE5vUjdpyrck/Y5dArdZC46i78tbp+lRiX
-         bCPpy0odWzUQfH7G9qj/Tjoscq8N/lkFGfM4U9cI4IxUtJ0Wb1njuDzkEbwJwWihTj10
-         KFO4khqDqxeqK2SW0o/llWxG+0q/pTRD8QCGjJPzqxHhG6Q1pGrLypZrmLam0PbJ5kB5
-         sBhKGEtzGJBqapHgXeiuPNUfTpYCN5S0M/Oa7fwbnsef1TT4qmsIdF5sma9UqMJzBx3x
-         1cydgKhq+nVcw5CDVS18zpHt7TzR3F7rHKb0u9PbNYrWSAxUkFkeqjUy1wXoDS+6VXKl
-         e6gg==
+        d=gmail.com; s=20230601; t=1714740123; x=1715344923; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G/J9eaup46Lp2wuzVuRbYPvwBBE0WENMMV8HyGmYxFg=;
+        b=iWRVh/1m5UiwBpISIoPmxNN8tJb6yUOUl7pZqtEuXOTrRAxBdZtiQ/c6RuoSTINfIf
+         3xPkOzcaJw+FbOKQ4vwF7PKLPn6dMl01tGN7yGtKbtU8TPmZyhLLb/UvDE+S1PH2gBPi
+         0B10KMDnR739uxKqBLQXffozJi06N97/F7wL713kBkgqBK6Xt3w2XuUHqfPmiORN6QUF
+         FPsJeEsKB24lChwau1WvxYFB2yurop5DLN1lcRuOMfefYtm1b2ppAHW2HBt5Kz9qAEzX
+         vg+fDu/MU5+cKXve5CQ3W/xa/p6BL4BayYo+BEf9sC76usH0nVVW8TnvC0mzgo8WsSYr
+         5BZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714740046; x=1715344846;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rYwSNDI9QgFV+fd05nUh9/SdEfqos7OFNMtSW+S8lRs=;
-        b=sKivCPxLaVL+TpA8emXuadgoutnsT4hv/REZcDP/JCdl4k8DI/FVdgCShzJeyg0SCf
-         frL25Cs4CvfcBBXilnBA5ieVTs0bmNtl8f0yBITREUpLMcm+1CXOKcmknGmUhweHUa/L
-         Nddo4UoEb6B5v5lmUmbkseoiiPXgGeEI7pwbaZXMB5ul1YzqzqRGI7okcXFD/nfYbI/d
-         /rrmYdiuJBjgqWH6lFaEGLhd332BONX9gqTnlq1vjEMh0phPX5iJ90z9Df8aN2Fq9YEW
-         hFg9nKTu7qg7J6YWo+QXDyXPUyoOizQ22r4CyvEXfhn2asll6XcBonyqhzKiSOUCIVxF
-         Xa/g==
-X-Forwarded-Encrypted: i=1; AJvYcCX79PKjkI/w3U2eARyd4r2M7BmgE6ApeGw+1AAvd5zztteytGmWf1EO8CBtDTlIv69KQtzHFH5Fm0EgHW6TVMC6BpuJYSnmJDbA+NNc
-X-Gm-Message-State: AOJu0YzhwTOXpeZrmwaHynuZFd9bu1rq8ePuxg08Rmc5AYEXFBPBWpIK
-	8eSiJYyDeHP/DlTSjQ5h/pRXelL+rTQpO7dMo3UZNfmNGbLRxnUtJQfNWh+ey8MEoN9K9nz6CbJ
-	nw3lab6+tuWxH5FH+0p6a/Th3WGLIf7kcsccxmw==
-X-Google-Smtp-Source: AGHT+IFryEDRWu+bcUZI//BoyKSedi7LKHRkuYMa36RWP3/43wK/TONQNCJDn3kMk2kEWxukIvBvLHPZTVJTjYKqYok=
-X-Received: by 2002:a05:6a20:9703:b0:1ad:ab1:9a03 with SMTP id
- hr3-20020a056a20970300b001ad0ab19a03mr2171735pzc.25.1714740046457; Fri, 03
- May 2024 05:40:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714740123; x=1715344923;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G/J9eaup46Lp2wuzVuRbYPvwBBE0WENMMV8HyGmYxFg=;
+        b=nYg52In+GSeQRzlzNdEdQ/1Hdw3eEUANCFL+KB+1YlnrdxniPSj5E/dg6ldSWpIDqA
+         O+/ED0XtmfgvJ6j2XlIAXzx6tBxcawIZWuESCQk0oeJTMIaV+KtRioHR1TqIPnJFzUCF
+         7rr8YmH5rtWA3oFFGFvFTs6iW+ftS/UkXhpMtCUcm8uetht0LDvZyKi3bBdBu53LTrGj
+         ivzbkIbWu6Xnl2jaSz09TO3Uj6KWuIlxazemPVjUUVmlSefeyFdNr0dryqqV6fgPkq2a
+         4aAFsQi9DWrxm00MjyG28pbajCPnRgD47fhR+1pwDv3UHCVcYKxS0JJOb7MJpZnFXkID
+         N4Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXqHgTfXmkjDqJ+HWa9v4cCjsN+Mzwn5blihnkHmPJUtVLVwkA6UHvCRnt/dFJkokJ4LtO94JGaEJ/A/rkzUeauzHQiQYfqedBNPMW4N/E1tzm/dwgCxRL5Ktw0vruSfO2xhvDqTueeeI=
+X-Gm-Message-State: AOJu0Yw3QNOlw7mATB0viMPHBFsDLYcoi4aAMsYpiJlirUZDka70o0BY
+	OFkG1wmsMJihA/NjAl/J9PKXyrU3EwjMhpdOa+0n2nJcqpVx3Eu7
+X-Google-Smtp-Source: AGHT+IG1cgOW3m6LEQ2pllDfXkzI1JZlnG1TYOba7QeLB5QAMTlpgbaGnqdAkmLpV2rFX4m45nKKHA==
+X-Received: by 2002:a05:6512:a93:b0:51a:b757:85eb with SMTP id m19-20020a0565120a9300b0051ab75785ebmr2011670lfu.14.1714740123187;
+        Fri, 03 May 2024 05:42:03 -0700 (PDT)
+Received: from lpm-pc.appeartv.lan (195-159-183-44.customer.powertech.no. [195.159.183.44])
+        by smtp.gmail.com with ESMTPSA id n24-20020a056512311800b005178e88b4adsm525371lfb.86.2024.05.03.05.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 05:42:02 -0700 (PDT)
+From: Lars Petter Mostad <larspm@gmail.com>
+X-Google-Original-From: Lars Petter Mostad <lars.petter.mostad@appear.net>
+To: linux@roeck-us.net
+Cc: lars.petter.mostad@appear.net,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RTF PATCH] hwmon: (emc1403) Convert to with_info API
+Date: Fri,  3 May 2024 14:41:46 +0200
+Message-ID: <20240503124146.220224-1-lars.petter.mostad@appear.net>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <521c0829-95de-4cc4-894b-6167c4f943a6@roeck-us.net>
+References: <521c0829-95de-4cc4-894b-6167c4f943a6@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429152207.479221-1-james.clark@arm.com>
-In-Reply-To: <20240429152207.479221-1-james.clark@arm.com>
-From: Mike Leach <mike.leach@linaro.org>
-Date: Fri, 3 May 2024 13:40:34 +0100
-Message-ID: <CAJ9a7Vi7P3kBG5x_JC6AxDL-AvPc5=48eEC0gH3CHceVtSNmOQ@mail.gmail.com>
-Subject: Re: [PATCH 00/17] coresight: Use per-sink trace ID maps for Perf sessions
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, gankulkarni@os.amperecomputing.com, 
-	scclevenger@os.amperecomputing.com, coresight@lists.linaro.org, 
-	suzuki.poulose@arm.com, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
-	Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linux.dev>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi James
+I have tested this patch on EMC1438 (by extending to 8 channels and supporting
+signed registers). This has worked fine for me.
 
-On Mon, 29 Apr 2024 at 16:23, James Clark <james.clark@arm.com> wrote:
->
-> This will allow sessions with more than CORESIGHT_TRACE_IDS_MAX ETMs
-> as long as there are fewer than that many ETMs connected to each sink.
->
-> Each sink owns its own trace ID map, and any Perf session connecting to
-> that sink will allocate from it, even if the sink is currently in use by
-> other users. This is similar to the existing behavior where the dynamic
-> trace IDs are constant as long as there is any concurrent Perf session
-> active. It's not completely optimal because slightly more IDs will be
-> used than necessary, but the optimal solution involves tracking the PIDs
-> of each session and allocating ID maps based on the session owner. This
-> is difficult to do with the combination of per-thread and per-cpu modes
-> and some scheduling issues. The complexity of this isn't likely to worth
-> it because even with multiple users they'd just see a difference in the
-> ordering of ID allocations rather than hitting any limits (unless the
-> hardware does have too many ETMs connected to one sink).
->
-> Per-thread mode works but only until there are any overlapping IDs, at
-> which point Perf will error out. Both per-thread mode and sysfs mode are
-> left to future changes, but both can be added on top of this initial
-> implementation and only sysfs mode requires further driver changes.
->
-> The HW_ID version field hasn't been bumped in order to not break Perf
-> which already has an error condition for other values of that field.
-> Instead a new minor version has been added which signifies that there
-> are new fields but the old fields are backwards compatible.
->
-
-Looking at this overall - would it not be better to introduce the
-concept of a "sink ID" to allow the detection of multiple sources into
-the single sink that is now done by emitting multiple AUX_HWID packets
-with the CPU+ID extra data?
-This sink ID could be part of the sink csdev struct - or even the
-id_map struct - a simple count of sinks as the per sink maps are
-created would be sufficient. If this sink ID replaced the CPU+ID extra
-data in the HWID packets, then each packet could be emitted just once,
-and perf can then collate based on the sink id.
-
-Moreover, once we are ready to address the per-thread issues - then
-the overlap would not matter. Generate OpenCSD decode trees per sink
-ID, add docoders to the tree per Trace ID. Thus if a buffer has data
-from sink 1 trace id 5, ans sink 2, trace ID 5, then pick the right
-decoder for the combo.
-
-Finally in systems with ETE+TRBE were there is no use of trace IDs, a
-sink ID of 0x0 could potentially indicate that 1:1 relationship.
-
-Regards
-
-Mike
-
->
-> James Clark (17):
->   perf cs-etm: Print error for new PERF_RECORD_AUX_OUTPUT_HW_ID versions
->   perf auxtrace: Allow number of queues to be specified
->   perf: cs-etm: Create decoders after both AUX and HW_ID search passes
->   perf: cs-etm: Allocate queues for all CPUs
->   perf: cs-etm: Move traceid_list to each queue
->   perf: cs-etm: Create decoders based on the trace ID mappings
->   perf: cs-etm: Support version 0.1 of HW_ID packets
->   coresight: Remove unused stubs
->   coresight: Clarify comments around the PID of the sink owner
->   coresight: Move struct coresight_trace_id_map to common header
->   coresight: Expose map argument in trace ID API
->   coresight: Make CPU id map a property of a trace ID map
->   coresight: Pass trace ID map into source enable
->   coresight: Use per-sink trace ID maps for Perf sessions
->   coresight: Remove pending trace ID release mechanism
->   coresight: Re-emit trace IDs when the sink changes in per-thread mode
->   coresight: Emit HW_IDs for all ETMs that are using the sink
->
->  drivers/hwtracing/coresight/coresight-core.c  |  10 +
->  drivers/hwtracing/coresight/coresight-dummy.c |   3 +-
->  .../hwtracing/coresight/coresight-etm-perf.c  |  82 ++-
->  .../hwtracing/coresight/coresight-etm-perf.h  |  20 +-
->  .../coresight/coresight-etm3x-core.c          |  14 +-
->  .../coresight/coresight-etm4x-core.c          |  14 +-
->  drivers/hwtracing/coresight/coresight-stm.c   |   3 +-
->  drivers/hwtracing/coresight/coresight-sysfs.c |   3 +-
->  .../hwtracing/coresight/coresight-tmc-etr.c   |   5 +-
->  drivers/hwtracing/coresight/coresight-tmc.h   |   5 +-
->  drivers/hwtracing/coresight/coresight-tpdm.c  |   3 +-
->  .../hwtracing/coresight/coresight-trace-id.c  | 107 +--
->  .../hwtracing/coresight/coresight-trace-id.h  |  57 +-
->  include/linux/coresight-pmu.h                 |  17 +-
->  include/linux/coresight.h                     |  20 +-
->  tools/include/linux/coresight-pmu.h           |  17 +-
->  tools/perf/util/auxtrace.c                    |   9 +-
->  tools/perf/util/auxtrace.h                    |   1 +
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  28 +-
->  tools/perf/util/cs-etm.c                      | 617 ++++++++++++------
->  tools/perf/util/cs-etm.h                      |   2 +-
->  21 files changed, 633 insertions(+), 404 deletions(-)
->
-> --
-> 2.34.1
->
-
-
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Regards,
+Lars Petter
 
