@@ -1,117 +1,101 @@
-Return-Path: <linux-kernel+bounces-167391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ED168BA8DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:36:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B64EA8BA8E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF59128151F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:36:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D6F0B212F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2250214EC6F;
-	Fri,  3 May 2024 08:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D3C14A0BB;
+	Fri,  3 May 2024 08:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZVoPWxH8"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YwFsK3Os"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F16014EC5B
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 08:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11C779CD
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 08:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714725355; cv=none; b=lsKx7RHRj9q1MStKBwJlxyZNTNfvZxk7GG4k+lDfeh2/0ZxWCdqvZaAM3hlbb2q85FdTkDpW4hjJY150ILeC7r+k9xoUsM0kMcQKrMcL91JueUS6i+mX0eA04xLYQ9BMnECskCyEh9GVAF8d5c3KT/r77V8GGEHv4sPQPAW7sv0=
+	t=1714725405; cv=none; b=Wb4EBhQK9nVgqolD1TsK6kxk3yD8G8lDHUOoUfLAWw/DIl3HXkpyZcjXV0y2dAv5gM43ismPgb7UxiozjIP2SVl4IEdgcG+Qme5QM51ldvkdheMYhrlqk+n4GYlHPXui3MuRuut6V6M5+todA0CyVkyK83v2C7SdBOweTJsSIOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714725355; c=relaxed/simple;
-	bh=9O/jNqh6RwmgdZzcMSapBkNN6fAwW++OTzSrfYouXXo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=KTlxfmbgLKQ7wugkKd6NRhDK9zNVK7QwD4Qx7Jva9GEj8/7UbAUZIvpKtODcZGJ4UHhuAqw+v2EqLq0hp48OBjUvl/lyLH7wLt/xLarTdq1TqnrFF78wnvBPJmoO13Uj7KidNZk7xfaPAuYHoVa5430y9e+p15Wn4hqguXhzBVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZVoPWxH8; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1714725405; c=relaxed/simple;
+	bh=wRbtQpzidtZ6kk4EqzDd8mAoHGj4dWVE6VSRYNfcIS8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ClMRE7QeF6JUmf1EXeStMvo63DBZ3ZzS3pP6X2BaCnQ4vNvSEkq7atlRuJKqT/gsE/oS08r/oE0KyGeoaAYiB31bp/NXQZlwe2RpMZYOWaudt8klHztaLwTaH8bBUzXcWCUXi9oYtos3LQwkQhdHU2SevOFF1EtjirNcakrfNAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YwFsK3Os; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-418e4cd2196so68698975e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 01:35:52 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de54b28c41eso9883268276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 01:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714725351; x=1715330151; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1714725403; x=1715330203; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iTVoaXYQmknTRotS0tITeOIG625SY8vKLkmu8tNzGoo=;
-        b=ZVoPWxH8hwls600Sg2o+HgrsHUQsCEgd4gWZhggJfru1zKMWNxw1KDBQwfNivnyrFA
-         jacFR8YavHYMUSPMJlR2tDXZ3Lz5RWILgVTv533yhQuiBorHOG0LUZMWLN/wo3D/eYt6
-         ZxUceEI93CbA8IDuSnfEA2SxlY24PyF50F3jmir/JVh4ZpoCp/NLXjNzsWAdXZJWpzcS
-         qXy9ZcyVZzFzV4usUPlk2vw3aAh3Ld5EAp0X4YgXC266lCftFFf5gUCTBSLTKsEa0AYm
-         /K+0lCyll7WEzSiOsZc90OZSR5NCB03y592w8QkRiS0qOfoQ/hiP9DbA66F/fx2tyj6i
-         e3cg==
+        bh=wRbtQpzidtZ6kk4EqzDd8mAoHGj4dWVE6VSRYNfcIS8=;
+        b=YwFsK3OsyFJNiiRWD35T+XbEQsIRlZ2sWbDFr8feOOsRUWitqFIDCvrAaClR+pEoRX
+         3k5pFP+9D8Kwi6vXVPTzU8wq76U7CTM4Dqi3zQ4QKUPcpRPCmWoIqcBDuveZx032c0kl
+         k+5Gn/eAxGT0k9VHGL3VSx9J9u+a3H31f863oPFh/M2htRp5c4iIBaSomDe9O+VRILpu
+         mYk8+qvK5UbQofeayrM4cV69zcYb3HhS9odpk6Zfg6CGfvuzLgu2be+LgEwkofjsVaBA
+         vSualRZhWEK05BkjWqD7jUsguV4IvLDjhVh0ARdF5JFPmMrGGaMM2bKCTsscw/wo4HGp
+         mMTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714725351; x=1715330151;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714725403; x=1715330203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iTVoaXYQmknTRotS0tITeOIG625SY8vKLkmu8tNzGoo=;
-        b=HgIolej2DE5Mn1byIkZ4vYda0JH30Jgl4R7KAh6NTlqT74V4rNv1cheNjIT/HJEcNO
-         8dZJmLtquuvPgWYTPfqW3VVYdQLrLJamZeZxXReAnnT5beqo3O5EivyqOLrCmcH6bq9P
-         VamZrtsZBdzFkYUVkJ7LACdbunKW3mt89/uRvxmK1KDVJdSBN+oqIi8EHcERmF/Bz8xQ
-         j2OIO3C+W17CD/RWD1F2dmWOhYcj/NSz0QJSbOgPJLpoxP3l0nbkKry3aoXkpwpKJqRg
-         CpF5BJMHx03GYEmMYCRjp4n6V+J32Idos0TmbsV/esGFZHqScOKpMU4JhQYDrfvSsC8Z
-         cGUA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/+6Mr8nB5ExAAcDAUN+mkQL8klAt7MhoaCy+kCLZwVWh9znAehvYl88S9kpCOpHi3crSfiDD00T3LByGRNiRZz/TZRn3vehXd1J5+
-X-Gm-Message-State: AOJu0Yw5EkQ0ZfSh3RHrlPeuqar619bd5ln1kX4rRDFrO8UapP6PRVWk
-	8pz6rnSo6h42s+YQUMNzRII1JixcpE5R/m61U3ab/Y5D7q/VlPZTKs0g7tThnR0=
-X-Google-Smtp-Source: AGHT+IEaH132tk7uwiYiRvUBCXYBTDRxXpWqfkCiUIhl2McL0yL4H6XUTvSvhKnOsvbYovTodugoeg==
-X-Received: by 2002:a5d:526d:0:b0:34d:2447:9f8f with SMTP id l13-20020a5d526d000000b0034d24479f8fmr1381314wrc.5.1714725350966;
-        Fri, 03 May 2024 01:35:50 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id dh11-20020a0560000a8b00b00349c54d6cefsm3171986wrb.54.2024.05.03.01.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 01:35:50 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Peter Griffin <peter.griffin@linaro.org>, 
- Krzysztof Kozlowski <krzk@kernel.org>, 
- Sylwester Nawrocki <s.nawrocki@samsung.com>, 
- Chanwoo Choi <cw00.choi@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Will McVicker <willmcvicker@google.com>, kernel-team@android.com
-In-Reply-To: <20240430-gs101-apm-clocks-v1-1-b2e2335e84f5@linaro.org>
-References: <20240430-gs101-apm-clocks-v1-1-b2e2335e84f5@linaro.org>
-Subject: Re: [PATCH] clk: samsung: gs101: mark some apm UASC and XIU clocks
- critical
-Message-Id: <171472534930.18059.10164022477086463014.b4-ty@linaro.org>
-Date: Fri, 03 May 2024 10:35:49 +0200
+        bh=wRbtQpzidtZ6kk4EqzDd8mAoHGj4dWVE6VSRYNfcIS8=;
+        b=WYRblUtZ1lgo8yxVRat4pvtf56QBiSuUNtbV1Apbw9awuo1xJBKyjdG/sF840ZSNeS
+         0zQyomIb85HVOF/wYdfJXM8OUFUliYvupI/GLVL6P3Lt2X42PepCMjdewrEnMVFNPA3F
+         js+SmPZZceg9HmX81tU9gEFb6C3r6ZkWtGcOPVWn2DE3MFO9CIWExd/cUMT1un61A5YI
+         C/4iUQAjr4p7tVNW/nJRLoACkyTw2PxGv7GuQdQlvpAc2kOLVeAM0a1ykJxbhSBkiwOq
+         BFKSh3/Ng5plzpAW/p+ceGJbcThkuefRnzPyWISkL03Wl9pT+nxrfC0h2MOHKpRG6E4x
+         UODg==
+X-Forwarded-Encrypted: i=1; AJvYcCVb/wIL8ZvZDvuFEMeJbu/uXLN8nnWU7y7M7D8TBKdN9Kn2Jl3HOEZ5JBQAEDFcoioimIpZ0LglAm8Ounpakj21cYP9O3WQKXuTmp1U
+X-Gm-Message-State: AOJu0Yx/a0vEmcfvtAxXk/Y5NCn86JS8G9fM5VEmDrvTlfpyV+YLi94m
+	mCFeQj4cb/jlP/ohzEchl+4cBE11xZ/zIvEO+7kyCxm1rzf7EmDDuNySCHDPQk+Z0LH4WEMM01w
+	TOE2pN9bmqV036Phzni3m+nJocOj0cdSmbeqlLA==
+X-Google-Smtp-Source: AGHT+IGrx5xrV1BdUb4LcSt8Vhx2IgFFsnaDepsJtNrcYl/dh8fPYD2t0JfZINRBOkX6EZ7ged0A0nKmz0jq9uBixZo=
+X-Received: by 2002:a05:6902:2085:b0:de5:9c4b:dd5c with SMTP id
+ di5-20020a056902208500b00de59c4bdd5cmr2425440ybb.23.1714725403114; Fri, 03
+ May 2024 01:36:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13.0
+References: <20240429070523.3160248-1-JJLIU0@nuvoton.com>
+In-Reply-To: <20240429070523.3160248-1-JJLIU0@nuvoton.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 3 May 2024 10:36:32 +0200
+Message-ID: <CACRpkdbaC9YR9f-q3fNjpH761VmLn2bhaaWpy-6Fhk3apOT8vg@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: nuvoton: Fix sgpio irq handle error
+To: Jim Liu <jim.t90615@gmail.com>
+Cc: JJLIU0@nuvoton.com, KWLIU@nuvoton.com, brgl@bgdev.pl, 
+	dan.carpenter@linaro.org, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Apr 29, 2024 at 9:05=E2=80=AFAM Jim Liu <jim.t90615@gmail.com> wrot=
+e:
 
-On Tue, 30 Apr 2024 10:54:59 +0100, André Draszik wrote:
-> The system hangs when any of these clocks are turned off.
-> 
-> With the introduction of pinctrl clock support [1], the approach taken
-> in this clock driver for the APM clocks to rely solely on the
-> clk_ignore_unused kernel command line option does not work anymore and
-> the system hangs during boot.
-> 
-> [...]
+> The generic_handle_domain_irq() function calls irq_resolve_mapping()
+> so calling irq_find_mapping() is duplicative and will lead to a stack
+> trace and an RCU stall.
+>
+>
+> Fixes: c4f8457d17ce ("gpio: nuvoton: Add Nuvoton NPCM sgpio driver")
+> Signed-off-by: Jim Liu <JJLIU0@nuvoton.com>
 
-Applied, thanks!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-[1/1] clk: samsung: gs101: mark some apm UASC and XIU clocks critical
-      https://git.kernel.org/krzk/linux/c/6b32d7474e9b833dc7fadc1b4d4f08af9bd87fde
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Yours,
+Linus Walleij
 
