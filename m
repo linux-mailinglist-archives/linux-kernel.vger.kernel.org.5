@@ -1,270 +1,278 @@
-Return-Path: <linux-kernel+bounces-168104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEF818BB3B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 429318BB3BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:09:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 566BF1F25268
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:09:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE9131F257B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40565155303;
-	Fri,  3 May 2024 19:09:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78667158864;
+	Fri,  3 May 2024 19:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="USy/dSSY"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fFr4cGmd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE91A154C12
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC4A134B1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714763347; cv=none; b=qgxMeC5rZLcN1+CTzwisXKiv/EXX2k0vJPmbIrEWbi5qD5xai2FTNiPBTNAsQoRuUmsZei/c0PNIpFCYsZ0h2uoG/IJtuSxXH/P9qtQUYGq6gHZHan/pxIYf0kG2fMoI6MQfEqrBfNMU02VM+IwLsnOGi2isCpErZ9FGNG89oyk=
+	t=1714763372; cv=none; b=MUjDeLBpkbvmNcPcWIEunWfjuFjyDfYN3X02NLPWsay9l06IPWUEFPnv53f0QEUENn+IepanzoVBE7br4hhTvDfxZ5+wnBMxgNPgK1yjSiZmJDz6JANgZwZHZRukv4V2pJJCMphS9qY55PEpmexk+noOvv85IXcYw+q4kedpVVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714763347; c=relaxed/simple;
-	bh=KD5W5WSdhFKx/3oHQgYaA0/EllhGgRr67BT5c3U8JtA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PeRu3dmykLG2SFKObohprpIjpAXvLSV+epE89hlaDDulTTVbYZD7g3pl6aaQI0lz1CR/7OlGTC6jmAPkpwgeP8zFMtYUkruDONALnLQ2+I/lfbzHmZ12ccfcD/vAO7J5HfCzaUSi2QSj7bM4mAlkL05SW65bcHhOZdiUL4ALZwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=USy/dSSY; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f4178aec15so61555b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1714763345; x=1715368145; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bf9CZUh19Mo8Wd84lIYGg1t11xiDu1xoEgnLBaL9O5A=;
-        b=USy/dSSYbWFwHsduGVrVxCP1pBtuHc3nGptFGPjNexARZ4nhkB12m/qgrAbGiGYFMq
-         +MH9jqQMuN51HOo40TqwDZC1veyAYq2F5Km1MgdZxANjbCbng0s3Pvr0ZuDPi6Y2h7h0
-         VLQO8qUtANR0HqQ95yLbnC/94Nyd+czzG4Cso=
+	s=arc-20240116; t=1714763372; c=relaxed/simple;
+	bh=bsUrJhJStA4jT+oy/+6b0aay9cjl1X4e2u6wD2HnNMk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=VfMZe6u1OlLN3OhLOYhnpoC4h1yKTvJvwsQ4/tuKmoln8bBVjDfpjnAMuxyvPT7H50wSrAN+drZ2a3SguQ9XXnHwflpSfV/XNamHusd1DZzubEIe97fiS7Bn8rAAefPB5Q4byXHcFBDqdadDVesCyDb92x4CRqBa66yLNbBobTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fFr4cGmd; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714763369;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UfZIeLovJ0OEc5o8V4rjdfq75IXpLSkl12OeDfEK/CA=;
+	b=fFr4cGmdC1BsP/P5ZNK1nF92Jz/S9EnSTO20+0LXCBbavG0neV2HKJv546aV2PmhLj6U9J
+	aNUQXZ8up/6VvHFkH4ihImO2YXMZU74gZDWbK6UN/s3BzzncTA1DKPonPRWPUBf1Zy5XB4
+	FcYLnHQzUcecdQ9kyxCd1lg3tpvFYC0=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-606-1Zs007PPPBqIoOw8qHtFng-1; Fri, 03 May 2024 15:09:28 -0400
+X-MC-Unique: 1Zs007PPPBqIoOw8qHtFng-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-79265613c9dso472126685a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:09:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714763345; x=1715368145;
-        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Bf9CZUh19Mo8Wd84lIYGg1t11xiDu1xoEgnLBaL9O5A=;
-        b=wUY24is60EsvnEmzHKXO10Rn06ZI80GJ3MZMF8R/V4scmeIww1IjAS7jzZLumYZMm1
-         9o2q7/LihUJZLMOAVX0UaR97KzwhWgXJhHcqB9YqHBjJi8IBcKTj003niPGnnLUjBqU1
-         doSXN86eGBzE8L1Po/xcezV8McCvxRQHUqZLHW8+TY82QUbzXpLF2VGjyrK1VbrZ8Tvs
-         0s819k/XvpVRSaTxLjkczhw1+DUAaJuZYornLIPDkSHEMVyxlNoGxaam2dKEMf8fGtok
-         vJleimAHWC4Drss8qHpyom2YgKOfJ/PbvleuhSxKxdjWEtSP5KFO3v78Q9DEeF4iuM4Y
-         Fsyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUs4AOhgo138EskmaK8eqyp+/ZIraIwkbC297yYhhZKIzFmUO/nsRYZYIHJc9pP7X/xb+o2MQNLUrT0Q1ZHpKuRRYEY9Z/uHH/z8hi2
-X-Gm-Message-State: AOJu0Yw1cS/aYmu62x1dQENesAXgzM/msKuHnD0X/berpzoQ902BHPBo
-	cT4c7b7Q+78V9SKTr+lwknnXIteLvZrXOy7+LeWg6hPoH2hftrcB3WLyXsfXNg==
-X-Google-Smtp-Source: AGHT+IFw3ZFV53UTTXUuMnDL8FSYa78W4ewmThQ+GG/gJFsMxqy+osBBFjSNwhWCxsY5MMLBTv9pPw==
-X-Received: by 2002:a05:6a21:78a0:b0:1ad:9394:2d30 with SMTP id bf32-20020a056a2178a000b001ad93942d30mr3969026pzc.37.1714763345135;
-        Fri, 03 May 2024 12:09:05 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c25-20020aa78c19000000b006f447d95de9sm2144679pfd.29.2024.05.03.12.09.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 12:09:04 -0700 (PDT)
-Message-ID: <bf20e911-26db-4291-95d4-c91cc1d7f000@broadcom.com>
-Date: Fri, 3 May 2024 12:09:02 -0700
+        d=1e100.net; s=20230601; t=1714763368; x=1715368168;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UfZIeLovJ0OEc5o8V4rjdfq75IXpLSkl12OeDfEK/CA=;
+        b=OhmXe9Luhv7kf3/h6u1jytCzTzKiCP9ZHP9ZF6CV7GLELR2tkPaZn5ZzvI3ilIxLk5
+         5QZT/LZHnlWOPFcjGePaUTJkfAsW7R/hNc5fjr0AbMBj+OJGQx4ZrutPYRlneV2SbgjC
+         b33FBfXmJE8S59WAbmGzbhwFEugD599zITOpi1Js+WJ4YGzZRfDbbRbVDExin11OdoSj
+         ccy/uLcdCk3VS8wl2d4vEDkie/cgNiRl7qwYqdyu1TxOu3oXycEhwaKKGtd6KhCy1eF0
+         Luq7FKgHVNCo7uJeH4vrOTJDypXgXL9GOIOaHnXu7k2vuGsoycX+Ub1HNK9wOUo8odvD
+         aHMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV1yyFMdMov9YwIPFMluSa7pjITGPBZA+04jdN+qTFxtY7xpfOY6+M2ixY3YI25OLBNKa51enXTzmobsgY4sNWf8bvmesG5l74Q7U/y
+X-Gm-Message-State: AOJu0YzO6mJZFNeX0r7SET8eBLUmWovs8G//INzK+ZkSOgeOeZgVPM2p
+	DVKlmTCg5tbM0P7nIsYq86L8KCl3XhZDhBkUPog8vMvXwd04hFpA9wVCK3YiIeKR3Qh4IsvIR+Q
+	qUGgoVdx68R/PITGkERZohEQl3m6DtwHZ5tqbKbivaXUUm9UktwmIbjgUTYqJEw==
+X-Received: by 2002:a05:620a:94f:b0:790:889a:b0bf with SMTP id w15-20020a05620a094f00b00790889ab0bfmr3242094qkw.68.1714763367385;
+        Fri, 03 May 2024 12:09:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTE830hUw/0R/ym9W+rRW5RyC1bGCw2240Vz0MzxC88ZmdjC2YDSooo47VCYmf1D/6skjp6w==
+X-Received: by 2002:a05:620a:94f:b0:790:889a:b0bf with SMTP id w15-20020a05620a094f00b00790889ab0bfmr3242072qkw.68.1714763367005;
+        Fri, 03 May 2024 12:09:27 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a800:4b0a:b7a4:5eb9:b8a9:508d])
+        by smtp.gmail.com with ESMTPSA id b9-20020a05620a04e900b0078d5a756e61sm1464486qkh.60.2024.05.03.12.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 12:09:26 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Date: Fri,  3 May 2024 16:09:11 -0300
+Message-ID: <ZjU2VxZe3A9_Y7Yf@LeoBras>
+X-Mailer: git-send-email 2.45.0
+In-Reply-To: <ZjUwHvyvkM3lj80Q@LeoBras>
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com> <ZjUwHvyvkM3lj80Q@LeoBras>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] mips: bmips: setup: make CBR address configurable
-To: Christian Marangi <ansuelsmth@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
- linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, =?UTF-8?Q?Daniel_Gonz=C3=A1lez_Cabanelas?=
- <dgcbueu@gmail.com>
-References: <20240503135455.966-1-ansuelsmth@gmail.com>
- <20240503135455.966-5-ansuelsmth@gmail.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240503135455.966-5-ansuelsmth@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000001693420617917479"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
---0000000000001693420617917479
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 5/3/24 06:54, Christian Marangi wrote:
-> Add support to provide CBR address from DT to handle broken
-> SoC/Bootloader that doesn't correctly init it. This permits to use the
-> RAC flush even in these condition.
+On Fri, May 03, 2024 at 03:42:38PM -0300, Leonardo Bras wrote:
+> Hello Sean, Marcelo and Paul,
 > 
-> To provide a CBR address from DT, the property "mips-cbr-reg" needs to
-> be set in the "cpus" node. On DT init, this property presence will be
-> checked and will set the bmips_cbr_addr value accordingly. Also
-> bmips_rac_flush_disable will be set to false as RAC flush can be
-> correctly supported.
+> Thank you for your comments on this thread!
+> I will try to reply some of the questions below:
 > 
-> The CBR address from DT will be applied only if the CBR address from the
-> registers is 0, if the CBR address from the registers is not 0 and
-> is not equal to the one set in DT (if provided) a WARN is printed.
+> (Sorry for the delay, I was OOO for a while.)
 > 
-> To ALWAYS overwrite the CBR address the additional property
-> "mips-broken-cbr-reg" needs to be set.
 > 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->   arch/mips/bmips/setup.c | 30 +++++++++++++++++++++++++++---
->   1 file changed, 27 insertions(+), 3 deletions(-)
+> On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
+> > On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> > > I am dealing with a latency issue inside a KVM guest, which is caused by
+> > > a sched_switch to rcuc[1].
+> > > 
+> > > During guest entry, kernel code will signal to RCU that current CPU was on
+> > > a quiescent state, making sure no other CPU is waiting for this one.
+> > > 
+> > > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> > > issued somewhere since guest entry, there is a chance a timer interrupt
+> > > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > > 
+> > > rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> > > and cause invoke_rcu_core() to be called, which will (in current config)
+> > > cause rcuc/N to be scheduled into the current cpu.
+> > > 
+> > > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> > > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> > > idle or userspace, since both are considered quiescent states.
+> > > 
+> > > Since this is also true to guest context, my idea to solve this latency
+> > > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > > 
+> > > On the other hand, I could not find a way of reliably saying the current
+> > > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> > > for keeping the time (jiffies) of the last guest exit.
+> > > 
+> > > In patch #2 I compare current time to that time, and if less than a second
+> > > has past, we just skip rcu_core() invocation, since there is a high chance
+> > > it will just go back to the guest in a moment.
+> > 
+> > What's the downside if there's a false positive?
 > 
-> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
-> index 18561d426f89..bef84677248e 100644
-> --- a/arch/mips/bmips/setup.c
-> +++ b/arch/mips/bmips/setup.c
-> @@ -34,7 +34,11 @@
->   #define REG_BCM6328_OTP		((void __iomem *)CKSEG1ADDR(0x1000062c))
->   #define BCM6328_TP1_DISABLED	BIT(9)
->   
-> -/* CBR addr doesn't change and we can cache it */
-> +/*
-> + * CBR addr doesn't change and we can cache it.
-> + * For broken SoC/Bootloader CBR addr might also be provided via DT
-> + * with "mips-cbr-reg" in the "cpus" node.
-> + */
->   void __iomem *bmips_cbr_addr;
->   extern bool bmips_rac_flush_disable;
->   
-> @@ -212,8 +216,28 @@ void __init device_tree_init(void)
->   
->   	/* Disable SMP boot unless both CPUs are listed in DT and !disabled */
->   	np = of_find_node_by_name(NULL, "cpus");
-> -	if (np && of_get_available_child_count(np) <= 1)
-> -		bmips_smp_enabled = 0;
-> +	if (np) {
+> False positive being guest_exit without going back in this CPU, right?
+> If so in WSC, supposing no qs happens and there is a pending request, RCU 
+> will take a whole second to run again, possibly making other CPUs wait 
+> this long for a synchronize_rcu.
 
-Please reduce the indentation with early return/gotos. There might also 
-be a need to do some validation that the CBR is at least outside of the 
-DRAM window, that is we cannot blindly trust the DT to have gotten the 
-CBR right IMHO.
--- 
-Florian
+Just to make sure it's clear:
+It will wait at most 1 second, if the grace period was requested just 
+before the last_guest_exit update. It will never make the grace period 
+be longer than the already defined 1 second. 
+
+That's because in the timer interrupt we have:
+
+	if (rcu_pending())
+		invoke_rcu_core();
+
+and on rcu_pending():
+
+	if ((user || rcu_is_cpu_rrupt_from_idle() || rcu_recent_guest_exit()) &&
+	    rcu_nohz_full_cpu())
+		return 0;
+
+Meaning that even if we allow 5 seconds after recent_guest_exit, it will 
+only make rcu_nohz_full_cpu() run, and it will check if the grace period is 
+younger than 1 second before skipping the rcu_core() invocation.
 
 
---0000000000001693420617917479
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAYeL3Wj3XR0RcL/
-jg8668FTVhbZmuS+ApBUkPhsOjU5MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDUwMzE5MDkwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBnaRnWmik0p1QuIQhEmvmIPKQVMhVrGZj5
-K9oekqaefkFOEDALtvLJC6oE8IX25rhPHfSI48E29xI6/BfXM+4QdWO8ofJyJFkxL8nJwguhwhuq
-hFlLy/03X/lD2l1HXuOn92OQa6zK5979NvTlPUqDiWOb7FKRRmzOnGo8Fbzy231iW1VK5YZhEuVZ
-j4M3BVckvEalBB62vm1fa8k/cSoTm7GOVoF9BWy17weM95lPdbqdZ/h2xR3/CfdQwH2RPSME1YiY
-cL/SPQbjFOGyR4r9fM7upYademm6ODXRB/MhnLqeqmrTOx1vT3AKJj+1U6jw65oV6tPsROStvNkT
-etdh
---0000000000001693420617917479--
+> 
+> This value (1 second) could defined in .config or as a parameter if needed, 
+> but does not seem a big deal, 
+> 
+> > 
+> > > What I know it's weird with this patch:
+> > > 1 - Not sure if this is the best way of finding out if the cpu was
+> > >     running a guest recently.
+> > > 
+> > > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+> > >     overhead, even though it's supposed to be in local cache. If that's
+> > >     an issue, I would suggest having this part compiled out on 
+> > >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+> > >     enabled seems more expensive than just setting this out.
+> > 
+> > A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+> > imprecise, e.g. it'll be a full tick "behind" on many exits.
+> 
+> That would not be a problem, as it would mean 1 tick less waiting in the 
+> false positive WSC, and the 1s amount is plenty.
+
+s/less/more/
+
+> 
+> > 
+> > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > >     grace period started over than a second ago. If this value is bad,
+> > >     I have no issue changing it.
+> > 
+> > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > of what magic time threshold is used.  IIUC, what you want is a way to detect if
+> > a CPU is likely to _run_ a KVM vCPU in the near future.
+> 
+> That's correct!
+> 
+> >  KVM can provide that
+> > information with much better precision, e.g. KVM knows when when it's in the core
+> > vCPU run loop.
+> 
+> That would not be enough.
+> I need to present the application/problem to make a point:
+> 
+> - There is multiple  isolated physical CPU (nohz_full) on which we want to 
+>   run KVM_RT vcpus, which will be running a real-time (low latency) task.
+> - This task should not miss deadlines (RT), so we test the VM to make sure 
+>   the maximum latency on a long run does not exceed the latency requirement
+> - This vcpu will run on SCHED_FIFO, but has to run on lower priority than
+>   rcuc, so we can avoid stalling other cpus.
+> - There may be some scenarios where the vcpu will go back to userspace
+>   (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
+>   this to run other stuff (like rcuc).
+> 
+> Now, I understand it will cover most of our issues if we have a context 
+> tracking around the vcpu_run loop, since we can use that to decide not to 
+> run rcuc on the cpu if the interruption hapenned inside the loop.
+> 
+> But IIUC we can have a thread that "just got out of the loop" getting 
+> interrupted by the timer, and asked to run rcu_core which will be bad for 
+> latency.
+> 
+> I understand that the chance may be statistically low, but happening once 
+> may be enough to crush the latency numbers.
+> 
+> Now, I can't think on a place to put this context trackers in kvm code that 
+> would avoid the chance of rcuc running improperly, that's why the suggested 
+> timeout, even though its ugly.
+> 
+> About the false-positive, IIUC we could reduce it if we reset the per-cpu 
+> last_guest_exit on kvm_put.
+> 
+> > 
+> > > 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+> > >     rcu/tree_plugin.h, which is the first time it's getting included
+> > >     outside of kvm or arch code, and can be weird.
+> > 
+> > Heh, kvm_host.h isn't included outside of KVM because several architectures can
+> > build KVM as a module, which means referencing global KVM varibles from the kernel
+> > proper won't work.
+> > 
+> > >     An alternative would be to create a new header for providing data for
+> > >     non-kvm code.
+> > 
+> > I doubt a new .h or .c file is needed just for this, there's gotta be a decent
+> > landing spot for a one-off variable.
+> 
+> You are probably right
+> 
+> >  E.g. I wouldn't be at all surprised if there
+> > is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
+> > likely to do a VM-Enter in the near future, at which point you could probably make
+> > a good argument for adding a flag in "struct context_tracking".  Even without a
+> > separate use case, there's a good argument for adding that info to context_tracking.
+> 
+> For the tracking solution, makes sense :)
+> Not sure if the 'timeout' alternative will be that useful outside rcu.
+> 
+> Thanks!
+> Leo
+
 
