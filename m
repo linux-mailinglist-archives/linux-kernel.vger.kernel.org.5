@@ -1,156 +1,163 @@
-Return-Path: <linux-kernel+bounces-167433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A108BA98F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:13:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B16188BA991
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:13:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B1611C2175C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E27BB1C20DBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D157F14F12A;
-	Fri,  3 May 2024 09:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0657E14F127;
+	Fri,  3 May 2024 09:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X14Yt8iO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="nPpgj1xr"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6B9146D4B;
-	Fri,  3 May 2024 09:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 358FA146D4B;
+	Fri,  3 May 2024 09:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727595; cv=none; b=ZPcGbs5qqrSDumqzPc0HatnGC2f3xUxotCm/oulyIxN2iZxnpR/rJR5f2L8uwq3NI1lZvHr/4YphirWr80wlSe1n22tD0qzy3d3Tcz4MCpN2poXRq+urm6UBFd5q400KqXAz8qOan3JuMw6whjbNH9JwpRc4ESIM7FRqR0n8jN4=
+	t=1714727612; cv=none; b=KpQa4WA49fr3oGRvf44Q/FV7cSkzZhkGZd3lPXZ3gx8C/lqucSL8LZkRDYjlxCSoyHI89hh5q1xAUtJV07mZRjmUsJ/uQW5mbnaNYxJL2et9S8LdTj+hpPy2aSrY8LS6V9nOQKJo9oD4HD3x40AFqNfHWfGHl4jxLaGEOVHh0o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727595; c=relaxed/simple;
-	bh=3LaUaAv7CyMgsmPwhMzjeWmmLQOKPPAU1rg5+fLg16Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Akz5aPQWVFLeH3C0yX62tyAlATK181UBEji1DFiEQZzk/G2xXonEZPKNg2C1ONVq+HNZjflc3HCE+/D7Zm2rEMC7msuKuF3ZcYLMGjCC0KiSIdyFaYHsdz7qlBHrw1KMtHx5EBpy+oxhMuuUBVdEbmmMheRGWIVRGXO/im43hZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X14Yt8iO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C6B6C116B1;
-	Fri,  3 May 2024 09:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714727594;
-	bh=3LaUaAv7CyMgsmPwhMzjeWmmLQOKPPAU1rg5+fLg16Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=X14Yt8iOniJkilrmKoZkCD67RtnmMu1YNUsyONG1snPV1Xl2iOjt5G/S9DDBkqhDE
-	 +oLAX5nuJ2lbJuEGOQrMsxSVlWclgAXvyouhYBOqERsC8trTUQrVNf2Hp1pyRA5NbP
-	 15cwS8bOq57cZfaShsVHT9DoPy8EWK1REvCTtkV41JybZBF1PYKJJ9TT0OgM8G5fr2
-	 octBJP4J3rV0uBoP6x6WaIolQcXWFYOXiR5g8gIwfGeBPg96F5L+vOLKWa2nBQN8/4
-	 C0gM8lCFunDpmlEbheXfKT1e30qNKHZ1F68YMQeI1J4qwo0pFUtSREJ7PzjUer6gEJ
-	 xRS1eqReFgfZA==
-Message-ID: <c39eab66-4e78-4f24-bcaf-003161b38ed0@kernel.org>
-Date: Fri, 3 May 2024 11:13:06 +0200
+	s=arc-20240116; t=1714727612; c=relaxed/simple;
+	bh=ajq61w3XeSrOvYWq/kaLNW4teboeeYU4DGvFgasUAZI=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=ARJv53ilFdIN3B8l/fvZKt1nJSrmXcw1nUpxgomieua7Biot+Sw7UwhxACNHl1GAJnD/Hhnt5ZRLWKxB7XtZEfkFkRLymlrUu9a3PbbVxeOKlFoaWgiCe2/vi45TkpPvQKeiZddryDPsuexfGRbvuipMdvfbP58BzhTgUwOBaQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=nPpgj1xr; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] pinctrl: samsung: support a bus clock
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
- Peter Griffin <peter.griffin@linaro.org>
-Cc: Will McVicker <willmcvicker@google.com>,
- Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240426-samsung-pinctrl-busclock-v3-0-adb8664b8a7e@linaro.org>
- <20240426-samsung-pinctrl-busclock-v3-2-adb8664b8a7e@linaro.org>
- <ea6f17d7-49bf-4a1e-ba3b-757e29221590@linaro.org>
- <9a960401-f41f-4902-bcbd-8f30f318ba98@kernel.org>
- <c4c73732595b067369a6c8d71508d54358962552.camel@linaro.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <c4c73732595b067369a6c8d71508d54358962552.camel@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1714727608;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8ysi4/6mJffFRduXa16ZIuufstygaWK7u/+mOtVPgE4=;
+	b=nPpgj1xrY/kTGRTi9T4s4am9azFUjdVzBE5Yfe3NIaSZORrVUqMSU0ZkbITqGXMi8nDvpP
+	nuMEZs5wrMz6VuYOUy4gzvMj35B6gi4DE/ajmA5dEPLQOYLMnG08idjv4N00KProdSGoGV
+	zZRwefs1HGDyb9EKJV6rgenLBFfWJfkvl3kYqgJaFPYMia67cvUDQ/NwbYruvjgnWyI5HQ
+	FBrlWL3QqbZMgBVoBQszC0qX/7eE78atgSAOeCtOyiLPHhv4FDEs81opHXQ3PtgEWO7nt0
+	Fw0J3XrV0cjWpWO6UkCRQJg4NEpIIgn2Y9dEvOMiJMp5Lxd09EJ+FE276+caRw==
+Date: Fri, 03 May 2024 11:13:28 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: linux-sunxi@lists.linux.dev, wens@csie.org, jernej.skrabec@gmail.com,
+ samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC
+ dtsi for H6
+In-Reply-To: <20240501103059.10a8f7de@donnerap.manchester.arm.com>
+References: <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
+ <49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
+ <20240430001002.4797e4e3@minigeek.lan>
+ <6fdeb49d57ccccca62e4f43dbe9475e3@manjaro.org>
+ <20240430114627.0cfcd14a@donnerap.manchester.arm.com>
+ <f4f4163d908c95d2a3f6f48bc3d7de49@manjaro.org>
+ <20240501103059.10a8f7de@donnerap.manchester.arm.com>
+Message-ID: <5aeb266ce1aa0ad3dd1d7261eac3b3d2@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On 02/05/2024 12:41, André Draszik wrote:
-> On Thu, 2024-05-02 at 09:46 +0200, Krzysztof Kozlowski wrote:
->> On 02/05/2024 09:41, Tudor Ambarus wrote:
->>>>  
->>>> @@ -223,6 +268,13 @@ static void exynos_irq_release_resources(struct irq_data *irqd)
->>>>  	shift = irqd->hwirq * bank_type->fld_width[PINCFG_TYPE_FUNC];
->>>>  	mask = (1 << bank_type->fld_width[PINCFG_TYPE_FUNC]) - 1;
->>>>  
->>>> +	if (clk_enable(bank->drvdata->pclk)) {
->>>> +		dev_err(bank->gpio_chip.parent,
->>>> +			"unable to enable clock for deconfiguring pin %s-%lu\n",
->>>> +			bank->name, irqd->hwirq);
->>>> +		return;
->>>
->>> but here we just print an error. I guess that for consistency reasons it
->>> would be good to follow up with a patch and change the return types of
->>> these methods and return the error too when the clock enable fails.
->>
->> That's a release, so usually void callback. The true issue is that we
->> expect release to always succeed, I think.
->>
->> This points to issue with this patchset: looks like some patchwork all
->> around the places having register accesses. But how do you even expect
->> interrupts and pins to work if entire pinctrl block is clock gated?
+Hello Andre,
+
+On 2024-05-01 11:30, Andre Przywara wrote:
+> On Tue, 30 Apr 2024 13:10:41 +0200
+> Dragan Simic <dsimic@manjaro.org> wrote:
+>> On 2024-04-30 12:46, Andre Przywara wrote:
+>> > On Tue, 30 Apr 2024 02:01:42 +0200
+>> > Dragan Simic <dsimic@manjaro.org> wrote:
+>> >> Thank you very much for reviewing my patch in such a detailed way!
+>> >> It's good to know that the values in the Allwinner datasheets match
+>> >> with the observed reality, so to speak. :)
+>> >
+>> > YW, and yes, I like to double check things when it comes to Allwinner
+>> > documentation ;-) And it was comparably easy for this problem.
+>> 
+>> Double checking is always good, IMHO. :)
+>> 
+>> > Out of curiosity: what triggered that patch? Trying to get rid of false
+>> > warning/error messages?
+>> 
+>> Yes, one of the motivators was to get rid of the false kernel warning,
+>> and the other was to have the cache information nicely available 
+>> through
+>> lscpu(1).  I already did the same for a few Rockchip SoCs, [1][2][3] 
+>> so
+>> a couple of Allwinner SoCs were the next on my mental TODO list. :)
 > 
-> I was initially thinking the same, but the clock seems to be required for
-> register access only, interrupts are still being received and triggered
-> with pclk turned off as per my testing.
+> Thanks for doing this!
 
-Probably we could simplify this all and keep the clock enabled always,
-when device is not suspended. Toggling clock on/off for every pin change
-is also an overhead. Anyway, I merged the patches for now, because it
-addresses real problem and seems like one of reasonable solutions.
+I'm glad that you like all these patches. :)
 
-Best regards,
-Krzysztof
+>>> And do you plan to address the H616 as well? It's a bit more tricky 
+>>> there,
+>>> since there are two die revisions out: one with 256(?)KB of L2, one 
+>>> with
+>>> 1MB(!). We know how to tell them apart, so I could provide some TF-A 
+>>> code
+>>> to patch that up in the DT. The kernel DT copy could go with 256KB 
+>>> then.
+>> 
+>> I have no boards based on the Allwinner H616, so it wasn't on my 
+>> radar.
+>> Though, I'd be happy to prepare and submit a similar kernel patch for
+>> the H616, if you'd then take it further and submit a TF-A patch that
+>> fixes the DT according to the detected die revision?  Did I understand
+>> the plan right?
+> 
+> Yes, that was the idea. I have a working version of that TF-A patch 
+> now,
+> just need to figure out some details about the best way to only build 
+> this
+> for the H616 port.
 
+Nice, the kernel patch for the H616 SoC dtsi is now on the list, [4]
+please have a look.  Please let me know when your follow-up TF-A patch
+gets submitted upstream, so I can watch it.
+
+> Neither the data sheet nor the user manual mention the cache sizes for 
+> the
+> H616, but I checked the CSSIDR_EL1 register readouts on both an old 
+> H616
+> and a new H618, and they confirm that the former has 256 KB L2, and the
+> latter 1MB.
+
+Oh wow, 1 MB of L2 cache is quite a lot for such an SoC, which is
+actually very nice to see.  Thumbs up for Allwinner not skimping on
+the L2 cache in that H616 die revision. :)
+
+> Also I ran tinymembench on two boards to confirm this,
+> community benchmarks results are available here:
+> https://github.com/ThomasKaiser/sbc-bench/blob/master/Results.md
+> The OrangePi Zero2 and OrangePi Zero3 are good examples, respectively.
+> Associativity and cache line size are dictated by the Arm Cortex cores,
+> and the L1I & L1D sizes are the same as in the other SoCs.
+
+I've included the most important benchmark results in the H616 SoC
+dtsi patch, [4] which actually now serves as an additional reference
+for the cache sizes.
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=67a6a98575974416834c2294853b3814376a7ce7
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=8612169a05c5e979af033868b7a9b177e0f9fcdf
+[3] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=b72633ba5cfa932405832de25d0f0a11716903b4
+[4] 
+https://lore.kernel.org/linux-sunxi/9d52e6d338a059618d894abb0764015043330c2b.1714727227.git.dsimic@manjaro.org/
 
