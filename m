@@ -1,314 +1,145 @@
-Return-Path: <linux-kernel+bounces-167892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02FFE8BB0C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:20:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A53A58BB160
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:01:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C1E01F24EEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:20:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B924284FF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32F9155395;
-	Fri,  3 May 2024 16:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBA9157E7A;
+	Fri,  3 May 2024 17:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cherry.de header.i=@cherry.de header.b="n0NDzOf9"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2139.outbound.protection.outlook.com [40.107.21.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="h/XuJOfP"
+Received: from sonic309-21.consmr.mail.ne1.yahoo.com (sonic309-21.consmr.mail.ne1.yahoo.com [66.163.184.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBCD21360;
-	Fri,  3 May 2024 16:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.139
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714753220; cv=fail; b=K9OCspFnbVYXOchiBV2eHTDhRhcknM1NqBpYII3BEEsFkYLP4I43D+/IOjoBRYrsKdRKfGw8YeiBidSY1OTIf5B8ZC9UmP3+coBSQZ5btLWrPJwe7T89fO1E2ax6lkSTJMNIM6mNjMvCuwss21lsFhpp3JYT8hh4Rtmqt25TCb0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714753220; c=relaxed/simple;
-	bh=yNvH3CNrNNIrOSv+zm6Bkcyvoo1rSAFBl51zr/sVygg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KKSj5iAUhkas/bMM2IHnZ4W0oYwd7eiSR2MEs5rQN8l23wXYmY4E2uq9UHbzOqi06XNRe8twUywCYB9iMTkgM4MLCcnkvj1P36h7O9VPUSdXJ0XyyyeAzSwWK5Q2KdNNFwQ/oRQUYbG7CGAYUVuKjex0LZ4LVzb/rPVNKHIt/9o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cherry.de; spf=pass smtp.mailfrom=cherry.de; dkim=pass (1024-bit key) header.d=cherry.de header.i=@cherry.de header.b=n0NDzOf9; arc=fail smtp.client-ip=40.107.21.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cherry.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cherry.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R6cFMFFVFCpElKZmtWVe9NSb++1TJy469QjkclfKQ95eH520BNdDjWVpwJs6JhYLZuO0Izjbc1dk0/A+AZS2trLG2lvdmhZYMQNc4AwH5CR4tZt4EGVtsn+WZ181yO01kldNJC4Y8nBOD8mLbKpGPSIkMaLb5JrwvVKtOwrxXmPmMFREka68B3qBhExTeg1/480jSgIulzdpexCbTRSi1ryFO6n1dtHMvQp6qklu/a2NHlyFO0tEscUaxEnwtXaepN4LZbU0ALNtYqX2VyzUunorPB70ABrfYNxS+H/2CTDTTuj8AcQpQrqqx3YpjWSvOLqVmSphnotEbiJwU67suA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MQt6mmXODkhqEhmCF3Br8xi6praQGTGC6Jikbnygre0=;
- b=dLlUXljeCtdrcOxMvStgeO4jSI48TrgpGF526/t4fj1CDLJ6b0atrjyLcDzlELSpVJmu7Kwe18QkKyAXWzkkfzwt5qmcysF1ab47nrffeWsrTJe1kk5L4ntMOJ5j4gsDL+2TNyWdikFi1+aMsMHSmxAM69POacQgKiKQoRzJubbCiUVCo0cRcYNJVqpFlazQqGrI9z8MDnqCuxx+oQ7iTs2PrDQyN38y6NEHmZoPyOuj1aIhZF4OLuMZxz7DBvxk4lIuXy22XGrG0DaAsBCLzNzal88D9HyW9rMoARfDo1tUU9NgYHWTE5nG9uLOAZppSa68p5xCx1sElHrbZAxW+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cherry.de; dmarc=pass action=none header.from=cherry.de;
- dkim=pass header.d=cherry.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cherry.de;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MQt6mmXODkhqEhmCF3Br8xi6praQGTGC6Jikbnygre0=;
- b=n0NDzOf9QiOchXsPDc7pE1J5Xa/jqWVK0wt2k+AKQ05oRSh4YR2mxXDmoFryp/LcrGtSa5TtOmzXTA1j8Yk6FZSgEgm84bpFZO/emTNb5ckbNZ1OFesgnOwGnk9pYjcFaenPnl+oPgldXmXshimo75ytgTJPpp5IuPbWELBaJbk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cherry.de;
-Received: from DB7PR04MB4842.eurprd04.prod.outlook.com (2603:10a6:10:1b::13)
- by AM8PR04MB7745.eurprd04.prod.outlook.com (2603:10a6:20b:234::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30; Fri, 3 May
- 2024 16:20:14 +0000
-Received: from DB7PR04MB4842.eurprd04.prod.outlook.com
- ([fe80::ac08:df46:97bd:4ae6]) by DB7PR04MB4842.eurprd04.prod.outlook.com
- ([fe80::ac08:df46:97bd:4ae6%6]) with mapi id 15.20.7544.029; Fri, 3 May 2024
- 16:20:14 +0000
-Message-ID: <8506322f-bfbf-4582-a88b-b300cad2d344@cherry.de>
-Date: Fri, 3 May 2024 18:20:10 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] i2c: mux: add the ability to share mux-address with
- child nodes
-To: Peter Rosin <peda@axentia.se>, Farouk Bouabid <farouk.bouabid@cherry.de>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Quentin Schulz <quentin.schulz@theobroma-systems.com>,
- Heiko Stuebner <heiko@sntech.de>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org
-References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
- <20240426-dev-mule-i2c-mux-v1-1-045a482f6ffb@theobroma-systems.com>
- <f7ddc503-21c6-10b8-3326-398de65bd6a8@axentia.se>
- <318b22c7-4e90-4055-a893-bb995c16e8da@cherry.de>
- <c5e375a0-8c64-f244-a5e6-bfcb3400d05a@axentia.se>
-Content-Language: en-US
-From: Quentin Schulz <quentin.schulz@cherry.de>
-In-Reply-To: <c5e375a0-8c64-f244-a5e6-bfcb3400d05a@axentia.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: WA0P291CA0001.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1::27) To DB7PR04MB4842.eurprd04.prod.outlook.com
- (2603:10a6:10:1b::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4AD157E69
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.184.147
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714755655; cv=none; b=cJanXD234YdG1V92j9nm0qyl/e+PBBU8fej6YiSqqGvoLviChya+eChTzOk6pkWICeaxCjWe9Z8DNDsSeYtKKsF3sHUqpDv16HY8z2XcuYE374g/Dz77+/bk0ZyoqTAz9xmkusR246L7fBLvfR9ax0aj9/5CbOPk1+RO9eQf9sU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714755655; c=relaxed/simple;
+	bh=OpuBHTwhnfArlf2PsQ6g2wnS/DKkhtNrSqNbd0Cd8cY=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=gXl+yf7mKywFkKcjif2mNkSCuQJOI49IyjapsvEVBqtJpYUrcrdAUVJA+lErWMCBNrpAVXp4B7BgGeAzvvGOXOkWyDgUaCuEtlJXwRQAw6Ms5Yb8nxSTX6lbBHykiLlSkcfEW3ohBAziO6Xy8qWlt7fZtACnTL83piWp1fDO9lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=h/XuJOfP; arc=none smtp.client-ip=66.163.184.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1714755652; bh=OpuBHTwhnfArlf2PsQ6g2wnS/DKkhtNrSqNbd0Cd8cY=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=h/XuJOfP4qeWJeJUfu9XI2dvEgzygtrC4CQkQr52hHqL+u5d0EZKbP2COHmnzEf/JrOcrHLPnb3WKJ8WKv7KYu67zkNNbxwbMhHZAkfXWXsOApW31dy8X39SKCTp7/aUnyM+SkluOIU1tReyUEiYIPp83FqHP+7BHFnLBWjlh7AoF8bnulEyF2VKqInpLbYgAM31rUm5IpaFK88Qmb+Xm/jPTZSkNBXqogko/W5N6AuBT0PRrH9mWkBQHSH0zAL5AE/2EeQWUS9lvCZNTpQK4mFb07RYgGwHL6cgc0kaJnLvM27Za+5x+X2Sv32SB53OshVlWVpage6SsD2T8PfCkg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1714755652; bh=0roRuDy5zj7FoPPBMx4pCT5IazAPisE/VYX4kM5YcgX=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=HN77FixkNFiIjdzTyPTCglXSTr73Q8fEfEGAbRTRYzo88nHJQOH9TKg/z4eTL0k0WD3sJsnOenB0QLHcY3ttLXCvw5wHfeI/hEKOSz98IlZbow//bKIscA0ODOnBLYW7eCiszIyiiWVu1vNVc1EMtvLrIcrYubuC5EFu/EhKyDv33/ckazLlFjDjQDgtt0Sxn7EnoGSATXzRlDKsVelY2A0ReFSC0ZWlkpF7JDYCnJ1vd9+pXt+22hCXMVFdFpOKcMfRuVBGaPqG2WDmGV4vzfhJ9e+dNQqL6bCLtudkdhmYIYD21igDk1HidLAYyb5l75+V0av8B0W9KVv1kkDMlQ==
+X-YMail-OSG: u7CikhkVM1mEMBJgRhgeFfykAxEVELBK2D8SuCjgxXEHVfhg2Mh1jCun.7euP4n
+ YuKTaefJTFGNeHA6y0GKN8r5o3pt6uZ4L7fJsdR9huBW4xI._HbSxGmtwL7Q.r.q2HNLUhrxNcqJ
+ iQk0clfL4rJB7emk22t.djOQDkv.3brzpvxYm7mD76etPxjsHtjznB4tUyLYzXFO.6IDvqV7cuVU
+ s7YU8V1I5QXnD2RY954jhO_zWBG1FHHEhnmc2lafLzGClMxUD1sSeuRmEUnPzd9UJb1XvnNuPzoR
+ HDhGIP5Qbmk9vsiiNBfzez4x4g8KFg3M.G5Uk5n2WX7L_k6B9_ZGCVtrDh348xQOjY1Y_1Cd81b4
+ noQswoJiZsryvGYbOrdRyqJAQrn1NxglYFDVVQ8ihsj3JFsAg8idJ57wbS4lW1zJR0z2hwX0D5L8
+ Ah9_5UWH5vGNxPLESZLBXSsL8X91UjsCxu6TnFw7uhzNds6_ofPqhWISo6wokWtoHo4s5i_Dd1g1
+ pgusS5pHJ1PX8KPBpv1fMxnUGbma5Mq06lphYU_SSXY4i5qCBUK37DNnJIV5AgXDEbpreAvPY5KN
+ vR8Tb6Q2yF6axmhLYw2qwsfnAUr0vA_Jzc2pUUzAeDxF6I0UPkjLA7a7yiaDIczakKX6dwdSJ.mG
+ 58OM_lkjw52d71AdkfrDJUX2MksGHq1K63WSXuFurdzA3S18AlusvV.5PFProfYCIRztn0BDISD2
+ Qa0GpFEiFwlzby4x0fgGxV8dJZ7Xq5ugd4xBCV.6.A2dnjy26PjzG0jwSLH9GPjFaJGaVk9uUasX
+ Ix6sSXmG_K_jm3KYote_PDn6JLIa0hbq_HNpR__3cjgTP1plr_6Akyd1GFihjkHF_mscqbk6S76Q
+ jpIhhLUmyHcsZ.NWMfj678JphFYyxPaOOxLXXAMfL_zhiEjNUJvyW4VexTTgNZ3xy4unuIoacAoJ
+ i65ljO1IAGxShzOLanEqKFAMguiVBBN84wbYDBpr0kbG1lU32E1cGTIczqgW2w82DRV0zMHp7_sk
+ RkIuj5k_JzxlnN5zNfGNQ27h3I4gVCCP9gOc5wekqRwLV8ifLYRb0bPkd8tD7JmD2LZ4W42b5344
+ HsLeoU48IJJDVr0YJZVirumWrxsKvF2I3o7_KXaVyliAP25U_deLjmT.BBE1UONAftNh2kNMOZhG
+ ak5IKdiwLyK6_12ip8oazaBJj_0W2q_gqrvjiq4bKG6iI._HycRHunW22uHeF9wvQrk5tc_APutn
+ ySnbWQ9ziXxvaBWtboypHwNZUDPR.1KsQgcqJSY2RL3r9XfaUo845YNVfdFuXJRnWkIvdttDKler
+ fyJKbvSmeSCJKhNzvxBHRQYh5n.3NYvEikv_TsZJacJhbUnWXZUvXasP37MGyoQ7GLT5da687ovE
+ MPDnTVH5iJuFgVqg.nx3oyRUA1nTBGBfvFZYSiKFVAvWHa4stTt3NH3SSaTDdTBWfIGRsYGhkvLA
+ dGy3Z7XijAEEDsjVV7IcaVpLVWIbJ5jIIBJ13eYMxWVJ5f4A4lIZrv_SZBpvByB1sfv.DS7gSonq
+ 1VNOutIuK8hijTa9otiRaFsP5_Q0XVFGUteywvHokJuiKc9VgRr3JHFzTPQ4VicD_5wUtc5IFJ1G
+ Whv.16lmZ496l.ekC09_B7nK3cP4JcBG1bvLevBfXuZGDgqGnk69NAcG7XfInLZXd.siTtH_j2Hu
+ Um8ryul1Tv18C0USqxm8iwpFTlN8Nnzyfmboy0o0wiQplgRXpa.HUUaRAp_Q1evqftIW2KXhIQd.
+ PgvidYsIBtF.XIaFWMsLdcMg1GvBlnp_6PRqwXVoLM2PAqh5VqVkQQTOfaBeMPEn8jtbd6qNLLqP
+ 0LUJpjXA1La1EIPftMu6oPuaNY5s2vCt4KwXJcivqOm8eJpB7YSB6SjubeIV9IqXdILqqdTIJ5I1
+ loXhSfvkPvTocCDcdoz7FvbKaejGqeAjQjG8RIM0v82Pdtw0DCF.8aCwGPn7CiVmUwVA3AB8L30S
+ N_n9FCd6TcDBPoK5HwRSX..z0kdfVosVSs6SS2qsrOs3jY06vlXP0PhNz2EG_YmgI7YvRoqKxbY7
+ PKcwpvJsXvM7YBuftOiseBjk3I_KzychmFW.f.Ls34I5eM8XzWMW0LfYeBAwTIprJKhvL6V_Vrms
+ tgESrkIU7v9UtaRwWh7DKRHDJUDHgqExo6lBS0mqHPrUKy.hVNgkJlB2PDa_Qv4JSP3Rf1VmTgvH
+ Fcv96CSp4tjyCAXFkI47vWUo4VCWan1qd7NG.JaBVJ1kVaf_Z0uiLr9CVPVJD6A.o_UxUDqo-
+X-Sonic-MF: <ashokemailat@yahoo.com>
+X-Sonic-ID: b20f7dc0-ce88-4f67-8215-c25d657d58b6
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Fri, 3 May 2024 17:00:52 +0000
+Date: Fri, 3 May 2024 16:20:24 +0000 (UTC)
+From: Ashok Kumar <ashokemailat@yahoo.com>
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
+	"linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, 
+	"linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"outreachy@lists.linux.dev" <outreachy@lists.linux.dev>
+Message-ID: <1389558595.6771301.1714753224419@mail.yahoo.com>
+In-Reply-To: <c8d24241-1763-f7b7-4491-2e5aa3ea3be@inria.fr>
+References: <ZjRDUO6/M+RDCcQJ.ref@c> <ZjRDUO6/M+RDCcQJ@c> <c8d24241-1763-f7b7-4491-2e5aa3ea3be@inria.fr>
+Subject: Re: [PATCH] staging: fb_tinylcd Alignment to open parenthesis
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB7PR04MB4842:EE_|AM8PR04MB7745:EE_
-X-MS-Office365-Filtering-Correlation-Id: 51e54e60-3c51-43c6-d54c-08dc6b8ce9ab
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|7416005|376005|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?bXZLQTJrZTE1ai93VkFTaDJMbzRKajVnb21TNkxodFBFay84aHZoRHRpamlV?=
- =?utf-8?B?NittUFRkclRoOGVoWGV1QlAwWjlZTEVmREprZERteURONHhVZEJXSlJVbDh1?=
- =?utf-8?B?R1dEaUF4RlUycjd0VkZ4MzhvN1lHQWlqZHZOWUJsY2JYMFY2Q3BDL1RNSVNC?=
- =?utf-8?B?Q2RwRjhkeVc1OXpmanpnazdEUUFaUzdLQ0RWUXdjS1Y5eHpwNmVlbDhXL05a?=
- =?utf-8?B?dXllMzhaSStUdkErQmoyUnpsZ2NNM3g1clBkVHI0eThMMHFrSDY4RGdSRVlP?=
- =?utf-8?B?TGczazRDeCs4eUxhUFRwcVJ4REJNbG9CQy9qVnJrMXkvZ095V0hDbkRwTDMx?=
- =?utf-8?B?MTcxL1ZMTlpXd2NTb01FdjlVcHlBQThMbkUwQVUxZlJqVldnR3Q2QnRCTlBx?=
- =?utf-8?B?ZlF4SkxsbHlYSGtyUGpsY1NmVUI0TzFSU0xxSUVVVDdQUjBvUENiMjM3YjdL?=
- =?utf-8?B?cWxPSnZiSDdiMDZka0Z4bmxHUVROc0F2ZzVMZWlXaUsyZXNVUDVTbmNnMGFl?=
- =?utf-8?B?SC9RTjdQVm90aDE2ZTFGVWhzTWpxZlJKN0syZVA4VnRKY3JWT2dJdU01QmNX?=
- =?utf-8?B?M05ZQURIV0FZcmZVT0RHOXJiam5FTDNjTEpNbUU1WW5TeGRnT3RaTXF3VGNU?=
- =?utf-8?B?QXNSWDdRZ2N6T0lEWWlheSsxeEhHRlpJQWVVKzdkYWZ1NmVMKzBvV2ErODM5?=
- =?utf-8?B?SGY2OGd5OTZsdXFia08xdlRsNk5Ka2RZV1Q0QUVJd1o0Yzh5NSsxb2pZR3dk?=
- =?utf-8?B?MHlhVkhFUkQ2R1dSTytiSTM0NzdEZldpL2NXK2tFNzRZUjNwUWlqWDM5T3Ni?=
- =?utf-8?B?MGtGdGdzYy9WaVFZWVQzdVNHcS9RY0tPVnpkNXp6OTJ0ZmwzNCtjckg5Z2Vl?=
- =?utf-8?B?ME9IZHdUSStJY2VENXFPQjlQbG52SVdqcWtDbDFJMlR2ckZGeXpMSjkwZDNQ?=
- =?utf-8?B?a3Z6eFNsa2lra0JQSUxNVzhlM3pBUmd2MFovQkpHYWkxQWZaOE84cit4NTdY?=
- =?utf-8?B?V1ZVVy8vNnlWc1Ixbk1JOEZMSEszQTBROURKV3AwU2oraTdWeFZORU42RGFX?=
- =?utf-8?B?TUVEZFg5bnh1NXNLcXRkOHdNMmUwWnFYeG9JT3lQZVh2T1pDcjNEN09pZmNF?=
- =?utf-8?B?Z2p4Y09ZYSt3bjJsSnFNNjdzZlJ0ZEk5ZkpBcDRlZ244K0x5QmRacktvVDIx?=
- =?utf-8?B?LzAyRHl5T24xTFBMS3R4K2xiN0JuZU1PZDVoNWlPbWk4VWJ4ZFZZM0FkYW5Q?=
- =?utf-8?B?S3BOR3JZSHpMcUkydU1RTFVIN0NrdEtuRzUwYThJcVcwTnlYWkR2VS9iRFNx?=
- =?utf-8?B?dXhwME9oaC81Q3VDRnNISVNkM0NUbm1FaHFvTmJNb2Y0SjM0VVVtVHNIa1Qw?=
- =?utf-8?B?R3hzVVR6cDBqaDFyc1Z1U2t6VWd1dU13NDhSUVhhRVhPQVRCS1J0MmI1ZHJk?=
- =?utf-8?B?bmV5MXFKbTNnWHFSR2sxYWpBUENHQ0gxRTV5eTEwZmwva0lyMUJMVGE5MVlB?=
- =?utf-8?B?NnpJNUVxY3dXbTFwYUtoaGRNUlpYZDIwblJaRUh5T2N1dGxPbUVsMDRONXl5?=
- =?utf-8?B?QzNpNFRvVE5EdGpGMHBURlozSy8vZXRhVFFiMjA3YVR3TXoyNDlwcnM5TVlQ?=
- =?utf-8?B?dmRKeVVoR2RzZ0RDSmlOSFNmd2Z6YTNhMWNrdHFPbTNqd1dwSVJiWTB4Z093?=
- =?utf-8?B?WEx4cmpGUUVucnJjc2V2a1E1SXN3WWtXd0ViYTBjbVorN3EwdVFwVGtBPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB4842.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YWVsU1UvTUduK3M5L3J1RVJoS1QvdDVBSjlCWHIzS0hvU1dVdlZiMnRUSDFy?=
- =?utf-8?B?MmdJSEZqZ1JqZ3dNNjZBUFZGVGN4S3E2ZkZ3THc1aHpYOVBIUzBOSXFPUmhH?=
- =?utf-8?B?RnU1RDRuemdSUTdyc1doK1pWeTkxa0VsUWYvTVZyNUd0MzhsQmNXVGI1OXNh?=
- =?utf-8?B?Uk5jQU5ZT2Vsb01JZC85WlhlSGhzMGI2UkZITnhZREExY3IydkNzd2lhTmN6?=
- =?utf-8?B?WlRYUk82d1ZqcDRCUkN2VTFrTElNRVc2WTFQektlMm1OdGZGeHlQMElTZGFm?=
- =?utf-8?B?UDVNRHRJWENobUMrbThDYWhNaXdER05jQTdXN1FaUFpaRk8vS3VLRE8zMExD?=
- =?utf-8?B?bmdsRHFhSDdZcFZjbGUyV3E3OUo4UW5ZR2Z4aEhaT3dMK1FjNkF3UFQ1bXNJ?=
- =?utf-8?B?djRkWjI3OFNvM2F4QUFjdU85ME43L0FLNlE5cDhwZURkMURlaTdZTkJJZ25m?=
- =?utf-8?B?UmMyTzhVMUpsMU44M0h3ajg3YnZwakt2ZzBSS1dPMkZoZy8rdDdBeDZVM3FP?=
- =?utf-8?B?ZXpyMWtsMHdrOHJ0d1BPUERvbElYVGNQalRXbG9yWG9wU1oxeTZyMDkvRGNN?=
- =?utf-8?B?VnphQmtuU3laZnlPQTdiWDlnVzc2ZGZIcmlRZlZIMUlvWFpMZ2pybDlsZ20z?=
- =?utf-8?B?VHY4eVpJenF3anpNMGhkN3BCZ3ZvOGJWOGRWNmJoVTVlTmZtRTNOcVVCaHFP?=
- =?utf-8?B?SkszVWwydTFNRUhTYjNtWW9QZUFUd3Zmd21rVlNGQ01sTVFZNHJLR0ZHZXUr?=
- =?utf-8?B?SUljaFNQTW84WVM4dHAzcFJqaHFiR3VLd3hxOFVqbEVGdmdCODJjVk5UWHRP?=
- =?utf-8?B?dExLMlh1dzlHaVE4Smdhb3RJV2k3RS9nMmd1ODVNQjNRVmtiV1kzd3FQNkIr?=
- =?utf-8?B?SVJyYzNlSkVsUFVRelNoNDdIb2pZUmMrd0VNK1FCTWVPbnMxOWpRandDRDBT?=
- =?utf-8?B?SmlHMzlORnBURGZKTjc5NEVVeThzbDFRbnlqcmNPU0l2bStkU1owdTBJWmps?=
- =?utf-8?B?QWVTbFlNVHRaZ3VCclJvMEU3MzIvSCtZYzlYcGV2Z2hTd3FZb0V0OGJIMXBD?=
- =?utf-8?B?bWhpRk9mbXRWeElCb3hmTjE4U0VpeUwyYzBOT1E3Qnc5aEUwaDY5RVNxeFo2?=
- =?utf-8?B?Vkl2NWJuNUp6N3FuLzhHNDJaelMxVERIajB1bmxJZHFKS3dwdVZoRlh5Rkx0?=
- =?utf-8?B?bmRQUjRIR2pDY3UydEd6OC91OHd6MXpySEFwOXJRQnNJTFRUbG90c3pBK25w?=
- =?utf-8?B?cEdsRjhLOExJSUVFNkZIRTVtcVBoSmRCTDQ2VlNyMC9YVkM1SlhPQjQzOFRt?=
- =?utf-8?B?bXVET1JaYUtZU0ZWRUpLaURPczBNOTZld1RaZVNIQnB4WjZTSUk1cmpLS3Jq?=
- =?utf-8?B?WW1rbVIyS3J5WGxRNXRlN0NvNjRCTytFSk4zVUg3VVZOVXAybWpkR0lLS0hn?=
- =?utf-8?B?djRpNHZid3MvZ1VmVDZKVFVHNnorTlFJdlhEblhDZ1U4WVFGWmU1ZzJvVTNz?=
- =?utf-8?B?ZEVVYmZra0h3TUxTZFlobEw5Vjd4Zmp4M0UxbmlKV0hnMDZ3VFJ2aXpOejVU?=
- =?utf-8?B?TFFOdVptSWxGeXE2ZzVnbXdoeWFPR0dtUnV4WUtIbDJ5c3ZsQ0p6UDc2NXNk?=
- =?utf-8?B?enZ1dENwenh5MnZuVEJybWpnOUFFQUtPU3ZyZlhMNnVaQWQxVHR2TmY5OGNk?=
- =?utf-8?B?Q3AxSnA2am5pVURaR0p3dW8zNEdyKytXRzBNTU1xVFQwSmZ2YXBDTm8xdnVy?=
- =?utf-8?B?YjZPbThHbFNQNWZYbmNPU2ZNemU2TWNNdGZVWk4waHdkRkp0emxpQ3U3M1Yv?=
- =?utf-8?B?cUlsaUwzSjBWc09mdHI2QzNlUXozOWZ4UlFRQlFEYysrTmp3MVdORXA0cGpx?=
- =?utf-8?B?RkNKRjRxV0U1U0MwNUtoUzErS3pkU25PNWtWQTIwYmxPYWZkVUZlTnkreXVh?=
- =?utf-8?B?V3JzYXdLZ2Yzb2dNaFk0RzV2TEdMaGpka1BPZlBveUdUV0c0aWMzQmFWQ3ZJ?=
- =?utf-8?B?ZVBrUEZjblY4MWdDQzBjNmhTNXlTMkpGa29meEhhdVhoZGYzOG56ZVFwTGhn?=
- =?utf-8?B?d0FEL29hSnVwWGNDUXRuZGl0dXd5OGVZRnZIb0x6UWdxcS9tUlovR2RRRVNN?=
- =?utf-8?B?OGdtNXVaYVhiVTBFTWlkY0NVWVpNTVJHVGlBeTJ4Z1IrYUZTY2RtZlBESExt?=
- =?utf-8?B?dnc9PQ==?=
-X-OriginatorOrg: cherry.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51e54e60-3c51-43c6-d54c-08dc6b8ce9ab
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB4842.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 16:20:14.4548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IYHGSo6wYq7PHivFXRUnxD1fWAY0LrgnD+nXMkjdTjR5VN6wL47C6ouhlotFv7wjzaJLkp5XNRTaDRInjrX7v+dYhNimQSxZ0clkw8qV9HQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7745
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.22256 YMailNorrin
 
-Hi Peter,
 
-On 5/3/24 7:30 AM, Peter Rosin wrote:
-> Hi!
-> 
-> 2024-05-02 at 17:01, Farouk Bouabid wrote:
->> Hi Peter,
->>
->> On 29.04.24 17:46, Peter Rosin wrote:
->>> Hi!
->>>
->>> 2024-04-26 at 18:49, Farouk Bouabid wrote:
->>>> Allow the mux to have the same address as a child device. This is useful
->>>> when the mux can only use an i2c-address that is used by a child device
->>>> because no other addresses are free to use. eg. the mux can only use
->>>> address 0x18 which is used by amc6821 connected to the mux.
->>>>
->>>> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
->>>> ---
->>>>    drivers/i2c/i2c-mux.c   | 10 +++++++++-
->>>>    include/linux/i2c-mux.h |  1 +
->>>>    2 files changed, 10 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/i2c/i2c-mux.c b/drivers/i2c/i2c-mux.c
->>>> index 57ff09f18c37..f5357dff8cc5 100644
->>>> --- a/drivers/i2c/i2c-mux.c
->>>> +++ b/drivers/i2c/i2c-mux.c
->>>> @@ -331,7 +331,6 @@ int i2c_mux_add_adapter(struct i2c_mux_core *muxc,
->>>>        priv->adap.owner = THIS_MODULE;
->>>>        priv->adap.algo = &priv->algo;
->>>>        priv->adap.algo_data = priv;
->>>> -    priv->adap.dev.parent = &parent->dev;
->>>>        priv->adap.retries = parent->retries;
->>>>        priv->adap.timeout = parent->timeout;
->>>>        priv->adap.quirks = parent->quirks;
->>>> @@ -348,6 +347,15 @@ int i2c_mux_add_adapter(struct i2c_mux_core *muxc,
->>>>        else
->>>>            priv->adap.class = class;
->>>>    +    /*
->>>> +     * When creating the adapter, the node devices are checked for i2c address
->>>> +     * match with other devices on the parent adapter, among which is the mux itself.
->>>> +     * If a match is found the node device is not probed successfully.
->>>> +     * Allow the mux to have the same address as a child device by skipping this check.
->>>> +     */
->>>> +    if (!(muxc->share_addr_with_children))
->>>> +        priv->adap.dev.parent = &parent->dev;
->>> This is a dirty hack that will not generally do the right thing.
->>>
->>> The adapter device parent is not there solely for the purpose of
->>> detecting address clashes, so the above has other implications
->>> that are not desirable.
->>>
->>> Therefore, NACK on this approach. It simply needs to be more involved.
->>> Sorry.
->>>
->>> Cheers,
->>> Peter
->>>
->>
->> Another way to approach this is by implementing this flag as a quirk for the added adapter:
->>
->> (tested but not cleaned up)
-> 
-> Yes, good idea, this is much more targeted and generally feels a lot
-> better.
-> 
->>
->> """
->>
->> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
->> index ff5c486a1dbb..6a0237f750db 100644
->> --- a/drivers/i2c/i2c-core-base.c
->> +++ b/drivers/i2c/i2c-core-base.c
->> @@ -821,9 +821,21 @@ static int i2c_check_mux_children(struct device *dev, void *addrp)
->>   static int i2c_check_addr_busy(struct i2c_adapter *adapter, int addr)
->>   {
->>          struct i2c_adapter *parent = i2c_parent_is_i2c_adapter(adapter);
->> +       bool skip_check = false;
->>          int result = 0;
->>
->> -       if (parent)
->> +       if (adapter->quirks) {
->> +                if (adapter->quirks->flags & I2C_AQ_SHARE_ADDR) {
->> +                       struct i2c_client *client = of_find_i2c_device_by_node(adapter->dev.of_node->parent);
->> +
->> +                       if (client) {
->> +                               skip_check = client->addr == addr;
->> +                               put_device(&client->dev);
->> +                       }
->> +                }
->> +       }
->> +
->> +       if (parent && !skip_check)
->>                  result = i2c_check_mux_parents(parent, addr);
->>
->>          if (!result)
->> diff --git a/drivers/i2c/i2c-mux.c b/drivers/i2c/i2c-mux.c
->> index 57ff09f18c37..e87cb0e43725 100644
->> --- a/drivers/i2c/i2c-mux.c
->> +++ b/drivers/i2c/i2c-mux.c
->> @@ -334,7 +334,26 @@ int i2c_mux_add_adapter(struct i2c_mux_core *muxc,
->>          priv->adap.dev.parent = &parent->dev;
->>          priv->adap.retries = parent->retries;
->>          priv->adap.timeout = parent->timeout;
->> -       priv->adap.quirks = parent->quirks;
->> +       /*
->> +        * When creating the adapter, the node devices are checked for i2c address
->> +        * match with other devices on the parent adapter, among which is the mux itself.
->> +        * If a match is found the node device is not probed successfully.
->> +        * Allow the mux to have the same address as a child device by skipping this check.
->> +        */
->> +       if (!muxc->share_addr_with_children)
->> +               priv->adap.quirks = parent->quirks;
->> +       else {
->> +               struct i2c_adapter_quirks *quirks = kzalloc(sizeof(*quirks), GFP_KERNEL);
-> 
-> This leaks, dev_kzalloc?
-> 
+On Thursday, May 2, 2024 at 11:54:58 PM PDT, Julia Lawall <julia.lawall@inr=
+ia.fr> wrote:=20
 
-Quick questions about this though.
 
-priv is allocated with kzalloc and not devm_kzalloc and is then manually 
-kfree'd either as part of the error path or in i2c_del_mux_adapters. Is 
-there a reason for this? Shouldn't we migrate this to devm allocation as 
-well?
 
-Similarly, I was wondering if we couldn't add a devm_add_action_or_reset 
-for i2c_del_mux_adapters in i2c_add_mux_adapter? Is there something that 
-prevents us from doing this?
 
-Cheers,
-Quentin
+
+
+
+On Thu, 2 May 2024, Ashok Kumar wrote:
+
+> Corrected coding style CHECK: Alignment should match open parenthesis
+
+Ashok, I think the code is nicer as is, because it has all the constant
+numbers lined up.
+
+julia
+
+Thanks for the update I will ignore this change.=C2=A0
+
+Is there a list of exceptions to the checkpatch information that we can ign=
+ore in general.
+
+
+>
+> Signed-off-by: Ashok Kumar <ashokemailat@yahoo.com>
+> ---
+>=C2=A0 drivers/staging/fbtft/fb_tinylcd.c | 2 +-
+>=C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/fbtft/fb_tinylcd.c b/drivers/staging/fbtft/f=
+b_tinylcd.c
+> index 9469248f2c50..60cda57bcb33 100644
+> --- a/drivers/staging/fbtft/fb_tinylcd.c
+> +++ b/drivers/staging/fbtft/fb_tinylcd.c
+> @@ -38,7 +38,7 @@ static int init_display(struct fbtft_par *par)
+>=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, 0xE5, 0x00);
+>=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, 0xF0, 0x36, 0xA5, 0x53);
+>=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, 0xE0, 0x00, 0x35, 0x33, 0x00, 0x0=
+0, 0x00,
+> -=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00, 0x35, 0=
+x33, 0x00, 0x00, 0x00);
+> +=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 0x00, 0x35, 0x33, 0x00, 0x0=
+0, 0x00);
+>=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, 0x55);
+>=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
+>=C2=A0 =C2=A0=C2=A0=C2=A0 udelay(250);
+> --
+> 2.34.1
+>
+>
+>
 
