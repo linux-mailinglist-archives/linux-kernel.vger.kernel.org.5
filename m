@@ -1,198 +1,174 @@
-Return-Path: <linux-kernel+bounces-167131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 682AC8BA4CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:09:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FEBD8BA4DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:22:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BA201C21818
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:09:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17209284741
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10603E556;
-	Fri,  3 May 2024 01:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF93DF4F1;
+	Fri,  3 May 2024 01:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Jarkgbdv"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gigaio-com.20230601.gappssmtp.com header.i=@gigaio-com.20230601.gappssmtp.com header.b="RJ8fSmiz"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849928F47
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 01:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A685AC138
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 01:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714698586; cv=none; b=ZRzO2hs6WW0PxOX7W+HlvDVYI1RT+QWKqNnj/52oJWt4Vdz2D/HQ7VL6GdMe4UNgRPaBF/XbS81UFReyF+AD+TnrUrjtEdae5zmFWwRQ1R+wcNjqYeZR2IPIzdFutcnh2RitSH3cnQi3V06GKL0WCrGWvili0gUaldSCLLYGshs=
+	t=1714699361; cv=none; b=goEq2/sgP1clViHtyf7rmQgds2UFCRMLB6HUD5uQgaVOyFNjpl9zXd+hibCo3NvVMFvYMzNt+yPvI6xvUiJxNV+YBihEiyCCwitjM0BqUMrwcRvVreQURp3Y8u7mjzFNQfr/b+ACxhKmWOWJadR4YF6WCapsXaSvCo6FuStILoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714698586; c=relaxed/simple;
-	bh=iayp5Ymt2FvhKu1bwN6Su6tiRmvTOj7tvklDVbpEaAo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=LMHewpoKhEqE0LvOIfgJ5LXy9PvL/TBAdRVJC1txBwEwVz+A2vwnZUQQ13uhE1uycsKzBj7T8loIwGK6zHwUhz1hyFTWlEXgCFm4BaNkR4o/e24DPZ8MeAsAVMPHOP7dS4JLE65sJGuAr9QY3jFGIOxQnum2FprZM+0Iv/p1Fw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Jarkgbdv; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 442MYFsU008652;
-	Fri, 3 May 2024 01:09:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2023-11-20;
- bh=lQ/aE5r73jz7sAhwozhn5KM1HznG3MJp5ZiMSMgpsgQ=;
- b=JarkgbdvNrJO/RDmT6uZH+SXL9lcOcakVBGKgVBbzE2TwtbVI1M+tY3FLCFDFxIXd9TQ
- 8RYep6FKZULQEqT84xeZgRz1qapObZr9zSmAM5dfP5oVas8UfvRr1kXMxY7E/IVJzYCF
- 55GkmTSc0H+k5gjCreKoRz0NQ+NXEWIh2ttBX85nSskkXrZzKooooMvGYvr3mWRE5JHu
- f1S6eVOTZZag+SY8PBhsv7HWjEl7KczUKCzkhsAPMIOPoe6GLOHMki1Bl/81ZNqm6cNb
- 5nOZvslxH2H4TsZTypJ4Yt804LeAyL66An1IgfyJYvMGL2O1uim19sD8+moLue2Z9/ZD FQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrr9cyrg4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 03 May 2024 01:09:25 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44300JsV006104;
-	Fri, 3 May 2024 01:09:25 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqtbp7y1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=NO);
-	Fri, 03 May 2024 01:09:24 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44319NBq035083;
-	Fri, 3 May 2024 01:09:24 GMT
-Received: from pp-thinkcentre-m82.us.oracle.com (dhcp-10-132-95-245.usdhcp.oraclecorp.com [10.132.95.245])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqtbp7xd-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=NO);
-	Fri, 03 May 2024 01:09:24 +0000
-From: Prakash Sangappa <prakash.sangappa@oracle.com>
-To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: muchun.song@linux.dev, akpm@linux-foundation.org, willy@infradead.org,
-        prakash.sangappa@oracle.com
-Subject: [RFC PATCH 1/1] hugetlbfs: Add mount option to choose normal mmap behavior
-Date: Thu,  2 May 2024 18:21:10 -0700
-Message-Id: <1714699270-7360-2-git-send-email-prakash.sangappa@oracle.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1714699270-7360-1-git-send-email-prakash.sangappa@oracle.com>
-References: <1714699270-7360-1-git-send-email-prakash.sangappa@oracle.com>
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-02_15,2024-05-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2405030006
-X-Proofpoint-GUID: FyXI72XEtC_EkyeeYQSoka8OGImmMRXZ
-X-Proofpoint-ORIG-GUID: FyXI72XEtC_EkyeeYQSoka8OGImmMRXZ
+	s=arc-20240116; t=1714699361; c=relaxed/simple;
+	bh=THq6Ze4gPUnRdVplVf82t5+be7u1nGQ6bRReSoZAFVY=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=CQupsfhz1i/oVXNxOz6g/2sR0Fa1F+EJNYkGxkMi3m2mBNwZnf8TIdW/xLDYOguvoaWtmmhJQTEekrgkNP0K7OdZEbKhgSSyiSQYJzKXhQwHUNkFMku0y7XeAKSDaWA20EqtRlOCZ+JATbLEV9g4BMdMZyfeZ7oVfhgiaWx+nvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gigaio.com; spf=pass smtp.mailfrom=gigaio.com; dkim=pass (2048-bit key) header.d=gigaio-com.20230601.gappssmtp.com header.i=@gigaio-com.20230601.gappssmtp.com header.b=RJ8fSmiz; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gigaio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gigaio.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ee2fda66easo2695843a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 18:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gigaio-com.20230601.gappssmtp.com; s=20230601; t=1714699359; x=1715304159; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k3nkCSoTperPlX+PtC8qWAin0Hv01DoPF7+bPAgfSgA=;
+        b=RJ8fSmizwW8Ri43tzpRG5Im75HX361c7DQsGdyZaVijbxOIg9jlmQIml0TzWlrQp/V
+         MClaa+yqzy1Jf/oCwom2hHjegN3oUAhnkYTTITaQvEcp3hTXtkuhUElnHL7amTs3t3yj
+         3w+moYdmVGSJ9cDBi9Rmn9n45k6F2+R3BJPBDzdvBhwZHG0eraIuZ4B+Nmf7IOTk9NUq
+         cFtRt57e7a+kreIb1xXgP4shdE7tcaB/woFshL5Va/1HyOB9ecvtyByVtOd6MKV82apt
+         wkULygsMUuM/3+g9GLpLZCtEdyqbkUAlhcBRLZe+GT6Tq0jYM9sfOpKNonIiMCD5mbh1
+         7L/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714699359; x=1715304159;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k3nkCSoTperPlX+PtC8qWAin0Hv01DoPF7+bPAgfSgA=;
+        b=uch3Bb2vsNX9UHpBB3mMhdm1VPHRZuB9LDsXsbPABRk96U+AUpu/ZPiG+0/Ula/h+t
+         fK0+d0kUuzceuoRxM6oO4mOiJAfks6ENiHV1vbAHRWkxvnlio3zhg9SXHOjOngIlfllm
+         SCbCA8Q4o8DILvQQkunYs/7QsHMNPa/OpDMQlOReTxz+vOx2KRp7thkjwpgcnvFbnF2i
+         RFoe696gxldlvAPBn5Hv+YdjJVWduRbkAx/5r/E8Mgkk6SAmVDnY3bAWiSHM7WDYPO/x
+         wnfU6iUnaRsHkCBCs9JOb6ezsn3xjdjdFayBJsPkCNsgbbNgYUoYKyECknceuNTIx2EZ
+         +QBg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7IUdZC3/zHb/Tn6ai6PAXeBpB8w/xs9i+rAWK7hTLNJseqr3NxBLCtjUJh57sWB0sXKDG+1TU4Ri6MffbXwk/BwgCmWuOsjmD/ou9
+X-Gm-Message-State: AOJu0YyoNeM8mwFOjj8y7VdEm11Gq6MaJYWRoiNoGiXNsgQsTU5V0G5t
+	rr47zBG3vrVRdRceX7E31Ou2OeIiJjFcFSUETvBEWUjQQbppK+S6A0/YJylUENk=
+X-Google-Smtp-Source: AGHT+IGYuWQGoJVifB5ByXnZOOtnc0jo+Gwcp8Ftoa0rZdJC9qXcD/CvZftAT0HRvOGe4Jw7d7sdMw==
+X-Received: by 2002:a05:6830:3490:b0:6ea:30bc:a6b5 with SMTP id c16-20020a056830349000b006ea30bca6b5mr1921224otu.22.1714699358803;
+        Thu, 02 May 2024 18:22:38 -0700 (PDT)
+Received: from smtpclient.apple (45-31-42-85.lightspeed.sndgca.sbcglobal.net. [45.31.42.85])
+        by smtp.gmail.com with ESMTPSA id d11-20020a656b8b000000b005f7ff496050sm1699721pgw.76.2024.05.02.18.22.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 May 2024 18:22:38 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v6 0/4] drm: Use full allocated minor range for DRM
+From: Eric Pilmore <epilmore@gigaio.com>
+In-Reply-To: <20230724211428.3831636-1-michal.winiarski@intel.com>
+Date: Thu, 2 May 2024 18:22:26 -0700
+Cc: dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org,
+ David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Simon Ser <contact@emersion.fr>,
+ Matthew Wilcox <willy@infradead.org>,
+ Oded Gabbay <ogabbay@kernel.org>,
+ =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ James Zhu <James.Zhu@amd.com>,
+ Pekka Paalanen <pekka.paalanen@collabora.com>,
+ Emil Velikov <emil.l.velikov@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <83E51798-5335-49AA-8211-60EC29577617@gigaio.com>
+References: <20230724211428.3831636-1-michal.winiarski@intel.com>
+To: =?utf-8?Q?Micha=C5=82_Winiarski?= <michal.winiarski@intel.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-Currently hugetlbfs file size gets extended in a PROT_WRITE mmap call,
-if mmap size exceeds the file size. This is not normal filesystem behavior.
 
-Some applications expect normal file system behavior for mmap, such that
-the process would receive a signal when accessing mapped address beyond
-file size. This will not happen if the file size gets extended by mmap(2).
 
-Changing current behavior for hugetlbfs can potentially break existing
-applications. Therefore provide a mount option "nommapfilesz" to choose
-normal mmap behavior.
+> On Jul 24, 2023, at 2:14=E2=80=AFPM, Micha=C5=82 Winiarski =
+<michal.winiarski@intel.com> wrote:
+>=20
+> 64 DRM device nodes is not enough for everyone.
+> Upgrade it to ~512K (which definitely is more than enough).
+>=20
+> To allow testing userspace support for >64 devices, add additional DRM
+> modparam (force_extended_minors) which causes DRM to skip allocating =
+minors
+> in 0-192 range.
+> Additionally - convert minors to use XArray instead of IDR to simplify =
+the
+> locking.
+>=20
+> v1 -> v2:
+> Don't touch DRM_MINOR_CONTROL and its range (Simon Ser)
+>=20
+> v2 -> v3:
+> Don't use legacy scheme for >=3D192 minor range (Dave Airlie)
+> Add modparam for testing (Dave Airlie)
+> Add lockdep annotation for IDR (Daniel Vetter)
+>=20
+> v3 -> v4:
+> Convert from IDR to XArray (Matthew Wilcox)
+>=20
+> v4 -> v5:
+> Fixup IDR to XArray conversion (Matthew Wilcox)
+>=20
+> v5 -> v6:
+> Also convert Accel to XArray
+> Rename skip_legacy_minors to force_extended_minors
+>=20
+> Micha=C5=82 Winiarski (4):
+>  drm: Use XArray instead of IDR for minors
+>  accel: Use XArray instead of IDR for minors
+>  drm: Expand max DRM device number to full MINORBITS
+>  drm: Introduce force_extended_minors modparam
+>=20
+> drivers/accel/drm_accel.c      | 110 +++------------------------------
+> drivers/gpu/drm/drm_drv.c      | 105 ++++++++++++++++---------------
+> drivers/gpu/drm/drm_file.c     |   2 +-
+> drivers/gpu/drm/drm_internal.h |   4 --
+> include/drm/drm_accel.h        |  18 +-----
+> include/drm/drm_file.h         |   5 ++
+> 6 files changed, 69 insertions(+), 175 deletions(-)
+>=20
+> --=20
+> 2.41.0
+>=20
 
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
----
- fs/hugetlbfs/inode.c    | 19 ++++++++++++++++++-
- include/linux/hugetlb.h |  1 +
- 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 6502c7e..e37867a 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -58,6 +58,7 @@ struct hugetlbfs_fs_context {
- 	kuid_t			uid;
- 	kgid_t			gid;
- 	umode_t			mode;
-+	ushort			nommapfilesz;
- };
- 
- int sysctl_hugetlb_shm_group;
-@@ -70,6 +71,7 @@ enum hugetlb_param {
- 	Opt_pagesize,
- 	Opt_size,
- 	Opt_uid,
-+	Opt_nommapfilesz,
- };
- 
- static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
-@@ -80,6 +82,7 @@ static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
- 	fsparam_string("pagesize",	Opt_pagesize),
- 	fsparam_string("size",		Opt_size),
- 	fsparam_u32   ("uid",		Opt_uid),
-+	fsparam_flag  ("nommapfilesz",  Opt_nommapfilesz),
- 	{}
- };
- 
-@@ -159,7 +162,12 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 		goto out;
- 
- 	ret = 0;
--	if (vma->vm_flags & VM_WRITE && inode->i_size < len)
-+	/*
-+	 * If filesystem is mounted with 'nommapfilesz' option, then
-+	 * don't update file size.
-+	 */
-+	if (!(HUGETLBFS_SB(inode->i_sb)->nommapfilesz)
-+			&& vma->vm_flags & VM_WRITE && inode->i_size < len)
- 		i_size_write(inode, len);
- out:
- 	inode_unlock(inode);
-@@ -1169,6 +1177,8 @@ static int hugetlbfs_show_options(struct seq_file *m, struct dentry *root)
- 		seq_printf(m, ",mode=%o", sbinfo->mode);
- 	if (sbinfo->max_inodes != -1)
- 		seq_printf(m, ",nr_inodes=%lu", sbinfo->max_inodes);
-+	if (sbinfo->nommapfilesz)
-+		seq_puts(m, ",nommapfilesz");
- 
- 	hpage_size /= 1024;
- 	mod = 'K';
-@@ -1430,6 +1440,11 @@ static int hugetlbfs_parse_param(struct fs_context *fc, struct fs_parameter *par
- 			ctx->min_val_type = SIZE_PERCENT;
- 		return 0;
- 
-+	case Opt_nommapfilesz:
-+		/* don't update file size in mmap call */
-+		ctx->nommapfilesz = 1;
-+		return 0;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1487,6 +1502,7 @@ hugetlbfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	sbinfo->uid		= ctx->uid;
- 	sbinfo->gid		= ctx->gid;
- 	sbinfo->mode		= ctx->mode;
-+	sbinfo->nommapfilesz    = ctx->nommapfilesz;
- 
- 	/*
- 	 * Allocate and initialize subpool if maximum or minimum size is
-@@ -1558,6 +1574,7 @@ static int hugetlbfs_init_fs_context(struct fs_context *fc)
- 	ctx->min_hpages	= -1; /* No default minimum size */
- 	ctx->max_val_type = NO_SIZE;
- 	ctx->min_val_type = NO_SIZE;
-+	ctx->nommapfilesz = 0; /* allows file size update in mmap call */
- 	fc->fs_private = ctx;
- 	fc->ops	= &hugetlbfs_fs_context_ops;
- 	return 0;
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 77b30a8..282cab5 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -537,6 +537,7 @@ struct hugetlbfs_sb_info {
- 	kuid_t	uid;
- 	kgid_t	gid;
- 	umode_t mode;
-+	ushort	nommapfilesz;
- };
- 
- static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
--- 
-2.7.4
+Hi Michal,
+
+What is the status on this patch? Did it ever get accepted upstream?
+If so, what release? I don=E2=80=99t see the changes in the latest Linux =
+kernel.
+I am working on a system that involves a large number of GPUs, where
+each GPU consumes a number of DRM devices. As such, I=E2=80=99m easily
+exceeding the current limit of 64 in the (6.6) kernel. To workaround =
+this issue,
+I have temporarily picked up this patch which is doing the trick, but =
+now
+I=E2=80=99m wondering if this patch has seen the light of day in the =
+Linux kernel.
+
+Thanks for any info!
+
+Regards,
+Eric
 
 
