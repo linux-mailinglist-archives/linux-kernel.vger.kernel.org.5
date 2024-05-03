@@ -1,134 +1,198 @@
-Return-Path: <linux-kernel+bounces-168257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45D038BB5CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:34:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B308BB5DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B503B245D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:34:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237E41F220B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BA958AC3;
-	Fri,  3 May 2024 21:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4136C71B51;
+	Fri,  3 May 2024 21:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="I041ed7w"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1p4Rwzk"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A580954BD8
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED56E5914C;
+	Fri,  3 May 2024 21:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772038; cv=none; b=CrM5qVFq5be+EeaJhjM548Rz+7wLO03H+MZhuB4t0IRPUQPhT0GBxh9EQsSYj9CdV76thm0QuKrQGphJf/lQCa7MyPf+e2t2VG0MxbMAw2RsgKUg4eFKfpaOO55DDGSfp5nbTPpxDLQyMfq9nWyWhIBtTZyQTEMh+xa66fryB1A=
+	t=1714772094; cv=none; b=Y6jarzwu+ejJ7OBMJur3bmamqlIijA4bf19DpmXgGQASdzvhMGTAqPlPNRnwhIFxUyYY/hJAGFT6FaYhgC/cwPkcJtM6EcZdUJFq17BDDhD4PZos2GgISZvNJSenjhTmXdwEcachuZZ9aWxThyYgF2ISjw/ICUnT1K/CqctXkJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772038; c=relaxed/simple;
-	bh=9Qapmfzm6lSNA1KjLLEHmaWSypEB5MZ/Duccomf7UwA=;
+	s=arc-20240116; t=1714772094; c=relaxed/simple;
+	bh=G+qm8/ugbECOEVX98AimsGMwO62Rp+FghrrPhBFcwwk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HbVzQVh1SznxwWGKLm+C9srm60jsrAY6sEzt/M36TXGVwNej9QkmC2cbqoAP0RMb8b+Wu7jFmccXaaYKWQeg13mlzy5kSH7cW0rc3K1UTeaJsx+KeGTbCcFCsqBPxzha6xd7NiSVvyq3sHZRnoNaA/x+Hp//bhxMgsgJ0gPrzH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=I041ed7w; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a599a298990so13922966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:33:56 -0700 (PDT)
+	 To:Cc:Content-Type; b=iKcvFv3dfL2v45LyjD0zdT9ENp/KiMjisTEKQgKihJryTsm4FLkBEtENfpIgQ9WF2ySgeSJJgWSMDWlK9kRiaNJVcGG6Fu2DrHs+Ov7kdtJGgmItsdfd5OKzRXDgF2/dqb/pN9TBXbAVRys34jK1yigVdMy5+C4/QoEDAA3bavs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1p4Rwzk; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-de54b28c41eso174466276.0;
+        Fri, 03 May 2024 14:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714772035; x=1715376835; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H0cKj1/eeDlsag1nYyx5cuj3RktPC8YvvhuCxa/6SIc=;
-        b=I041ed7wq74EqHv+lLpw/4OnY1kI3FzQ0ynGOUp7811sa7ORamvQCjH55bC3YnkSar
-         Klx1rhzeK82r5sekSRH+Cic3Wo0satWx94LLNP051CXWwirSPCCliSE8FVQHfxNUSvej
-         uk8KtcOJLyEkqe0pyZgWuEHuRw49MMa4Hn1p4=
+        d=gmail.com; s=20230601; t=1714772092; x=1715376892; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tC7sH68VgjfgX9UDWZ/v/q9uL8QvGp7TNkRbmhFCwL4=;
+        b=m1p4Rwzky0+igvUxP9f9wcQ+rnhCXMXAfOabXcMxTOYv2ycEoOJTrHPaDOcz4/n6Y2
+         TrH1TutXaA4g8Jqh7LGSp6DKGdmdTj7u+ecOhyzU5FfplNiYDUXG/zZwWlwz4z30jnIR
+         xoR578/tlAtYIaWdi0iil7vqOUPU8i74e3G4yq+0muG8mFxg/pDSWmND+M+fSsJSPOMG
+         eowVOh7ar6xjrq/q8J6ePNDLyDYETkw+F49vXgOxlNa+mQ7sXHRsZtAA/wzL+LShQKR/
+         TA/6dzJd91n6sBjDbU7piHst71tiOzk+3VqMF9a1ua6I8XmSZ6cFz475Xhz04GqrUhbG
+         Q9Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772035; x=1715376835;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H0cKj1/eeDlsag1nYyx5cuj3RktPC8YvvhuCxa/6SIc=;
-        b=lXX/SL7nJ1CXyaRv9z7YcqEhevezV13m1PDRl4Ea8W4m3mvkB2cp2ZX2WdvRAz9Pgd
-         O/BsXioTV5QupsMQ9v/a73EV11Vt51LD46HByZk9RekjAPJ4kUt2jxtRyFVp9ZmGdHAF
-         erba8WUXhMFk4E60jPwJL3IoUH9t/Edk7EGIAMQBatr5cTBBmBmsMOTkyqiGV9jACnVf
-         7i3w1+G8zYDuVyHCXwp937KoC1puWXeTq0mCfZjA6svKDeoKPB2rcUHzoHpE3+LnIpkL
-         TH9HcQ9w1jRnFUQTVNaxZdvcLKQcZ6e4kJskd3DdnEbVLw6j+D09iPn8AL2XiShPIK2Z
-         401Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU5rMSUUuqYg0swefKCjDaLb4MyBJTdFxdi8S58H3R6iVWjiiPlOX7zqJS9zIC9cV/q2Vn4aX+/68M6skpzXJ4KtvuVNWJLXY0Vqafn
-X-Gm-Message-State: AOJu0YxSNzTgoRPUImWIIJZI6Ist8ZIudSrfCTAbSc5q+Lxo2NSUT4YU
-	OdkJqb9vVCM6mNStwhHfKWWiiHVkggy5BMv/sVV0xiu63yXo3NPR08sU/+KEH7DeYXBpI0ULojJ
-	fweRToA==
-X-Google-Smtp-Source: AGHT+IG8MhpUXmKnXX/11quCokJaAqAwf2Vj5OIgCJccUL6T64QtDABYTBQcAin7T4x/QZrlRzN1Aw==
-X-Received: by 2002:a17:906:2492:b0:a59:9f4e:4e3d with SMTP id e18-20020a170906249200b00a599f4e4e3dmr809157ejb.3.1714772034809;
-        Fri, 03 May 2024 14:33:54 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id dt14-20020a170907728e00b00a5974a4d662sm1737366ejc.151.2024.05.03.14.33.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 14:33:54 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a599a298990so13918466b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:33:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUl+cnbXHSRYiie7KCI+yuTgiWT4lFBoT3lVlxO++wXyqu8eJVhkU1unjlstugFZWwzbGDn5R7utdynpxC5P/zC4T4Bdt9FBmlajPiQ
-X-Received: by 2002:a17:906:2c50:b0:a59:761d:8291 with SMTP id
- f16-20020a1709062c5000b00a59761d8291mr2183947ejh.9.1714772033952; Fri, 03 May
- 2024 14:33:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714772092; x=1715376892;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tC7sH68VgjfgX9UDWZ/v/q9uL8QvGp7TNkRbmhFCwL4=;
+        b=kwrTdqzDBc99dGZOmxD/EpbXrMC2Oh6DUxHTDENc5gj1FPtTrZwg9lQ54fZQKt3SGt
+         nm6dnLOU43TKbuxaevl6uvo5BmmfNV1jhkkzHzZIv789/fK4y7a8Kp0fZBSV69qY0YQE
+         KLl7zfRQfRpJ7ZLYx8oSpSm8vgMYrNckqcwpNtDYPZZCcUPXFCHL82dj3+QLUyxXaNkf
+         NKPg44dUdoTJSIaE/X5GLoaGjE11bBwc79nsOmNAneNl8nLAWGj9ypg7UtEl7CD2Rq3t
+         /+krfJf4YZgHbD9FcKMu7CFNpyTIWA54O3AEkMAy8iEI9X+2bBIbVVRaPYgWtO77seCx
+         NWyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUGJlQt3OWuSvQfSeYFCLZ7OW1Zs/a77NwDZxk412zDPIAIrWoxVUaKht03CxNYBfX2KvIA/7zt+iUmtOvEX1fhr0T33gSGk3TQk+315eC8W74eVYSsr4Ht2IXbbdcCEb/IYuzHFMzTXYteu5rmzCisNT/8U/XZYxK/d5S8ts/d/AsthFU=
+X-Gm-Message-State: AOJu0Yx3cvRUHfE2X/zkFo4b1jBxE4+AMuNm19X6dR6YGGAKeDRBmPrL
+	j6hoPyGgKPUQAkiGUjTQsxvTmha+H0zpRL7SiTtk/5x1XGoPtsyzkN/EPAeOdDuNiDvCHaN0w+v
+	/ZoRnJ6Xhi9E5/1SG81F6JPDE2QE=
+X-Google-Smtp-Source: AGHT+IEQvMYH3a3ssvxy7/wLXnv0LSmhPbEgC7ELP4izinqJGxMGJIE45fXICeFpMs8mFmdPFgPcOMLIbyUy2gK1MHA=
+X-Received: by 2002:a25:c70c:0:b0:dc5:f51e:6a60 with SMTP id
+ w12-20020a25c70c000000b00dc5f51e6a60mr3921979ybe.6.1714772091984; Fri, 03 May
+ 2024 14:34:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202405031110.6F47982593@keescook> <20240503211129.679762-2-torvalds@linux-foundation.org>
- <20240503212428.GY2118490@ZenIV>
-In-Reply-To: <20240503212428.GY2118490@ZenIV>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 3 May 2024 14:33:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
-Message-ID: <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
-Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org, 
-	christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
-	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name, 
-	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	minhquangbui99@gmail.com, sumit.semwal@linaro.org, 
-	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com
+References: <20240503135455.966-1-ansuelsmth@gmail.com> <20240503135455.966-6-ansuelsmth@gmail.com>
+ <5529fe79-e2f8-47ab-a0cf-2b37bb13bbd7@broadcom.com> <CABwr4_sz4DKjp_cJqTNBCyQSUhXGJM4_h1JSiK-h=8uAbPPoVQ@mail.gmail.com>
+ <66355403.050a0220.9e59a.8031@mx.google.com>
+In-Reply-To: <66355403.050a0220.9e59a.8031@mx.google.com>
+From: =?UTF-8?Q?Daniel_Gonz=C3=A1lez_Cabanelas?= <dgcbueu@gmail.com>
+Date: Fri, 3 May 2024 23:34:41 +0200
+Message-ID: <CABwr4_u6bgdWHeYwyDTW3xoM-z+JaEPan98jY7QZjP6thgkGRA@mail.gmail.com>
+Subject: Re: [PATCH 5/6] mips: bmips: enable RAC on BMIPS4350
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Hauke Mehrtens <hauke@hauke-m.de>, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+	=?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>, 
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 3 May 2024 at 14:24, Al Viro <viro@zeniv.linux.org.uk> wrote:
+El vie, 3 may 2024 a las 23:15, Christian Marangi
+(<ansuelsmth@gmail.com>) escribi=C3=B3:
 >
-> Can we get to ep_item_poll(epi, ...) after eventpoll_release_file()
-> got past __ep_remove()?  Because if we can, we have a worse problem -
-> epi freed under us.
+> On Fri, May 03, 2024 at 11:11:13PM +0200, Daniel Gonz=C3=A1lez Cabanelas =
+wrote:
+> > El vie, 3 may 2024 a las 20:56, Florian Fainelli
+> > (<florian.fainelli@broadcom.com>) escribi=C3=B3:
+> > >
+> > > On 5/3/24 06:54, Christian Marangi wrote:
+> > > > From: Daniel Gonz=C3=A1lez Cabanelas <dgcbueu@gmail.com>
+> > > >
+> > > > The data RAC is left disabled by the bootloader in some SoCs, at le=
+ast in
+> > > > the core it boots from.
+> > > > Enabling this feature increases the performance up to +30% dependin=
+g on the
+> > > > task.
+> > > >
+> > > > Signed-off-by: Daniel Gonz=C3=A1lez Cabanelas <dgcbueu@gmail.com>
+> > > > Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> > > > [ rework code and reduce code duplication ]
+> > > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > > > ---
+> > > >   arch/mips/kernel/smp-bmips.c | 12 ++++++++++++
+> > > >   1 file changed, 12 insertions(+)
+> > > >
+> > > > diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bm=
+ips.c
+> > > > index 6048c471b5ee..7bde6bbaa41f 100644
+> > > > --- a/arch/mips/kernel/smp-bmips.c
+> > > > +++ b/arch/mips/kernel/smp-bmips.c
+> > > > @@ -617,6 +617,18 @@ void bmips_cpu_setup(void)
+> > > >               __raw_readl(bmips_cbr_addr + BMIPS_RAC_ADDRESS_RANGE)=
+;
+> > > >               break;
+> > > >
+> > > > +     case CPU_BMIPS4350:
+> > > > +             u32 rac_addr =3D BMIPS_RAC_CONFIG_1;
+> > > > +
+> > > > +             if (!(read_c0_brcm_cmt_local() & (1 << 31)))
+> > > > +                     rac_addr =3D BMIPS_RAC_CONFIG;
+> > > > +
+> > > > +             /* Enable data RAC */
+> > > > +             cfg =3D __raw_readl(bmips_cbr_addr + rac_addr);
+> > > > +             __raw_writel(cfg | 0xa, bmips_cbr_addr + rac_addr);
+> > >
+> > > This enables data pre-fetching (bit 3) and data-caching (bit 1), have
+> > > you tried with 0xF to see if this provides any additional speed-up?
+> > >
+> > > Looks correct to me otherwise, I wonder if a flush would be in order
+> > > right after enabling, though I did not see any specific instructions
+> > > towards that part in the programming notes.
+> > >
+> > > > +             __raw_readl(bmips_cbr_addr + rac_addr);
+> > > > +             break;
+> > > > +
+> > > >       case CPU_BMIPS4380:
+> > > >               /* CBG workaround for early BMIPS4380 CPUs */
+> > > >               switch (read_c0_prid()) {
+> > >
+> > Hi Florian.
+> > Bits 0 and 1 are already enabled by the bootloader, so no need to
 
-Look at the hack in __ep_remove(): if it is concurrent with
-eventpoll_release_file(), it will hit this code
+I meant bits 0 and 2. These are the RAC bits:
+#define RAC_FLH         (1 << 8)
+#define RAC_DPF         (1 << 6)
+#define RAC_NCH         (1 << 5)
+#define RAC_C_INV       (1 << 4)
+#define RAC_PF_D        (1 << 3)
+#define RAC_PF_I        (1 << 2)
+#define RAC_D           (1 << 1)
+#define RAC_I           (1 << 0)
 
-        spin_lock(&file->f_lock);
-        if (epi->dying && !force) {
-                spin_unlock(&file->f_lock);
-                return false;
-        }
+> > write 0xF. I checked it on some devices with BCM6328, 6358, 6368 SoCs.
+> >
+> > Example, without the patch, reading the RAC Configuration Register 0 an=
+d 1:
+> >
+> > - BCM6368 booting from TP0:
+> > root@OpenWrt:/# devmem 0xff400000
+> > 0x02A07015
+> > root@OpenWrt:/# devmem 0xff400008
+> > 0x0000000F
+> >
+> > - BCM6368 booting from TP1:
+> > root@OpenWrt:/# devmem 0xff400000
+> > 0x02A0701F
+> > root@OpenWrt:/# devmem 0xff400008
+> > 0x00000005
+> > root@OpenWrt:/#
+> >
+>
+> [ fixed the top-post ]
+>
+> If that's the case then i'm setting 0xf since we verified it doesn't
+> cause problem and it's already set.
 
-and not free the epi.
+It's harmless to re-enable the instruction bits. BTW the log commit
+refers only to data RAC, 0xF is enabling both the data and instruction
+RAC.
 
-But as far as I can tell, almost nothing else cares about the f_lock
-and dying logic.
-
-And in fact, I don't think doing
-
-        spin_lock(&file->f_lock);
-
-is even valid in the places that look up file through "epi->ffd.file",
-because the lock itself is inside the thing that you can't trust until
-you've taken the lock...
-
-So I agree with Kees about the use of "atomic_dec_not_zero()" kind of
-logic - but it also needs to be in an RCU-readlocked region, I think.
-
-I wish epoll() just took the damn file ref itself. But since it relies
-on the file refcount to release the data structure, that obviously
-can't work.
-
-                Linus
+Daniel
+>
+> --
+>         Ansuel
 
