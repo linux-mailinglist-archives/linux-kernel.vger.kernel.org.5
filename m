@@ -1,181 +1,120 @@
-Return-Path: <linux-kernel+bounces-167792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC28B8BAF3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:47:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0957D8BAF3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:49:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 629D9283842
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:47:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B93492843C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EB842056;
-	Fri,  3 May 2024 14:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA7046542;
+	Fri,  3 May 2024 14:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="yn2Kqd6b"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="a9cbh5sD"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C934206A;
-	Fri,  3 May 2024 14:47:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F3942076
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:49:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714747662; cv=none; b=FZgQYz0FmlTiaQXaCGXLQtVO6FRyo5H//HTcpIYR9idN226AoHxm0UJWYVCmihxot0NxVGchguJtbQ0FWfjXcK8TQf7Xv4AOqSaeDJljjRsGmnPQX8xlnPrWyuIOeHab1EPbG/OgDIEksSkxGHFIPpcqSrTq6WSGGv+EKHGISLM=
+	t=1714747761; cv=none; b=HPCZ5P0x5L4ktO03qEIyQxEYufQIbFQF9b+D7c6hLvlN4Vo2PFltxPMzSqQbexpllVE4VHB/yWhugS5uA9gElWbqeO0EQhBeCbzJNGwKlJgUSxCCSDuNOssrkamew82n5ueCPPIHUS2BsF+6sWikeAANQfZNSsbp50LNoqtH944=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714747662; c=relaxed/simple;
-	bh=TZJCI1romHYB3K7M0RnD7je7ZU6T6c8LjcioM4SVmjg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RqtfUkR07oShb9RcUWQy+ueztgvIzs5tXRQUXf0jskHRmRrt8IOkcV/FkssOPDUXEDBCRXV7LukvIVaSvZmLv5fi6mKkcJVAME/m2jIQlqasumON4noaJ4Tw2HLZlk/yJqceincG50E632T9Tg9jlgOndrLCZfbRQWnfmmcFA78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=yn2Kqd6b; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1714747652; x=1715352452; i=parker@finest.io;
-	bh=T+69W9y9gDlQCEnhSbezE3ef/Q0WYMrfqF0FGdvI5SA=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=yn2Kqd6b3pRoSSrbwBF8FrgYEwKgNcWBS+J91CM2AQpwOrN0x9q1Z71m0wCAgX8D
-	 mIh80H/I4xrGZNm3EgtAi/2t0nouoiD3eChAkU+ZC7u8Cugm7VlpL2cTLEk0/l1Yc
-	 FRdBRLCwl+/hy/2B6jELkjaEqfCl5EW6x6+q19B+RdWi7YagT1X8Hvh5/j0z8VtgX
-	 9KQSUMf44dr9NeaWfo6LhroJBoRRtNHXVTw/w6PFv91Q3b/eiKjvt6aTT01XsLFbb
-	 miIWGpsju+b9RBLbkqv8QbJ90yPylnwGni5uAjUPSvC7Dy+7pT8bcXtfJ+SmkRw9t
-	 fWoYtiE1ItKwkHx02Q==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
- mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0M1DzC-1svgi348z2-00xAg6; Fri, 03 May 2024 16:47:32 +0200
-Date: Fri, 3 May 2024 10:47:30 -0400
-From: Parker Newman <parker@finest.io>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Parker Newman <pnewman@connecttech.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 00/13] serial: 8250_exar: Clean up the driver
-Message-ID: <20240503104730.3e0f55d0@SWDEV2.connecttech.local>
-In-Reply-To: <20240503083638.0f8d9afb@SWDEV2.connecttech.local>
-References: <20240502144626.2716994-1-andriy.shevchenko@linux.intel.com>
-	<20240502114645.4445b3da@SWDEV2.connecttech.local>
-	<ZjO4vYEBzxU3fpzC@smile.fi.intel.com>
-	<20240502120840.02c65f30@SWDEV2.connecttech.local>
-	<ZjPL5z7ah-Qkct6l@smile.fi.intel.com>
-	<20240502134949.5e780635@SWDEV2.connecttech.local>
-	<ZjPVEr7D0lEf86kQ@smile.fi.intel.com>
-	<20240503083638.0f8d9afb@SWDEV2.connecttech.local>
-Organization: Connect Tech Inc.
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714747761; c=relaxed/simple;
+	bh=sIkQv8FPBAXSI8J1xzgFSbGfjS0vfeSYsCzMMHqXQDY=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=BD7eY5X2cUKSMp/mellz7oCYYmElp1WjlnIL/aZVrUgbw4kIkIAJJLTVXyyMG/4kVS3KPXQ4rAhYG/V23KKdsRPzDlQZDJLO31gQdRvm9UrUT9Yc5KADTMnyHvr2BQX4MQVDCObDPF8thCifcz8Gzhjr6UaqQtno9vyo4EKUV3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=a9cbh5sD; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-572babec735so2496732a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1714747758; x=1715352558; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vue7AEGpbhQWdtlSVezRt8OjfVIEQ/ARZwW50j0jLhw=;
+        b=a9cbh5sDSwJDQ8iBvEeC2mEr7o3XLcgZEp77KkqkfMD/3UzJEHgbQq7Hm6cExjhipe
+         kqZvDUllA3z2CvPereKBM6mNgtndcAC6lFVXN2N2I8pOhw1duTt1tOCXP7W7uoD00u6G
+         GiLTVsEZQOsIgpz4nR4JzY0IfXghYwZUps9U6nV9esOUO4r03GM7OMBJNOIPV6e6dq0C
+         Knvt+85JChzyaULAFrVDdudikLCslfy+KdiaFpaV2CazUhwKvHbHFL7S/JeVgYXJfZrq
+         YDtakTeuA0858mw/imalZX7AHmas00g5qJXkW8VdbsQ6Eope6mhRAfD4wjEo8f7Cw6WQ
+         ntyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714747758; x=1715352558;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vue7AEGpbhQWdtlSVezRt8OjfVIEQ/ARZwW50j0jLhw=;
+        b=MAxvfTBaeD7I20sFdZhFp6O2nxtRX+VnqK133EX1CeOKtunjM5HeFhukxjyuF1xlg/
+         oFO3+j1Rm44gm5qJ+WDekywEncdN6rOI6Se7pYUN7a3w1PF8EvfG64/w7flsef33GlUX
+         avesBv1U17rhOmYgTcc0HpJYmbeNHSIxoLPdJU0AbVvURfIMxGNgs8Nmqc67MWn4LkN+
+         uPIGVRQA81UaX0C6c3FsB6u4r/rozvCvxcjYb1xSw2swddqBAe8EKyoPS6iCOr6K5Jcr
+         lrZFnKFT1B4reRiPlS9tRbdvjd3/FgCaUT4m99hweZ1S99zeGmO6ZE3AI1R9zUaa/2vV
+         UzpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX32tURTts4q//vjBwL4FX5euWNoC//bzeAauW2mvrBYp9xc3f1gp4SvfQ3REiS6InQNWu59jHjSEBAXJfjbGAf84CqqwpSB3WgK5qv
+X-Gm-Message-State: AOJu0YxhGjnv2ulAcZqyS6HIr/Nhs45nQNfQqZNcqPHfUI61HalqoTAZ
+	kEB8QHUnR+qDHGBhtKay81AoHvxq9HmBErW5RMHc8PWpKRnyk4hELfEmIS0bOyI=
+X-Google-Smtp-Source: AGHT+IHS2L8YhvIVed6CV2FoQZFS19uLuOGp4sfBdE1Ni9CdpttS1oQhwnJdmrpHyLiNBhnvgP/6Kw==
+X-Received: by 2002:a50:9551:0:b0:572:aed3:a1b1 with SMTP id v17-20020a509551000000b00572aed3a1b1mr5220368eda.17.1714747758080;
+        Fri, 03 May 2024 07:49:18 -0700 (PDT)
+Received: from smtpclient.apple ([2001:a61:aa3:5c01:ad5a:d037:b2a5:befe])
+        by smtp.gmail.com with ESMTPSA id ba17-20020a0564021ad100b00572ba362607sm1738666edb.51.2024.05.03.07.49.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 May 2024 07:49:17 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:H/QltAz0nGlYfQDl9r0XHlXOofS8l7UvFlDkn49Jwh3MvBzTn26
- OI6KbRdnUUp69MOTajTvFjM8WlY5pJf3Mz1siEKM/lJVi1rzsNd7tGm/h9MSdl9TteSLcbg
- /9/zNCWabhcDZBmg2F5aTEH5qeoZSZi+yne7V5jlrD/8zYFPFfI3aBa61fHLNWexlkSOUdm
- 3LP1/V1XKDXS7HluBRWsg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:n8xASmWg36Y=;WXw9ghYm9n6Z43z2zipX7m+qDlx
- ntsqrm2aVP27mlEp2NXGVmTDQJhvw6DWl+aEZdrWMoFOcGcR/Xv9JNygmLDS3pvy1Ge+EADyF
- wPLn0nDsIoVjvQzx+jM20zl066uWiCO1m2p2kOmgTwcIFZ5hV3osadsDWA8YwLk06huvhWLFJ
- kqvOsTcJIsQdH/9D7LS2JGzytlaxnR8TkYckbDx4GvN/zqaQX3fHyiwEXPBF9M6P5Efg+SpsO
- jxJyzibDPM0WJE+vUfciXkf2ZuZzo2tU8e8NF3rMsZ4bqbgknBOaeMc+1efRZy0OEXA9B71ft
- ta39w+AI3Igcr3usJwPDw34Ga7nGOvodO9ahzF9V/Ynw6SjVVd/bz7Bzuh3LoU3nV4bwVOKuy
- f6ojCTwcGWQlIlCBnnvTKNw9JVTJGl0bbeGqLU3OaMyzBdUMXEJ6rC81UlgeILmCYqgsNuM6m
- gP7TcCcIIjuhQtsGCLDMHK/FLeSlYQsi55qadkYKAUlhODXBw6Z16tioQWE8tVW9bJElzQ0vy
- dGx2l5NViIzydug2oICZSDTz017/aoGYXiGM0iqpEcrHEdbv9TW6TBPpEv60KYPOjuZvItcGS
- IkdT+mrZ64leVFtQN6fG/BEOgvoEwh834zhIVSry/TQyrU5mG5f4B2P4jPgMdy8EYeHkVsmAt
- 7pKY4XQebvfhN9OIRWUWXStondShibvfwVEijZG5I2NaEWW2dGO1fQtl64/mjdP+rFqyv6zDc
- nM8mXNNEAvzHcpqiSNSXvGcpAMAmFU5xk7FmrShld3037zwvpx76Dg=
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH] bitops: Change function return types from long to int
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <99B58F85-CC9C-49F6-9A34-B8A59CABE162@toblux.com>
+Date: Fri, 3 May 2024 16:49:05 +0200
+Cc: =?utf-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
+ Xiao W Wang <xiao.w.wang@intel.com>,
+ Palmer Dabbelt <palmer@rivosinc.com>,
+ Charlie Jenkins <charlie@rivosinc.com>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Youling Tang <tangyouling@loongson.cn>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>,
+ Jinyang He <hejinyang@loongson.cn>,
+ Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <F1D1D3D4-CFB0-47A8-87F0-E1D8A6B5904F@toblux.com>
+References: <20240420223836.241472-1-thorsten.blum@toblux.com>
+ <42e6a510-9000-44a4-b6bf-2bca9cf74d5e@linux.intel.com>
+ <C0856D2E-53FF-45EB-B0F9-D4F836C7222C@toblux.com>
+ <e7e4ff27-ebb3-4ed6-a7cc-36c36ab90a36@app.fastmail.com>
+ <99B58F85-CC9C-49F6-9A34-B8A59CABE162@toblux.com>
+To: Arnd Bergmann <arnd@arndb.de>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On Fri, 3 May 2024 08:36:38 -0400
-Parker Newman <parker@finest.io> wrote:
+On 22. Apr 2024, at 17:55, Arnd Bergmann <arnd@arndb.de> wrote:
+>> 
+>> I can generally merge such a series with architecture specific
+>> changes through the asm-generic tree, with the appropriate Acks
+>> from the maintainers.
 
-> On Thu, 2 May 2024 21:01:54 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
->
-> > On Thu, May 02, 2024 at 01:49:49PM -0400, Parker Newman wrote:
-> > > On Thu, 2 May 2024 20:22:47 +0300
-> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Thu, May 02, 2024 at 12:08:40PM -0400, Parker Newman wrote:
-> > > > > On Thu, 2 May 2024 19:01:01 +0300
-> > > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > > On Thu, May 02, 2024 at 11:46:45AM -0400, Parker Newman wrote:
-> > > > > > > On Thu,  2 May 2024 17:43:54 +0300
-> > > > > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > > >
-> > > > > > > > After a rework for CONNTECH was done, the driver may need =
-a bit of
-> > > > > > > > love in order to become less verbose (in terms of indentat=
-ion and
-> > > > > > > > code duplication) and hence easier to read.
-> > > > > > > >
-> > > > > > > > This clean up series fixes a couple of (not so critical) i=
-ssues and
-> > > > > > > > cleans up the recently added code. No functional change in=
-dented by
-> > > > > > > > the cleaning up part.
-> > > > > > >
-> > > > > > > Just an FYI I submitted a patch series that fixed several of=
- these issues but I
-> > > > > > > think it fell through the cracks (I know everyone is very bu=
-sy!).
-> > > > > > >
-> > > > > > > Link: https://lore.kernel.org/linux-serial/cover.1713533298.=
-git.pnewman@connecttech.com/
-> > > > > > >
-> > > > > > > I believe my previous patch series is no longer required. Th=
-is one fixes
-> > > > > > > everything.
-> > > > > >
-> > > > > > I haven't noticed that, if it contains duplicated patches, I m=
-ay replace mine
-> > > > > > with yours if you insist.
-> > > > > >
-> > > > > > In any case it's better to reply there that you prefer this se=
-ries to be
-> > > > > > applied, so Greg will not pick it up.
-> > > > > >
-> > > > >
-> > > > > I do not have a preference. I am fine with using yours if it is =
-easier on
-> > > > > the maintainers.
-> > > >
-> > > > Up to you, there is no issue to take your patches in case they are=
- the same
-> > > > (or quite similar) as mine. I can pick them up, just tell me if yo=
-u want this
-> > > > to happen with a list of the patches (as mail Message-Id).
-> > >
-> > > Just use yours.
-> >
-> > Okay, thanks!
-> >
-> > If you are going to test, better to pay attention to the BIT() convers=
-ion patch
-> > as Ilpo noted an issue. I believe it's easy to drop (via local git-reb=
-ase run)
-> > or move and test separately.
-> >
->
-> I am working on testing now but patches 7 and 12 did not apply with git =
-am.
-> Both failed around lines 1095/1096.
-> I can apply them manually but I may be using the wrong branch (tty-next)=
-.
-> Which branch/commit did you create your patches from? I don't see it in =
-the
-> patch submission.
+What would it take for this patch (with only generic type changes) to be
+applied?
 
-I figured it out. git am was applying the typo fix patch out of order.
-Sorry, I didn't notice that. Patches should be fine.
+I did some further investigations and disassembled my test kernel images.
+The patch reduced the number of ARM instructions by 872 with GCC 13 and by
+2,354 with GCC 14. Other architectures that rely on the generic bitops
+functions will most likely also benefit from this patch.
 
-I can do a final test once you decide what to do with the BIT() conversion=
- patch.
+Tests were done with base commit 9d1ddab261f3e2af7c384dc02238784ce0cf9f98.
 
-Parker
+Thanks,
+Thorsten
 
