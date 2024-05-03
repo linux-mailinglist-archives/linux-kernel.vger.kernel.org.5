@@ -1,738 +1,301 @@
-Return-Path: <linux-kernel+bounces-168226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A1778BB55D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:14:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C368BB564
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:14:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1E81F2149C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:14:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCA1E28721A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B488B5914A;
-	Fri,  3 May 2024 21:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D38251037;
+	Fri,  3 May 2024 21:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="ShC7XAKU"
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [167.172.40.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JQSvFpDq"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B32134B1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.172.40.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714770858; cv=none; b=kHAP38HuMen9NHo/0c7IB+n7ZCMqzpX20957xeDwbwoe7wpGrcmY+NgdXZKoSlZHUrwOXEEdZri5p5YWYQ9HoCrBJzAnHp4b3p9Vt95ofoOAvPk7Femwgmvtl1/g1STwKAo2qyTTXe2/hzG+QDVE6tkvmYBxeZfHmChFcviR9nk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714770858; c=relaxed/simple;
-	bh=e7m08oZ5FCDWUKrcHhLTSEld0D5fRub5qqsnNy+QJ70=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=egGkj72LiX0BIm9V20dtFi5zg8Udx5RS42cttVV3T1O7N1ezMSJIbVZs89nt9/cT9n1X6sDlycYAeIYabGFxFzUWuy/1gMdIC1beXnrZMm4HPiV8JBNnTWyQPZMl48s1mYoBjVB9PeJMBDE4EEaCf/l0xsJ33skMCjHGjDKqXKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se; dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b=ShC7XAKU; arc=none smtp.client-ip=167.172.40.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
- Message-ID: Date: Subject: Cc: To: From; q=dns/txt; s=fe-e1b5cab7be;
- t=1714770846; bh=G+jx+E2aqYQTG0veFkc5tqY2ck1i4YGeC17GbDUyBKk=;
- b=ShC7XAKUm3hzetsdg13m6NEXehLq0NFCLc36vH+MvWVGqwyb80GPXOeijs9XBiEYUeDVmY6ys
- T+GkQ4hYr/mUV7EQ6JNwual/cdThzh2R9klffeEkaeydp+P7Eie0v8dixHXkE2R/CSznhnsiRn9
- Yc5rNaq5mSZD0m1bBS1UQnQw08dYha7IexLoCMr/Cxp2f+INJuGvfKtSfkOsLXabk+xfFgyBJ6Q
- JTk734dSkL3MXjCNiIdfF4H/S+GBa2CPbrLRGSldMpMUY+j/0h63FjC+CzqUFGrebYMpTkErwYB
- qufxEwMJdC1yfrHCWR/yoQRIiGwfNrYmqL/cfko8cMJA==
-From: Jonas Karlman <jonas@kwiboo.se>
-To: Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Jonas
- Karlman <jonas@kwiboo.se>
-Subject: [PATCH v4 2/2] arm64: dts: rockchip: Add Radxa ZERO 3W/3E
-Date: Fri,  3 May 2024 21:13:41 +0000
-Message-ID: <20240503211346.1834868-3-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240503211346.1834868-1-jonas@kwiboo.se>
-References: <20240503211346.1834868-1-jonas@kwiboo.se>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8818750279;
+	Fri,  3 May 2024 21:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714770871; cv=fail; b=n4R7doPdz3gNI4hVfT64UA1ayjzc8zj8DxxTJo00V+pQRNLxqkj4RG/0qNCHVVjjSD+vCCvZBWPhQQaJztzP/sTkEB21fMPNVb7LBZmMiycTtlG1ThDNWGWgNToAlrTOsk3HzrGkChcqyT+z19Flm/UCh2n+O4scfs++b8w5qBs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714770871; c=relaxed/simple;
+	bh=9A4AeWhdESCsfw44cpFJ4oNoy8nhifGP+MvdeEbhJqg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MYRT90S0r8dSnaqQpAL8D/yy3tDu40LKbI0omMHpPT3H9+EPERHjEU5rqwwop1WqJ3M2U0wUcrObUFgPxmCSp5l9eT1xvnKlB5Pzcrwm0tXNYlvfI/GFABJcA2jnPPwyZklVmg25Uo4zli6IbA+oYZf2d7s02GD2DceIT5XU7WE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JQSvFpDq; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714770869; x=1746306869;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=9A4AeWhdESCsfw44cpFJ4oNoy8nhifGP+MvdeEbhJqg=;
+  b=JQSvFpDq/eiYF1vlUtGK1tueviCdSUe+jAEYijkKewJUcVseGvKQTP9/
+   89h6c6w4bnp0tg7iOLCpRRoee6RNss9IDHHKEhLIBzsarlmGo0kwYFhqm
+   tuyCRmUHtxnVo7V2dOSpU9lfm/X38jyC82hz18nPzAke7j5nZ/VesCDuW
+   I83F+jtV07oTGO8Kew9aMOwiUo/snSOgimcgqU3pBhTQkOebb9rxCk3OB
+   XP5pwUYjEHTPDX0UnPANqSChha7JZY4HB9SuyoQIwEfu/rW1I0nLNe1GE
+   bXN8hlP9kF2uZoyFSd+aqAlgKjjWQZQG/NOfxVmz/eIcW9Y0Z54jbpf0T
+   Q==;
+X-CSE-ConnectionGUID: UvYDo3waT1Kkp8eQVPjKbw==
+X-CSE-MsgGUID: SL4ZIARTT72w+WRtnN6dmg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="14409738"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="14409738"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 14:14:29 -0700
+X-CSE-ConnectionGUID: 8AR0XYvxRqyELGvysGlcnw==
+X-CSE-MsgGUID: oh7uqHyOSO+1ZHB9qpNzHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="27591964"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 May 2024 14:14:28 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 3 May 2024 14:14:28 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 3 May 2024 14:14:27 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 3 May 2024 14:14:27 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 3 May 2024 14:14:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QO3DZexGt361HcZ2DCSK9kAZp813MNxUXV2WSKfxOSFe4GwxwCKPrRLoUMSYFzIp+SiuPsHfrK4P7bTmeiSHOnkXq8vPsoAMp9IDZOkzovbvNW7wwR+wb3PPf+VgedZLBr078xMn1UZrcd+8evahRUHX2TUZPM90Pv89T4fiK1bCAbcknfYVRrEIRJd/6TKOhUrqPNEN0Yx8diiSOJ+8PA4cQOuDBau5Hsfw+Ur/zesPiklabBZdT8bs+7rz3tSCD6OomBLkNn7W6+xtjpYPqrTg3vmkSG4fztOJtrtwRuFJkgWgxTGO/blZrTWS64o5EwtM+KrqKMfYNa4TjBXdJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EDQe9bA4B31Y0TTgJb1wOeo8QUE8DFs/rEoagl+qgQY=;
+ b=YFtm9ubCyyhuKJWiN1Dk6F/afqbm7lxLnTrxcEYvoKenzc+JVvtk3SEQc4ZWS5VD21YKUadk9/xiD4mESKPCV2DAzhS5kSfhK5OFb3CETfbWUmAo1uP6C5kl6izL8zShx95v2RBIsuIrDs5HgZW83mn1jxzghngmLm/r2L2ZBNMkCLoC+N55ZXq+K+iKTvTWTUa+dqwza+uEQ+V4IU/xH8cE/Zjg3zpXx6ayrHvFrXdxn0tki1hQeYlxFPYqLzDFZB32iBtc/WMmZjb61tKltsRntF5HnL017iEah4304GEiio1ObimYyffp7HznecF/cDlpL3q/+vxlAlEhHX04YQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
+ by SA2PR11MB4842.namprd11.prod.outlook.com (2603:10b6:806:f8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.36; Fri, 3 May
+ 2024 21:14:22 +0000
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::cf6f:eb9e:9143:f413]) by MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::cf6f:eb9e:9143:f413%5]) with mapi id 15.20.7519.031; Fri, 3 May 2024
+ 21:14:22 +0000
+Date: Fri, 3 May 2024 17:14:16 -0400
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+CC: Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Zhenyu
+ Wang" <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>, "open
+ list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
+	<intel-gfx@lists.freedesktop.org>, "open list:INTEL DRM DISPLAY FOR XE AND
+ I915 DRIVERS" <intel-xe@lists.freedesktop.org>, "open list:DRM DRIVERS"
+	<dri-devel@lists.freedesktop.org>, open list <linux-kernel@vger.kernel.org>,
+	"open list:INTEL GVT-g DRIVERS (Intel GPU Virtualization)"
+	<intel-gvt-dev@lists.freedesktop.org>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, "open list:RADEON and AMDGPU DRM DRIVERS"
+	<amd-gfx@lists.freedesktop.org>, "open list:DRM DRIVER FOR NVIDIA
+ GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>, "open list:I2C
+ SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>, "open list:BTTV
+ VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>, "open list:FRAMEBUFFER
+ LAYER" <linux-fbdev@vger.kernel.org>, Zhi Wang <zhiwang@kernel.org>
+Subject: Re: [PATCH v2 03/12] drm/i915: Make I2C terminology more inclusive
+Message-ID: <ZjVTqNGjaAjuLdLi@intel.com>
+References: <20240503181333.2336999-1-eahariha@linux.microsoft.com>
+ <20240503181333.2336999-4-eahariha@linux.microsoft.com>
+ <ZjU8NB-71xWI2X73@intel.com>
+ <4f1e429c-794b-457c-ab1d-85eb97dc81c3@linux.microsoft.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4f1e429c-794b-457c-ab1d-85eb97dc81c3@linux.microsoft.com>
+X-ClientProxiedBy: MW4P223CA0026.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:303:80::31) To MN0PR11MB6059.namprd11.prod.outlook.com
+ (2603:10b6:208:377::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 167.172.40.54
-X-ForwardEmail-ID: 663553995f172f31299153ab
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|SA2PR11MB4842:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c409221-61e9-43fe-fa8c-08dc6bb6010c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|376005|7416005|1800799015;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?1MsuVQHEoBK66PzYUrUKefrqgqyKycmj1++K256fYdwWfE8Wr+p0zMnr+PoM?=
+ =?us-ascii?Q?qUx38ycyplCBbs/PygJK+HmHxvTaJt2ddlOBbaxegv5nmewsixFo6qxN213x?=
+ =?us-ascii?Q?fsjraA8GN9mnAQFRZuTolflb0o49rIa2m0mAvmEWxwFvPwH8jqXEgt5hiYmT?=
+ =?us-ascii?Q?BsD+y4tqY+UWGZISutB9eLCQcItfslWh73zgcNKY3tlMtRNNH7NzThPCbZAP?=
+ =?us-ascii?Q?WnLiAgpUpwdaWCd5D7FF+4jQhec8sdAqzPT0VaqWrnZV0MRaJQjF7jdp5Q81?=
+ =?us-ascii?Q?tam0e4yDfzoo5Aa76El3y8pIqWYTeYc7oZKyibjjxeFobbOsUT6MLTkl26zr?=
+ =?us-ascii?Q?tl+xDMTm6Ye4vTn/ILKVKeZ08mfouPcO/0/YHhABidPWdP2/PpFs1MQlgRwR?=
+ =?us-ascii?Q?CVcuSOzqCF66vKkco7bJKXMF4dQMtH3MqA+rf31/OpPPnuV+EsJB/cT/yMEI?=
+ =?us-ascii?Q?/xrySb+dbQkmC0I3ADlliTeXls3Vg/446CnXYEvq15xgQ0tQ8CIqFA2ld2ER?=
+ =?us-ascii?Q?Kt7QYCwFpZ+L1YiuXblzVzx1HqwDPJ8W7paI8PHn2yc8vNnB175wWBGo0EQn?=
+ =?us-ascii?Q?QJ5tAP3r400TpK5yhCPi7iV1JX6zhOFS1dnrz8VsjFyMwrBXasqDukZqB58o?=
+ =?us-ascii?Q?eQlp21FdUO80am1/G/x4uHPIAGubtshMdAtVzOKsBSA0P8ZJPgiV6+ddF62P?=
+ =?us-ascii?Q?BvAAZPM/jUsffIOby/5SYwFuPPTtC6B+an3xvmlRbpQj4mtSVvtphfmnozbR?=
+ =?us-ascii?Q?GYF2SzLctdJON6XiWI4JmVlnshg3ly7GfFk0ZntuWUVJcSGwPtdJIZXoBHru?=
+ =?us-ascii?Q?o9PlNgB5pwurP9rhOUnXAOc5QOtZ3qvSSmswD3pwYvmPUIgDvigf3AgP2yI6?=
+ =?us-ascii?Q?HAtv8RRuwk0A0+SpRVlMpmZg7kYrWS5Tm/3c409FFCPVnCHtzINe/fh6Fj2c?=
+ =?us-ascii?Q?O/dJi3DaA1I6uRGnja2bfUXC8VTGhfOT7BiBoverkkfS+ecI3xAYVgsio0zH?=
+ =?us-ascii?Q?TumM8RQXdJcMImf/fUyeJybFrZskHIehHk82XmaK/OV5QaXWM2lYp/TYOAQd?=
+ =?us-ascii?Q?2Gi5m/7WTYxWGyrh3WpgDAAryAHqSmwXEUbKgrX032pAyUiAcy+68Ad42t2E?=
+ =?us-ascii?Q?U2mCbnn6e6b8RSZBEFgOwPAsMpr53PCfSYbW5x3thv5nAfqxYme8TB+8aHz8?=
+ =?us-ascii?Q?HemCwqN5irh9M6iyHH1bqM7n76KNLagYHUOuZrpf8fp0D4wxM3epL4wftXw?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NHgdIf24jEKA2yJx1GhEM6Olo4fhy2u4vavwMFeveHHGwF1Mi8DnkJCTAqn3?=
+ =?us-ascii?Q?l2SKvcARmmr5d4vEY9FGfTRm8Y68koLgl2YlkZxhsm0tGVLwlUv553WV98rY?=
+ =?us-ascii?Q?rYMlH1hv14Pvk+NXSkjqdUfy9k3eFL58a0b1HS9rUjdtxv8JaavIJLDBiRNS?=
+ =?us-ascii?Q?0ybcNkPYFt4HGByLdzbfSJBt1ncRf5ohwEJV7ZlsfH42p/NQVVQJqBtWMMUO?=
+ =?us-ascii?Q?yA0XZXAPtNme5XDElOInhH/29iO/tyWo+NvX62T0yYfpdwzB0W8rtco/ndLA?=
+ =?us-ascii?Q?fngMjhmhCQQAuQoriEnQ/FWyBfY/PPd/UqZeFobiIQ5FL1KodePSzugaiRbo?=
+ =?us-ascii?Q?T4OSiJeWgQwqD1Q0juhjbbJnoBKGHw/njFLzg33fA/rcDs4rGn3fyBMbz2mG?=
+ =?us-ascii?Q?/qmipD8dbg+fjFzK6Jgj+Y5IKWLzzZ4EuqkGdJpclSGOVn21ntOTAWwdTDf6?=
+ =?us-ascii?Q?p3k+0NTLqI7SLPKWyFhqwZ4JHfzRTLemWQIuqItHRc0/zDnKi7HjzOkXM87x?=
+ =?us-ascii?Q?TVAt5TDE0R3FOHOfeEK19Tc5ydmguMjKeLucGBgCvAfsk2DiSACdkKEiBHky?=
+ =?us-ascii?Q?f2KPvbFUe4v5orr06QwiSaGAGyIT7Qh5nfINMebp/8ai9ZcNvcOZAHFEoSek?=
+ =?us-ascii?Q?WEPi+vXA37dC3ZXeubTlzpHEH0eFWMyqaVPPshCa6oawmwX1Vbs6aPdX6imG?=
+ =?us-ascii?Q?r/OamZFrHyKkptDBqEXlG/HVGvV2agQvQgj23eXI9KQiJEQhgENVjhz2VhlI?=
+ =?us-ascii?Q?gKJxUY+zKn40X9hAYOXAhRlFZlTmIh55HMDF9yl4bpOEl3MF1OnZyKThuBvH?=
+ =?us-ascii?Q?TxMIWbp4Ha0NcYECNWCUgMyxCuhKSnbC6/BNrq7clVrBLUNxRi29oUSvOB0Z?=
+ =?us-ascii?Q?7p5bpo1FX8uFJIG49F4cIrWgDt/KPWGBRFoTcP3mQ9ad5lF6O1LUCe1L7bcO?=
+ =?us-ascii?Q?sHpl0fei1UgxAv7/ujOlYxkCKnm34jeCb/Z8QYb3cpFoci6Lucc6JmLP8Jys?=
+ =?us-ascii?Q?zmYb7dpwb8vNLQ4HIrF+iCEHCFahCAgzmmXAebsc52aoN/MAtZDEsXiRU2H1?=
+ =?us-ascii?Q?OphDHwNP7xj7rFVpjQvXHHRvM1P8pr6Ip3/IZ4g03DYmvOb8CkYMvrZofQsF?=
+ =?us-ascii?Q?NyjqvKtj/z6GqUiCBVb7z/VYZE+eUdX/5/xfC8NTYzBdsYZiCbNCyidsfmRm?=
+ =?us-ascii?Q?IxFk6WTKAKjdLAHAPjIyyIixbZxE9S8LsvjLiZF+ZNX6ktu3HhMvMIKXgf40?=
+ =?us-ascii?Q?W2f74cvDB6z/+r72GfxkT2qFW/SS5Jwtt6Zp4mhUtJ9alKIkI1AMn2p9QMDC?=
+ =?us-ascii?Q?zH5ldjfs/iDy9FcQeAp2I4GXq1rDhWqFkzHsAz2lSpZKkzmfOViznX30jR43?=
+ =?us-ascii?Q?TAMEcPMDpsuTNjlX4H2i9vppxv1YrVzK21OCPMX6kBRySOJvApjQzPG2n7sW?=
+ =?us-ascii?Q?dQf76mAEn3fQYXPP/ysbZWE291U28+RbVwfe4kJqYuTpH97EV1kzkRsocyvA?=
+ =?us-ascii?Q?oY3hmf2xDUXnJVBP1kyycj9bkfgUdGG9zTNgtFaJnYOGj8aIf608h/LJBCrb?=
+ =?us-ascii?Q?hFYSZMqoBbZUpcru8DiWOItoRVpyq72daYGbMD6mgtRsAOgcyxLWJY9TQGZN?=
+ =?us-ascii?Q?GA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c409221-61e9-43fe-fa8c-08dc6bb6010c
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 21:14:22.7401
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qFtfZwOtDtkOvX1Wxw5BqkoYON222k6SKEZj5+0WQJkrC+Fxadgm8gP0cqgJ7U4OhJTLiSaXRZgTJfav9jVOyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4842
+X-OriginatorOrg: intel.com
 
-The Radxa ZERO 3W/3E is an ultra-small, high-performance single board
-computer based on the Rockchip RK3566, with a compact form factor and
-rich interfaces.
+On Fri, May 03, 2024 at 02:04:15PM -0700, Easwar Hariharan wrote:
+> On 5/3/2024 12:34 PM, Rodrigo Vivi wrote:
+> > On Fri, May 03, 2024 at 06:13:24PM +0000, Easwar Hariharan wrote:
+> >> I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced "master/slave"
+> >> with more appropriate terms. Inspired by and following on to Wolfram's
+> >> series to fix drivers/i2c/[1], fix the terminology for users of
+> >> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+> >> in the specification.
+> >>
+> >> Compile tested, no functionality changes intended
+> >>
+> >> [1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
+> >>
+> >> Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> >> Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > 
+> > It looks like the ack is not needed since we are merging this through
+> > drm-intel-next. But I'm planing to merge this only after seeing the
+> > main drivers/i2c accepting the new terminology. So we don't have a
+> > risk of that getting push back and new names there and we having
+> > to rename it once again.
+> 
+> Just to be explicit, did you want me to remove the Acked-by in v3, or will you when you pull
+> the patch into drm-intel-next?
+> 
+> > 
+> > (more below)
+> > 
+> >> Acked-by: Zhi Wang <zhiwang@kernel.org>
+> >> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+> > 
+> > Cc: Jani Nikula <jani.nikula@intel.com>
+> > 
+> > Jani, what bits were you concerned that were not necessarily i2c?
+> > I believe although not necessarily/directly i2c, I believe they
+> > are related and could benefit from the massive single shot renable.
+> > or do you have any better split to suggest here?
+> > 
+> > (more below)
+> > 
+> >> ---
+> >>  drivers/gpu/drm/i915/display/dvo_ch7017.c     | 14 ++++-----
+> >>  drivers/gpu/drm/i915/display/dvo_ch7xxx.c     | 18 +++++------
+> >>  drivers/gpu/drm/i915/display/dvo_ivch.c       | 16 +++++-----
+> >>  drivers/gpu/drm/i915/display/dvo_ns2501.c     | 18 +++++------
+> >>  drivers/gpu/drm/i915/display/dvo_sil164.c     | 18 +++++------
+> >>  drivers/gpu/drm/i915/display/dvo_tfp410.c     | 18 +++++------
+> >>  drivers/gpu/drm/i915/display/intel_bios.c     | 22 +++++++-------
+> >>  drivers/gpu/drm/i915/display/intel_ddi.c      |  2 +-
+> >>  .../gpu/drm/i915/display/intel_display_core.h |  2 +-
+> >>  drivers/gpu/drm/i915/display/intel_dsi.h      |  2 +-
+> >>  drivers/gpu/drm/i915/display/intel_dsi_vbt.c  | 20 ++++++-------
+> >>  drivers/gpu/drm/i915/display/intel_dvo.c      | 14 ++++-----
+> >>  drivers/gpu/drm/i915/display/intel_dvo_dev.h  |  2 +-
+> >>  drivers/gpu/drm/i915/display/intel_gmbus.c    |  4 +--
+> >>  drivers/gpu/drm/i915/display/intel_sdvo.c     | 30 +++++++++----------
+> >>  drivers/gpu/drm/i915/display/intel_vbt_defs.h |  4 +--
+> >>  drivers/gpu/drm/i915/gvt/edid.c               | 28 ++++++++---------
+> >>  drivers/gpu/drm/i915/gvt/edid.h               |  4 +--
+> >>  drivers/gpu/drm/i915/gvt/opregion.c           |  2 +-
+> >>  19 files changed, 119 insertions(+), 119 deletions(-)
+> >>
+> 
+> <snip>
+> 
+> >> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+> >> index c17462b4c2ac..64db211148a8 100644
+> >> --- a/drivers/gpu/drm/i915/display/intel_ddi.c
+> >> +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+> >> @@ -4332,7 +4332,7 @@ static int intel_ddi_compute_config_late(struct intel_encoder *encoder,
+> >>  									connector->tile_group->id);
+> >>  
+> >>  	/*
+> >> -	 * EDP Transcoders cannot be ensalved
+> >> +	 * EDP Transcoders cannot be slaves
+> > 
+> >                                      ^ here
+> > perhaps you meant 'targeted' ?
+> > 
+> >>  	 * make them a master always when present
+> 
+> <snip>
+> 
+> This is not actually I2C related as far as I could tell when I was making the change, so this was more of a typo fix.
+> 
+> If we want to improve this, a quick check with the eDP v1.5a spec suggests using primary/secondary instead,
+> though in a global fashion rather than specifically for eDP transcoders. There is also source/sink terminology
+> in the spec related to DP encoders.
+> 
+> Which would be a more acceptable change here?
 
-The ZERO 3W and ZERO 3E are basically the same size and model, but
-differ only in storage and network interfaces.
+hmmm probably better to split the patches and align with the spec naming where it applies.
+and with i2c name where it applies.
 
-- eMMC (3W)
-- SD-card (both)
-- Ethernet (3E)
-- WiFi/BT (3W)
-
-This adds initial support for eMMC, SD-card, Ethernet, HDMI and USB.
-
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
-v2: Add to Makefile
-v3: Sort hdmi-con and leds nodes alphabetically
-v3: Sort pmic@20 and regulator@40 nodes by reg
-v3: Change to regulator-off-in-suspend for vdd_logic
-v4: Change compatible of vdd_logic
-v4: Add vcc5v_midu and vbus regulator and related vcc8/vcc9-supply prop
-v4: Adjust clock_in_out prop for gmac1
-v4: Add cap-mmc-highspeed prop to sdhci
-v4: Add sdmmc1 and uart1 nodes used for wifi/bt on 3W
-v4: Rename rk3566-radxa-zero3.dtsi to rk3566-radxa-zero-3.dtsi
-v4: Rebase on latest mmind/for-next tree
-
-Following issue is reported by dtbs_check and is fixed by patch at [1]:
-
-  hdmi@fe0a0000: Unevaluated properties are not allowed ('#sound-dai-cells' was unexpected)
-  from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip,dw-hdmi.yaml#
-
-[1] https://lore.kernel.org/linux-rockchip/3a035c16-75b5-471d-aa9d-e91c2bb9f8d0@gmail.com/
----
- arch/arm64/boot/dts/rockchip/Makefile         |   2 +
- .../dts/rockchip/rk3566-radxa-zero-3.dtsi     | 464 ++++++++++++++++++
- .../dts/rockchip/rk3566-radxa-zero-3e.dts     |  41 ++
- .../dts/rockchip/rk3566-radxa-zero-3w.dts     |  85 ++++
- 4 files changed, 592 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3.dtsi
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dts
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dts
-
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index c544ff507d20..1a4b154121fa 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -90,6 +90,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-powkiddy-x55.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-quartz64-a.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-quartz64-b.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-radxa-cm3-io.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-radxa-zero-3e.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-radxa-zero-3w.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-roc-pc.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-rock-3c.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-soquartz-blade.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3.dtsi b/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3.dtsi
-new file mode 100644
-index 000000000000..98e33dc1f064
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3.dtsi
-@@ -0,0 +1,464 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/rockchip.h>
-+#include <dt-bindings/soc/rockchip,vop2.h>
-+#include "rk3566.dtsi"
-+
-+/ {
-+	aliases {
-+		mmc0 = &sdmmc0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial2:1500000n8";
-+	};
-+
-+	hdmi-con {
-+		compatible = "hdmi-connector";
-+		type = "d";
-+
-+		port {
-+			hdmi_con_in: endpoint {
-+				remote-endpoint = <&hdmi_out_con>;
-+			};
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-green {
-+			color = <LED_COLOR_ID_GREEN>;
-+			default-state = "on";
-+			function = LED_FUNCTION_HEARTBEAT;
-+			gpios = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&user_led2>;
-+		};
-+	};
-+
-+	vcc_sys: vcc-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	vcc_1v8: vcc-1v8-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_1v8";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc_1v8_p>;
-+	};
-+
-+	vcc_3v3: vcc-3v3-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_3v3";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc3v3_sys>;
-+	};
-+
-+	vcca_1v8: vcca-1v8-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcca_1v8";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc_1v8_p>;
-+	};
-+
-+	vcca1v8_image: vcca1v8-image-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcca1v8_image";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc_1v8_p>;
-+	};
-+};
-+
-+&combphy1 {
-+	status = "okay";
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vdd_cpu>;
-+};
-+
-+&cpu1 {
-+	cpu-supply = <&vdd_cpu>;
-+};
-+
-+&cpu2 {
-+	cpu-supply = <&vdd_cpu>;
-+};
-+
-+&cpu3 {
-+	cpu-supply = <&vdd_cpu>;
-+};
-+
-+&gpu {
-+	mali-supply = <&vdd_gpu_npu>;
-+	status = "okay";
-+};
-+
-+&hdmi {
-+	avdd-0v9-supply = <&vdda_0v9>;
-+	avdd-1v8-supply = <&vcca1v8_image>;
-+	status = "okay";
-+};
-+
-+&hdmi_in {
-+	hdmi_in_vp0: endpoint {
-+		remote-endpoint = <&vp0_out_hdmi>;
-+	};
-+};
-+
-+&hdmi_out {
-+	hdmi_out_con: endpoint {
-+		remote-endpoint = <&hdmi_con_in>;
-+	};
-+};
-+
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+
-+	rk817: pmic@20 {
-+		compatible = "rockchip,rk817";
-+		reg = <0x20>;
-+		#clock-cells = <1>;
-+		clock-output-names = "rk817-clkout1", "rk817-clkout2";
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_int_l>;
-+		system-power-controller;
-+		wakeup-source;
-+
-+		vcc1-supply = <&vcc_sys>;
-+		vcc2-supply = <&vcc_sys>;
-+		vcc3-supply = <&vcc_sys>;
-+		vcc4-supply = <&vcc_sys>;
-+		vcc5-supply = <&vcc_sys>;
-+		vcc6-supply = <&vcc_sys>;
-+		vcc7-supply = <&vcc_sys>;
-+		vcc8-supply = <&vcc_sys>;
-+		vcc9-supply = <&vcc5v_midu>;
-+
-+		regulators {
-+			vdd_logic: DCDC_REG1 {
-+				regulator-name = "vdd_logic";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-initial-mode = <0x2>;
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1350000>;
-+				regulator-ramp-delay = <6001>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <900000>;
-+				};
-+			};
-+
-+			vdd_gpu_npu: DCDC_REG2 {
-+				regulator-name = "vdd_gpu_npu";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-initial-mode = <0x2>;
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1350000>;
-+				regulator-ramp-delay = <6001>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_ddr: DCDC_REG3 {
-+				regulator-name = "vcc_ddr";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-initial-mode = <0x2>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+				};
-+			};
-+
-+			vcc3v3_sys: DCDC_REG4 {
-+				regulator-name = "vcc3v3_sys";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-initial-mode = <0x2>;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <3300000>;
-+				};
-+			};
-+
-+			vcca1v8_pmu: LDO_REG1 {
-+				regulator-name = "vcca1v8_pmu";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			vdda_0v9: LDO_REG2 {
-+				regulator-name = "vdda_0v9";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <900000>;
-+				regulator-max-microvolt = <900000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdda0v9_pmu: LDO_REG3 {
-+				regulator-name = "vdda0v9_pmu";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <900000>;
-+				regulator-max-microvolt = <900000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <900000>;
-+				};
-+			};
-+
-+			vccio_acodec: LDO_REG4 {
-+				regulator-name = "vccio_acodec";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vccio_sd: LDO_REG5 {
-+				regulator-name = "vccio_sd";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc3v3_pmu: LDO_REG6 {
-+				regulator-name = "vcc3v3_pmu";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <3300000>;
-+				};
-+			};
-+
-+			vcc_1v8_p: LDO_REG7 {
-+				regulator-name = "vcc_1v8_p";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc1v8_dvp: LDO_REG8 {
-+				regulator-name = "vcc1v8_dvp";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc2v8_dvp: LDO_REG9 {
-+				regulator-name = "vcc2v8_dvp";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <2800000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc5v_midu: BOOST {
-+				regulator-name = "vcc5v_midu";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <5000000>;
-+				regulator-max-microvolt = <5000000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vbus: OTG_SWITCH {
-+				regulator-name = "vbus";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+		};
-+	};
-+
-+	vdd_cpu: regulator@40 {
-+		compatible = "rockchip,rk8600";
-+		reg = <0x40>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_cpu";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <712500>;
-+		regulator-max-microvolt = <1390000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&i2s0_8ch {
-+	status = "okay";
-+};
-+
-+&pinctrl {
-+	leds {
-+		user_led2: user-led2 {
-+			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	pmic {
-+		pmic_int_l: pmic-int-l {
-+			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+};
-+
-+&pmu_io_domains {
-+	pmuio1-supply = <&vcc3v3_pmu>;
-+	pmuio2-supply = <&vcca1v8_pmu>;
-+	vccio1-supply = <&vccio_acodec>;
-+	vccio2-supply = <&vcc_1v8>;
-+	vccio3-supply = <&vccio_sd>;
-+	vccio4-supply = <&vcc_1v8>;
-+	vccio5-supply = <&vcc_3v3>;
-+	vccio6-supply = <&vcc_3v3>;
-+	vccio7-supply = <&vcc_3v3>;
-+	status = "okay";
-+};
-+
-+&saradc {
-+	vref-supply = <&vcca_1v8>;
-+	status = "okay";
-+};
-+
-+&sdmmc0 {
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	disable-wp;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
-+	vmmc-supply = <&vcc3v3_sys>;
-+	vqmmc-supply = <&vccio_sd>;
-+	status = "okay";
-+};
-+
-+&tsadc {
-+	rockchip,hw-tshut-mode = <1>;
-+	rockchip,hw-tshut-polarity = <0>;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&usb_host0_xhci {
-+	dr_mode = "peripheral";
-+	status = "okay";
-+};
-+
-+&usb_host1_xhci {
-+	status = "okay";
-+};
-+
-+&usb2phy0 {
-+	status = "okay";
-+};
-+
-+&usb2phy0_host {
-+	status = "okay";
-+};
-+
-+&usb2phy0_otg {
-+	status = "okay";
-+};
-+
-+&vop {
-+	assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>;
-+	assigned-clock-parents = <&pmucru PLL_HPLL>, <&cru PLL_VPLL>;
-+	status = "okay";
-+};
-+
-+&vop_mmu {
-+	status = "okay";
-+};
-+
-+&vp0 {
-+	vp0_out_hdmi: endpoint@ROCKCHIP_VOP2_EP_HDMI0 {
-+		reg = <ROCKCHIP_VOP2_EP_HDMI0>;
-+		remote-endpoint = <&hdmi_in_vp0>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dts b/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dts
-new file mode 100644
-index 000000000000..4a8b36a5eb8b
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dts
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+
-+/dts-v1/;
-+
-+#include "rk3566-radxa-zero-3.dtsi"
-+
-+/ {
-+	model = "Radxa ZERO 3E";
-+	compatible = "radxa,zero-3e", "rockchip,rk3566";
-+
-+	aliases {
-+		ethernet0 = &gmac1;
-+	};
-+};
-+
-+&gmac1 {
-+	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
-+	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>;
-+	clock_in_out = "input";
-+	phy-handle = <&rgmii_phy1>;
-+	phy-mode = "rgmii-id";
-+	phy-supply = <&vcc_3v3>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&gmac1m1_miim
-+		     &gmac1m1_tx_bus2
-+		     &gmac1m1_rx_bus2
-+		     &gmac1m1_rgmii_clk
-+		     &gmac1m1_rgmii_bus
-+		     &gmac1m1_clkinout>;
-+	status = "okay";
-+};
-+
-+&mdio1 {
-+	rgmii_phy1: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0x1>;
-+		reset-assert-us = <20000>;
-+		reset-deassert-us = <100000>;
-+		reset-gpios = <&gpio3 RK_PC0 GPIO_ACTIVE_LOW>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dts b/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dts
-new file mode 100644
-index 000000000000..2d46be74d097
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dts
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+
-+/dts-v1/;
-+
-+#include "rk3566-radxa-zero-3.dtsi"
-+
-+/ {
-+	model = "Radxa ZERO 3W";
-+	compatible = "radxa,zero-3w", "rockchip,rk3566";
-+
-+	aliases {
-+		mmc1 = &sdhci;
-+		mmc2 = &sdmmc1;
-+	};
-+
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		clocks = <&rk817 1>;
-+		clock-names = "ext_clock";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&wifi_reg_on_h>;
-+		post-power-on-delay-ms = <100>;
-+		power-off-delay-us = <5000000>;
-+		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&pinctrl {
-+	bluetooth {
-+		bt_reg_on_h: bt-reg-on-h {
-+			rockchip,pins = <0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		bt_wake_host_h: bt-wake-host-h {
-+			rockchip,pins = <0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		host_wake_bt_h: host-wake-bt-h {
-+			rockchip,pins = <0 RK_PB4 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	wifi {
-+		wifi_reg_on_h: wifi-reg-on-h {
-+			rockchip,pins = <0 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		wifi_wake_host_h: wifi-wake-host-h {
-+			rockchip,pins = <0 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+};
-+
-+&sdhci {
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	max-frequency = <200000000>;
-+	mmc-hs200-1_8v;
-+	non-removable;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd &emmc_datastrobe>;
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&vcc_1v8>;
-+	status = "okay";
-+};
-+
-+&sdmmc1 {
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	cap-sdio-irq;
-+	mmc-pwrseq = <&sdio_pwrseq>;
-+	non-removable;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdmmc1_bus4 &sdmmc1_clk &sdmmc1_cmd>;
-+	sd-uhs-sdr104;
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&vcc_1v8>;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart1m0_ctsn &uart1m0_rtsn &uart1m0_xfer>;
-+	status = "okay";
-+};
--- 
-2.43.2
-
+> 
+> Thanks,
+> Easwar
 
