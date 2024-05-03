@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-167397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382948BA8F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:41:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039888BA8F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:42:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD5392838D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:41:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 265D71C2222A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52E2314BFBF;
-	Fri,  3 May 2024 08:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345A614F9DA;
+	Fri,  3 May 2024 08:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="XQ3vo+7O"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2062.outbound.protection.outlook.com [40.107.22.62])
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="QwnXe0C0"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2075.outbound.protection.outlook.com [40.107.20.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA6F79CD;
-	Fri,  3 May 2024 08:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD55214EC67;
+	Fri,  3 May 2024 08:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.75
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714725694; cv=fail; b=dwkqAWSUiJkv6P19c6X2kLCVbCyUUSWnXtYWOhZgBdIeARKXio+eNZovqnMfbwsxnCu1qiLWZTpMKZD6t6dn+Q0YD6aVsk6fRGv7HOWiEaP5NvE08IbbP2VoCWe2OBROO7IicrgATnIQSHiNCgAzEaHvXo6nMNlb0JwY5MuGWFA=
+	t=1714725704; cv=fail; b=Pd0TKX0fp3gZyhghv0kGt2ce3ac0pxKBwpqfWz76MCnUjNVQNUgb0Kzp+ELTwGmroYVoHzbqpL9CgkN5rtD8WeyqcCvAbUYf3wgYnmSrHJbqit/ZRjm5QFIAnBRRsJ6+ez/U7inwCCMVp7xlEgampJVYg4yVAUYJj7P9zq9+wMA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714725694; c=relaxed/simple;
-	bh=ql6MX3PQKVCr6P5TajVkFhz95idCAmM1zDB/CutAOpU=;
+	s=arc-20240116; t=1714725704; c=relaxed/simple;
+	bh=9ot9Azd5CWbCC433PNghPJhOrPRAkMUdxjAGTUCBJxE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=S4RB73Y69b75k+0Lq+WFbfrCZV5VxENZnErH97obWa01/rxkC1MRCtypS/ZQvbkEFqlwC5npUbwRDYmF7yUC6yC6aiYnWfpC3iyovXF8vc2CypPwEV0R6Z+EqHCZUVq3RrGIkHCWyb4hlbmKVd1cqBVcZbuVx/IhYXn+OVOMkuc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=2n.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=XQ3vo+7O; arc=fail smtp.client-ip=40.107.22.62
+	 MIME-Version:Content-Type; b=HTt8TuPefS2AqIFixvHyAdBXUyB+GJD757P0lFChh6z/1ydeMyDFx3J3tTyegEGMQVEQrlY4A9CSWUIhIJcyrMOVPDJqG97bYSUDJT9FglUfkqKEbTJOaDFhLtCZn/foeJeqcaK1bGX8c/t8LURp4hyf1+uCVdCkNgURsN8SekU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=2n.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=QwnXe0C0; arc=fail smtp.client-ip=40.107.20.75
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=2n.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P/+L7Eh+Ich461oGMRd/qxAutgxwH4ZxMCmLuUwGZF/K2k3/OprJvL2MmNstdY8nehh/TmiOGmjGT8X/6hXxZ8IpgzzvAgXyM/kmrIHrv5aHlIQ9rNWu76AdfRWiZsK9L6Y1Tq/GCSSuoL/85SH3Q8JcnTaUoQMOpU8MTPHGUkhzvMPlkZSBxeJnyHLuTUyKvV9aQcBeaPF4iBj+yXtP72tJjGM6t85MXc4yc9euqCDz1a18PRFGaqER63TWStD3eb2+WufxL5hp5brJssOgDXbGQgx7waSQRd31nOAsz1M0zk3aCbsyWB543TRyyJCOCMgKqReTCIQMTpPK22hCOw==
+ b=cCntYEy38QDQ64CWmt3cLwZbdJX6R5Y2epf0zbeAJhnxmml/xEJ3c5Mq2JBuyfsr1XKj5ulw8GyxgPuFuclTz5ccpBXD46gh1lp+yCMDs09jNL7n5tWph+BdpiewfFdr362BWJtIUpuuCwMD7gu4fn+QGisQCTTquc8SlfAwcb9l50X6nnNupbaUvylf079K6Qp/Jj3cb1VWA0pB0qtNxtp+YvI6O2+KrgRTb5hYOBYwwCSiDeQSNNLSIxrt5gpYaakt9V82f/xQV+4WZik4cQWMhrP7f+/x1aM1EaCA0rWBlGf28a7KBYLfQwe6lueZXFiNY09ehBxf41kJEbzGVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3Gfxp8eWvRaT/oL2qcMuBOgBvFCpuRyaGOmIcHLxsXQ=;
- b=H7Gx0qwzQ30WINN1nRb0kp3rbBY6R/6FdV2lH04s2ph58MS9a/yTfkv8d+HuKL0TcWt1ewu3per6V6PHHBwNYnV0e6MSifbHw7XKrDQYZf7rg5tJV8F16gRsODkG4Acf9pkbMT4H0SchGzfHT2z9jpVoJq3oHKDN+LKiaxul5W4AoTjUafg0A+KO9Xic1saHxJFvdO2miWgFAshuT7bgAZxWOC388U/0pBXefqFzd50tv02ruFy2KimKdfAIEItn+tecDGCVdn8jjoWALiYO2uhpPZ/dagTZltYNUpJFHBrWk4bIgn1QMRYgmaq+P7j4hsZCQFZof8VxKA3gleTI7A==
+ bh=VD20iHxrex6Qn3AMKFw1EYu20fao49HMY4Z1mbe4Ynk=;
+ b=LKJ4zWCF4Ywxpm1/2LtycJPv4CNgHt3K46OcixpOt937FvVx/LIctMeyHBPfFs9rnly4XUTC+JQ2LhEjDWrWHB5I1kG2fs2dVc7eRkcoqm37lduf0FrkhvEhQxZGidCUlB1tyzEYXYyAvJLJumoC5nevkAQMOlbJ0F/6bFq45Jw7SiTpIb1PrbQreT1hb/TSlQmS5tEHW4vfPk4SCWkIjaGTiOgCHSQDXZhzgJvzkOYTRXZan60gacazBI9/kZ1t76KzZkPwfXngfu1pWGSL2G3Wqp8IQT061AH406Lwj8BtmwWuaCM4RmbN6sOSzzhZkLlUtoGiZe3TN1/+98wZcA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  195.60.68.100) smtp.rcpttodomain=broadcom.com smtp.mailfrom=2n.com;
  dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Gfxp8eWvRaT/oL2qcMuBOgBvFCpuRyaGOmIcHLxsXQ=;
- b=XQ3vo+7OTvGaDPYRM25D0bTgyhbqxo7TxmZC6KUsZ6rZV4Rk+S1PnrQ/rLtYrIIgWIFKS3Uh/gwORyV/Ct4qT1EZTScce/TZzOuMHAB9wp1Gs/tmpGR5sVUpNHdb0Y3KxWzDHQWidccZPqUTB0F7ka4liysUY8mxc0W1Zsriwio=
-Received: from DB9PR06CA0005.eurprd06.prod.outlook.com (2603:10a6:10:1db::10)
- by PAWPR02MB9149.eurprd02.prod.outlook.com (2603:10a6:102:33d::18) with
+ bh=VD20iHxrex6Qn3AMKFw1EYu20fao49HMY4Z1mbe4Ynk=;
+ b=QwnXe0C0BR7Vk13lOKKsYDkjMl/o44CESPMRVkk6cICZwinSSWYNdGNz9FTwg9qpivuzoaFk4BVKwSKGXO9e93xWP4xHdMLsZrGiH0jWh1aTo1YSiDnO8NzYxSBxkQi9ZxZAhfUHjwdJuSdLVMKrMpeYPJrre5kh60AnOL4CScA=
+Received: from DB9PR05CA0002.eurprd05.prod.outlook.com (2603:10a6:10:1da::7)
+ by PR3PR02MB6396.eurprd02.prod.outlook.com (2603:10a6:102:5d::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Fri, 3 May
- 2024 08:41:28 +0000
-Received: from DB1PEPF000509FB.eurprd03.prod.outlook.com
- (2603:10a6:10:1db:cafe::1) by DB9PR06CA0005.outlook.office365.com
- (2603:10a6:10:1db::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29 via Frontend
- Transport; Fri, 3 May 2024 08:41:28 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29; Fri, 3 May
+ 2024 08:41:39 +0000
+Received: from DB1PEPF00050A01.eurprd03.prod.outlook.com
+ (2603:10a6:10:1da:cafe::4) by DB9PR05CA0002.outlook.office365.com
+ (2603:10a6:10:1da::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.25 via Frontend
+ Transport; Fri, 3 May 2024 08:41:39 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
  smtp.mailfrom=2n.com; dkim=none (message not signed) header.d=none;dmarc=fail
  action=none header.from=axis.com;
@@ -62,21 +62,21 @@ Received-SPF: Pass (protection.outlook.com: domain of 2n.com designates
  195.60.68.100 as permitted sender) receiver=protection.outlook.com;
  client-ip=195.60.68.100; helo=mail.axis.com; pr=C
 Received: from mail.axis.com (195.60.68.100) by
- DB1PEPF000509FB.mail.protection.outlook.com (10.167.242.37) with Microsoft
+ DB1PEPF00050A01.mail.protection.outlook.com (10.167.242.43) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Fri, 3 May 2024 08:41:26 +0000
+ 15.20.7519.19 via Frontend Transport; Fri, 3 May 2024 08:41:39 +0000
 Received: from pcczc3457tyd.2n.cz.axis.com (10.0.5.60) by se-mail01w.axis.com
  (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 3 May
- 2024 10:41:26 +0200
+ 2024 10:41:38 +0200
 From: =?UTF-8?q?Kamil=20Hor=C3=A1k=20-=202N?= <kamilh@axis.com>
 To: <florian.fainelli@broadcom.com>, <bcm-kernel-feedback-list@broadcom.com>,
 	<andrew@lunn.ch>, <hkallweit1@gmail.com>
 CC: <kamilh@axis.com>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/3] net: phy: bcm54811: New link mode for BroadR-Reach
-Date: Fri, 3 May 2024 10:37:17 +0200
-Message-ID: <20240503083719.899312-2-kamilh@axis.com>
+Subject: [PATCH v2 2/3] net: phy: bcm54811: Add LRE registers definitions
+Date: Fri, 3 May 2024 10:37:18 +0200
+Message-ID: <20240503083719.899312-3-kamilh@axis.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240503083719.899312-1-kamilh@axis.com>
 References: <20240503083719.899312-1-kamilh@axis.com>
@@ -92,172 +92,175 @@ X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail01w.axis.com
  (10.20.40.7)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB1PEPF000509FB:EE_|PAWPR02MB9149:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82266147-aca6-4a74-c6d5-08dc6b4cd245
+X-MS-TrafficTypeDiagnostic: DB1PEPF00050A01:EE_|PR3PR02MB6396:EE_
+X-MS-Office365-Filtering-Correlation-Id: bf129f67-cd6a-440e-eab3-08dc6b4cd984
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|36860700004|376005|1800799015;
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|36860700004;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MDZQOTAzaVZYWTJTYXk3K25KSDlER2c1dDk5a3NJVlg5ODFHUktKcXVtWDk0?=
- =?utf-8?B?MXRJMFRhVHh4Y3lMSXdXbjk4V0RrZnFBbld0S0UyRmJSdFdnck9sMExvbEhk?=
- =?utf-8?B?ZlFBTDdnWjVpRE40aW1MRzRvang4VWkvZkJ3M0ZmSjVkaXBCc2w3c0lyVURX?=
- =?utf-8?B?ZlJScUJKNFZwMHMwMnJBY2RKakFqVUVGNnFhNnQ5RWJoeHJxMktWRE9WVVRZ?=
- =?utf-8?B?cjRLR3dTc0laMXRQb2xTTy9pdkZheVRJWHdVOGdDa1FqMWVjV2xOWUdJRTFI?=
- =?utf-8?B?Tm0xSE01dFdJd2hUWU5wcllKN1pIcnZydHZOdUtoYXg0aDRGTEMzckt2aEp5?=
- =?utf-8?B?QzRMV1graEtiSGJQVzZicFZSS0ZVWlk0SjFUd1c4b1V2am1nR1c3RTF6Q0l4?=
- =?utf-8?B?MXVyY0phWSttSVFiTERkN3FyeHZNeUlwQ25veUh6bE1UT3lXRlkySDhWU0k4?=
- =?utf-8?B?dlg1bW9Sa3pqRSsydkJ0SURhNWZTMHFpTW5GN01SRWFyL1ZuYTlNanBuN25V?=
- =?utf-8?B?czdHVkNQMU5DOE0yTzdiLy91dURaOGNzVzNyWjM3dXpaaisvZk9wZ3R5Tjdt?=
- =?utf-8?B?SDRiRTNrUHJWQlA0aXVFa0lXQjNOZXJYUEswTTIycU9FMWp0NGtuRk9BOFli?=
- =?utf-8?B?REI2M3ZUeWZ4elQxSTJZcEU3MkJpM0VMamdETU9VQlRPK2JSckxVUkpKQ2tJ?=
- =?utf-8?B?NGNYMTRYYWRCNnNPZmZrcFBHUDBxVG9xbnpORmQwL2dEczJjOEpXVUYvZkRW?=
- =?utf-8?B?UE9BSlNKNnFEb01vYStyRStmWlNqMkJQd0VNQkhxVGJxTGRicThNRTRMNlhW?=
- =?utf-8?B?M3JmSC9QNDN0Tjg2b2NJNmhHV2Y2Q0FvSFUrZVhNUWh6Z1JhM0x2UGdudXVF?=
- =?utf-8?B?eXFSS29uUS9FT253M2E3Q0Ywd3lpWlRVaHIyZUZoMzltNzBIVlR6VDNzOCt5?=
- =?utf-8?B?cE4wOW9nNE0rc3FZZVFXNk1xMUNsS3ZRQ2lDT1FBVVlYZ2QwcnByTE8vajZu?=
- =?utf-8?B?cEtwRTVoaUR1RFNJdWtQSUd1RU81UVYyb0hlMnZOVjhMaUlaR1V3bkJLQ0Zs?=
- =?utf-8?B?bjA5ZkFkSkRVWnNnL2xmVkR0YTkyeWFjN0IvU0NOdkRMSnI1M2ZGdHU5OWpP?=
- =?utf-8?B?S2FKbW91T2pXWXB1bHduY3EvQjlBWkJ5N0ppdlg3M1l0Y0hnUkMwdk5XRDFO?=
- =?utf-8?B?TXFIakVtU3pURm9pS0E2ZHhzSjVVaTJkTW95dkZtY1YyemhDTzMyYlMvR3NN?=
- =?utf-8?B?UWJOT1NIZGxWM0lIZkd0d3l1UFhaUzB0OTFZRkFYcGFobnJ0dW1tcDVlQk1E?=
- =?utf-8?B?dFBvclNMUTRrOFBBZmhSWEdGdklHQUtETDFFZnQva3hlWXVwak0xWWlYK0lS?=
- =?utf-8?B?UUVMSU51bnA0ZGRPbTdld1lSeHVSK0kxUVVJWVVQUzdkcFloLzVrQnZ0czhT?=
- =?utf-8?B?MlY3WTRidXp2MjZZL1ROWVFaQm1sREdVMjcyNWJpZ3lneDJXT0oyTkhIYzJM?=
- =?utf-8?B?R1h2aDA1V29KOE1vS2wrRUdtUGoxR21UYmQzQ1VtdUYrVU5BY21pQTNjbVFs?=
- =?utf-8?B?di9tS0cydEhuOUJLV2QrL0lJU2pydHJpYnpHNlE5Y3kzdHA1WEFCL3BWbjBN?=
- =?utf-8?B?QmtaaTIvbTVNSTFZZmo0RUl2NXA2eEYreUFGTFNxem9SRjdtTDRlYzZnWk5Q?=
- =?utf-8?B?bzJOeXpxc0pHZXRGcTA0a2J2dVkxRVRmSkxvSVQwdXN5cHREZVF3NzR6cGlP?=
- =?utf-8?B?RFplMG1iOTJVM1hJUGJiQ1BtdWVmMTFjSDNYYVFDT082L0pUUW1wdXRLWWVH?=
- =?utf-8?Q?JIjPOeaWBH5eCaBm/XxxIjH+oM+euchk5Xyzs=3D?=
+	=?utf-8?B?YVl6NXV4R2trZ0xMT1NYbDV3RktwKzZ5YkU0RG1NQTZXdFNIT0srb3NhM0l0?=
+ =?utf-8?B?V3pVQm4rMnllMTV5T2JzTXJHSlg5cFdBV2dLTTBNYWRHSm5iWUd6R2t1OHlS?=
+ =?utf-8?B?T3dHaWVHWEQrMnRER2k1c2JmYnRMRnJsaTBtMnBWcWZhdWFUODlFRGdyeWpj?=
+ =?utf-8?B?N3EzM0daTStvZzJLWjlPOG1GMzBrZSt1OW9YeE93NXRrQjJ5emtoK2dvZXV2?=
+ =?utf-8?B?d2tZVXlETzI2RkpURzVzVjRCK1lMcnZNNjZUNVR5aU5TUEJLbkJnLytiSS9Z?=
+ =?utf-8?B?NXFVa0JIenRtcTk0OGJNWnFseDFIQUgrTnZQcXRqZW1HSzBrTEVidXR1d1JE?=
+ =?utf-8?B?MG95aUdtdmxpV04vR1RhSUNOTjZmaks2QkRMQzNuNmlES3J2YnpTcFhpZXZN?=
+ =?utf-8?B?aEY2cjBMVHErTURDRWk2UmJvMUc3czRJT29mTFBBRWRnK2Q1Q2djMzRYV0pa?=
+ =?utf-8?B?SitBblpXTlpKeWttSDRJV2NNYS9nR2xWMW1sWDF2aHlZS1hsU1duekkreWhR?=
+ =?utf-8?B?bFZhcnl2YTJTNzFWZUllOUZaSFYrMnRzNms2WkdzZWFRcThicXZsRHVNRURE?=
+ =?utf-8?B?cUZERSs2QUYwY3doRUNvVE5hdkZvbHFxUFUwZHlBSjJYcTlSc2JUUHhyUkFE?=
+ =?utf-8?B?ajg3TFdZRXBiMVFxR3pOSHVmNjR0TFRVVlRRZ2lWUVFJbkd0TW1idGpLQmtD?=
+ =?utf-8?B?WUhaNzZHTGpDWk9DbzJGS24zRVB3SzI2dUs2WEdvL2krSnpONHV0eUVVS1FJ?=
+ =?utf-8?B?RjBnUk5DRG1DSzZENUFEVlBucTEybmpGUk9UMkVwOFpxYko5NC83c0trckxN?=
+ =?utf-8?B?MkJFTUVvUEdoSmxlVjJUcXEvWm03dHp3Z2pDUXplUXVVaVcxdUpiUkMvNWFu?=
+ =?utf-8?B?QXBoTXplRjI2TzRrWEU0S29GS2NLaVRCeGlIblFFTVYvcXFMUmhHa0J1U3Ba?=
+ =?utf-8?B?ZnBuMC9GY3owd0lnOWNsSndQb3NSV0ZLWDh4VFkwR3puQWNZVWNJSlNzWVJt?=
+ =?utf-8?B?NWNuWVUwbUV4NUY1OUhXbTQzSE1KYklJUVF1aWVYSVhVVmdMcFRNVklUR0F3?=
+ =?utf-8?B?aWNsOEVCVjU3RFhBN2dScWhHa3dUdDRYVnZLN2ZnaHN0UFhKdDdHTGc2NHo2?=
+ =?utf-8?B?SWNIbnovanl5UlAwcXF2VEZDbW5LdEphTzdRalFXNUVUVCtkK1IyV2pVMVdp?=
+ =?utf-8?B?cUhiVUMyOGNYWHhZRHBkT0prdUZ5RXhpL1J4KytWOXFxa1ZndE93aWZaOWRT?=
+ =?utf-8?B?OUcwM05oSSt5NGdobm5uZ01CTHJHUmVnMnIwWVdUaERHZDU3NUlUU1M5VUtt?=
+ =?utf-8?B?aHpTUFJpdk5qb1BZbmJjdUhIZENJNWxvRm5KWjB3L2c4K0s0dUpTKys5eEJa?=
+ =?utf-8?B?akNBRysvenRhK3ExM0VOOHZZTWUvdlRMa3dKZWMxbS9XK3hER2FMZGE2STRa?=
+ =?utf-8?B?QXpWdGtUTUpkRlVBSGc3cTlyc0c3S1ZTRGh1WEQwbkZOdVY4ZlNCdjNqaW5s?=
+ =?utf-8?B?Y2Y1dnltdWhUOG1vdFVUYkJZa3N6ekFTd2I0akdld0pvK2NaSnBMUXMwTHhE?=
+ =?utf-8?B?dUZFcUJJVzl6dVhXZExFaFl6R1luZDZLY29VYkF5WjhCMkt1dVk1a3JONlds?=
+ =?utf-8?B?djRGclo0Ujc3WHdXVElPcm9XUUpPNFdreFovRlp5dnZqejdibzYxeFQyaXF5?=
+ =?utf-8?B?dTQzTFdIb2JtaDRUS2pjT2JaUlRkWCtMZXAvSXI0RlJDelVDU0M4dTVBbnE3?=
+ =?utf-8?B?QVJENjhLcHlOY0NOVFZESTh2aGptWFRlL1lPbUM5NFhudnh2YVd0Slp0TEJo?=
+ =?utf-8?B?MUNheEZPc2lLek5SM2QzV1UzbUxBbWhmTDEvVkh0Zkc2UzUrZXE3YlN4czBx?=
+ =?utf-8?Q?Cvsb12TCeI2Zj?=
 X-Forefront-Antispam-Report:
-	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 08:41:26.8461
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 08:41:39.0039
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82266147-aca6-4a74-c6d5-08dc6b4cd245
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf129f67-cd6a-440e-eab3-08dc6b4cd984
 X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DB1PEPF000509FB.eurprd03.prod.outlook.com
+	DB1PEPF00050A01.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR02MB9149
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR02MB6396
 
-Introduce new link modes necessary for the BroadR-Reach mode on
-bcm5481x PHY by Broadcom and new PHY tunable to choose between
-normal (IEEE) ethernet and BroadR-Reach modes of the PHY.
-
+Add the definitions of LRE registers for Broadcom BCM5481x PHY
 Signed-off-by: Kamil Horák - 2N <kamilh@axis.com>
 ---
- drivers/net/phy/phy-core.c   | 9 +++++----
- include/uapi/linux/ethtool.h | 9 ++++++++-
- net/ethtool/common.c         | 7 +++++++
- net/ethtool/ioctl.c          | 1 +
- 4 files changed, 21 insertions(+), 5 deletions(-)
+ include/linux/brcmphy.h | 91 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 90 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 15f349e5995a..129e223d8985 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -13,10 +13,9 @@
-  */
- const char *phy_speed_to_str(int speed)
- {
--	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 102,
--		"Enum ethtool_link_mode_bit_indices and phylib are out of sync. "
--		"If a speed or mode has been added please update phy_speed_to_str "
--		"and the PHY settings array.\n");
-+	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 103,
-+			 "Enum ethtool_link_mode_bit_indices and phylib are out of sync. If a speed or mode has been added please update phy_speed_to_str and the PHY settings array.\n"
-+			);
- 
- 	switch (speed) {
- 	case SPEED_10:
-@@ -265,6 +264,8 @@ static const struct phy_setting settings[] = {
- 	PHY_SETTING(     10, FULL,     10baseT1S_Full		),
- 	PHY_SETTING(     10, HALF,     10baseT1S_Half		),
- 	PHY_SETTING(     10, HALF,     10baseT1S_P2MP_Half	),
-+	PHY_SETTING(     10, FULL,     1BR10			),
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index 1394ba302367..9c0b78c1b6fb 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -270,16 +270,105 @@
+ #define BCM5482_SSD_SGMII_SLAVE		0x15	/* SGMII Slave Register */
+ #define BCM5482_SSD_SGMII_SLAVE_EN	0x0002	/* Slave mode enable */
+ #define BCM5482_SSD_SGMII_SLAVE_AD	0x0001	/* Slave auto-detection */
++#define BCM5482_SSD_SGMII_SLAVE_AD	0x0001	/* Slave auto-detection */
 +
- };
- #undef PHY_SETTING
- 
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index 041e09c3515d..105432565e6d 100644
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -289,11 +289,18 @@ struct ethtool_tunable {
- #define ETHTOOL_PHY_EDPD_NO_TX			0xfffe
- #define ETHTOOL_PHY_EDPD_DISABLE		0
- 
-+/*
-+ *	BroadR-Reach Mode Control
-+ */
-+#define ETHTOOL_PHY_BRR_MODE_ON		1
-+#define ETHTOOL_PHY_BRR_MODE_OFF	0
++/* BroadR-Reach LRE Registers. */
++#define MII_BCM54XX_LRECR		0x00	/* LRE Control Register                    */
++#define MII_BCM54XX_LRESR		0x01	/* LRE Status Register                     */
++#define MII_BCM54XX_LREPHYSID1		0x02	/* LRE PHYS ID 1                           */
++#define MII_BCM54XX_LREPHYSID2		0x03	/* LRE PHYS ID 2                           */
++#define MII_BCM54XX_LREANAA		0x04	/* LDS Auto-Negotiation Advertised Ability */
++#define MII_BCM54XX_LREANAC		0x05	/* LDS Auto-Negotiation Advertised Control */
++#define MII_BCM54XX_LREANPT		0x06	/* LDS Ability Next Page Transmit          */
++#define MII_BCM54XX_LRELPA		0x07	/* LDS Link Partner Ability                */
++#define MII_BCM54XX_LRELPNPM		0x08	/* LDS Link Partner Next Page Message      */
++#define MII_BCM54XX_LRELPNPC		0x09	/* LDS Link Partner Next Page Control      */
++#define MII_BCM54XX_LRELDSE		0x0a	/* LDS Expansion Register                  */
++#define MII_BCM54XX_LREES		0x0f	/* LRE Extended Status                     */
 +
- enum phy_tunable_id {
- 	ETHTOOL_PHY_ID_UNSPEC,
- 	ETHTOOL_PHY_DOWNSHIFT,
- 	ETHTOOL_PHY_FAST_LINK_DOWN,
- 	ETHTOOL_PHY_EDPD,
-+	ETHTOOL_PHY_BRR_MODE,
- 	/*
- 	 * Add your fresh new phy tunable attribute above and remember to update
- 	 * phy_tunable_strings[] in net/ethtool/common.c
-@@ -1845,7 +1852,7 @@ enum ethtool_link_mode_bit_indices {
- 	ETHTOOL_LINK_MODE_10baseT1S_Full_BIT		 = 99,
- 	ETHTOOL_LINK_MODE_10baseT1S_Half_BIT		 = 100,
- 	ETHTOOL_LINK_MODE_10baseT1S_P2MP_Half_BIT	 = 101,
--
-+	ETHTOOL_LINK_MODE_1BR10_BIT			 = 102,
- 	/* must be last entry */
- 	__ETHTOOL_LINK_MODE_MASK_NBITS
- };
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index 6b2a360dcdf0..5e37804958e9 100644
---- a/net/ethtool/common.c
-+++ b/net/ethtool/common.c
-@@ -98,6 +98,7 @@ phy_tunable_strings[__ETHTOOL_PHY_TUNABLE_COUNT][ETH_GSTRING_LEN] = {
- 	[ETHTOOL_PHY_DOWNSHIFT]	= "phy-downshift",
- 	[ETHTOOL_PHY_FAST_LINK_DOWN] = "phy-fast-link-down",
- 	[ETHTOOL_PHY_EDPD]	= "phy-energy-detect-power-down",
-+	[ETHTOOL_PHY_BRR_MODE]	= "phy-broadrreach-mode",
- };
++/* LRE control register. */
++#define LRECR_RESET			0x8000	/* Reset to default state      */
++#define LRECR_LOOPBACK			0x4000	/* Internal Loopback           */
++#define LRECR_LDSRES			0x2000	/* Restart LDS Process         */
++#define LRECR_LDSEN			0x1000	/* LDS Enable                  */
++#define LRECR_PDOWN			0x0800	/* Enable low power state      */
++#define LRECR_ISOLATE			0x0400	/* Isolate data paths from MII */
++#define LRECR_SPEED100			0x0200	/* Select 100 Mbps             */
++#define LRECR_SPEED10			0x0000	/* Select 10 Mbps              */
++#define LRECR_4PAIRS			0x0020	/* Select 4 Pairs              */
++#define LRECR_2PAIRS			0x0010	/* Select 2 Pairs              */
++#define LRECR_1PAIR			0x0000	/* Select 1 Pair               */
++#define LRECR_MASTER			0x0008	/* Force Master when LDS disabled */
++#define LRECR_SLAVE			0x0000	/* Force Slave when LDS disabled  */
++
++/* LRE status register. */
++#define LRESR_ERCAP			0x0001	/* Ext-reg capability          */
++#define LRESR_JCD			0x0002	/* Jabber detected             */
++#define LRESR_LSTATUS			0x0004	/* Link status                 */
++#define LRESR_LDSABILITY		0x0008	/* Can do LDS                  */
++#define LRESR_8023			0x0010	/* Has IEEE 802.3 Support      */
++#define LRESR_LDSCOMPLETE		0x0020	/* LDS Auto-negotiation complete */
++#define LRESR_MFPS			0x0040	/* Can suppress Management Frames Preamble */
++#define LRESR_RESV			0x0080	/* Unused...                   */
++#define LRESR_ESTATEN			0x0100	/* Extended Status in R15      */
++#define LRESR_10_1PAIR			0x0200	/* Can do 10Mbps 1 Pair        */
++#define LRESR_10_2PAIR			0x0400	/* Can do 10Mbps 2 Pairs       */
++#define LRESR_100_2PAIR			0x0800	/* Can do 100Mbps 2 Pairs      */
++#define LRESR_100_4PAIR			0x1000	/* Can do 100Mbps 4 Pairs      */
++#define LRESR_100_1PAIR			0x2000	/* Can do 100Mbps 1 Pair       */
++
++/* LDS Auto-Negotiation Advertised Ability. */
++#define LREANAA_PAUSE_ASYM		0x8000	/* Can pause asymmetrically    */
++#define LREANAA_PAUSE			0x4000	/* Can pause                   */
++#define LREANAA_100_1PAIR		0x0020	/* Can do 100Mbps 1 Pair       */
++#define LREANAA_100_4PAIR		0x0010	/* Can do 100Mbps 4 Pair       */
++#define LREANAA_100_2PAIR		0x0008	/* Can do 100Mbps 2 Pair       */
++#define LREANAA_10_2PAIR		0x0004	/* Can do 10Mbps 2 Pair        */
++#define LREANAA_10_1PAIR		0x0002	/* Can do 10Mbps 1 Pair        */
++
++#define LRE_ADVERTISE_FULL		(LREANAA_100_1PAIR | LREANAA_100_4PAIR | \
++					 LREANAA_100_2PAIR | LREANAA_10_2PAIR | \
++					 LREANAA_10_1PAIR)
++
++#define LRE_ADVERTISE_ALL		LRE_ADVERTISE_FULL
++
++/* LDS Link Partner Ability. */
++#define LRELPA_PAUSE_ASYM		0x8000	/* Supports asymmetric pause   */
++#define LRELPA_PAUSE			0x4000	/* Supports pause capability   */
++#define LRELPA_100_1PAIR		0x0020	/* 100Mbps 1 Pair capable      */
++#define LRELPA_100_4PAIR		0x0010	/* 100Mbps 4 Pair capable      */
++#define LRELPA_100_2PAIR		0x0008	/* 100Mbps 2 Pair capable      */
++#define LRELPA_10_2PAIR			0x0004	/* 10Mbps 2 Pair capable       */
++#define LRELPA_10_1PAIR			0x0002	/* 10Mbps 1 Pair capable       */
++
++/* LDS Expansion register. */
++#define LDSE_DOWNGRADE			0x8000	/* Can do LDS Speed Downgrade  */
++#define LDSE_MASTER			0x4000	/* Master / Slave              */
++#define LDSE_PAIRS_MASK			0x3000	/* Pair Count Mask             */
++#define LDSE_4PAIRS			0x2000	/* 4 Pairs Connection          */
++#define LDSE_2PAIRS			0x1000	/* 2 Pairs Connection          */
++#define LDSE_1PAIR			0x0000	/* 1 Pair  Connection          */
++#define LDSE_CABLEN_MASK		0x0FFF	/* Cable Length Mask           */
  
- #define __LINK_MODE_NAME(speed, type, duplex) \
-@@ -211,6 +212,7 @@ const char link_mode_names[][ETH_GSTRING_LEN] = {
- 	__DEFINE_LINK_MODE_NAME(10, T1S, Full),
- 	__DEFINE_LINK_MODE_NAME(10, T1S, Half),
- 	__DEFINE_LINK_MODE_NAME(10, T1S_P2MP, Half),
-+	__DEFINE_SPECIAL_MODE_NAME(1BR10, "1BR10"),
- };
- static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+ /* BCM54810 Registers */
+ #define BCM54810_EXP_BROADREACH_LRE_MISC_CTL	(MII_BCM54XX_EXP_SEL_ER + 0x90)
+ #define BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN	(1 << 0)
+ #define BCM54810_SHD_CLK_CTL			0x3
+ #define BCM54810_SHD_CLK_CTL_GTXCLK_EN		(1 << 9)
++#define BCM54810_SHD_SCR3_TRDDAPD		0x0100
++
++/* BCM54811 Registers */
++#define BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL	(MII_BCM54XX_EXP_SEL_ER + 0x9A)
++/* Access Control Override Enable */
++#define BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL_EN		BIT(15)
++/* Access Control Override Value */
++#define BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL_OVERRIDE_VAL	BIT(14)
++/* Access Control Value */
++#define BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL_VAL		BIT(13)
  
-@@ -374,6 +376,11 @@ const struct link_mode_info link_mode_params[] = {
- 	__DEFINE_LINK_MODE_PARAMS(10, T1S, Full),
- 	__DEFINE_LINK_MODE_PARAMS(10, T1S, Half),
- 	__DEFINE_LINK_MODE_PARAMS(10, T1S_P2MP, Half),
-+	[ETHTOOL_LINK_MODE_1BR10_BIT] = {
-+		.speed	= SPEED_10,
-+		.lanes  = 1,
-+		.duplex = DUPLEX_FULL,
-+	},
- };
- static_assert(ARRAY_SIZE(link_mode_params) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+ /* BCM54612E Registers */
+ #define BCM54612E_EXP_SPARE0		(MII_BCM54XX_EXP_SEL_ETC + 0x34)
+-#define BCM54612E_LED4_CLK125OUT_EN	(1 << 1)
++#define BCM54612E_LED4_CLK125OUT_EN	BIT(1)
  
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 5a55270aa86e..9e68c8562fa3 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -2722,6 +2722,7 @@ static int ethtool_phy_tunable_valid(const struct ethtool_tunable *tuna)
- 	switch (tuna->id) {
- 	case ETHTOOL_PHY_DOWNSHIFT:
- 	case ETHTOOL_PHY_FAST_LINK_DOWN:
-+	case ETHTOOL_PHY_BRR_MODE:
- 		if (tuna->len != sizeof(u8) ||
- 		    tuna->type_id != ETHTOOL_TUNABLE_U8)
- 			return -EINVAL;
+ 
+ /* Wake-on-LAN registers */
 -- 
 2.39.2
 
