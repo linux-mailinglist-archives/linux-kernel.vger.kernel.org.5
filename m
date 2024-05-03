@@ -1,105 +1,135 @@
-Return-Path: <linux-kernel+bounces-167317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D26968BA7C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC9298BA72D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:40:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F599281BAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:28:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A82C6281FC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5B1146D57;
-	Fri,  3 May 2024 07:28:08 +0000 (UTC)
-Received: from 12.mo583.mail-out.ovh.net (12.mo583.mail-out.ovh.net [46.105.39.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5829514659D;
+	Fri,  3 May 2024 06:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="NJAnpq4B"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D24139593
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.39.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98574848D;
+	Fri,  3 May 2024 06:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714721288; cv=none; b=XgWXv1hPGCD1mdbWs2SRbakfiKFYWgcqahnPV6p2+ZLrvMd7cw6rxPJ1bllM9+7woz/yF24Q8dLTJy1wauHeqDSHX54nGXzTRIMq8xxv79WdpYnErdVHDXrRwUETMfkA28xG32mPuXxpKEg3MSLQByqIEZksyYhmBgsV5Rwau3g=
+	t=1714718400; cv=none; b=j8i5LHj5h5Z5U3eLCsIvuEYPqqSKVO4usec9uwdzIJ+/rRe05ajDh4eurKN5BLWsZAs0GEEzVdKLfzI2AsZ9olQLw/BashPdjnp1OlJOiQPFnGLw59UsSCNrB8BUxok+Qaq2gHP8dor2BlqqzRXUlzE0t+RTT3BbtH5zWUcRAmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714721288; c=relaxed/simple;
-	bh=O9dHTfqdUKYqYcEkVxGpE1PpwlajnvKSe2uB3eZESzc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TMOQYg7N4j87s92bl0ruwa039/SACWk8BEPNOpr5NF1Cre8M9xvicdSe7AkiecgcNjuxJEJ8ZM+UOSJ0L10p8WBh037v+aAhYSL+yFcQxAU6oP3HP11erbGU0Khr64W3zvNw2ZFeC2SQ2t7tiH9iMGILKmlQApKHh+sV4Rqler4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=46.105.39.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
-Received: from director3.ghost.mail-out.ovh.net (unknown [10.108.2.118])
-	by mo583.mail-out.ovh.net (Postfix) with ESMTP id 4VVqPg5frzz1QjG
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 23:09:11 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-b6h52 (unknown [10.108.42.39])
-	by director3.ghost.mail-out.ovh.net (Postfix) with ESMTPS id A17F91FDF8;
-	Thu,  2 May 2024 23:09:06 +0000 (UTC)
-Received: from etezian.org ([37.59.142.105])
-	by ghost-submission-6684bf9d7b-b6h52 with ESMTPSA
-	id 8ifaEBIdNGZnZx8AitxrAg
-	(envelope-from <andi@etezian.org>); Thu, 02 May 2024 23:09:06 +0000
-Authentication-Results:garm.ovh; auth=pass (GARM-105G006ccf2312c-b8e8-4f3e-a551-11cf7daafa4c,
-                    C3C300A9F266149161DCD69BC7DE92F4F10D7925) smtp.auth=andi@etezian.org
-X-OVh-ClientIp:89.217.109.169
-From: Andi Shyti <andi.shyti@kernel.org>
-To: linux-kernel@vger.kernel.org, 
- Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Mika Westerberg <mika.westerberg@linux.intel.com>, 
- Jan Dabros <jsd@semihalf.com>, Lee Jones <lee@kernel.org>, 
- Jiawen Wu <jiawenwu@trustnetic.com>, 
- Mengyuan Lou <mengyuanlou@net-swift.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Andrew Lunn <andrew@lunn.ch>, Duanqiang Wen <duanqiangwen@net-swift.com>, 
- linux-i2c@vger.kernel.org, netdev@vger.kernel.org
-In-Reply-To: <20240425214438.2100534-1-florian.fainelli@broadcom.com>
-References: <20240425214438.2100534-1-florian.fainelli@broadcom.com>
-Subject: Re: (subset) [PATCH v3 0/5] Define i2c_designware in a header file
-Message-Id: <171469134545.1016503.10207141192762647093.b4-ty@kernel.org>
-Date: Fri, 03 May 2024 01:09:05 +0200
+	s=arc-20240116; t=1714718400; c=relaxed/simple;
+	bh=qo6gNNSP/j6kpY7IcyU/qgjiBE3W7wIKyPUWxhxHQMM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=k8y29M12sIE11cd8XFCdSXvJw0Loycr4IJ5nJvb1BdYO8V4qJczh94wZ3Y9TED7XexNIJ257KSzfSNZGgV4dMSMzCoNPysNTmpIaHX7kadGedjaPFlPcYZiIwseYak+jxb3UO04cXCYOqfEHLLvRusF8dp84sr5Uo4BoJb0sjyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=NJAnpq4B; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Reply-To:Cc:To:From:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=7zeNTz9dZI8LnTBatn2bq2v7BK5j7Weg7XVPNxsiLDY=;
+	t=1714718398; x=1715150398; b=NJAnpq4B1bewI3YJelHuwEV9QLPjvu03d1It33hpGYLBcCP
+	OB1SqFG7MfSffK7ZkFICBKsJtmJlNcIwdUL1o6gO/VcBN223Z3cZmsM7gmYVFYdxTDNMR1bgoFx7c
+	TcZ++0ZAa8aCL4uHg3tPhIJU/Xtw2Fs2VTIp0WRXcBUuEz0wSKuHlmMeKw+sgPpnKihAtrZgQxQ2a
+	p3VYOZl7FXwAFOumB7N7qfOwxjHqzJ+tL+rRBT1BeskWWNi4igfWqCTkgmqAsTSRquesFlu2FYl1w
+	QTF/E7j2XJVeTkpoXTg1xkBOA1IWRwsTSdbKcBUEfXuaHvSZazzpj3Lajk8nDAiA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1s2lwZ-0004pK-RV; Fri, 03 May 2024 07:58:51 +0200
+Message-ID: <82fde49f-5dc8-47de-b220-83f9d7555485@leemhuis.info>
+Date: Fri, 3 May 2024 07:58:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [regression] Tri-band AMD RZ608 (MediaTek MT7921K) has 6GHz band
+ disabled in kernel 6.8 despite working in <=6.6
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+To: Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ Ryder Lee <ryder.lee@mediatek.com>
+Cc: Kalle Valo <kvalo@kernel.org>,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <e17e5bf2-657a-4a22-a925-94db95fe8ca1@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <e17e5bf2-657a-4a22-a925-94db95fe8ca1@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
-X-Ovh-Tracer-Id: 2096144151853337100
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrvdduledgudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvegjfhfukfffgggtgffosehtjeertdertdejnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihdrshhhhihtiheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeffteehudffvdfhudfgffdugfejjeduheehgeefgeeuhfeiuefghffgueffvdfgfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupdekledrvddujedruddtledrudeiledpfeejrdehledrudegvddruddtheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeefpdhmohguvgepshhmthhpohhuth
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714718398;42eb24cc;
+X-HE-SMSGID: 1s2lwZ-0004pK-RV
 
-Hi
+On 18.04.24 10:48, Linux regression tracking (Thorsten Leemhuis) wrote:
+>
+> mt7921 maintainers, I noticed a report about a regression in
+> bugzilla.kernel.org related to your driver. As many (most?) kernel
+> developers don't keep an eye on bugzilla, I decided to write this mail.
+> To quote from https://bugzilla.kernel.org/show_bug.cgi?id=218731 :
 
-On Thu, 25 Apr 2024 14:44:33 -0700, Florian Fainelli wrote:
-> This patch series depends upon the following two patches being applied:
+FWIW, the reporter meanwhile confirmed that this happens with 6.9-rc6.
+No bisection so far
+
+Mt7921 maintainers, so you have any idea what might be wrong? Or is this
+a situation along the lines of "uhhps, we screwed up somewhere (hardware
+detection, regulatory stuff, ...) and had to fix this, which leads to this".
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
+
+>> On kernel 6.6.27-1-lts, running `iw list` shows that 6GHz channels are supported:>
+>> [...]
+>> Similarly, discovering and connecting to 6GHz APs works fine.
+>>
+>> However, in recent kernel 6.8.5, running `iw list` shows that 6GHz channels are disabled:
+>>
+>> [...]
+>>
+>> And scanning or connecting to 6GHz APs does not work. 
+>>
+>> There's nothing in `dmesg` that differs between boots of the two kernels. On 6.8.5, 6GHz band doesn't work like it did on previous kernels. 
+>>
+>> I can provide more logs or help debug the issue if needed.
 > 
-> https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
-> https://lore.kernel.org/all/20240422084109.3201-2-duanqiangwen@net-swift.com/
+> See the ticket for more details. Note, you have to use bugzilla to reach
+> the reporter, as I sadly[1] can not CCed them in mails like this.
 > 
-> There is no reason why each driver should have to repeat the
-> "i2c_designware" string all over the place, because when that happens we
-> see the reverts like the above being necessary.
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
 > 
-> [...]
-
-Applied to i2c/i2c-host on
-
-git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
-
-Thank you,
-Andi
-
-Patches applied
-===============
-[1/5] i2c: designware: Replace MODULE_ALIAS() with MODULE_DEVICE_TABLE()
-      commit: 91647e64f0f5677ace84165dc25dc99579147b8f
-[2/5] i2c: designware: Create shared header hosting driver name
-      commit: 856cd5f13de7cebca44db5ff4bc2ca73490dd8d7
-
+> [1] because bugzilla.kernel.org tells users upon registration their
+> "email address will never be displayed to logged out users"
+> 
+> P.S.: let me use this mail to also add the report to the list of tracked
+> regressions to ensure it's doesn't fall through the cracks:
+> 
+> #regzbot introduced: v6.6..v6.8.5
+> #regzbot title: wifi drivers: mt7921: 6GHz band stopped working
+> #regzbot from: AlexDeLorenzo.dev
+> #regzbot duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=218731
+> #regzbot ignore-activity
+> 
+> 
 
