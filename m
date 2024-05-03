@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-167359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BDD08BA86C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:13:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3ADE8BA86E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:14:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AC2BB22647
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:13:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311151C2180F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1CD14F9C6;
-	Fri,  3 May 2024 08:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F98914F9CF;
+	Fri,  3 May 2024 08:12:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UtlsxWpt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ExymHTvj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA6114F13D;
-	Fri,  3 May 2024 08:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD0C14F9DA;
+	Fri,  3 May 2024 08:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714723945; cv=none; b=nWkZqxrMisL5B/K8p8ZOiuGHHFG88wSKVU9nqFWUIjja9Cfi6gu2mbXmaa/iK5+5ZrFS//VndwyBDINgEwwtyABLgZ2JOcZLN17NFCkpaLB/055MbK/eTrgoR/6BpLhVwo3lFu05xKQksZIV0XbxRovDFKReWsvrL4uB+3wPX6I=
+	t=1714723947; cv=none; b=J9jwaLS36I1uskhQBdPjEf2iBIPvSvOzmgZ+nGPHg7CQk+iYq79HZEg4avm0Y9bw49TvcHh6ZGVABDS+hu9DiuHopQ+rDd8TC/ERurKtGLQs/6xxI+h6GFuLH4Lml6oQVVNijujg19MXxOijzpSFcGj56tVrhqVA2xUSOriFtVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714723945; c=relaxed/simple;
-	bh=S72kpyHE5KwejYv2p4il2qEZxWETqb6oKhqe7/jS/J4=;
+	s=arc-20240116; t=1714723947; c=relaxed/simple;
+	bh=hBY4yzirR+6peUPSmr/L6JeuzaTkaL7zjOUip5Zgez4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=heB5H+qU/hKMZQYbvxffmPt9L57xT9+7mN6ErBmIrAo0ylBZLtZOx/zZ/kSpAEsSicAVLk9I2Nx8YRZpsp60q5ddd/9W7CD++ByO9Mzp2K151b1ki0nVPDVZzwEhvDxWvJ/Reb9sXlJjE+2mLkREb8YgW+o3Faowekz9fo/QofU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UtlsxWpt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5AFBC4AF1B;
-	Fri,  3 May 2024 08:12:22 +0000 (UTC)
+	 MIME-Version; b=PeJqu6Ie8+qJOqcWlO4LBEX6VeCVaSyFjYTMq3xePvAZ7SKMDu1ap6N4q8gGfQP9vmlWuCG0fOIqg+XCpa3pNt06RcldjQJv91yo30ozzVOaxvYHWBSXSVR2gn5vdppu0delDXzMp7nIpO/rpaWvPcSj9n5J7HzPRsjLWvB5f50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ExymHTvj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82BAFC116B1;
+	Fri,  3 May 2024 08:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714723945;
-	bh=S72kpyHE5KwejYv2p4il2qEZxWETqb6oKhqe7/jS/J4=;
+	s=k20201202; t=1714723947;
+	bh=hBY4yzirR+6peUPSmr/L6JeuzaTkaL7zjOUip5Zgez4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UtlsxWpt7JYxL7mqgO8k87+lad+jPXKC5UBzw/EonERJEmY3BYFomFzpWgtQTifE1
-	 CUD6bf4+HkWqbgBwBli48xIHacx8p97AUrMXAtgPeeJih2yaXzAnrQxoYIgFoEc4bE
-	 KbM04k9gsFoPz01s797sf1qnDQwjAJ9uz0Ei4MbkIo6gy3zAOiw2eyKkHNiQ+zSq89
-	 KBtsKoQAbk0nhoahNd95GeVVUZuFzgemR+NsFKAKqMhsr2YfUo3zwvNtYgA432Hwcc
-	 bil3WVyHCLVji6Y8eORlMmpMeqRshN0MGU9t0eRg3KuFOr74Sxmt1+Wth3igzZ1pSX
-	 OE/HMwdHMYUGg==
+	b=ExymHTvjQ8CJTlsT8pDeCTWElcNO1CBiAhG8iTFM8EjWM6V3mNOwq4K8zwFxF0dFL
+	 h5CyAuZBkoghIoiOSwJFHGF18cHqnb3UC0wa3iTSoWvZZfpJEqj0Kx9oeUA0oY9BI1
+	 zTU9KigRv+wKyeY96tPbQJ7aADviH3+ucfKceizCwUm5BZeHZzJKFgcWDqDf+j/lB1
+	 JJvXNzbaFYqRqhPa4Jq1RCg4Kpu8pXwib1KAwgidJKh9lfKW67jC5Bz3r+s25YGng/
+	 l1wB14nREqmnpqOmLiQVXdfJsWZjGnnvSaBZX6LPD+Y+gYf3bQpX03v4wsXXmg5Hbj
+	 PeOEnSXAuLfQw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-alpha@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -51,9 +51,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 07/14] alpha: core_lca: take the unused functions out
-Date: Fri,  3 May 2024 10:11:18 +0200
-Message-Id: <20240503081125.67990-8-arnd@kernel.org>
+Subject: [PATCH 08/14] alpha: jensen, t2 - make __EXTERN_INLINE same as for the rest
+Date: Fri,  3 May 2024 10:11:19 +0200
+Message-Id: <20240503081125.67990-9-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240503081125.67990-1-arnd@kernel.org>
 References: <20240503081125.67990-1-arnd@kernel.org>
@@ -67,67 +67,72 @@ Content-Transfer-Encoding: 8bit
 
 From: Al Viro <viro@zeniv.linux.org.uk>
 
-the only user had been drivers/char/h8.c, and that got taken out
-and shot back in 2004...
+We want io.h primitives (readb(), etc.) to be extern inline.
+However, that requires the backing out-of-line implementation
+somewhere, preferably kept in sync with the inline ones.
+
+The way it's done is __EXTERN_INLINE macro that defaults to
+extern inline, but can be overridden in compilation unit where
+the out-of-line instance will be.
+
+That works, but it's brittle - we *must* make sure that asm/io.h
+is the very first include in such compilation units.  There'd
+been a bunch of bugs of that sort in the past.
+
+Another issue is the choice of overriding definition for
+__EXTERN_INLINE; it must be either 'inline' or empty.  Either
+will do for compilation purposes - inline void foo(...) {...}
+(without extern or static) is going to generate out-of-line
+instance.  The difference is that 'definition without a
+prototype' heuristics trigger on
+void foo(void)
+{
+	...
+}
+but not on
+inline void foo(void)
+{
+	...
+}
+
+Most of the overrides go for 'inline'; in two cases (sys_jensen
+and core_t2) __EXTERN_INLINE is defined as empty.  Without
+-Wmissing-prototypes it didn't matter, but now that we have
+that thing always on...
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/alpha/kernel/core_lca.c | 44 ------------------------------------
- 1 file changed, 44 deletions(-)
+ arch/alpha/kernel/core_t2.c    | 2 +-
+ arch/alpha/kernel/sys_jensen.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/alpha/kernel/core_lca.c b/arch/alpha/kernel/core_lca.c
-index 57e0750419f2..4616b11643d5 100644
---- a/arch/alpha/kernel/core_lca.c
-+++ b/arch/alpha/kernel/core_lca.c
-@@ -471,47 +471,3 @@ lca_machine_check(unsigned long vector, unsigned long la_ptr)
- 	}
- #endif /* CONFIG_VERBOSE_MCHECK */
- }
--
--/*
-- * The following routines are needed to support the SPEED changing
-- * necessary to successfully manage the thermal problem on the AlphaBook1.
-- */
--
--void
--lca_clock_print(void)
--{
--        long    pmr_reg;
--
--        pmr_reg = LCA_READ_PMR;
--
--        printk("Status of clock control:\n");
--        printk("\tPrimary clock divisor\t0x%lx\n", LCA_GET_PRIMARY(pmr_reg));
--        printk("\tOverride clock divisor\t0x%lx\n", LCA_GET_OVERRIDE(pmr_reg));
--        printk("\tInterrupt override is %s\n",
--	       (pmr_reg & LCA_PMR_INTO) ? "on" : "off"); 
--        printk("\tDMA override is %s\n",
--	       (pmr_reg & LCA_PMR_DMAO) ? "on" : "off"); 
--
--}
--
--int
--lca_get_clock(void)
--{
--        long    pmr_reg;
--
--        pmr_reg = LCA_READ_PMR;
--        return(LCA_GET_PRIMARY(pmr_reg));
--
--}
--
--void
--lca_clock_fiddle(int divisor)
--{
--        long    pmr_reg;
--
--        pmr_reg = LCA_READ_PMR;
--        LCA_SET_PRIMARY_CLOCK(pmr_reg, divisor);
--	/* lca_norm_clock = divisor; */
--        LCA_WRITE_PMR(pmr_reg);
--        mb();
--}
+diff --git a/arch/alpha/kernel/core_t2.c b/arch/alpha/kernel/core_t2.c
+index 98d5b6ff8a76..3d72d90624f1 100644
+--- a/arch/alpha/kernel/core_t2.c
++++ b/arch/alpha/kernel/core_t2.c
+@@ -10,7 +10,7 @@
+  * Code common to all T2 core logic chips.
+  */
+ 
+-#define __EXTERN_INLINE
++#define __EXTERN_INLINE inline
+ #include <asm/io.h>
+ #include <asm/core_t2.h>
+ #undef __EXTERN_INLINE
+diff --git a/arch/alpha/kernel/sys_jensen.c b/arch/alpha/kernel/sys_jensen.c
+index 5c9c88428124..a1bb1c4a7e93 100644
+--- a/arch/alpha/kernel/sys_jensen.c
++++ b/arch/alpha/kernel/sys_jensen.c
+@@ -7,7 +7,7 @@
+  *
+  * Code supporting the Jensen.
+  */
+-#define __EXTERN_INLINE
++#define __EXTERN_INLINE inline
+ #include <asm/io.h>
+ #include <asm/jensen.h>
+ #undef  __EXTERN_INLINE
 -- 
 2.39.2
 
