@@ -1,280 +1,233 @@
-Return-Path: <linux-kernel+bounces-167770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C9E08BAEF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:25:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B873F8BAEF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:25:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CBCCB22F11
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:25:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 709D52818E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9877E154BF1;
-	Fri,  3 May 2024 14:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="pW3Z1Jp4"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2083.outbound.protection.outlook.com [40.107.8.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64865154C16;
+	Fri,  3 May 2024 14:24:31 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FE2153BCB;
-	Fri,  3 May 2024 14:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714746211; cv=fail; b=O2T0ZWwHT7w9r4gOXCPvTOG7qlnGLgRTrYwe/z+YasX2T+sm7sMFJNbqke9/AE1ITYjmWT37Zg2c/io25nQgsdldjaozJCm4/s4XGv2PeLGSfS3SIT3nXz0Zqj4MNO08683WqzSSdDxoI++3DuL9t567Lax7Paxm9MpKj2b13Cw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714746211; c=relaxed/simple;
-	bh=o3FI2JNORJhwTu25QqxZqT+25/m8adh4+vVcUKvNElQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Z/JFJs42VFbZOvJln5QHEw+Xl88K8XGHSrG36oVuqkm+mrkszhsxJCWt2afpM1NhyPWYUJ66P4KaB17oVJ+BYmi1I2wk+vWXZfzNNL6GbATEZ9blQQg9cmowU3AA2gkVRCU7zwreCjFM/kSylUZOLBJW/vlu/4PRDWYxavbpVlo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=pW3Z1Jp4; arc=fail smtp.client-ip=40.107.8.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g8L5CwjOY7GMdha25dGdnLRorU9hOwshrSsBpFxK4Gk8uz17tEtD8R6bV5lES+h0J4iMG1jQPQFHDCe1Zjkta7LCQ0JQjlxnIfqFLX/GKvs/+uXv+ucv9UQmURTkIUrtxyye2lBcdUA84vxodDx3IRoeQ9pZ5KbP9j6lrQpdwV8KGBTDGd/Qb6SRd6n8VdokwjlmfvLmVtyvOItMgcr4N0D65+rov9XLu9b66JuqohERe5hvcV4XbyD2tO5cUIZZgNLrRFy2X+m/gItv3wbtSqv3uwukmSIByzr61a0JrnslUIql28nIQtLpHGafqVmqwAEzlrLc3LXh4IgdyhUjfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7OaUs/wNko7fYbnQkbF4PXJ8Ql2tyREoqxS5qEwbmm4=;
- b=D2fgJjA9+nuoUXSVt+nCn/4JU4R/gO2zgrm7mPpUiRjuDUJI0bDrZiNsAnA7MCESuzuzu/KCwzRgBl/YL1qI5LBqh/4ttzEDayfyQw6zmWVxToKNJfPaG52DSkbcfedY3mVtozADSIllYou52mgU/EkykZqEJHxSnLHPIvown3VCj7Js8OYZIGcsvgvaSSHNnDYuhLhkLlywdLPSpXFmfIPa5Ho37YLPt4PnL+VVXfEiuAe222VmE9JNyPTMLik+mvnA8R0YRx6ohMau0V9IBX/JAk0RHQK2+Wax4Jg+Ms6CJalotRsI69fl48QF53/YpGlmM72sgMG0UcGv5coTuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7OaUs/wNko7fYbnQkbF4PXJ8Ql2tyREoqxS5qEwbmm4=;
- b=pW3Z1Jp4um5uk4Pp+XbRrpH7bb644Sh42/Jh1qi042/xC3KuYugtU7fBBngUmUExA9gqkdD8kb4MrEqOSDvR6JkvkXfk41XNP1TcSslXyM6ZURZms5SSQF4kIfzT3NvLWVNHYzOIO56oYtT4MhoX7BNYnWw2cGlw3d2RRxPV+BU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VI1PR04MB10050.eurprd04.prod.outlook.com (2603:10a6:800:1db::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.26; Fri, 3 May
- 2024 14:23:25 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7544.029; Fri, 3 May 2024
- 14:23:25 +0000
-Date: Fri, 3 May 2024 10:23:16 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: cassel@kernel.org,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
-Cc: bhelgaas@google.com, gustavo.pimentel@synopsys.com, helgaas@kernel.org,
-	imx@lists.linux.dev, jdmason@kudzu.us, jingoohan1@gmail.com,
-	kw@linux.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org, mani@kernel.org,
-	robh@kernel.org
-Subject: Re: [PATCH v4 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <ZjTzVNWAkNDJC3cs@lizhi-Precision-Tower-5810>
-References: <20240412160841.925927-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240412160841.925927-1-Frank.Li@nxp.com>
-X-ClientProxiedBy: BY3PR05CA0049.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::24) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B345154C0D
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714746270; cv=none; b=cE5PXiWL7QiiEbHh97Ux2JyVuax3QLOxr/6istcmzIgmF9kkuYNxSSZU+5vCYhUhnvF+EfcD4IzSpETpGgZndZdrh3bGOOZel1NC9lR6SVoTcdquWO5bvT2DYRNq0476cR0wpH+/1eEchqG5Zky8jRw8j2NHwjYBpkmoLITsZ+M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714746270; c=relaxed/simple;
+	bh=nVXcJHcZXdesKjE8vJRpj0lZ1/+RgYD7tyy8wrtKiRc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=eElOF5ZNxDQP/laGkT/m0lodGb8CJ8KwI2ACYh+D4JxvSeQDXwr/DXBmI3SAOTo5amhe0mrnf0wHhOyBN5PIzLqeJtLfNGEEj9JoR0vvfE3azbzdBzF2li02wYsuUKP/9wgjA/Z0Eh4ntcwN0bxpCHGCLmCRjYb1NO51VpFMNbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d9fde69c43so887789239f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:24:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714746268; x=1715351068;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a1rCHm96AiJhRq3rpvqRExVN/wMvxevJc+nhep5CfRs=;
+        b=ac3mN29hGZXKBTh7KosFNQcbBKrtW7t8mZQQJcAvxZ+EYc4DbCR7D16XTM77OwdJPq
+         U9F849hiphP/v/+ZYsnMMwlj0JqO7o4IWXXdVQey/Cekdx7+K2LBrzBSyTFYHKiIDfEa
+         5BaPug8JVIDb4/WzXkq/jZrCwdQgIedU5n/c2tF370G2nCijZabFPqtAOUM58re7v1l/
+         0Zh3MACAEc+sKIsW0nz6YvFtfKbeRpYbKqx+sL4DklX9U002DqG3/9rGxs/Avy1cZofS
+         ztkFr2bYlPoDWXwEX0wheq8foI0zRU0ZJR1NeB1SQNVugzjQpYnVstFP6ZqZYs6qMg0L
+         mMaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUKrUDiYA0bfHA/kDrjoKKYbqj4aBUPBH+Mkfa7WxKH8clMqILEv8U4a92R2pTzT0v1Eps6PYoK3SSRT1rzmEeGU5rELVSKsuBKvEeU
+X-Gm-Message-State: AOJu0YxRpDNYUraxDRZJxKDJANhNGKoxyVckOx/+CvNSt77DzwwwnJKu
+	zqehsHVQg8RpDIxUPVaE/8QraXnAt/xXFqlQ9hFSfIYAeBWNB7zqj4j0K5aZmpWHZyVp+D1fsUk
+	/LHdHRFQ3hcIUgpKRjT/HEamYWc1XqlRmNlzzgAOFOUKUuC7FX5JV/rQ=
+X-Google-Smtp-Source: AGHT+IFvqLmMgYZls/CBXxPOB4E2J7JTnZPI5bKV+raQMke2LclpyYp29bASoj4Vkqi4AHNVQ3qtxMiFMpTUVJ53Ku31oig1E3w/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB10050:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f3904d9-6e77-46fa-8108-08dc6b7c97f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|1800799015|52116005|7416005|366007|376005|38350700005;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?YjhVaDZnd1lqcTZ5dWljOUE5VjlFSjRoK1BnL1NaeFh2UG0zc1ZkRUUvOHhB?=
- =?utf-8?B?bStHdmx2aDdzdzJxTUIrdFpWU1EyaW1Xc1hWbXBnMWR1U0Q1ODRlenZ3Vi9w?=
- =?utf-8?B?TlZTbXdFYWFldmhxR1hLSG9ZbEhqeHhDdGVyYVBrYzBRR2xGWkVvZUkyZGpl?=
- =?utf-8?B?TFF0RlU3d2doWU8zb2NVTDdLNjZwMWYyWFRPOFl1WkFhMHVoeVB0bW9vR09I?=
- =?utf-8?B?UG1Rek9NMXd4UjIvT3NaNlZCdGl6aFdSMVhmUVVaUjhLdkVQY0VCWnRaY0xE?=
- =?utf-8?B?Qkhnb2JObnlyQ3Q4b0t2cjdPd2RiY1hjMW5wZWRBaDVNVk1iUkVNZGpESkps?=
- =?utf-8?B?ZTk1TXVFTGNQTWdTeFYrdFROeTc3eThRVWF5T05VazlZei9LVmYyR2pyWEZ3?=
- =?utf-8?B?N3IyZ3BIbEowdGRDZlRtMHRRcHVtYm42SS8rWjlPVEs4cW9PRS9jekZ2bHpj?=
- =?utf-8?B?Nm9KMWQzN2R0a2ZQbzVuS21manJXdjFiTkRzK3JhQUpBU3l6NjVHeERIZGM2?=
- =?utf-8?B?RjBpendJWUMwdStKc3JpVmYvU2duU241K1A0eUkzM1FrNGc1UEtPZ3NDczJM?=
- =?utf-8?B?V2JncWRtQ1hJeEhpOGxXcng5VHRsNWVydWQydWw4S21laHNxYVo0UWRVdURq?=
- =?utf-8?B?RVJhbHpMdXo3cGk3YTIzU1kzSW13VjNOYUZTbXFRdGZ6d1BZNjhLVGdsN2pa?=
- =?utf-8?B?S3dZRVQ2RmhVazlYeUk2Y1hGa1IraDV4UmJsY2czY2ZzUzFkZVB5c012WmJo?=
- =?utf-8?B?QVBSTmtUQ1FqbisvUHdIUlFUeTZPMW02OWFuTHJmQk51RE4wVHZTZ1hvYU1H?=
- =?utf-8?B?ekdMVWpMSWEvazY1RGNyWEtNMCtTT0Ezcm5KYnNaSGpnSDkzb2ZHWFhQTmJI?=
- =?utf-8?B?Z3d6ays5Zis3dk5yeUZpWEozSzMvM0N4S04xVTh3Z3dPMzJZZGNtY25xVUx5?=
- =?utf-8?B?eWRjWnJUbUFBS2xlS3BwdCtsajFJRXdDcTJrc1VvcllYYXZoR05WMXpHQTd4?=
- =?utf-8?B?TzBKbDBRZTdIb05zSUxmanlDczhiZHFQd0w0ZnBsK3VCU2U4SUxpTi9OUXV5?=
- =?utf-8?B?K3d0Vkd4UzZyOG5pcWdQWVdjTzdHbWE0b0VnZ041SFdmdXNraGVvaTJLc0V6?=
- =?utf-8?B?UHEwbUJaaTAyT1FlRmJONDV1L2tnb2RzOUQrRHhJUXAwMTdXTmVCT1h1bHh5?=
- =?utf-8?B?bDRiR2Fud1FJelEydUluZWNiQ1NOcWxGM09uZzhOejFlL05yUEtsNGg5K3kz?=
- =?utf-8?B?RUJJaFRpUnoyNng4RGc0YnpMaktwU0tsQ1NySmFFajNoQThQRmZtcUtoWWJJ?=
- =?utf-8?B?TXQ5bVpSWWNJaTJwbDZNTmQ3SU5FRE5OVzNERmM0bnA1V2Z4MmtXeko2alcr?=
- =?utf-8?B?V3F6S3dxdFZkTEpZYkRzaG1Oc1ZSeE43S1I2MHpVc2lVc0tkQUl2b09uYTRN?=
- =?utf-8?B?NjV6dlpLZkEvUzMveWl3elI0NS83amZPS0xaR2Ztc2M3YnFOV2ptdThSbUsx?=
- =?utf-8?B?OEorRWtFMXdJdGpUR3ZXQkU3TzdWT250VkZDLzUycGtxY1JDNFRKWW9HakI4?=
- =?utf-8?B?OVhNVjM0d3FWa0tHSERuemdtSlIxMGFoVzRhdmNpUnVRWml1QXdkRlZtQkpr?=
- =?utf-8?B?QkJUaWxJMDZSRGllaVVrM1VkbGVIQVB1UUY0SitZYjVCZjN5MTU5Q1c5VWVW?=
- =?utf-8?B?QkRWdTdKNzQ1c0ZBVHZPeEFRMUJ6Qm5oRHQ1cE4rRTdCVlI5d0RWejBRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(366007)(376005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MzhMa2o3aktrQ2l2NFZEMlZnS1pTY3VQYllSTDgxVHcybzZSYi9URnF2REtE?=
- =?utf-8?B?K0VDZkJJUVRNOVl4S0V6cSs4U3p0VnZVQmR2SUJWWjRHVzdIbm45djVxR3Ax?=
- =?utf-8?B?WlpaYS95RGFaOVEyUGJQcmRzWUZkKzdUc3M3cldMYlFTaWxNRDRpWnh0NmZ5?=
- =?utf-8?B?d1ducTFLdVNUMzNabFhkL2t2cEF6c2Vtd3ZLN29mbnkzU2wzRXVvSUp2U0Mr?=
- =?utf-8?B?QXQ1TGtzRy9rRm9zNG55NTMxMVlVeVVwaWFEeVp5VmMzOHVuc0ttTHk3ckRS?=
- =?utf-8?B?Y1hFSTVyUFliNEwxcUZnMUZjR2RSdWtLNTlONmEvZVM5K0FGdWVxTnRMQW9Q?=
- =?utf-8?B?czdrQ3J4OEZEb2J1ZGNUbzZib1BiWnhoSkVpRFQyK0dJd0w4VzZnZGFObjlz?=
- =?utf-8?B?UldXSCtQbGxNRjh3TkJabGUxcXU0VDBXNk5CalpJVWsxNkZDWEFteWhEd051?=
- =?utf-8?B?RkYyOEtCT3k1V3YwaVNQVUVQY3N4bnBwaTFWTkZ2emYxTjJJOFoxa2dnMi81?=
- =?utf-8?B?OXJYMWpiZ25LbTFHc1drMnloWW5qTFJWR0NpSGU1YXdIWm03N3JYa2xMVzdy?=
- =?utf-8?B?VDBKQVREODFrZWtUNzNqZlg4WGlnV3hpM0dFN2xoYVBYRTBZckpGVGdJTER6?=
- =?utf-8?B?K0R1Z3FROFFHTWxpcjI1RkM1dncyajBpRmdXRVlBNkJKaXpqM3dZSEpoVW13?=
- =?utf-8?B?bURuV1ZKdkQ0dFRzMXB1eE5pY2VERDdUV3JYK1l5UmxaNWtuOGlKdzMxZTNs?=
- =?utf-8?B?YWNraUlxU3J5U2t6NDR2amI5dU9JR29wTVhOeDFHYTV5TDNrMkFiSDEwN1V6?=
- =?utf-8?B?bUlZWDV5Qm9jcEhvUEZnWUs3NkxsaEdFdzF5NmRrOTNQY3BmdlowdW5Mb2pE?=
- =?utf-8?B?UEVrV1FYeEk0d2R1dkg5TTdsL0hPWnpnQ1hNVUFKbUphbFJ3dzh0TmJHa2dz?=
- =?utf-8?B?cnYyY2Z0TDh2Y2xjazVpbitudWJFZXVic2pJenV2RTB0TUFwZlNHVFlkbnZ1?=
- =?utf-8?B?aWFXSjRESktSam9qNloydUhNZ1U2c2l4V21Xd245dlpHbTNjY00xLzBBb3pa?=
- =?utf-8?B?cllBQnkvZDRwNlRvdWMzNUdnQTIxY3FaeDc5bXlJYzl6MWIrS2tpVEdYMHRn?=
- =?utf-8?B?RHdRSnFqRDlvSkRhYjlmaDhoaDRXV040YXFNN3dYMjlDUmxoVVRHT3E3U3Rl?=
- =?utf-8?B?SEcvUExmL2lmMFN2NTFwYkRSRHJkMWhGUWtLdFZ1cW9GQTNoTHBjS2gzL0tE?=
- =?utf-8?B?cVEzM01XZVAvUmdLYmpzQktJWE4wT3h1bmU2YjlNaHRjQjBqcytjTDJWdVIv?=
- =?utf-8?B?UU5NT2hoQkFjSjc1MlM2NTBYa3p1QXVqYjg4Slk4cTNJT3ppVEZCQ2pNUDFp?=
- =?utf-8?B?SkpuMExSMXJDU1lsSEJ1b2VqK0F5REVvNmhPZXNaNW5kYVhqbzdyTHlFSUdE?=
- =?utf-8?B?QjAveVZFalpkTGlKUVZoVVlZdEx2MmlzZGVoZlQrTHllbGZ0cDB2R1UwWHVN?=
- =?utf-8?B?OUpFenpPTCt1WUFVaVFSNENoQ2FVZ3RRSkZpU3kxbVRvbmpUYmc4WEcrZE96?=
- =?utf-8?B?SW1ub0FudHBPdzhZbHM3MHkzMmZrNnk1ckc1STZwcjlWNnMvM3hJWmp3WWRQ?=
- =?utf-8?B?U2RYVEdlRVpLSklvaDVYa3NPSE1wMTlWTzlpRjBjU0V1bWZEcGlDOXZNQ1V0?=
- =?utf-8?B?L1pkSnQyYzBwV2lCckVOUE1HZkk3WHlGNStqemlrdkxuNElnVUdxVEZiemdC?=
- =?utf-8?B?dHB0cCtiWmNZOFl2YUNsczNYYTErUko1UjNDYldxcE4ybDM5d1ZRdFJuR3lH?=
- =?utf-8?B?NjcvbS9jUDlHL29OK3BlSGNReWVoZVgxdkdML2hkditWRmF1djhOaDNQK2o0?=
- =?utf-8?B?QXlyZEhSQ1dqaGtwN3RBRGRkYzJVOWtUS1ZVMFBTVVZSRnJINE1zYUpISFV5?=
- =?utf-8?B?QmdTT3Y4clFiOHphRCtielIwcStKR2ZBbkNycWJGS3hLbGFxWVc1VWluWld0?=
- =?utf-8?B?REZXbjdBcEtaZ1U4RCtTdFJVVFYvaDdCcFVPYTZrWVBCU3JJQ3p5cUhUbkxX?=
- =?utf-8?B?bEZwMzZNZzJLK090L2JrRUx5a1lIMDlRNHQvVnFENkpCTmt1UXlxVmlSdjdH?=
- =?utf-8?Q?LBt33CGufP8HPNb9YySBcI/nS?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f3904d9-6e77-46fa-8108-08dc6b7c97f3
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 14:23:25.0984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Uj9ZnYv82AAzfrwZkqPXlvJy9XLrtnk9bwZp7QZYp/aUtRGnh7cTy0pPeK35AkhOnFk6IC+oz0ABmQ1vygHKoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB10050
+X-Received: by 2002:a05:6e02:1d98:b0:36c:4d81:8656 with SMTP id
+ h24-20020a056e021d9800b0036c4d818656mr165011ila.0.1714746268271; Fri, 03 May
+ 2024 07:24:28 -0700 (PDT)
+Date: Fri, 03 May 2024 07:24:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003355e706178d7a8a@google.com>
+Subject: [syzbot] [bcachefs?] WARNING in __virt_to_phys (3)
+From: syzbot <syzbot+3333603f569fc2ef258c@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 12, 2024 at 12:08:41PM -0400, Frank Li wrote:
-> When PERST# assert and deassert happens on the PERST# supported platforms,
-> the both iATU0 and iATU6 will map inbound window to BAR0. DMA will access
-> to the area that was previously allocated (iATU0) for BAR0, instead of the
-> new area (iATU6) for BAR0.
-> 
-> Right now, we dodge the bullet because both iATU0 and iATU6 should
-> currently translate inbound accesses to BAR0 to the same allocated memory
-> area. However, having two separate inbound mappings for the same BAR is a
-> disaster waiting to happen.
-> 
-> The mapping between PCI BAR and iATU inbound window are maintained in the
-> dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for
-> a BAR, dw_pcie_ep_inbound_atu() API will first check for the availability
-> of the existing mapping in the array and if it is not found (i.e., value in
-> the array indexed by the BAR is found to be 0), then it will allocate a new
-> map value using find_first_zero_bit().
-> 
-> The issue here is, the existing logic failed to consider the fact that the
-> map value '0' is a valid value for BAR0. Because, find_first_zero_bit()
-> will return '0' as the map value for BAR0 (note that it returns the first
-> zero bit position).
-> 
-> Due to this, when PERST# assert + deassert happens on the PERST# supported
-> platforms, the inbound window allocation restarts from BAR0 and the
-> existing logic to find the BAR mapping will return '6' for BAR0 instead of
-> '0' due to the fact that it considers '0' as an invalid map value.
-> 
-> So fix this issue by always incrementing the map value before assigning to
-> bar_to_atu[] array and then decrementing it while fetching. This will make
-> sure that the map value '0' always represents the invalid mapping."
-> 
-> Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
-> Closes: https://lore.kernel.org/linux-pci/ZXsRp+Lzg3x%2Fnhk3@x1-carbon/
-> Tested-by: Niklas Cassel <niklas.cassel@wdc.com>
-> Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
-> Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+Hello,
 
-Anyone take care this patch? Krzysztof Wilczyński, Lorenzo?
+syzbot found the following issue on:
 
-Frank
+HEAD commit:    6a71d2909427 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=119f5f18980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fca646cf17cc616b
+dashboard link: https://syzkaller.appspot.com/bug?extid=3333603f569fc2ef258c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-> 
-> Notes:
->     Change from v3 to v4
->     - commit message add "Right now, we dodge..."
->     - Add Reviewed-by: Manivannan Sadhasivam
->     
->     Change from v2 to v3
->     - Add impact in commit message
->     - Add mani's detail description
->     - Fix Closes link
->     
->     Change from v1 to v2
->     - update subject
->     - use free_win + 1 solution
->     - still leave MAX_IATU_IN as 256. I am not sure if there are platfrom have
->     256 ATU. Suppose it only use max 6 in current EP framework.
->     - @Niklas, can you help test it. My platform become unstable today.
-> 
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index 5befed2dc02b7..ba932bafdb230 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -139,7 +139,7 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
->  	if (!ep->bar_to_atu[bar])
->  		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
->  	else
-> -		free_win = ep->bar_to_atu[bar];
-> +		free_win = ep->bar_to_atu[bar] - 1;
->  
->  	if (free_win >= pci->num_ib_windows) {
->  		dev_err(pci->dev, "No free inbound window\n");
-> @@ -153,7 +153,11 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
->  		return ret;
->  	}
->  
-> -	ep->bar_to_atu[bar] = free_win;
-> +	/*
-> +	 * Always increment free_win before assignment, since value 0 is used to identify
-> +	 * unallocated mapping.
-> +	 */
-> +	ep->bar_to_atu[bar] = free_win + 1;
->  	set_bit(free_win, ep->ib_window_map);
->  
->  	return 0;
-> @@ -190,7 +194,10 @@ static void dw_pcie_ep_clear_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  	struct dw_pcie_ep *ep = epc_get_drvdata(epc);
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
->  	enum pci_barno bar = epf_bar->barno;
-> -	u32 atu_index = ep->bar_to_atu[bar];
-> +	u32 atu_index = ep->bar_to_atu[bar] - 1;
-> +
-> +	if (!ep->bar_to_atu[bar])
-> +		return;
->  
->  	__dw_pcie_ep_reset_bar(pci, func_no, bar, epf_bar->flags);
->  
-> -- 
-> 2.34.1
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c77d21fa1405/disk-6a71d290.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/429fcd369816/vmlinux-6a71d290.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d3d8a4b85112/Image-6a71d290.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3333603f569fc2ef258c@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+virt_to_phys used for non-linear address: fffffffffffff75e (0xfffffffffffff75e)
+WARNING: CPU: 1 PID: 9858 at arch/arm64/mm/physaddr.c:15 __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+Modules linked in:
+CPU: 1 PID: 9858 Comm: syz-executor.4 Not tainted 6.9.0-rc4-syzkaller-g6a71d2909427 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+pc : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+lr : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+sp : ffff80009adf6e00
+x29: ffff80009adf6e00 x28: 1ffff000135bee02 x27: fffffffffffff75e
+x26: ffff80009adf7010 x25: ffff7000135bedf4 x24: dfff800000000000
+x23: ffff000130f00000 x22: 000f600000000000 x21: 000000000000002d
+x20: fffffffffffff75e x19: 000ffffffffff75e x18: 1fffe000367bdd96
+x17: ffff80008ee7d000 x16: ffff800080333fec x15: 0000000000000001
+x14: 1fffe000367c0990 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000000001 x10: 0000000000000003 x9 : 56d29d05a132eb00
+x8 : 56d29d05a132eb00 x7 : ffff8000802aabc8 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000006 x1 : ffff80008afdfb40 x0 : ffff80012501d000
+Call trace:
+ __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
+ virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
+ virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
+ virt_to_folio include/linux/mm.h:1304 [inline]
+ kfree+0xa4/0x3e8 mm/slub.c:4382
+ bch2_fs_recovery+0x32c/0x4854 fs/bcachefs/recovery.c:902
+ bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1042
+ bch2_fs_open+0x8b4/0xb64 fs/bcachefs/super.c:2101
+ bch2_mount+0x558/0xe10 fs/bcachefs/fs.c:1900
+ legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
+ vfs_get_tree+0x90/0x288 fs/super.c:1779
+ do_new_mount+0x278/0x900 fs/namespace.c:3352
+ path_mount+0x590/0xe04 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3875
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+irq event stamp: 76030
+hardirqs last  enabled at (76029): [<ffff8000802aac68>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1397 [inline]
+hardirqs last  enabled at (76029): [<ffff8000802aac68>] finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5163
+hardirqs last disabled at (76030): [<ffff80008ae6da08>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
+softirqs last  enabled at (75882): [<ffff8000800218e4>] softirq_handle_end kernel/softirq.c:400 [inline]
+softirqs last  enabled at (75882): [<ffff8000800218e4>] __do_softirq+0xb10/0xd2c kernel/softirq.c:583
+softirqs last disabled at (75823): [<ffff80008002ad34>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
+---[ end trace 0000000000000000 ]---
+Unable to handle kernel paging request at virtual address ffffffffc37affc8
+KASAN: maybe wild-memory-access in range [0x0003fffe1bd7fe40-0x0003fffe1bd7fe47]
+Mem abort info:
+  ESR = 0x0000000096000006
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x06: level 2 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000001ad5bd000
+[ffffffffc37affc8] pgd=0000000000000000, p4d=00000001b0d98003, pud=00000001b0d99003, pmd=0000000000000000
+Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 1 PID: 9858 Comm: syz-executor.4 Tainted: G        W          6.9.0-rc4-syzkaller-g6a71d2909427 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+pc : _compound_head include/linux/page-flags.h:247 [inline]
+pc : virt_to_folio include/linux/mm.h:1306 [inline]
+pc : kfree+0xbc/0x3e8 mm/slub.c:4382
+lr : virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
+lr : virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
+lr : virt_to_folio include/linux/mm.h:1304 [inline]
+lr : kfree+0xa4/0x3e8 mm/slub.c:4382
+sp : ffff80009adf6e30
+x29: ffff80009adf6e40 x28: 1ffff000135bee02 x27: fffffffffffff75e
+x26: ffff80009adf7010 x25: ffff7000135bedf4 x24: dfff800000000000
+x23: ffff000130f00000 x22: 0000000000000001 x21: ffffffffc37affc0
+x20: ffff80008293e95c x19: fffffffffffff75e x18: 1fffe000367bdd96
+x17: ffff80008ee7d000 x16: ffff800080333fec x15: 0000000000000001
+x14: 1fffe000367c0990 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000040000 x10: 000000000003ffff x9 : 00003e00037affc0
+x8 : ffffc1ffc0000000 x7 : ffff8000802aabc8 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000006 x1 : ffff80008afdfb40 x0 : 000080011ebff75e
+Call trace:
+ virt_to_folio include/linux/mm.h:1304 [inline]
+ kfree+0xbc/0x3e8 mm/slub.c:4382
+ bch2_fs_recovery+0x32c/0x4854 fs/bcachefs/recovery.c:902
+ bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1042
+ bch2_fs_open+0x8b4/0xb64 fs/bcachefs/super.c:2101
+ bch2_mount+0x558/0xe10 fs/bcachefs/fs.c:1900
+ legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
+ vfs_get_tree+0x90/0x288 fs/super.c:1779
+ do_new_mount+0x278/0x900 fs/namespace.c:3352
+ path_mount+0x590/0xe04 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3875
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+Code: 927acd29 f2d83fe8 cb151929 8b080135 (f94006a8) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	927acd29 	and	x9, x9, #0x3ffffffffffffc0
+   4:	f2d83fe8 	movk	x8, #0xc1ff, lsl #32
+   8:	cb151929 	sub	x9, x9, x21, lsl #6
+   c:	8b080135 	add	x21, x9, x8
+* 10:	f94006a8 	ldr	x8, [x21, #8] <-- trapping instruction
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
