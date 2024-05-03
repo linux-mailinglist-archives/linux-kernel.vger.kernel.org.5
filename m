@@ -1,105 +1,136 @@
-Return-Path: <linux-kernel+bounces-168077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D0A8BB35D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:41:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8687A8BB361
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:42:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8F4F1F22835
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:41:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 476DC2842B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F31D36B1C;
-	Fri,  3 May 2024 18:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187C912EBFB;
+	Fri,  3 May 2024 18:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Eee81c0C"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="DOvt3rmv"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1849E57C9F
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE58E57C8A;
+	Fri,  3 May 2024 18:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714761702; cv=none; b=KaxGzMTiis49iy7cIZMCaaLp1M8WdXqYAwjtYzbak9CjUdfIexEALfSezZlQg/ZYdCj0GGGplWdXw1vKCWONMh2XKZZfcsLgRHW4xpPTjZyzeEJ3FORCdZb+6ytSAYelQXJu3c1Ex688tvYzCTsjrMIvNveq4Gxtng3x6GiUs88=
+	t=1714761751; cv=none; b=NpzXaDXVRSWi5qn4p9jzwJRMxNAiFd56+TsGyERgrUspYhCnFwxaUQm3dWVlJNduUCtIaDJGv/R+NUyT8E1mOlDlz6UeJERg+uJXZJvqm5peU1qX+hk4mcWeWt07IHWrkRUQRkwmXCuKfOLp7H6YI5HpuzpcirNMs+SpZoa8JQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714761702; c=relaxed/simple;
-	bh=71pjptQeomC726ly7T7i6i2tgcntzZ5e4dZc/Q8d4b0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NWGgOIpH8qNv6X7izCxwrleEaRXANiOU2MxCaQeHRTzHMd5Mk6tkrleQ6O7TgYLFsMZvuGdFmlSTjAmakLRVu63JGHkEeRzDniNi5ovjGYEAyj6XjSfmXtsdvCPGq3d5CNXh+mbsucszHm38j2IF0OJJ0Su/auEZMMCWYUUvkro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Eee81c0C; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2b360096cc4so9344a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1714761700; x=1715366500; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bQj6b6uzNq4Run0h1mfKtbYDm8JqGmwqI0puPCQ5+lM=;
-        b=Eee81c0CQ28YL/GsA3aCRcvkP8wuyUDjkgEhl0iziZkVJe5u7oAOthLa6LzBIvKcQg
-         SGF2iXSe35mYfAtSd9Owadth7Yf5Ji5LoDLQWIl4vL/+4TDaGpWEg0oudp1Hj5kxrtwn
-         tEXJaRZOMJ4VgtO29yZ0qZoxXFp6SSjYFgvJ1ZoiQuxqi9ixlIPUGwAk7+DCn46DQnbt
-         LlgE/+eNrMHF2cvuWFrzg/lq3WRsJLj77h3pCteyWRPcYIDzUcsuj0ZUwpPUMeiW2Xan
-         wyqyfEQWG33ov5VyPRgpjaeB9E8di1FoC5F0Gvr4/cAivYoV4LgParxfS2vnOhkt+RWg
-         lUow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714761700; x=1715366500;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bQj6b6uzNq4Run0h1mfKtbYDm8JqGmwqI0puPCQ5+lM=;
-        b=mWth9t9HxN89P5U2+k2tyAgdrBpgqVVfjn2ZWwRVKADD+ScA/C3yKyAL78d5wf+TV8
-         v/fPmjPeiAUJHcZ5ArYn7wp3wiSWkEYBLJW1nQ3fiVWGFgOf1C57BcHhd6osOZe/EgmW
-         0+GNnFxQx8Yh7KG9FY4jCeiGKbSstXrcOsW7aN8X2u/g5mHj4cHGft6m50YdCKuWJf+A
-         OCb6i5/eotdE91hxjRCmmXthKFVv5kxu4zhuhrMI+eJTe6GbxzDxM7qI7rKfgLUimSGE
-         6P+gPWx2lqzJxLDfsAQVG7//amzCWuRsLZeN19EqPot2P2gRCAjmw/CmgUaRcN0taxPx
-         tG0g==
-X-Forwarded-Encrypted: i=1; AJvYcCUcPFuKaXppn6yZ2dmyrgaPsSmSJP4ck5MxzwOrOLDpa9fLXF7GwmsvsX6W93J2pJNpR5SKRx+k+NWj/Z5wrqN8y2irV2QMraSSxQVT
-X-Gm-Message-State: AOJu0Yw6j7TlL+77H1MCEkPQHs2jVfphKsZulxKxBkRLkJtW/0xeMAFi
-	oneuykUhqjvcFiCI6ymi+f0E3On9M9lLsEZRr4lYi0e1122oqk2uqRRIVPCTPfs=
-X-Google-Smtp-Source: AGHT+IHb7Hdo5qDQOw7BxTCL3qytUodWG6lrDud2MpwU6hr8AIQkEHW5ufSHsJY2Sdlarf5SGaznHA==
-X-Received: by 2002:aa7:8d82:0:b0:6f4:4021:5596 with SMTP id i2-20020aa78d82000000b006f440215596mr3473710pfr.3.1714761700032;
-        Fri, 03 May 2024 11:41:40 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id c11-20020aa7880b000000b006ed045e3a70sm3378730pfo.25.2024.05.03.11.41.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 11:41:39 -0700 (PDT)
-Message-ID: <b5f7b99c-053d-4df5-9b2b-aaca48e6f7bd@kernel.dk>
-Date: Fri, 3 May 2024 12:41:38 -0600
+	s=arc-20240116; t=1714761751; c=relaxed/simple;
+	bh=6avGVeH0i3gUjukyCFF0pre8Nb9L4gOhXeEBFHfW1qo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JVi4qpifGy9Tqkoluas9iEUV7X7u9iXCJHC5Vf2TgbJNy8k23wh7cb+dfizJx4FdOPC9s/BUuph5pLzywqhuWotB3NrR8I8uFfz2DzqgghITBfiD9wrBVYEr/OVIdwOBdKCiyspA8gf8q3EHbqshUkL5k782trAV73tfO+iSIY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=DOvt3rmv; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id C70B3120002;
+	Fri,  3 May 2024 21:42:22 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C70B3120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1714761742;
+	bh=9Z5eFlWXbAJBTHJC3tQ6YnOuDNtTKSSh4w04Pc+er9s=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=DOvt3rmvyGMhAYPBAyyGp6AgE7/vb6Ij8xaP4FrJBwSqatI/r5bOwQ7uWrWVMmmxe
+	 J04eJdZis9P3a4qlg4ym5Z1p9mpmVSmySRWD2MKaFYNpQyaFEFgH+IdeJa+/wgRczk
+	 6nq6dIz2EjVXbp1jMx+eX4y5bJFZYK03iehel75EYkFQExfbaV11tdKOZvxcYx1d2j
+	 rJ1wayes7Vbr/x+ma8ul7/lrRocJvNMAWPBp8DvZY8foYW2DonxLn9kEDW2xZ6Sw1i
+	 m2+JwjG/9Xx6n7+ITPdpFxdQJNEFlTomeE05l/KaB7OjC+2Qm3WdFOjQreJb9KymsP
+	 svlVUnad/R9AQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri,  3 May 2024 21:42:22 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
+ (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 3 May
+ 2024 21:42:22 +0300
+Date: Fri, 3 May 2024 21:42:22 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <neil.armstrong@linaro.org>
+CC: <jbrunet@baylibre.com>, <mturquette@baylibre.com>, <khilman@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <glaroque@baylibre.com>,
+	<rafael@kernel.org>, <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
+	<lukasz.luba@arm.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<kernel@salutedevices.com>, <rockosov@gmail.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 0/3] arm64: dts: amlogic: a1: introduce thermal setup
+Message-ID: <20240503184222.cqka6nmjxhezfhtg@CAB-WSD-L081021>
+References: <20240328192645.20914-1-ddrokosov@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] io_uring/io-wq: Use set_bit() and test_bit() at
- worker->flags
-To: Breno Leitao <leitao@debian.org>, Pavel Begunkov <asml.silence@gmail.com>
-Cc: leit@meta.com, "open list:IO_URING" <io-uring@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240503173711.2211911-1-leitao@debian.org>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240503173711.2211911-1-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240328192645.20914-1-ddrokosov@salutedevices.com>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 185053 [May 03 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 19 0.3.19 07c7fa124d1a1dc9662cdc5aace418c06ae99d2b, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/05/03 14:55:00
+X-KSMG-LinksScanning: Clean, bases: 2024/05/03 14:55:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/05/03 16:56:00 #25080849
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On 5/3/24 11:37 AM, Breno Leitao wrote:
-> @@ -631,7 +631,8 @@ static int io_wq_worker(void *data)
->  	bool exit_mask = false, last_timeout = false;
->  	char buf[TASK_COMM_LEN];
->  
-> -	worker->flags |= (IO_WORKER_F_UP | IO_WORKER_F_RUNNING);
-> +	set_bit(IO_WORKER_F_UP, &worker->flags);
-> +	set_bit(IO_WORKER_F_RUNNING, &worker->flags);
+Hello Neil,
 
-You could probably just use WRITE_ONCE() here with the mask, as it's
-setup side.
+A1 Thermal Sensor was applied to linux-pm for v6.10-rc1:
+
+https://lore.kernel.org/all/89a02410-87c8-47c6-aa50-04dad5b4e585@linaro.org/
+
+Could you please advise if it's enough to proceed with this series? Or
+do I need to do something more?
+
+On Thu, Mar 28, 2024 at 10:26:34PM +0300, Dmitry Rokosov wrote:
+> This patch series introduces thermal sensor declaration to the Meson A1
+> common dtsi file. It also sets up thermal zones for the AD402 reference
+> board. It depends on the series with A1 thermal support at [1].
+> 
+> Changes v2 since v1 at [2]:
+>     - provide Neil RvB for cooling-cells dts patch
+>     - purge unnecessary 'amlogic,a1-thermal' fallback
+> 
+> Links:
+> [1] - https://lore.kernel.org/all/20240328191322.17551-1-ddrokosov@salutedevices.com/
+> [2] - https://lore.kernel.org/all/20240328134459.18446-1-ddrokosov@salutedevices.com/
+> 
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> 
+> Dmitry Rokosov (3):
+>   arm64: dts: amlogic: a1: add cooling-cells for DVFS feature
+>   arm64: dts: amlogic: a1: introduce cpu temperature sensor
+>   arm64: dts: amlogic: ad402: setup thermal-zones
+> 
+>  .../arm64/boot/dts/amlogic/meson-a1-ad402.dts | 45 +++++++++++++++++++
+>  arch/arm64/boot/dts/amlogic/meson-a1.dtsi     | 13 ++++++
+>  2 files changed, 58 insertions(+)
 
 -- 
-Jens Axboe
-
+Thank you,
+Dmitry
 
