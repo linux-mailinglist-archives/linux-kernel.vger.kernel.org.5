@@ -1,163 +1,185 @@
-Return-Path: <linux-kernel+bounces-168320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88ACB8BB664
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:49:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E828BB666
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A8B7B27156
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 595B51F22D4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623DE5FB9A;
-	Fri,  3 May 2024 21:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2753858AA5;
+	Fri,  3 May 2024 21:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AX7jmaB+"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FhHxz1k+"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F9654277
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846253B784;
+	Fri,  3 May 2024 21:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772848; cv=none; b=PVySrnezKiWMswKWEF0BjlXdo21z91Op98i9WTyJ465NgmHxxzcpmf0EGbv78kgtzXKQ4HsMBzzmRc0YZNBqwoI21BAS0YJeT1MyGefEIe4D5gIVWnYwWN3XQTMhpFXxcF/QopDu6adkmJ1krKNbacqpEZgohh4OP75uD1YCHzs=
+	t=1714772992; cv=none; b=bpqRFNiUsorB6DNALghZxQtFqTm62moaQenG6hfajFUFJsM89wmvuft0mTbYBsZoCX5esGgGWlJm0J/yCwviuHvFBCQg0ssTZEX6Qrc4Pip8/ODjbrwU3We5ja78oiBCxHWC8u/wjWUXOP/MCQqLJ5Pg8iVgj+RNfiKd7JH1k7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772848; c=relaxed/simple;
-	bh=7vIHot/zZ5cFNzfgHcYFZ0omvFDlKOCx44Kmqgg9rKc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jCqP9mteNo4XYS7edre8oqBzghK51I8Dmj0bH8nSWOpGcn7uhwiKSDrdLAk63kXTE31mwL3Ax70Eg6tVZBMyySAafKIcDXU10VYA9VKgYODCD2tKL71HcXAzRFAB8LLErQ1KyTaWGuy8GoFNb1Tiu+ns2nMUPIWj8lt1VOfH8Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AX7jmaB+; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so93833a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:47:25 -0700 (PDT)
+	s=arc-20240116; t=1714772992; c=relaxed/simple;
+	bh=X4kmR0xiIyDeidCxSztdvZIwN0uUuHACUv2KrlHTe+s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=C1cToTAefEqVW/Pvwyxagej6jbtRGbtcX34oUUnkTZssmpZqx9NVr629XnRxtrjr73l7mq3DGCe2pHNzP+B7MpGqV+avJyaLvwFB/cvw4AJvDsbWerJ2BNjkA4InBIqNGDR9g7xKAp/j+UwwHN6J/vqRGWpNpdWBAwvZrhTJtQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FhHxz1k+; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso153883e87.2;
+        Fri, 03 May 2024 14:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714772845; x=1715377645; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ew0UVNQBCxGa1IBF/GdCeKaoEE06xBYgK5JUyIdRUg=;
-        b=AX7jmaB+/h+AGSlYkg+3Yv3v+7MRMsqEoR6XUFHj/QBvtMcyFth0W8LmkxvlBUGble
-         JhssWQ6wslc2BQL3S7V7fpeccDkByAGgfvY6gsbzDyT6WAdF4ExV7Y6d/O/xAMTK8zNO
-         m3cjv1oO7BnxkdzMseKVECDp1E9aFjUFUE9ZhXvQGgL3An6tkje3XU0hrZV2X1myQgzt
-         eGjq55Q3/04gH1CSAipwkSkjfCdsZqLm7wu6BKhiUbPKGpYnrqcUXk02FQp+tZgao/Hy
-         Ltb7ytL5JVFWjwCqWVN5vbH793ACEXz/w0oodg8ZknBVUQeAYrh4QsP1w99tMrtcu1nl
-         zdxg==
+        d=gmail.com; s=20230601; t=1714772988; x=1715377788; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JlZollT1gOZua+vc5EUjkck1LZKTdgRuDHZhxuS980Q=;
+        b=FhHxz1k+N5BI3eZQ6qmxWgT8nL9oherB3vNElBuYtJWSlvBB8h0pqRNO5XHGIR/XH2
+         61w9UGAXaPjTKrqmYDV2MrXTWzxRNd31rV8secnMN9004jZPEI6WZXeYNqX46qTvWYvn
+         zmmUfKY2CcF9wURtFYRpsHrG7IN5hwzKK1wrvivCpjisR1xS3eXwEGWKH6B8xxVR+BGc
+         9sMRcjXTodEJI43xryZn5vY8d8EKdo9GJweiqy0YJc25wgX7EUAY36421JGC/SoVsnkI
+         9LKFOSr6QxuD6jfuh+njI4BlX7MoVZk/kmefOGGxYSDWf6coCtjtwh9BwvCWn7JF0WL8
+         ODqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772845; x=1715377645;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ew0UVNQBCxGa1IBF/GdCeKaoEE06xBYgK5JUyIdRUg=;
-        b=oFW1uGBKXCo2bCsBV8RqaGJ5HXjLD2S7p1jwZ/hBZuJs7DXeWUPBoOGfxC0NLDZcZr
-         WJNerNpxzU2yvsumhyaYvECinylOGNGHe8ZHTqMJuiJHTVkVxvk/Cqlfv2YMWKjHBeXK
-         ifp/o66cgQb2vVskr0SntzdyX3gD80R1cjHc+o3h1+UdZyXzorCwBGWcbY1VLlykluhB
-         hR5FD2ib7jXZ0wRqT7AUaBECRq1EutyQ1tXCVeSRgC/sbfBTrDUgaKEKVQK8qTz+lbbB
-         1EsuwU/0CtK3Woh0ukylk5E3g6yl6YjHkXMuAy3gxkLetS511q8l7a1HI0L3NS8mo5ZV
-         xhEA==
-X-Forwarded-Encrypted: i=1; AJvYcCXkSYIG0sfljQTDobj1ZpiVg51lb4dgyulxZRRmLOTdByxwqMZu4F3PGaSm7S9Ufrl5kMVPswTBk5Tyt7rO97TKqtLlznSJFxfcEvoo
-X-Gm-Message-State: AOJu0YwF2GzkSpqHs6NBNNk7y3tr8kA1d1ImgCp/XH+0Hc7rSg/jdxxN
-	bhKk67Ye8QkTdHL6Sd4QnQW0QEt47aenBoWgGbFWq8dbNe5s7RA7w1AJwi4jIrrB+7ai8P+rtDD
-	TZw==
-X-Google-Smtp-Source: AGHT+IGAQfxrBmGUL6g62HFmK8YrYjNTl4Xymu23x3cWXe8g7J6SefYdAbO6AERmhDMTdmB21aewhsKY5Mc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:34c7:0:b0:600:90b7:43ea with SMTP id
- b190-20020a6334c7000000b0060090b743eamr8773pga.6.1714772845390; Fri, 03 May
- 2024 14:47:25 -0700 (PDT)
-Date: Fri, 3 May 2024 14:47:23 -0700
-In-Reply-To: <20231102154628.2120-1-parshuram.sangle@intel.com>
+        d=1e100.net; s=20230601; t=1714772988; x=1715377788;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JlZollT1gOZua+vc5EUjkck1LZKTdgRuDHZhxuS980Q=;
+        b=jwuC/zrgmUAqtrk6jmUQwxpcE/FxMg2MCAOrG8wNfzI5B3YKmhwO6BitrWq1WkIBIn
+         HWpUcpoWp5sSaU12Qz+tpht4cSIQW4SI2SUmEq8dIAUJPUBIXeGN9NQNH58qzdMTv4Ad
+         ABf17B+hG3EMuCoYo69f4Ifp5FXfFzkDZvuEk+QIPd6jMyALjmCEatBhi27Oj+ZXdY+2
+         RPqBPEuapVGphtNrx99bgmTh8dsB629bvq6B7nmLopbKJzVYHoJeuRRjqfufLdYoayPE
+         FBkNBkbql+q3jhqtEZNTjagiweLssHh/tdm0GMgUb47ewIlLPLxTj2gRbh91zfcYu9Ix
+         PsPw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUR9eoLAdZu0usaWu9f/n8QRAq0HW5dlHu5/fEEb0ptNARDwdjgysVb0Fka0h9R/lFePW1zEDUhj7xkIqnReMz6h4W+h4isD42lJgs8Kwu
+X-Gm-Message-State: AOJu0YwBMciT1ueNE6CfkAEdIGHFI+XPX5g4ri606xRMlN4P31tHE1Ic
+	35pYQZYuNZ9CgR26N6sOgf4CPPOl3+Wjvo0LjaFyDRGbtif+DU8WWY53tw==
+X-Google-Smtp-Source: AGHT+IEsq0U2UcJUm/Rl0/LiI4aTH+eIIakOfDCYcu/FbOV7zN2OxXAExAVxjAm4IhjHpJbbUn4CUA==
+X-Received: by 2002:ac2:4844:0:b0:51d:4383:9e59 with SMTP id 4-20020ac24844000000b0051d43839e59mr3070473lfy.0.1714772988237;
+        Fri, 03 May 2024 14:49:48 -0700 (PDT)
+Received: from localhost.localdomain ([85.89.127.166])
+        by smtp.gmail.com with ESMTPSA id j26-20020a19f51a000000b0051928b6916dsm665547lfb.94.2024.05.03.14.49.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 14:49:47 -0700 (PDT)
+From: Shengyu Li <shengyu.li.evgeny@gmail.com>
+To: shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>
+Subject: [PATCH v3] selftest/tty: Use harness framework in tty
+Date: Sat,  4 May 2024 05:49:20 +0800
+Message-Id: <20240503214920.20857-1-shengyu.li.evgeny@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231102154628.2120-1-parshuram.sangle@intel.com>
-Message-ID: <ZjVba9wOiIlhqjfi@google.com>
-Subject: Re: [PATCH 0/2] KVM: enable halt poll shrink parameter
-From: Sean Christopherson <seanjc@google.com>
-To: Parshuram Sangle <parshuram.sangle@intel.com>
-Cc: kvm@vger.kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org, 
-	jaishankar.rajendran@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 02, 2023, Parshuram Sangle wrote:
-> KVM halt polling interval growth and shrink behavior has evolved since its
-> inception. The current mechanism adjusts the polling interval based on whether
-> vcpu wakeup was received or not during polling interval using grow and shrink
-> parameter values. Though grow parameter is logically set to 2 by default,
-> shrink parameter is kept disabled (set to 0).
-> 
-> Disabled shrink has two issues:
-> 1) Resets polling interval to 0 on every un-successful poll assuming it is
-> less likely to receive a vcpu wakeup in further shrunk intervals.
-> 2) Even on successful poll, if total block time is greater or equal to current
-> poll_ns value, polling interval is reset to 0 instead shrinking gradually.
-> 
-> These aspects reduce the chances receiving valid wakeup during polling and
-> lose potential performance benefits for VM workloads.
-> 
-> Below is the summary of experiments conducted to assess performance and power
-> impact by enabling the halt_poll_ns_shrink parameter(value set to 2).
-> 
-> Performance Test Summary: (Higher is better)
-> --------------------------------------------
-> Platform Details: Chrome Brya platform
-> CPU - Alder Lake (12th Gen Intel CPU i7-1255U)
-> Host kernel version - 5.15.127-20371-g710a1611ad33
-> 
-> Android VM workload (Score)   Base      Shrink Enabled (value 2)    Delta
-> ---------------------------------------------------------------------------
-> GeekBench Multi-core(CPU)     5754      5856                        2%
-> 3D Mark Slingshot(CPU+GPU)    15486     15885                       3%
-> Stream (handopt)(Memory)      20566     21594                       5%
-> fio seq-read (Storage)        727       747                         3%
-> fio seq-write (Storage)       331       343                         3%
-> fio rand-read (Storage)       690       732                         6%
-> fio rand-write (Storage)      299       300                         1%
-> 
-> Steam Gaming VM (Avg FPS)     Base      Shrink Enabled (value 2)    Delta
-> ---------------------------------------------------------------------------
-> Metro Redux (OpenGL)          54.80     59.60                       9%
-> Dota 2 (Open GL)              48.74     51.40                       5%
-> Dota 2 (Vulkan)               20.80     21.10                       1%
-> SpaceShip (Vulkan)            20.40     21.52                       6%
-> 
-> With Shrink enabled, majority of workloads show higher % of successful polling.
-> Reduced latency of returning control back to VM and avoided overhead of vm_exit
-> contribute to these performance gains.
-> 
-> Power Impact Assessment Summary: (Lower is better)
-> --------------------------------------------------
-> Method : DAQ measurements of CPU and Memory rails
-> 
-> CPU+Memory (Watt)             Base      Shrink Enabled (value 2)    Delta
-> ---------------------------------------------------------------------------
-> Idle* (Host)                  0.636     0.631                       -0.8%
-> Video Playback (Host)         2.225     2.210                       -0.7%
-> Tomb Raider (VM)              17.261    17.175                      -0.5%
-> SpaceShip Benchmark(VM)       17.079    17.123                       0.3%
-> 
-> *Idle power - Idle system with no application running, Android and Borealis
-> VMs enabled running no workload. Duration 180 sec.
-> 
-> Power measurements done for Chrome idle scenario and active Gaming VM 
-> workload show negligible power overhead since additional polling creates
-> very short duration bursts which are less likely to have gone to a
-> complete idle CPU state.
-> 
-> NOTE: No tests are conducted on non-x86 platform with this changed config
-> 
-> The default values of grow and shrink parameters get commonly used by
-> various VM deployments unless specifically tuned for performance. Hence
-> referring to performance and power measurements results shown above, it is
-> recommended to have shrink enabled (with value 2) by default so that there
-> is no need to explicitly set this parameter through kernel cmdline or by
-> other means.
+Use kselftest_harness.h to simplify the code structure by eliminating 
+conditional logic. Enhance diagnostics by directly printing relevant info, 
+such as access and modification times, upon test failure. Reflecting 
+common I/O optimizations, the access time usually remains unchanged, while 
+the modify time is expected to update. Accordingly, these elements have 
+been logically separated.
 
-I am by no means an expert on halt polling or power management, but all of this
-seems like a reasonable tradeoff.  And even without the numbers you provided,
-starting from scratch after a single failure is rather odd.
+Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
+---
 
-So unless someone objects, I'll plan on applying this for 6.11 in a few weeks
-(after the 6.10 merge window closes).
+v3: Explain the need for refactoring
+v2: Fixed the last Assert
+---
+ .../testing/selftests/tty/tty_tstamp_update.c | 49 +++++++++----------
+ 1 file changed, 22 insertions(+), 27 deletions(-)
+
+diff --git a/tools/testing/selftests/tty/tty_tstamp_update.c b/tools/testing/selftests/tty/tty_tstamp_update.c
+index 0ee97943dccc..38de211e0715 100644
+--- a/tools/testing/selftests/tty/tty_tstamp_update.c
++++ b/tools/testing/selftests/tty/tty_tstamp_update.c
+@@ -9,7 +9,7 @@
+ #include <unistd.h>
+ #include <linux/limits.h>
+ 
+-#include "../kselftest.h"
++#include "../kselftest_harness.h"
+ 
+ #define MIN_TTY_PATH_LEN 8
+ 
+@@ -42,47 +42,42 @@ static int write_dev_tty(void)
+ 	return r;
+ }
+ 
+-int main(int argc, char **argv)
++TEST(tty_tstamp_update)
+ {
+ 	int r;
+ 	char tty[PATH_MAX] = {};
+ 	struct stat st1, st2;
+ 
+-	ksft_print_header();
+-	ksft_set_plan(1);
++	ASSERT_GE(readlink("/proc/self/fd/0", tty, PATH_MAX), 0)
++		TH_LOG("readlink on /proc/self/fd/0 failed: %m");
+ 
+-	r = readlink("/proc/self/fd/0", tty, PATH_MAX);
+-	if (r < 0)
+-		ksft_exit_fail_msg("readlink on /proc/self/fd/0 failed: %m\n");
+-
+-	if (!tty_valid(tty))
+-		ksft_exit_skip("invalid tty path '%s'\n", tty);
++	ASSERT_TRUE(tty_valid(tty)) {
++		TH_LOG("SKIP: invalid tty path '%s'", tty);
++		_exit(KSFT_SKIP);
++	}
+ 
+-	r = stat(tty, &st1);
+-	if (r < 0)
+-		ksft_exit_fail_msg("stat failed on tty path '%s': %m\n", tty);
++	ASSERT_GE(stat(tty, &st1), 0)
++		TH_LOG("stat failed on tty path '%s': %m", tty);
+ 
+ 	/* We need to wait at least 8 seconds in order to observe timestamp change */
+ 	/* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fbf47635315ab308c9b58a1ea0906e711a9228de */
+ 	sleep(10);
+ 
+ 	r = write_dev_tty();
+-	if (r < 0)
+-		ksft_exit_fail_msg("failed to write to /dev/tty: %s\n",
+-				   strerror(-r));
++	ASSERT_GE(r, 0)
++		TH_LOG("failed to write to /dev/tty: %s", strerror(-r));
+ 
+-	r = stat(tty, &st2);
+-	if (r < 0)
+-		ksft_exit_fail_msg("stat failed on tty path '%s': %m\n", tty);
++	ASSERT_GE(stat(tty, &st2), 0)
++		TH_LOG("stat failed on tty path '%s': %m", tty);
++
++	/* Validate unchanged atime under 'relatime' to ensure minimal disk I/O */
++	EXPECT_EQ(st1.st_atim.tv_sec, st2.st_atim.tv_sec);
+ 
+ 	/* We wrote to the terminal so timestamps should have been updated */
+-	if (st1.st_atim.tv_sec == st2.st_atim.tv_sec &&
+-	    st1.st_mtim.tv_sec == st2.st_mtim.tv_sec) {
+-		ksft_test_result_fail("tty timestamps not updated\n");
+-		ksft_exit_fail();
+-	}
++	ASSERT_NE(st1.st_mtim.tv_sec, st2.st_mtim.tv_sec)
++		TH_LOG("tty timestamps not updated");
+ 
+-	ksft_test_result_pass(
+-		"timestamps of terminal '%s' updated after write to /dev/tty\n", tty);
+-	return EXIT_SUCCESS;
++	TH_LOG("timestamps of terminal '%s' updated after write to /dev/tty",
++	       tty);
+ }
++TEST_HARNESS_MAIN
+-- 
+2.25.1
+
 
