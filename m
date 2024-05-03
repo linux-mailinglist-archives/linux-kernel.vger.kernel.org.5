@@ -1,114 +1,156 @@
-Return-Path: <linux-kernel+bounces-167875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4CBB8BB09A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83E128BB09C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:11:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB8528309C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:11:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A08D2818B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0686A155395;
-	Fri,  3 May 2024 16:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338C74D9FD;
+	Fri,  3 May 2024 16:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V5BPH4lm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M6StspMX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D93155340;
-	Fri,  3 May 2024 16:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1E515531C
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714752675; cv=none; b=fGvtPjLgSH0KzHzze9Y9HsrUuLW6ZBSrk/vLkNkVNK0CgLGwUac6DWKlg+OFWFnacgfjolCOsvg9dtoGxsuHvq+wqNMHehsRGVXdNhYVkC+Sl8NIqhFNEEGjnfQTvFmIzR1kQH1uwbgonqxfvU994IzmspW2VMlFVDKE79JnzO8=
+	t=1714752707; cv=none; b=lIh4KKxTRNrxEVGZysHbSbZ0pz9ux9qxU7p4+l30SJKbxgCW37UiGZBmiHZn1kb0+54VBXpkihEU9ydUkxU+Lz4217z9m2peHMkPyG7NEJA7lWTDRWzLDiuxEL3tzsWEGEoPZkA4h5mClJIfSc8O+Mmn5/nULlE82AUUFkHIN+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714752675; c=relaxed/simple;
-	bh=oTisFi01Zd4Pmszwj1C79oYyoxXOL2cP5wDm4FBUB0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K37yTbI6+VfLfXA6cRS1Yh9j9DYvJmJHHBbnpqXYHC7XQ7JBqa1uwTjBA262Brc2peRQHVkXoA3NbGTTZWR0dgQNtBucCT/M6ML5Wfxcl68tr8z/NhLL9H/2K6qiHyP1sofn30zM8hs0w4x+/99YR1DmQyQcE28ChoC5xnsPujE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V5BPH4lm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 648FFC116B1;
-	Fri,  3 May 2024 16:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714752674;
-	bh=oTisFi01Zd4Pmszwj1C79oYyoxXOL2cP5wDm4FBUB0M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V5BPH4lm8wFiIzo7U4RpWrvjfuEHIfOlXunrBHzTAkRo/ybsXdsJilnRzLV2d5T/t
-	 Wg+TZvPL6PyBeUPkpyAxUFQ2aMXFzvLuLWU+hlhS/4ElfquhuUEhip/PQNILgmCpty
-	 j79V1KJOp7PpIXBqZPkR1F+gNQJxFupobZJVGN3EhzoAWFyWYS/L39dvMU7u3hQkl/
-	 yTkmkuzMrvhSiVsM997jm7zWvJseNZkUpR9yVUL7Lf9u7Tj/qxQ56dOJbIWYC4rrDd
-	 BGqMUkb5GYHAEMEBKQKpeItgB3A+Te8gUPQANaBy8Ml6xrSncOJ6xM69Q6cK3c3FE5
-	 38CwvYmqKGm5w==
-Date: Fri, 3 May 2024 17:11:10 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Prajna.Rajendrakumar@microchip.com, broonie@kernel.org,
-	linux-spi@vger.kernel.org, linux-riscv@lists.infradead.org,
-	Conor.Dooley@microchip.com, devicetree@vger.kernel.org,
-	robh@kernel.org, linux-kernel@vger.kernel.org, krzk+dt@kernel.org,
-	Valentina.FernandezAlanis@microchip.com,
-	Daire.McNamara@microchip.com
-Subject: Re: [PATCH 2/3] spi: dt-bindings: Add num-cs property for mpfs-spi
-Message-ID: <20240503-unfair-charger-8d47fd7b4a91@spud>
-References: <20240502143410.12629-1-prajna.rajendrakumar@microchip.com>
- <20240502143410.12629-3-prajna.rajendrakumar@microchip.com>
- <10671947-f418-4520-a29f-4ce129770e65@kernel.org>
- <1edb6c4c1a66c1a2009278b99f897e3a71b592c6.camel@microchip.com>
- <7b6489b7-ec9f-4fc7-af72-4d5cc87acd7f@kernel.org>
+	s=arc-20240116; t=1714752707; c=relaxed/simple;
+	bh=lBc8mIGqc0Pyzb4/0nOXv6g1qY48kquuboJ7JtBmRDE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fD1bKj8HuldYgZMFvNUDSOcjyylFQPTIpk7gozkK5jzcl589CcNrmJJ1Iavmas/+hsaKmA0wBiyi+LZJIZcxSQxTevpjl5+W1uFf5LS3SQKtr1Cs+pFZwOls9mtaGrO/H4PoY00WPQXvcyn6CoiWl3d07Y/t+ZDTSyPT5FbDNT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M6StspMX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714752704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/ZOiOpZyBKuObIgtTt9nNi/hSpkFKeeLY85af4HJ/a4=;
+	b=M6StspMXWxDtjYNCJHLKmyH56gq+sTqScXZyZk0/hpMq3GXDDSZGihVSxKGRHlPtXXkjij
+	aZaImnUGCg1U1CPtwo/VDbQqfNMdEwoGa97RxSqYpMCGsFI3odhpdLWxfwBklt0l+NC6/3
+	SoKSa5wg37PrHmwzr99N6cr9Dr2z7QI=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-611-VCsHwfooNLqb5FFfV94hvw-1; Fri, 03 May 2024 12:11:43 -0400
+X-MC-Unique: VCsHwfooNLqb5FFfV94hvw-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-5aa338a43c8so9605124eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:11:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714752703; x=1715357503;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/ZOiOpZyBKuObIgtTt9nNi/hSpkFKeeLY85af4HJ/a4=;
+        b=ngihcqywp4aq5ucryZfYDbtVd2TlFA1VQ3ePMMzufKhmf/dVrRfvG//0l91GUzi8Ix
+         Np79Ft44rlviCgSBxItC9gNSNBOqx8U3vHSRGnWZCWWuxAlNcUIKIZdwtotJy6Jdhb52
+         CkyOwbKsveO9fv6Lverj4NCcOt7/uRB/qkMiRRbNncr3hb6srNd0rjpxhU3/SvSUU7Z5
+         AqDkYXvcz6LFsBrvSpODmIhBNI1rICaJ/1edEMEm2l7IrN39zuAYP7iAIlXr5yUfYweC
+         Nlg5941cOwct2ZWnCGlU0F3ef8dBLKU1XX/UenR5oNjCb9fZu7VAuQBPvRR3TSgcqCtK
+         0umA==
+X-Forwarded-Encrypted: i=1; AJvYcCU361ARhcitQLHEdgpQBsEWt/z1BcnOTdN1kxa9mHB+ICIaWP7SHnAJgPq2nNcpDIaa8HF4ZUeU/aWVmEhu8finw8a9Qj9VHFNWiJqw
+X-Gm-Message-State: AOJu0YyhdTg/P7f+iJ8dXpUy5xD9Ph+jzGEAZDHBsrNrGYzqPQjD9rTQ
+	ULnWpCB+/vzs0DBusY5bveLL4AuToQ7Y38w+KDP2wrvFozRIZG0vBEDAGKLnYEMbk8AJDVb973h
+	fis3aOzrCnpBebyOcQmqPl2OzhbVIGWY5FTHGmgo1m6wUbcyJADAbdzblWQa23g==
+X-Received: by 2002:a4a:d888:0:b0:5ac:bdbf:8a31 with SMTP id b8-20020a4ad888000000b005acbdbf8a31mr3298912oov.8.1714752702772;
+        Fri, 03 May 2024 09:11:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IENI13JqeWl+3nRXkEgDH9DAZfXX8Y7O0g+Kcb7NHM7u5AIluDQAEa1B47G9dtTONyGkn4Qkw==
+X-Received: by 2002:a4a:d888:0:b0:5ac:bdbf:8a31 with SMTP id b8-20020a4ad888000000b005acbdbf8a31mr3298888oov.8.1714752702398;
+        Fri, 03 May 2024 09:11:42 -0700 (PDT)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id cg12-20020a056820098c00b005b1da7520c9sm358982oob.7.2024.05.03.09.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 09:11:42 -0700 (PDT)
+Date: Fri, 3 May 2024 10:11:38 -0600
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Longfang Liu <liulongfang@huawei.com>
+Cc: <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+ <jonathan.cameron@huawei.com>, <kvm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: Re: [PATCH v6 2/5] hisi_acc_vfio_pci: modify the register location
+ of the XQC address
+Message-ID: <20240503101138.7921401f.alex.williamson@redhat.com>
+In-Reply-To: <20240425132322.12041-3-liulongfang@huawei.com>
+References: <20240425132322.12041-1-liulongfang@huawei.com>
+	<20240425132322.12041-3-liulongfang@huawei.com>
+Organization: Red Hat
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QPyTx+r9rQ2f1FX5"
-Content-Disposition: inline
-In-Reply-To: <7b6489b7-ec9f-4fc7-af72-4d5cc87acd7f@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 25 Apr 2024 21:23:19 +0800
+Longfang Liu <liulongfang@huawei.com> wrote:
 
---QPyTx+r9rQ2f1FX5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> According to the latest hardware register specification. The DMA
+> addresses of EQE and AEQE are not at the front of their respective
+> register groups, but start from the second.
+> So, previously fetching the value starting from the first register
+> would result in an incorrect address.
+> 
+> Therefore, the register location from which the address is obtained
+> needs to be modified.
 
-On Fri, May 03, 2024 at 04:46:13PM +0200, Krzysztof Kozlowski wrote:
-> On 03/05/2024 14:54, Prajna.Rajendrakumar@microchip.com wrote:
-> >>
-> >>> +  - if:
-> >>> +      properties:
-> >>> +        compatible:
-> >>> +          contains:
-> >>> +            const: microchip,mpfs-spi
-> >>> +      not:
-> >>> +        required:
-> >>> +          - cs-gpios
-> >>
-> >> I don't understand what you are expressing here. Did you actually
-> >> validate it that it achieves exactly what you want?
-> >=20
-> > Since the controller supports only one chip select, the num-cs should
-> > default to 1 and cannot exceed 1 unless GPIOs are used as chip selects.
->=20
-> That's not really the answer... or you want to say you did not test it?
+How does this affect migration?  Has it ever worked?  Does this make
+the migration data incompatible?
 
-She told me she did, and even if she hadn't, I did, despite what my
-email earlier today might suggest!
+Fixes: ???
 
-Cheers,
-Conor.
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c | 8 ++++----
+>  drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h | 3 +++
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> index 45351be8e270..0c7e31076ff4 100644
+> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> @@ -516,12 +516,12 @@ static int vf_qm_state_save(struct hisi_acc_vf_core_device *hisi_acc_vdev,
+>  		return -EINVAL;
+>  
+>  	/* Every reg is 32 bit, the dma address is 64 bit. */
+> -	vf_data->eqe_dma = vf_data->qm_eqc_dw[1];
+> +	vf_data->eqe_dma = vf_data->qm_eqc_dw[QM_XQC_ADDR_HIGH];
+>  	vf_data->eqe_dma <<= QM_XQC_ADDR_OFFSET;
+> -	vf_data->eqe_dma |= vf_data->qm_eqc_dw[0];
+> -	vf_data->aeqe_dma = vf_data->qm_aeqc_dw[1];
+> +	vf_data->eqe_dma |= vf_data->qm_eqc_dw[QM_XQC_ADDR_LOW];
+> +	vf_data->aeqe_dma = vf_data->qm_aeqc_dw[QM_XQC_ADDR_HIGH];
+>  	vf_data->aeqe_dma <<= QM_XQC_ADDR_OFFSET;
+> -	vf_data->aeqe_dma |= vf_data->qm_aeqc_dw[0];
+> +	vf_data->aeqe_dma |= vf_data->qm_aeqc_dw[QM_XQC_ADDR_LOW];
+>  
+>  	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
+>  	ret = qm_get_sqc(vf_qm, &vf_data->sqc_dma);
+> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+> index 5bab46602fad..f887ab98581c 100644
+> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+> @@ -38,6 +38,9 @@
+>  #define QM_REG_ADDR_OFFSET	0x0004
+>  
+>  #define QM_XQC_ADDR_OFFSET	32U
+> +#define QM_XQC_ADDR_LOW	0x1
+> +#define QM_XQC_ADDR_HIGH	0x2
+> +
+>  #define QM_VF_AEQ_INT_MASK	0x0004
+>  #define QM_VF_EQ_INT_MASK	0x000c
+>  #define QM_IFC_INT_SOURCE_V	0x0020
 
---QPyTx+r9rQ2f1FX5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjUMngAKCRB4tDGHoIJi
-0ioOAP4qrZKQTHIXUkqkdaR7KEF4zHhg4D/1C9rn1t8djg/KQwEAhKRMyrlN9M8l
-95XsbmHI+ErsPIxOkVKUzCTi8NTnRgs=
-=mXlZ
------END PGP SIGNATURE-----
-
---QPyTx+r9rQ2f1FX5--
 
