@@ -1,141 +1,139 @@
-Return-Path: <linux-kernel+bounces-168173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710728BB4B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:20:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A55E8BB4B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:21:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A26E91C22F2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:20:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B7271C2303C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC43158D99;
-	Fri,  3 May 2024 20:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92D0158D99;
+	Fri,  3 May 2024 20:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BLIYyQ5A"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrUd5XS8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CD2158A1B
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 20:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D04C157E62;
+	Fri,  3 May 2024 20:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714767619; cv=none; b=LOYKn2Egt0ecintIL0gMncAuUrdpVYR946Z0LN36sP7zZYhUv9a12PuDYD6SJCj0SF+FyJVPK5ikYPIioEOYKIrafaFZHAbnifhrHLIzaMVuQhgqonFGLM/Y7TllZCoMXu8LnODayF9W5eZZpY0dPNWJVWMz+jUMyuNWrLStTUc=
+	t=1714767672; cv=none; b=t6xDIwKc/SkavF2x1K81DtpE7bktwgtBIbh9kdpxcSTpkPm0lBanYwz8HlTChZVagQTJBM1iUnNrhUVq5b31gUBRuHehE+7OP5cNbK2OAwz0eyPVgVxMjw/unZUAHchIJmOh/tzHz/w6m1CzfXIk4/Frdls6NfR4OmhFbJzNqb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714767619; c=relaxed/simple;
-	bh=cT3b01kZzeSTYi58+b1yPoeLYZaiAkjUIG74P8fjFiY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bToqYNbtiqfa5J/hMX5A2X7Q879VjLlxh22QqOk3OlSdDbA4S2IWpF+GfdiRw7mpXSocIC5Dit0rE+5qQBVGLk5MycTx1rAmQvKJqjrUsyphTZepznMP516qf3JtBDUFfPHrtpByDT1I2p7vHOi5UlSy0dGQbMxxEPDo/IM1SNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BLIYyQ5A; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de462f3d992so117782276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 13:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714767616; x=1715372416; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i/q/SogMvCoOqZoAt+GfE+x38sUg5iDJ97SmB2A6bj8=;
-        b=BLIYyQ5A1k6OvsN2cN9hbR+s75gmk5qD7wxFDF3V3vz5q53gO8rUGeHX6fxqOotyvX
-         h9mJyzDE2tXA+GVBuOpPuV/Acz/c0RtP+iGrv4ctJeawV4YyLdvTNJJkv6+CzSswB/5T
-         wn2TgdgQri8InI07R0XjJGnqtAJkbIYpAcJPUlPTX0ccU5Yx+NSM3ZyBSTdPHqAfx3ji
-         kFii4TFKEY+hbskaWU2RXg2zlju5ag0vi5lJ+y0z08VuOl9dZvMglGxaMq5f21KZvg2w
-         P5G+7ud3fCF+MGa0IgNCzo6Saf1xRp6EMGSM1iTotG5RplftmMYCm6hJiD8W+SHUQ7DF
-         MUwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714767616; x=1715372416;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i/q/SogMvCoOqZoAt+GfE+x38sUg5iDJ97SmB2A6bj8=;
-        b=V5m6WUWIdvg6uUFJGcr/LR76/w/JVBjsTWDLRxOt8B/V3Clxs4oN1Qaf+GCXpk9xWw
-         nQ8Rsz9LEbuX/DLWU9Mj/BSQ6TYskkzKF4kr2lw4YPwz+JvwwYw3UgWeZ2hbiQDrebsI
-         j4K70ROiSx13KUFOfZ2EP75Xx9G51YBWCvQYYCcT2Y3roJRPJTQgHpzT43yTo3CYSNxe
-         BPj+LN7Z4fYmyqdcuWYJXT8VvQbTvbymwhT1mvKWN/FMDEdJSBt5VLrxK7Wzv2uAmV51
-         +z5B0Am6eOFVQ/cTkqq+wQS+8dzdFZJqiy1Naz6YSv31z3F0LDk8bEn+v8R/wqvINgT2
-         JGSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVwv7hRAk5w/fGaw02VmM1rpxVVVXtJ1fQrPFYJFSJBOhv1b/NZDwaIwtydM20W1W9pCJURluzoTJUehMCTEx/7QLmIHJcB8+aqea3W
-X-Gm-Message-State: AOJu0YxOdCESuLF5aQUe1GA28jDtQngEaojX2L3ZUiGFlG/3AG3DtOWv
-	YQeNueP7uXTr3xqrrv9ZKwwCUdpWYx6c8kFzqYUMGhaxR+PSt5nFXc59xN3YauoT0WL/MsUtJkW
-	725W0cVZwjyXZW8/mrcINfX2vZ/W0zfbpYdIG7w==
-X-Google-Smtp-Source: AGHT+IF12FMQpgSacsvMJfXaH57exZcVdrXcTVSS3Xjq/IP0kmCZmWj8nzgcfH/Kp8QpD6oWbL2jBz3ac6XWQ05VSLQ=
-X-Received: by 2002:a5b:acd:0:b0:de6:1c59:bdaa with SMTP id
- a13-20020a5b0acd000000b00de61c59bdaamr4064323ybr.40.1714767616600; Fri, 03
- May 2024 13:20:16 -0700 (PDT)
+	s=arc-20240116; t=1714767672; c=relaxed/simple;
+	bh=ybKkS+1yGYkf7MFehjLArh675WknPQu5/9lQl5Hso90=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GfjhAeUcS0Mk2xSS5m1QvI7GtLm1Rplu21ElFT3kSMP4ntO+m8FU65Zn5Q2SLzwDfg7Ty0f1IFBkewdLNzXXFQvvHfCjL+fNPIEZ+2OJWHj1OvdwDwJ0kKkCKVj60gJkyMf4TnjIpB6UW/l15yc8nabwBhs9BBBm8JqdIlCXBFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OrUd5XS8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 058C7C116B1;
+	Fri,  3 May 2024 20:21:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714767671;
+	bh=ybKkS+1yGYkf7MFehjLArh675WknPQu5/9lQl5Hso90=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OrUd5XS8OGzs8O+Z0BXHye0IFQANFQqvVkAGISHp6VQsdCuX146vOsckPdr8KJ/IT
+	 Ji9z3Jruw8RbHT8f4SjhonjFJxAoTlFtooUI9Q//8ZmSLdUUE7OJqTMzCMwNTmaIem
+	 i1srsf1JCnS6lOcamUIu1StficWnJLokgQtU9Cwp4GJorqji69fYmk/KN1PNXURw52
+	 jaExLfk0ol8Qk2YSUQwLMG/Z6WHRzNBAfKk57p/iZRyTa3cSsEM6/h9wZSCScqpBA/
+	 6wx1StqU+TvpRJ6gvHUDaGwXnnWCeb42nA4NYPlNHK9kmKn9gLjqCt2784H+fNLwn7
+	 x3u9pjrQvVdbQ==
+Date: Fri, 3 May 2024 17:21:08 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	James Clark <james.clark@arm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	nabijaczleweli@nabijaczleweli.xyz, Leo Yan <leo.yan@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+	Ben Gainey <ben.gainey@arm.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Sun Haiyong <sunhaiyong@loongson.cn>,
+	Changbin Du <changbin.du@huawei.com>,
+	Andi Kleen <ak@linux.intel.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Dima Kogan <dima@secretsauce.net>,
+	zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
+	Paran Lee <p4ranlee@gmail.com>, Li Dong <lidong@vivo.com>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Chengen Du <chengen.du@canonical.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/7] perf dsos: Switch backing storage to array from
+ rbtree/list
+Message-ID: <ZjVHNB7pTKKWERFn@x1>
+References: <20240429184614.1224041-1-irogers@google.com>
+ <20240429184614.1224041-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240503-fd-fix-lxml-v2-0-f80a60ce21a1@linaro.org>
- <20240503-fd-fix-lxml-v2-2-f80a60ce21a1@linaro.org> <69b593b7-109c-825f-3dbb-5e8cce63ff01@quicinc.com>
-In-Reply-To: <69b593b7-109c-825f-3dbb-5e8cce63ff01@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 3 May 2024 23:20:05 +0300
-Message-ID: <CAA8EJpp4x+NEpMAGtgOmu-0NY8ycTu0iQX6-1Vv76mkKPea_Cw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] drm/ci: validate drm/msm XML register files
- against schema
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Helen Koike <helen.koike@collabora.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240429184614.1224041-2-irogers@google.com>
 
-On Fri, 3 May 2024 at 22:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 5/3/2024 11:15 AM, Dmitry Baryshkov wrote:
-> > In order to validate drm/msm register definition files against schema,
-> > reuse the nodebugfs build step. The validation entry is guarded by
-> > the EXPERT Kconfig option and we don't want to enable that option for
-> > all the builds.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >   drivers/gpu/drm/ci/build.sh  | 3 +++
-> >   drivers/gpu/drm/ci/build.yml | 1 +
-> >   2 files changed, 4 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-> > index 106f2d40d222..28a495c0c39c 100644
-> > --- a/drivers/gpu/drm/ci/build.sh
-> > +++ b/drivers/gpu/drm/ci/build.sh
-> > @@ -12,6 +12,9 @@ rm -rf .git/rebase-apply
-> >   apt-get update
-> >   apt-get install -y libssl-dev
-> >
-> > +# for msm header validation
-> > +apt-get install -y python3-lxml
-> > +
-> >   if [[ "$KERNEL_ARCH" = "arm64" ]]; then
-> >       GCC_ARCH="aarch64-linux-gnu"
-> >       DEBIAN_ARCH="arm64"
-> > diff --git a/drivers/gpu/drm/ci/build.yml b/drivers/gpu/drm/ci/build.yml
-> > index 17ab38304885..9c198239033d 100644
-> > --- a/drivers/gpu/drm/ci/build.yml
-> > +++ b/drivers/gpu/drm/ci/build.yml
-> > @@ -106,6 +106,7 @@ build-nodebugfs:arm64:
-> >     extends: .build:arm64
-> >     variables:
-> >       DISABLE_KCONFIGS: "DEBUG_FS"
-> > +    ENABLE_KCONFIGS: "EXPERT DRM_MSM_VALIDATE_XML"
-> >
->
-> Wouldnt this end up enabling DRM_MSM_VALIDATE_XML for any arm64 device.
->
-> Cant we make this build rule msm specific?
+On Mon, Apr 29, 2024 at 11:46:08AM -0700, Ian Rogers wrote:
+> DSOs were held on a list for fast iteration and in an rbtree for fast
+> finds. Switch to using a lazily sorted array where iteration is just
+> iterating through the array and binary searches are the same
+> complexity as searching the rbtree. The find may need to sort the
+> array first which does increase the complexity, but add operations
+> have lower complexity and overall the complexity should remain about
+> the same.
 
-No need to. We just need to validate the files at least once during
-the whole pipeline build.
+With just this first one applied:
 
--- 
-With best wishes
-Dmitry
+⬢[acme@toolbox perf-tools-next]$ git log --oneline -10
+325557715f1d8593 (HEAD) perf dsos: Switch backing storage to array from rbtree/list
+7b6dd7a923281a7c perf pmu: Assume sysfs events are always the same case
+6debc5aa326fa2ee perf test pmu: Test all sysfs PMU event names are the same case
+18eb2ca8c18f0612 perf test pmu: Add an eagerly loaded event test
+aa1551f299ba414c perf test pmu: Refactor format test and exposed test APIs
+785623ee855e893d perf Document: Sysfs event names must be lower or upper case
+97c48ea8ff1cd70f perf test pmu-events: Make it clearer that pmu-events tests JSON events
+3cdd98b42d212160 (x1/perf-tools-next) perf maps: Remove check_invariants() from maps__lock()
+e3123079b906dc2e perf cs-etm: Improve version detection and error reporting
+bc5e0e1b93565e37 perf cs-etm: Remove repeated fetches of the ETM PMU
+⬢[acme@toolbox perf-tools-next]$
+
+root@number:~# perf -v
+perf version 6.9.rc5.g325557715f1d
+root@number:~# perf probe -l
+DSO [kernel.kallsyms] is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/hid/hid-sensor-hub.ko.xz is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/hid/uhid.ko.xz is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/net/tun.ko.xz is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/fs/overlayfs/overlay.ko.xz is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/net/bluetooth/rfcomm/rfcomm.ko.xz is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/input/misc/uinput.ko.xz is still in rbtree when being deleted!
+DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/sound/core/seq/snd-seq-dummy.ko.xz is still in rbtree when being deleted!
+<SNIP a lot of other modules, probably all of them>
+
+Then with:
+
+65e1e704f37916a0 (HEAD -> perf-tools-next) perf dsos: Switch hand code to bsearch
+64377d6b7d5f9a71 perf dsos: Remove __dsos__findnew_link_by_longname_id
+8e773b8be95aff66 perf dsos: Remove __dsos__addnew
+b1d064fc9b912ece perf dsos: Switch backing storage to array from rbtree/list
+
+applied it continues like that, the next patch in line isn't applying.
+
+I'll push what I have to tmp.perf-tools-next.
+
+- Arnaldo
 
