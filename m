@@ -1,242 +1,174 @@
-Return-Path: <linux-kernel+bounces-167628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF3D8BAC32
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:18:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B238BAC35
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:19:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D97242840C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:18:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 741CFB218C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBBD15357D;
-	Fri,  3 May 2024 12:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C51153505;
+	Fri,  3 May 2024 12:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="SnHYkXy9"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ho8smVSd"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A653E15250F;
-	Fri,  3 May 2024 12:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312F9219EB;
+	Fri,  3 May 2024 12:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714738703; cv=none; b=gxbRx7jc6cOuyMPVQXA6FyMPZNV8ZhNyPbuJ44d2lg0JAHIS4Ny17bexsPWqEHOXZGjcX8gB2mr2uxkSH4OqIsMJtszHO+ywrAdshUlsY2U9xpE7e5OaLTxf4WkjAxmcyGIl9pSyZmgWEWHstMfAcD0Y1TDd0rSDgFDXPDGQ0AA=
+	t=1714738746; cv=none; b=HHgOZmZtFvbYpTLyQaSZF+Inxlr8wSkvfkrCE22ia8CXQ0PbDk2/cD5m74Nkk1d2qjiFm5nn8yZ69BTyFZeYJBDFPyIdavnxbmmaoxEDa6S0O97oImVIl+rDPHUBQD8k53Ap6ky0MM9GCki978NrEiuWprnqtya2fPRgmFNnDP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714738703; c=relaxed/simple;
-	bh=cmfWgaMxH5BtPG4dJB0UOwo/OvdXctu1yPlA65z+kA4=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=Z+ozj8Dc+achOiadzGi1SWVeKJsW8+ieNCwzQFs5Ln6WdkeMimRtHwLGIawFfPnaMrVH7IJvz3JqvvDHsOm3EoeotrRmFHQd3ldjdjOo+9rEKgJ/WGe59yVXPfk8b4lZDinpFpqC0g+OBib+udlJcRKgDrEueNLywmZAELN2Nx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=SnHYkXy9; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240503121817euoutp010d8f19ada1356105b585983a5f997487~L_cKeLkWV2142121421euoutp013;
-	Fri,  3 May 2024 12:18:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240503121817euoutp010d8f19ada1356105b585983a5f997487~L_cKeLkWV2142121421euoutp013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1714738697;
-	bh=A0TItHvFiI4MXmTIwizFYD6SMF5HgKQq2bcMIGrti/E=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=SnHYkXy9QCQLcSKi+H4Er9z6MY+UIedvCXoFfxd1I1l2BN6wVdvq4Ri12qG82w6oY
-	 TTjvJgHLtCkSj2LnPvwlkVmfHLnGz9DV+SLNw0B6ZenUtqRzNOfhKXeU9S1bnrD+0q
-	 vDHuQmAAcd7cfcf5H7JbFNE6iF1o1L8MfE5KKWGM=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240503121817eucas1p2a3694d62da04be733e781d39787620e2~L_cKGE_G63266732667eucas1p2_;
-	Fri,  3 May 2024 12:18:17 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id 1E.C0.09620.806D4366; Fri,  3
-	May 2024 13:18:16 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240503121816eucas1p17004cad2ee2fb60c0b57a92b31323faa~L_cJhM7Xv2763827638eucas1p1h;
-	Fri,  3 May 2024 12:18:16 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240503121816eusmtrp2f31ca9bd529296dd75e3afb86dd45aa6~L_cJeAHy32311023110eusmtrp2p;
-	Fri,  3 May 2024 12:18:16 +0000 (GMT)
-X-AuditID: cbfec7f5-d31ff70000002594-93-6634d608b296
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id B8.35.08810.806D4366; Fri,  3
-	May 2024 13:18:16 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240503121815eusmtip227e52315081afef166d7d4df1e380a96~L_cJH1Vv50271902719eusmtip2E;
-	Fri,  3 May 2024 12:18:15 +0000 (GMT)
-Received: from localhost (106.210.248.112) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Fri, 3 May 2024 13:18:15 +0100
-Date: Fri, 3 May 2024 14:18:11 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Sabrina Dubroca <sd@queasysnail.net>
-CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, Stefan Schmidt
-	<stefan@datenfreihafen.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
-	David Ahern <dsahern@kernel.org>, Steffen Klassert
-	<steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-	Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>, Remi Denis-Courmont
-	<courmisch@gmail.com>, Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long
-	<lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher
-	<jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu
-	<tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, Trond
-	Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker
-	<anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
-	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
-	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, Ying Xue
-	<ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, Pablo Neira Ayuso
-	<pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian
-	Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>, Nikolay
-	Aleksandrov <razor@blackwall.org>, Simon Horman <horms@verge.net.au>, Julian
-	Anastasov <ja@ssi.bg>, Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain
-	<mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<dccp@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-	<mptcp@lists.linux.dev>, <linux-hams@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-	<linux-afs@lists.infradead.org>, <linux-sctp@vger.kernel.org>,
-	<linux-s390@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-	<tipc-discussion@lists.sourceforge.net>, <linux-x25@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>
-Subject: Re: [PATCH net-next v6 8/8] ax.25: x.25: Remove the now superfluous
- sentinel elements from ctl_table array
-Message-ID: <20240503121811.fsmriwsgugzm2o7i@joelS2.panther.com>
+	s=arc-20240116; t=1714738746; c=relaxed/simple;
+	bh=6gKn9QPi0z7knofzQyy7QIG7JzQko8aNuX/0O0sK8hc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=eLMKhEv2FofLZaZiiq/wXrir74MUR5uyZ5vWjjpd0HB990PPEr9WlI8X8z2na/F1IcY+LsxDW9l4DcqsHvqScj0wtbAwQBLSUZ2ou0w2X4l+7Ml5J/6w5PhcV+70y9GseEAVvqqcrrf96McnHwmR76jcRZbzb8xPtn7toI2lktU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ho8smVSd; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51faf2325f4so83392e87.1;
+        Fri, 03 May 2024 05:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714738742; x=1715343542; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yahvMJQIrLp7vbvM1QrDQybr5qXlcpY1TYPX1ymXTw8=;
+        b=Ho8smVSdevePzfNaT48c/pSbnAXu+L9dBn8FWpQ471Ol3B17r355UGnaFYCDCPSakQ
+         ss5DgQG5UDkzHGmQMFBI8tiYLxnN9zo1hk08oGBc63IoXGlFXCgGt/1AGBh/RlReGVM8
+         evmlx69Gu695BVu4xxA6LkVOSn3NhcdBupsjcqiulV0VZGg8sLVioqWnJdn7f1HXKClX
+         6PuYF5Cu5j+W1Z7CBS3aa5bFFUsPLuC8YA8DRBv7kbRdjXiycYmbr4ZH+2usxN9i3cd7
+         nNyJ9dJReV6SY+SShUrMOQ2a2knfVOY1n87zPxyvPb8tZJ+hfs+gthqS7Fq17g1OM8Nr
+         hPkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714738742; x=1715343542;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yahvMJQIrLp7vbvM1QrDQybr5qXlcpY1TYPX1ymXTw8=;
+        b=uh52+BUQJ9BE7GNX84Ht8QBTZVUjxU5yp9ASI7+w5ZvelP/i9OnlbdXrfQ524voE8P
+         qKW9v9o9PTa0CUEtywjvFqQgt0cTnroMEAszf1CM1U7xUW32ucaaC6P7VdOzglHWyO+Z
+         voTq4bAmZiS10s9YmXRUnrvobyt9yh6FPwkZyB73r4yHyvCtK/5y46g9gIh80H70afSL
+         dKDN0wg5dBYmfRyIKcapwI2F2ZY5CpTQFq2kgQsT7r2v9e52BhTFkUqC8RlhDstjZ6NE
+         be+SwkiErUOyBLCdurlKjhP0BGQCvXZoxbj2HervDwgcIFdgdwx7q+ts8MiJ9wIl49eT
+         7kyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNSht7ClGMPQQ9fFW9n8OBUfVIum65k0ArzisiPrfoYzrav0Toj+OIwt2N0aEnE6HZXkEMPb2lDJGLHiRQajGtrUMZTEFI+es1PlH7ZbSOxU45kNjHXwiqT67GW7rHtci+GF/Jun3w+UFj/h25
+X-Gm-Message-State: AOJu0YwCGBGGA+8k5BNzNrDcf22L6L/UGabJliJ4+VxiIVZhGSC+QHWp
+	RTYn58CehOZl36GEvJh3gt6ZM9bl1ajhowgO5cWXdJhZgekH70no
+X-Google-Smtp-Source: AGHT+IHC6ftcvIHtFfuviR7nKafG5DaRoBhLQ9v4ds663Npa8xhUBqcfe8H8jGdMMUn0kTs7sk5KlQ==
+X-Received: by 2002:a2e:9482:0:b0:2e2:1647:8308 with SMTP id c2-20020a2e9482000000b002e216478308mr1626554ljh.2.1714738741868;
+        Fri, 03 May 2024 05:19:01 -0700 (PDT)
+Received: from [172.16.102.219] ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id g17-20020adfa491000000b0034de87e81c7sm3673218wrb.23.2024.05.03.05.18.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 05:19:01 -0700 (PDT)
+Message-ID: <8fbe310e-5b2d-4ac0-95f7-4b09a069a7d6@gmail.com>
+Date: Fri, 3 May 2024 13:18:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="a6ejzfnlx7y2ity4"
-Content-Disposition: inline
-In-Reply-To: <ZjJAikcdWzzaIr1s@hog>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTa0xTZxj2O+e0PTBLTgvTTzBDUBeGijBNeBfdZMuMR4OZi8uSOYNDOYCT
-	e2Xq5jaUm5aAnU0gVrDVbRWp1gG1WEBEJCjlptyKCBgLDIYIarkPZJaDm8n+Pd9zy/P++GhS
-	qqRd6f1RB7m4qOAIT6EjZayabFhDt64P9dVe8YOKBH94XCoXQEJSCgHJplkKjL+mETDb2UfA
-	jCmVBNvjPgGoLxQKIbshiYIZS5oQho7/TYG+OJmA3iqrCIzpOgS64x0UFPWNCyFtYCkkXhtF
-	0HPKKoBm7TMhTGrzRPBo1ErBZMZbcEaeSEBtWiRc7+yh4J4xQwAKsx+0FnUS0FScLYR75TUC
-	+LMinQLF+UQSejVPBNCh1FJQfkONwHp1mIBE9QsSEm3dJEzl3hFAffosCSp9Hgltil4Et1PL
-	BFB79bgIxs7dJeGGOoGCKs0iUOjNFIzVDCLIGmwhwTwyS0B9oU0AtmwvaLOLylwDASUnJ0Rg
-	aPgWzFNmArrH+4Qw27YJjtUaRdBtsZABAWy7dZRkh+qrEXvu8g/s2YT7FDs16c0aLj0g2LTK
-	AZI1qTpFrLF8JaspiGenK/JFbEHeSSFrevwBq7hQjtjC335m+wvPoB0euxw3hnAR+7/j4tZ+
-	9I1jeE3DUxST8fbh7EeFKAF1SeTIgcbMemxq1AvlyJGWMrkIJ2tsArsgZUYQHs6S8IIN4bET
-	g+TrRKalhOSFiwhn6n6n/nVll1oQ/zAgPN2kEMkRTVPMClw14mJPC5nVuGGwY67JhfHCPanG
-	uSaSeSbBE41ZQrvgzMTji09S50xiJgDX1Q4IeCzB1Wd6KDsmmcM4ZVwz108ybvjiS9pOOzDL
-	cWvZoIhfuhxXFuXM4x+x2dBO8LhuIVbY9vL4U3zlWBfFY2c8cMcw71+KZ01qwr4NM0qEb758
-	JuIfOoS1x0bnmzbgpOae+cTHuK7jMrIPwowTbnsq4Xc64dPGLJKnxfhEipR3v4t1XYOUAi1X
-	vXGZ6o3LVP9dxtOrsabkhfB/9CqsPf+E5PGHWK8fpjRIlIcWc/GyyDBOti6KO+QjC46UxUeF
-	+eyLjixAr/5qzcs7o9dR7sBznwpE0KgCrXgVtv6hu4dcqajoKM7TRbxKuS5UKg4JPvI9Fxe9
-	Jy4+gpNVIDea8lwsXhnizkmZsOCD3AGOi+HiXqsE7eCaQBw1uFn2S/O+3N00kxuJN3uFTxuX
-	+fd75Bc+Gvurmsj4etEi3+rIq+Ol3e5r5ZlU+mhHpW64R6xacnSkeWdgnfNX0t6nsf2bPbbs
-	xptil3q27opR7PE9uGCDZOeS+1k5pwO6HgaxgSPXHH/ZWGLZ5zvk0L3tdrKn+pZX7Rpp6IBy
-	U5m1aWjv4Xz1rfO5Qcuit86kKKFSG/2JB3nIqSUkSON2tqHS/ye5qrmx84H0RcrCsbwdETcl
-	uq3vHR3pr+kyF5cX1DxnLpW5HtCLnaeDJmhH35n2jVve2Rkb84VTi/uSrYkTpqneyfdLkz7b
-	vtLfOyew9Iih3f3zBQ+Zbfjusu31zuHr5Z6ULDzYz5uMkwX/A+Apb7kmBQAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTe0xTdxTe797bBzqSWireoFlmccYhq5SXB1Tkjy1ekxlx/rO5BzZ6FQe0
-	rA+cOrS2agWGq2AkIJMq8pCy8mhXrK+wzhQpFbqo0Bk6ofLYgIE8FAGho9ZlJvvvO993vu+c
-	nOSwcW49K4R9QCynpWJRGp+5iGidb/7jA3ZH9L6Ivhk2WJXroedmDgOUJ05hcNLiJcBclouB
-	1z2AwZxFg8NEzwADSi8bmVDSfoKAuc5cJoyoZgkwXD+JQZ/NwwJznh6BXtVFQOPAFBNyB1eA
-	+udnCHp/8DDgQcVTJkxXVLPg8TMPAdNnFkNRjhoDR246XHP3EuA0n2GA1i6EjkY3BvevlzDB
-	2dTKgH5rHgHaS2oc+nRDDOgqqCCg6VYpAk/tKAbq0nEc1BNPcJipamZAW54Xh2JDNQ4ubR+C
-	XzW3GeCoVbHg+cW7ONwqVRJg0wWD1mAn4HnrMILC4Yc42Ce9GLQZJxgwUbIGXD6xoMqEwY3s
-	FywwtX8N9hk7Bk+mBpjgdW2G4w4zC550duKJidQjzzOcGmlrQdTFmiPUBeVvBDUzHUaZrv6O
-	Ubl3BnHKUuxmUeam9yhdg4J6aa1nUQ3V2UzK0hNHaS83Icp45Rj1p7EIJa3cJdgolSjk9Lsp
-	Epl8E/9zIUQKhHEgiIyOEwij1n8ZHxnDX5ewcS+ddiCTlq5L2C1IqXdUMzK+X/rtkOEBoURd
-	S3JQAJvkRJPnO2/gOWgRm8spR2S+tZDhF1aQ9ZMPX+Mg8mVHDtPfNIbIlnIPw1+YEGlWaRfs
-	bDbBWUXaJnk+A5MTTrYPd+E+zOOsIXs15lcTcM7TJeTfBb2YTwjiKMjKIc2rpkBOInnPMfg6
-	9AUi3c4zTL+whGwp6iV8GOdkklVNKuQbhnOWk5XzbB8dwAklO24Ps/ybhpJ3Gn98jbPIibl+
-	pEVBxW8kFb+RVPxfkp8OI13zf2H/o9eSFZeGcD/eRBoMo4QOsaoRj1bI0veny4QCmShdphDv
-	F+yRpDeghX8x26aN19DFwTGBFWFsZEWrFpyeOr0ThRBiiZjm8wLXFkTt4wbuFR06TEslyVJF
-	Gi2zopiFK57FQ5bukSw8n1ieLIyNiBFGx8ZFxMTFRvGXBW7NOC3icvaL5HQqTWfQ0n99GDsg
-	RIkdPPrdrXMJ+tj13fmLHnS1lAvbZw/Ik8pUY47HqL87a6VMw2si6IHPtkRGZdaowrPPb+fr
-	An6qMWfezH7u5XbPms+Kjcuzdh+ZHx2v/Ei/LXRD4Tn9y/Z481XLV82J+JXJ1rtlB7PtcssW
-	19wMLyEvWZrT//Qb6bgp3Fx+NPiRKHjXztptm9dc2BqBDx5P+uL9yNTNq5OPP4zlfVzYcPjD
-	X44Gn7qz5fyy2tBDU9d77hWlusfP1dlWr9SNSTQpx0wJ92XUZa5nx+IR9c4NtqHTO0YNB038
-	PufkMZfq07rmPaTnnZB4tuOTWeehjPy31G/biO32+FWdlEYjHMe7lWW9PS4dn5CliIRhuFQm
-	+geeXN9SxAQAAA==
-X-CMS-MailID: 20240503121816eucas1p17004cad2ee2fb60c0b57a92b31323faa
-X-Msg-Generator: CA
-X-RootMTR: 20240501131616eucas1p28a33eeb55f6c084a0751e5b7b7d91d78
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240501131616eucas1p28a33eeb55f6c084a0751e5b7b7d91d78
-References: <20240501-jag-sysctl_remset_net-v6-0-370b702b6b4a@samsung.com>
-	<20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
-	<CGME20240501131616eucas1p28a33eeb55f6c084a0751e5b7b7d91d78@eucas1p2.samsung.com>
-	<ZjJAikcdWzzaIr1s@hog>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kunit: Cover 'assert.c' with tests
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+To: Rae Moar <rmoar@google.com>
+Cc: brendan.higgins@linux.dev, davidgow@google.com,
+ linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+ linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
+References: <20240427220447.231475-1-ivan.orlov0322@gmail.com>
+ <CA+GJov45uEfrXVWSUxvzOLYKPCnTeYeGqHvk=W4n-W_TLYyRuQ@mail.gmail.com>
+ <89c0f7c2-145c-4d4c-a330-f0fff5bb4098@gmail.com>
+Content-Language: en-US
+In-Reply-To: <89c0f7c2-145c-4d4c-a330-f0fff5bb4098@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
---a6ejzfnlx7y2ity4
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 5/3/24 12:10, Ivan Orlov wrote:
+> On 5/2/24 00:20, Rae Moar wrote:
+>> On Sat, Apr 27, 2024 at 6:04 PM Ivan Orlov <ivan.orlov0322@gmail.com> 
+>> wrote:
+>>>
+>>> There are multiple assertion formatting functions in the `assert.c`
+>>> file, which are not covered with tests yet. Implement the KUnit test
+>>> for these functions.
+>>>
+>>> The test consists of 11 test cases for the following functions:
+>>>
+>>> 1) 'is_literal'
+>>> 2) 'is_str_literal'
+>>> 3) 'kunit_assert_prologue', test case for multiple assert types
+>>> 4) 'kunit_assert_print_msg'
+>>> 5) 'kunit_unary_assert_format'
+>>> 6) 'kunit_ptr_not_err_assert_format'
+>>> 7) 'kunit_binary_assert_format'
+>>> 8) 'kunit_binary_ptr_assert_format'
+>>> 9) 'kunit_binary_str_assert_format'
+>>> 10) 'kunit_assert_hexdump'
+>>> 11) 'kunit_mem_assert_format'
+>>>
+>>> The test aims at maximizing the branch coverage for the assertion
+>>> formatting functions. As you can see, it covers some of the static
+>>> helper functions as well, so we have to import the test source in the
+>>> `assert.c` file in order to be able to call and validate them.
+>>>
+>>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+>>
+>> Hello!
+>>
+>> This is a great patch and addition of KUnit tests. Happy to see it.
+>> Thank you very much!
+>>
+>> I do have a few comments below. But none of them are deal breakers.
+> 
+> 
+> Hi Rae,
+> 
+> Thank you so much for the detailed review.
+> 
+>>
+>>> ---
+>>>   lib/kunit/assert.c      |   4 +
+>>>   lib/kunit/assert_test.c | 416 ++++++++++++++++++++++++++++++++++++++++
+>>>   2 files changed, 420 insertions(+)
+>>>   create mode 100644 lib/kunit/assert_test.c
+>>>
+>>> diff --git a/lib/kunit/assert.c b/lib/kunit/assert.c
+>>> index dd1d633d0fe2..ab68c6daf546 100644
+>>> --- a/lib/kunit/assert.c
+>>> +++ b/lib/kunit/assert.c
+>>> @@ -270,3 +270,7 @@ void kunit_mem_assert_format(const struct 
+>>> kunit_assert *assert,
+>>>          }
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(kunit_mem_assert_format);
+>>> +
+>>> +#if IS_ENABLED(CONFIG_KUNIT_TEST)
+>>> +#include "assert_test.c"
+>>> +#endif
+>>
+>> I might consider using the macro VISIBLE_IF_KUNIT macro, found in
+>> include/kunit/visibility.h, to make the static functions in assert.c
+>> visible only if KUnit is enabled. To avoid having to add the include
+>> here. What do you think?
+>>
+> 
+> Wow, I haven't seen this macro before, thank you for the suggestion! 
+> I'll use it in the V2 of the patch.
+> 
+> I assume we need to use it in combination with EXPORT_SYMBOL_IF_KUNIT, 
+> otherwise GCC will complain on use of functions without definitions, right?
+> 
 
-On Wed, May 01, 2024 at 03:15:54PM +0200, Sabrina Dubroca wrote:
-> 2024-05-01, 11:29:32 +0200, Joel Granados via B4 Relay wrote:
-> > From: Joel Granados <j.granados@samsung.com>
-> >=20
-> > This commit comes at the tail end of a greater effort to remove the
-> > empty elements at the end of the ctl_table arrays (sentinels) which will
-> > reduce the overall build time size of the kernel and run time memory
-> > bloat by ~64 bytes per sentinel (further information Link :
-> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> >=20
-> > Avoid a buffer overflow when traversing the ctl_table by ensuring that
-> > AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
-> > done with a BUILD_BUG_ON where ax25_param_table is defined and a
-> > CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
-> > in the ax25_dev_device_up and ax25_ds_set_timer functions.
->                                 ^^
-> nit:                            not anymore ;)
-> (but not worth a repost IMO)
->=20
->=20
-> > diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
-> > index c4f8adbf8144..c50a58d9e368 100644
-> > --- a/net/ax25/ax25_ds_timer.c
-> > +++ b/net/ax25/ax25_ds_timer.c
-> > @@ -55,6 +55,7 @@ void ax25_ds_set_timer(ax25_dev *ax25_dev)
-> >  	ax25_dev->dama.slave_timeout =3D
-> >  		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
-> >  	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-> > +	return;
->=20
-> nit: return not needed here since we're already at the bottom of the
-> function, but probably not worth a repost of the series.
->=20
-Thx. I will not repost, but I have changed them locally so they are
-there in case a V7 is required.
+s/definitions/declarations/g :)
 
-Best
---=20
+-- 
+Kind regards,
+Ivan Orlov
 
-Joel Granados
-
---a6ejzfnlx7y2ity4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmY01gIACgkQupfNUreW
-QU9//gwAjwm2crD0MhJ7OyswQb0Bxm/HhmEwnomCQHNxXo2qKrIBpMOS3dpgmCeX
-hOvysHMzkUBRGf7mQm0veqdHNb4ZdZfRelo1i3GHxmlWlIx8J2hcZTDG8TUz6hJv
-poTVkndbEa6q2rBVNPhoLnxjqLcE3yOOGvZeJv75CklJ3V/rrrBSBpSQvgisz2Rc
-2lH29Ih2Lh2n1V8beefQHxMV9dbvkeiyhEpZJOCLbapjSFF8YiWjHrTDsVj74zxw
-f981wsUNdFhVv0tdfKDReFydDtXT0cUw5VpHeHTbpoK08KCDc4QFw0Gxr8ycxXXt
-XUYdpIioVBoSGc3I1PWDUUDfZEBawE+LVoZryY+7kEz7PJuCaryhFfkXSaXC8l0y
-ODfJAEMDUeKM+xGgXgaT0kK6kb2jltciYS9/JBw38uqw7d9jHR7AYD3QTKaa1atx
-hguSiJrXappxRJZDX1VvmgV9lC1Y4cAgQQJJhXnI2/Ok88cvgDfPCECVwQiTxxrp
-D7SGN60B
-=MN3V
------END PGP SIGNATURE-----
-
---a6ejzfnlx7y2ity4--
 
