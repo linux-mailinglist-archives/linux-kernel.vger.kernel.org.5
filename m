@@ -1,146 +1,105 @@
-Return-Path: <linux-kernel+bounces-167926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0231C8BB12C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:45:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3122A8BB12F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:47:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 962511F22671
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:45:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 623531C21A88
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B681156C57;
-	Fri,  3 May 2024 16:45:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D04156C6A;
+	Fri,  3 May 2024 16:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qWErinrA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCEkbtNt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C63B15687F;
-	Fri,  3 May 2024 16:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2591553AB;
+	Fri,  3 May 2024 16:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714754751; cv=none; b=NE3ePSFUJlvA5XxCZbNOacoas/QUBOZMd7cHthUVY9QE2o/niDA0/pa6NGJPRBudzWAJFGR4WHHj5ugpo6G9cceZA2Biv+NdpFzovIEWLxTjLpXSDFUN/jF0vgy3tnTV3+A1fFGn8Jg/3teHTTMuS1t+9FtP8x1+nMLCXxBgbTc=
+	t=1714754815; cv=none; b=AZVH8VHo/PrX9xnAz4fiJt8IdvGxZ3tsJjgaLUUsVWBDt+XaH/3SnSS7lRL11SnOT9g3ly+j8fR1QHDX4pA6x/Aw6cMr3o6jdL96bY4d55CUf+ptnrTvQ3FGwMtTv8fvvQPK/9KL7MWv8t5iIaghijIruYSafqFuE7uMAy7tt3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714754751; c=relaxed/simple;
-	bh=vsZuJtE5RGT667IHPY/tz9/wy6NQgx5LKgSSROUkDps=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EXNpURQyIV3tWjicy1zlGiiuia/sy5WYj6uHArj/n7Ww9gsWamTYHvYqUf/xOlCg+2ncK+9R9CJA5ck3Q5a3Wqfog0zbQ8kMlzwh2yBffbvXYJBFFroYeQe+QHyEG3kyNMh1OoKYzoOJ5eVXG2bKjE041YjU3xqjUoVuiWH3SfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qWErinrA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DC64C4AF1B;
-	Fri,  3 May 2024 16:45:47 +0000 (UTC)
+	s=arc-20240116; t=1714754815; c=relaxed/simple;
+	bh=yaoak1fDrAn4w0OANSfpsDyPIMFRb3UXg/GPuhk8clo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=pn93sos3vjGbNN0L3hfgBlgFjoCj+CjAT0jji25NfgcGveIzS7j36ecrZvAqGaIg6Rv41NayxsWsTEZzWDAc54/Ursa2JYMdpbLfpF+6t9a9SqY1oSQQ7B4+sWIo35h/isRLD4HjrdsQB8WRbMhS55w17LIZYAe3zJWI2s2onTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCEkbtNt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57789C116B1;
+	Fri,  3 May 2024 16:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714754751;
-	bh=vsZuJtE5RGT667IHPY/tz9/wy6NQgx5LKgSSROUkDps=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qWErinrARu9gq/beFo4aJATTpl6SurxgGw/4MRM7iH629nDeRtt8drkMJmAH+RDBa
-	 Kkn1caeXiYr7BfU27hiui52fBBdUBvSez1mvpAVA9OnA+blZSfoJHrGqNaT2bvAHZV
-	 iddS04wrO6neD6XOv2U6EHOnDnwbTgcYMj6aNRYNcLYOAi0WQj/JV7gJdpaUVUBhO7
-	 xw35DmsopLc7pYjIg/MJtxu7/Y1l9G6Q77+F1iA/e1f6jkjDeDHJo/9vp1ZuONgvju
-	 zwBwH8J+dn+c/Rmo03WQqWh4252rxtpY5iAaO/hSDVTU4UdzfhlNCzQHOJ58zejxwq
-	 nn+LKZpGEKmsA==
-Date: Fri, 3 May 2024 17:45:45 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Hsin-Te Yuan <yuanhsinte@chromium.org>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Xin Ji <xji@analogixsemi.com>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: drm/bridge: anx7625: Add a perporty to
- change TDM setting
-Message-ID: <20240503-footrest-gladly-c0ed7d92d816@spud>
-References: <20240502-anx-tdm-v1-0-894a9f634f44@chromium.org>
- <20240502-anx-tdm-v1-1-894a9f634f44@chromium.org>
- <20240502-sheath-share-eac9afc24da9@spud>
- <CAHc4DN+mCbBuB3D9kB2x8HYj9iaX7t6Q4Qjj7hotH3u=eAHJSg@mail.gmail.com>
+	s=k20201202; t=1714754815;
+	bh=yaoak1fDrAn4w0OANSfpsDyPIMFRb3UXg/GPuhk8clo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=nCEkbtNtZSdq6TKait39WmTLlH8jAt71b123/YWjzOJIBVajJtZocGe+ptGtKk8aM
+	 9X0JlGKCV0nHcEFCduyZfMAvcqfR55yn00SipAq9P8AUoT0XOmzcCzskeCsU4561gj
+	 MxCyOyWLiujwx9/yASPIBiabfEQSEoJaX1v1JClxR/Cx/XWkTtd56w0NKr6Vh9zMrW
+	 ZunoULnPiSCjLzV41UF/RsSdItKEesviHUUIt+EyRHTfsFADJnAnbPe2ljbMIj1J8j
+	 9PxdqKBqCPMtU9obJyjMWH5XiHGwVokVKgugM33JdFYMLcxJbJ3PYEVg7IJ2mI/b0v
+	 U0vdXR/it/4FA==
+Date: Fri, 3 May 2024 11:46:53 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: linux-pci@vger.kernel.org
+Cc: Vidya Sagar <vidyas@nvidia.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	"Maciej W . Rozycki" <macro@orcam.me.uk>,
+	"David E . Box" <david.e.box@linux.intel.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Ajay Agarwal <ajayagarwal@google.com>, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] PCI/ASPM: Clarify that pcie_aspm=off means leave ASPM
+ untouched
+Message-ID: <20240503164653.GA1584406@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OIMQ9YJ2fz4azP4P"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHc4DN+mCbBuB3D9kB2x8HYj9iaX7t6Q4Qjj7hotH3u=eAHJSg@mail.gmail.com>
+In-Reply-To: <20240429191821.691726-1-helgaas@kernel.org>
 
+On Mon, Apr 29, 2024 at 02:18:21PM -0500, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Previously we claimed "pcie_aspm=off" meant that ASPM would be disabled,
+> which is wrong.
+> 
+> Correct this to say that with "pcie_aspm=off", Linux doesn't touch any ASPM
+> configuration at all.  ASPM may have been enabled by firmware, and that
+> will be left unchanged.  See "aspm_support_enabled".
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
---OIMQ9YJ2fz4azP4P
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied with David's Reviewed-by to for-linus for v6.9, thanks, David!
 
-On Fri, May 03, 2024 at 02:58:16PM +0800, Hsin-Te Yuan wrote:
-> On Thu, May 2, 2024 at 10:47=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Thu, May 02, 2024 at 09:03:31AM +0000, Hsin-Te Yuan wrote:
-> > > Add a perporty to indicate whether anx7625 should shift the first aud=
-io
-> > > data bit. The default TDM setting is to shift the first audio data bi=
-t.
-> > >
-> > > Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
-> > > ---
-> > >  .../devicetree/bindings/display/bridge/analogix,anx7625.yaml        =
-  | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogi=
-x,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,=
-anx7625.yaml
-> > > index a1ed1004651b9..915d5d54a2160 100644
-> > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx76=
-25.yaml
-> > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx76=
-25.yaml
-> > > @@ -82,6 +82,10 @@ properties:
-> > >      type: boolean
-> > >      description: let the driver enable audio HDMI codec function or =
-not.
-> > >
-> > > +  no-shift-audio-data:
-> > > +    type: boolean
-> > > +    description: Disable the first audio data bit shift in the TDM s=
-ettings.
-> >
-> > This just looks like software policy, since there's no mention in the
-> > commit message or description as to what property of the hardware causes
-> > this to be required. Can you please explain why this property is needed?
-> >
-> > You're also missing a vendor prefix.
->=20
-> Sorry, I found this feature in the datasheet originally, but after
-> deeper investigation, it seems that this feature should be used to
-> support i2s dsp mode b instead of being used this way. Note that the
-> difference between i2s dsp mode a and b is whether or not to shift the
-> audio data by 1 clock cycle.
-
-Are you trying to say that this patch is not needed? I'm not really
-sure.
-
---OIMQ9YJ2fz4azP4P
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjUUuQAKCRB4tDGHoIJi
-0s+mAP9xrZEuq+pdJoaqDYfIjbY9yCD7iBiC5GCSfYGFAvVblQEAmEnup6FVQQnj
-FEOeiYDFL8Lbl43MM89934A9LqjnDww=
-=MuBv
------END PGP SIGNATURE-----
-
---OIMQ9YJ2fz4azP4P--
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index bb884c14b2f6..4bc281d6e8d3 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4590,9 +4590,10 @@
+>  		norid		[S390] ignore the RID field and force use of
+>  				one PCI domain per PCI function
+>  
+> -	pcie_aspm=	[PCIE] Forcibly enable or disable PCIe Active State Power
+> +	pcie_aspm=	[PCIE] Forcibly enable or ignore PCIe Active State Power
+>  			Management.
+> -		off	Disable ASPM.
+> +		off	Don't touch ASPM configuration at all.  Leave any
+> +			configuration done by firmware unchanged.
+>  		force	Enable ASPM even on devices that claim not to support it.
+>  			WARNING: Forcing ASPM on may cause system lockups.
+>  
+> -- 
+> 2.34.1
+> 
 
