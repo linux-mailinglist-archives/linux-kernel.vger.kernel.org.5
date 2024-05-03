@@ -1,131 +1,210 @@
-Return-Path: <linux-kernel+bounces-167899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2440E8BB0D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:23:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67D078BB0B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:16:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D42332872B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D22F51F24A53
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 670FE15539B;
-	Fri,  3 May 2024 16:23:07 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A234C155339;
+	Fri,  3 May 2024 16:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DmHHtJ+M";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="iFUIqD0I";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DmHHtJ+M";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="iFUIqD0I"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F284C4D9FD
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0A8152DFE;
+	Fri,  3 May 2024 16:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714753386; cv=none; b=pad+JdK3R7sF1gQisWeJCia6f4Y045jwKf2HtTu9torWhV20ro9FxuWvwh7s5njZnagJzXsE4lMsYRqPEdrmpAm0tzGztKm4a01sxiqdgygwwoihBRaiuc/MfTg27Sk6Q5jOPzA1yNS+iil+mWa8Xr5uEUtWqT8UI/w0rtmFh/0=
+	t=1714752981; cv=none; b=aW9dZ1RqbnIwOfNDE7FE8WbDpoolI1uvhJxXiU/VTH00BhJRW6Wa/NIGJ8LD/vSOD1tHttZriCI62K4PefFkE7NZvwqYRyhH4LoJAoGbAA3iUKBMZ7+0tE6kYHncX5zgyseMosNudGszK5atj1NVnhariQyF4UDxxCu2ngk/WtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714753386; c=relaxed/simple;
-	bh=uRsf89PYPNNB+MDH2jhxz1s0c6RGa/OSvDNRlwMEnsc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=RTs89J8eZbbTpGeHDKn3ZPGWh5mVf1Zecvwjz/VA/E/sHTMCsEdqTQ/R3WpaKNWyH+SqkqvivGedZqd8iwUzAvTYWihrLWfAa2gq1hNVl1kR0wPx1sc+YpY9wErmnAMtZJ/fuszL/HTY8pfWCRxBHkfrAI8uwo15DIqC9pguV0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-136-6zAZYStTPmWnjs5bkxLi4w-1; Fri, 03 May 2024 17:16:52 +0100
-X-MC-Unique: 6zAZYStTPmWnjs5bkxLi4w-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 3 May
- 2024 17:16:22 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 3 May 2024 17:16:22 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Waiman Long' <longman@redhat.com>, "'linux-kernel@vger.kernel.org'"
-	<linux-kernel@vger.kernel.org>, "'peterz@infradead.org'"
-	<peterz@infradead.org>
-CC: "'mingo@redhat.com'" <mingo@redhat.com>, "'will@kernel.org'"
-	<will@kernel.org>, "'boqun.feng@gmail.com'" <boqun.feng@gmail.com>, "'Linus
- Torvalds'" <torvalds@linux-foundation.org>,
-	"'virtualization@lists.linux-foundation.org'"
-	<virtualization@lists.linux-foundation.org>, 'Zeng Heng'
-	<zengheng4@huawei.com>
-Subject: RE: [PATCH next v2 5/5] locking/osq_lock: Optimise decode_cpu() and
- per_cpu_ptr().
-Thread-Topic: [PATCH next v2 5/5] locking/osq_lock: Optimise decode_cpu() and
- per_cpu_ptr().
-Thread-Index: Ado8NCf0vtha6NqURtGgfE7//QxHexhPrXlAAACWziA=
-Date: Fri, 3 May 2024 16:16:21 +0000
-Message-ID: <a4b3b3a260b94bfdb46a4b5d57b36f01@AcuMS.aculab.com>
-References: <2b4e8a5816a742d2bd23fdbaa8498e80@AcuMS.aculab.com>
- <7c1148fe64fb46a7a81c984776cd91df@AcuMS.aculab.com>
- <9d4024ba-6422-4775-b934-bfa80a72a858@redhat.com>
- <16557e30-8353-4cd1-995b-23ec763d2b07@redhat.com>
-In-Reply-To: <16557e30-8353-4cd1-995b-23ec763d2b07@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1714752981; c=relaxed/simple;
+	bh=9JAuqzmFfvLFHF54ovz6fulY0osoFcF5ZH4aXMlz1PQ=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=i6g1iHVyDNM2nnwcmdGcdBxr2rwSXMyqnqESdx+R7S3iybbWVD8rKnHswzFeUoIp36+DvKTQ0hWj6O2WKENEZtgkNPsbY5Lx+yJQrJWNXuBzvfzy68odTfH9NgH9xTNnMbkjr1rAJTaWtKbKvndeaXlz6O+u+gExcxNoMIHDSRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DmHHtJ+M; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=iFUIqD0I; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DmHHtJ+M; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=iFUIqD0I; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 465EA1FDB7;
+	Fri,  3 May 2024 16:16:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714752978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oiTqZfHoHoeBGnqeqSO0b2VdvRk2sjq5+PSJaOuL1J4=;
+	b=DmHHtJ+MYCJdNH6JIU0KC553fLk/9sAAgAovImFzpQ1vMzLklTjNuokU5eFvCtdGzQZ5BC
+	YmgpNV0YYjKKne8RUldDaWDlJvi6vwV6W20qAAtIWLW3exBwh3/ozBNqAvkZXOOv9jOLvM
+	HrLC0NGd3YlYNFICqYhbuJI7yb8VQu4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714752978;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oiTqZfHoHoeBGnqeqSO0b2VdvRk2sjq5+PSJaOuL1J4=;
+	b=iFUIqD0Ijr2dnAw7WNVSjNJUdzuZdNwFXAVyezKDbdLRK5P3NHxHjrQ+jfEG+j8O/owkEd
+	tmRkXYZZdOyZK6DQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714752978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oiTqZfHoHoeBGnqeqSO0b2VdvRk2sjq5+PSJaOuL1J4=;
+	b=DmHHtJ+MYCJdNH6JIU0KC553fLk/9sAAgAovImFzpQ1vMzLklTjNuokU5eFvCtdGzQZ5BC
+	YmgpNV0YYjKKne8RUldDaWDlJvi6vwV6W20qAAtIWLW3exBwh3/ozBNqAvkZXOOv9jOLvM
+	HrLC0NGd3YlYNFICqYhbuJI7yb8VQu4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714752978;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oiTqZfHoHoeBGnqeqSO0b2VdvRk2sjq5+PSJaOuL1J4=;
+	b=iFUIqD0Ijr2dnAw7WNVSjNJUdzuZdNwFXAVyezKDbdLRK5P3NHxHjrQ+jfEG+j8O/owkEd
+	tmRkXYZZdOyZK6DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B6AB13991;
+	Fri,  3 May 2024 16:16:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Txw+AdINNWboOwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 03 May 2024 16:16:18 +0000
+Date: Fri, 03 May 2024 18:16:31 +0200
+Message-ID: <87bk5man1c.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda/cs_dsp_ctl: Actually remove ALSA controls
+In-Reply-To: <d9c5b863-53a5-4255-ab15-9ac3cb10ec10@opensource.cirrus.com>
+References: <20240503144920.61075-1-rf@opensource.cirrus.com>
+	<87msp79b7o.wl-tiwai@suse.de>
+	<d9c5b863-53a5-4255-ab15-9ac3cb10ec10@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Flag: NO
+X-Spam-Score: -3.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.995];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-RnJvbTogV2FpbWFuIExvbmcNCj4gU2VudDogMDMgTWF5IDIwMjQgMTc6MDANCj4gVG86IERhdmlk
-IExhaWdodCA8RGF2aWQuTGFpZ2h0QEFDVUxBQi5DT00+OyAnbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZycgPGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgJ3BldGVyekBpbmZy
-YWRlYWQub3JnJyA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+DQo+IENjOiAnbWluZ29AcmVkaGF0LmNv
-bScgPG1pbmdvQHJlZGhhdC5jb20+OyAnd2lsbEBrZXJuZWwub3JnJyA8d2lsbEBrZXJuZWwub3Jn
-PjsgJ2JvcXVuLmZlbmdAZ21haWwuY29tJw0KPiA8Ym9xdW4uZmVuZ0BnbWFpbC5jb20+OyAnTGlu
-dXMgVG9ydmFsZHMnIDx0b3J2YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz47ICd2aXJ0dWFsaXph
-dGlvbkBsaXN0cy5saW51eC0NCj4gZm91bmRhdGlvbi5vcmcnIDx2aXJ0dWFsaXphdGlvbkBsaXN0
-cy5saW51eC1mb3VuZGF0aW9uLm9yZz47ICdaZW5nIEhlbmcnIDx6ZW5naGVuZzRAaHVhd2VpLmNv
-bT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXh0IHYyIDUvNV0gbG9ja2luZy9vc3FfbG9jazog
-T3B0aW1pc2UgZGVjb2RlX2NwdSgpIGFuZCBwZXJfY3B1X3B0cigpLg0KPiANCj4gDQo+IE9uIDEy
-LzMxLzIzIDIzOjE0LCBXYWltYW4gTG9uZyB3cm90ZToNCj4gPg0KPiA+IE9uIDEyLzMxLzIzIDE2
-OjU1LCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4+IHBlcl9jcHVfcHRyKCkgaW5kZXhlcyBfX3Bl
-cl9jcHVfb2Zmc2V0W10gd2l0aCB0aGUgY3B1IG51bWJlci4NCj4gPj4gVGhpcyByZXF1aXJlcyB0
-aGUgY3B1IG51bWJlciBiZSA2NGJpdC4NCj4gPj4gSG93ZXZlciB0aGUgdmFsdWUgaXMgb3NxX2xv
-Y2soKSBjb21lcyBmcm9tIGEgMzJiaXQgeGNoZygpIGFuZCB0aGVyZQ0KPiA+PiBpc24ndCBhIHdh
-eSBvZiB0ZWxsaW5nIGdjYyB0aGUgaGlnaCBiaXRzIGFyZSB6ZXJvICh0aGV5IGFyZSkgc28NCj4g
-Pj4gdGhlcmUgd2lsbCBhbHdheXMgYmUgYW4gaW5zdHJ1Y3Rpb24gdG8gY2xlYXIgdGhlIGhpZ2gg
-Yml0cy4NCj4gPj4NCj4gPj4gVGhlIGNwdSBudW1iZXIgaXMgYWxzbyBvZmZzZXQgYnkgb25lICh0
-byBtYWtlIHRoZSBpbml0aWFsaXNlciAwKQ0KPiA+PiBJdCBzZWVtcyB0byBiZSBpbXBvc3NpYmxl
-IHRvIGdldCBnY2MgdG8gY29udmVydA0KPiA+PiBfX3Blcl9jcHVfb2Zmc2V0W2NwdV9wMSAtIDFd
-DQo+ID4+IGludG8gKF9fcGVyX2NwdV9vZmZzZXQgLSAxKVtjcHVfcDFdICh0cmFuc2ZlcnJpbmcg
-dGhlIG9mZnNldCB0byB0aGUNCj4gPj4gYWRkcmVzcykuDQo+ID4+DQo+ID4+IENvbnZlcnRpbmcg
-dGhlIGNwdSBudW1iZXIgdG8gMzJiaXQgdW5zaWduZWQgcHJpb3IgdG8gdGhlIGRlY3JlbWVudCBt
-ZWFucw0KPiA+PiB0aGF0IGdjYyBrbm93cyB0aGUgZGVjcmVtZW50IGhhcyBzZXQgdGhlIGhpZ2gg
-Yml0cyB0byB6ZXJvIGFuZCBkb2Vzbid0DQo+ID4+IGFkZCBhIHJlZ2lzdGVyLXJlZ2lzdGVyIG1v
-dmUgKG9yIGNsdHEpIHRvIHplcm8vc2lnbiBleHRlbmQgdGhlIHZhbHVlLg0KPiA+Pg0KPiA+PiBO
-b3QgbWFzc2l2ZSBidXQgc2F2ZXMgdHdvIGluc3RydWN0aW9ucy4NCj4gPj4NCj4gPj4gU2lnbmVk
-LW9mZi1ieTogRGF2aWQgTGFpZ2h0IDxkYXZpZC5sYWlnaHRAYWN1bGFiLmNvbT4NCj4gPj4gLS0t
-DQo+ID4+IMKgIGtlcm5lbC9sb2NraW5nL29zcV9sb2NrLmMgfCA2ICsrLS0tLQ0KPiA+PiDCoCAx
-IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+Pg0KPiA+
-PiBkaWZmIC0tZ2l0IGEva2VybmVsL2xvY2tpbmcvb3NxX2xvY2suYyBiL2tlcm5lbC9sb2NraW5n
-L29zcV9sb2NrLmMNCj4gPj4gaW5kZXggMzViYjk5ZTk2Njk3Li4zN2E0ZmE4NzI5ODkgMTAwNjQ0
-DQo+ID4+IC0tLSBhL2tlcm5lbC9sb2NraW5nL29zcV9sb2NrLmMNCj4gPj4gKysrIGIva2VybmVs
-L2xvY2tpbmcvb3NxX2xvY2suYw0KPiA+PiBAQCAtMjksMTEgKzI5LDkgQEAgc3RhdGljIGlubGlu
-ZSBpbnQgZW5jb2RlX2NwdShpbnQgY3B1X25yKQ0KPiA+PiDCoMKgwqDCoMKgIHJldHVybiBjcHVf
-bnIgKyAxOw0KPiA+PiDCoCB9DQo+ID4+IMKgIC1zdGF0aWMgaW5saW5lIHN0cnVjdCBvcHRpbWlz
-dGljX3NwaW5fbm9kZSAqZGVjb2RlX2NwdShpbnQNCj4gPj4gZW5jb2RlZF9jcHVfdmFsKQ0KPiA+
-PiArc3RhdGljIGlubGluZSBzdHJ1Y3Qgb3B0aW1pc3RpY19zcGluX25vZGUgKmRlY29kZV9jcHUo
-dW5zaWduZWQgaW50DQo+ID4+IGVuY29kZWRfY3B1X3ZhbCkNCj4gPj4gwqAgew0KPiA+PiAtwqDC
-oMKgIGludCBjcHVfbnIgPSBlbmNvZGVkX2NwdV92YWwgLSAxOw0KPiA+PiAtDQo+ID4+IC3CoMKg
-wqAgcmV0dXJuIHBlcl9jcHVfcHRyKCZvc3Ffbm9kZSwgY3B1X25yKTsNCj4gPj4gK8KgwqDCoCBy
-ZXR1cm4gcGVyX2NwdV9wdHIoJm9zcV9ub2RlLCBlbmNvZGVkX2NwdV92YWwgLSAxKTsNCj4gPj4g
-wqAgfQ0KPiA+PiDCoCDCoCAvKg0KPiA+DQo+ID4gWW91IHJlYWxseSBsaWtlIG1pY3JvLW9wdGlt
-aXphdGlvbi4NCj4gPg0KPiA+IEFueXdheSwNCj4gPg0KPiA+IFJldmlld2VkLWJ5OiBXYWltYW4g
-TG9uZyA8bG9uZ21hbkByZWRoYXQuY29tPg0KPiA+DQo+IERhdmlkLA0KPiANCj4gQ291bGQgeW91
-IHJlc3BpbiB0aGUgc2VyaWVzIGJhc2VkIG9uIHRoZSBsYXRlc3QgdXBzdHJlYW0gY29kZT8NCg0K
-TG9va3MgbGlrZSBhIHdldCBiYW5rIGhvbGlkYXkgd2Vla2VuZC4uLi4uDQoNCglEYXZpZA0KDQot
-DQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwg
-TWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2Fs
-ZXMpDQo=
+On Fri, 03 May 2024 17:31:15 +0200,
+Richard Fitzgerald wrote:
+> 
+> On 03/05/2024 16:17, Takashi Iwai wrote:
+> > On Fri, 03 May 2024 16:49:20 +0200,
+> > Richard Fitzgerald wrote:
+> >> 
+> >> hda_cs_dsp_control_remove() must remove the ALSA control when
+> >> deleting all the infrastructure for handling the control.
+> >> 
+> >> Without this it is possible for ALSA controls to be left in
+> >> the Soundcard after the amp driver module has been unloaded.
+> >> So the get/set callbacks point to code that no longer exists.
+> >> 
+> >> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> >> Fixes: 3233b978af23 ("ALSA: hda: hda_cs_dsp_ctl: Add Library to support CS_DSP ALSA controls")
+> >> ---
+> >> Note: it would be better to use the control private_free to do the
+> >> cleanup, and that is my plan long-term. But that is a larger change
+> >> to the code.
+> >> 
+> >> I like to keep bugfix patches as simple as possible so they are
+> >> low-risk and easy to cherry-pick into older kernels. So this patch
+> >> fixes the bug. Sometime I will send a patch for future kernel
+> >> versions that reworks the cleanup to use private_free.
+> > 
+> > I also like to keep as simple as possible :)
+> > 
+> > One slight concern is whether cs_dsp kctls can be deleted at the
+> > snd_card removal (disconnect) before this function gets called.
+> > That is, snd_card_free() of the main card may delete all associated
+> > kctls, and may this function be called afterwards?
+> > If yes, this change would lead to a UAF.
+> > 
+> 
+> That's a good question. This is is safe for the cs35l56 driver because
+> if the soundcard (or HDA codec driver) is removed, the HDA codec will
+> destroy the component binding in its HDA_FIXUP_ACT_FREE. This will cause
+> an unbind() call to the amp driver, which will (indirectly) call this
+> function to remove all the controls. So they will have been removed
+> before the soundcard is cleaned up.
+> 
+> But it turns out that the cs35l41 driver doesn't clean up the cs_dsp
+> instance in its unbind() call so the controls _won't_ be cleaned up
+> and a double-free is possible. The firmware handling in the cs35l41
+> driver is strange and confusing so I'm not sure whether this is a bug
+> or something necessary.
 
+OK, then setting kctl->private_free additionally like below could work
+around it, I suppose.
+
+
+Takashi
+
+--- a/sound/pci/hda/hda_cs_dsp_ctl.c
++++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+@@ -97,6 +97,14 @@ static unsigned int wmfw_convert_flags(unsigned int in)
+ 	return out;
+ }
+ 
++static void hda_cs_dsp_coeff_free(struct snd_kcontrol *kctl)
++{
++	struct hda_cs_dsp_coeff_ctl *ctl = snd_kcontrol_chip(kctl);
++	
++	if (ctl)
++		ctl->kctl = NULL;
++}
++
+ static void hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl, const char *name)
+ {
+ 	struct cs_dsp_coeff_ctl *cs_ctl = ctl->cs_ctl;
+@@ -130,6 +138,7 @@ static void hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl, const char
+ 	}
+ 
+ 	dev_dbg(cs_ctl->dsp->dev, "Added KControl: %s\n", kcontrol.name);
++	kctl->private_free = hda_cs_dsp_coeff_free;
+ 	ctl->kctl = kctl;
+ }
+ 
 
