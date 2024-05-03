@@ -1,147 +1,102 @@
-Return-Path: <linux-kernel+bounces-168155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4F238BB463
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:55:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 637988BB465
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:57:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0220A1C21FA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:55:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96BF4B22F80
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33119158D6B;
-	Fri,  3 May 2024 19:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54E9158D6B;
+	Fri,  3 May 2024 19:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PDfg3uv+"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdBrOvgB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB542339A1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB51D134B1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714766105; cv=none; b=KK0Pj2jUzP0T4dw+6GRglxoUU6O4OxrVCmSOcChVU5w+yqOxkhDuDIrC2+HQV819t3C5GXjqBeEjdFSRpmJgGLX71lPr9J/7mf2K8L8dwWS770qngEdqbuEk5E1z3nOHwiw+EZbL92Gk99xhDeFwh2NasWdfe8rkrQsseM1VQto=
+	t=1714766221; cv=none; b=JqUi6syx6xwUGYlQgr0zrohXmDJTuW9M7cyTp3BeF8AZ/Tod2zl67jJQL85d8CpFz4LHjjh0dwVpkcQm33mMaGm/x/7ZRV+a//Fmhueq88PYQEY8RhliwEiY8JlC+2zVmmCrFrwumroEE3yH1rumGbiv60P/MKmBG2MkXbtbHss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714766105; c=relaxed/simple;
-	bh=H+O3hAtZlwC5F0x+rCtibViAkb8br0MyxnKFwP8yITs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gPSUbROLReLivZ9SD+c6S+QD5tzkatReNTlcAzIWdEXMrGaWT8S6M1x+Io6+B+fqFy7pMaur685Focrf7Pg5gIBYugxVdYpOMrNTA8X+WlFlpVy/OmYVK8aAjIi/Hk9gsgvd8keaCfAkBduKlc0P1K310WjXu9B6iOZLinckWZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PDfg3uv+; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7d9c78d7f97so276939f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1714766102; x=1715370902; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vVDV1OeG9hQ/qmATCNcC1pLFdhB98ACZJusaLHASqpk=;
-        b=PDfg3uv+K1U261iLrHrxJoV1+BleoujsesJ+cSZarmag8aMArfecMRpz9t0Ssh9DMa
-         4ujVDlixbpB21PYUk+a4pGebCe6t6mGFxuUxB6SUwELkENLxVdCHmHxlbK3cchiftomh
-         t6dJLfADDYfSHkMOrK50igdhEDQeXMCbmW3f4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714766102; x=1715370902;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vVDV1OeG9hQ/qmATCNcC1pLFdhB98ACZJusaLHASqpk=;
-        b=TcPcT6q9pJh02VfHu60lw6sZZxY7CY317Y+O6XQa9z0El2cawSrUmFy8VFUht32HPO
-         3NdMeP/xXOScud0MCWzRqMTclbf+ainkPp/AZkaBRufKYoJVQM2X5jMK0WnqYiObtHeH
-         cMx00mVES0LnrnfqbWUZq07gETuqlsbXJFvCiVzCKzNVXmkeOvBE5sCcS7hK3YgjMPEO
-         wIVAATdmN2UEP406+A0e2AmRDnqp8Zgt/TisAsylD3G1y6OLbUZ1RDS4SAgqR1HYKX/J
-         V00AO3E/spUiaicI5NJQOFLIUFvqkX0AFpLFROGeSiMCz92ik6RPn5nst5GntJuvrUVb
-         +U5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUv30UJRyCJTcO2WHlQti6/qk3pMDhHjMcR6eiF1Wx8a1giAFhOkeHsciQMWwbHRzbbxnQXI9FPD8mfKSoa/zSvamjMDkW8htJOaBF6
-X-Gm-Message-State: AOJu0YwqvwIraCFTguVGTnrkuVHGkAgoqlwRac7z1tZ8AhIn5vQ8S8fF
-	qRvCgN3P0BZUxbWk3hnAGYjaDK1Od7mycIK+Fm+w0mUDQe6bRV6o92xzbyzQ7uA=
-X-Google-Smtp-Source: AGHT+IEDvSK7zLWibDn57CFEVCFTU9+3wameuwSnNxEOPxolDZ6i9b9QnwmRipUUufkKlsJMbAAXSQ==
-X-Received: by 2002:a05:6e02:219c:b0:36b:15e0:de18 with SMTP id j28-20020a056e02219c00b0036b15e0de18mr4223000ila.0.1714766102018;
-        Fri, 03 May 2024 12:55:02 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id w8-20020a056e021a6800b0036c0d4b720asm820586ilv.74.2024.05.03.12.55.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 12:55:01 -0700 (PDT)
-Message-ID: <3beb08a6-0be7-4305-9ac5-2ccc9e6d02c5@linuxfoundation.org>
-Date: Fri, 3 May 2024 13:55:00 -0600
+	s=arc-20240116; t=1714766221; c=relaxed/simple;
+	bh=knb1DEkpKuqFaWNSw8KT86PDMZ9bNb4DcRO+iDpfW84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fHP6YEXzjTs1F3GyVTVd+1g+L+FCsGvsLcQoVoNXGV2AtspTnVeP7XcYVp/a8/1yTHhKWcOszfXdWTIHdx30HhTFS24kunLJwA+E6SuHSvYYhNSunLd7MvoIfmN6ldKQ2fXd9ASqPgf++Y7ptCOeieCiku72o3qG5+RV3xxmWww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZdBrOvgB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FB5C116B1;
+	Fri,  3 May 2024 19:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714766220;
+	bh=knb1DEkpKuqFaWNSw8KT86PDMZ9bNb4DcRO+iDpfW84=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZdBrOvgByA8AcQ3Urzlz/wRFh1/Q0UliYFNV9eywCgS2OMZAnmQ2JbQeJa9JaSrEL
+	 QBJWlHR8UOPR1P6JctyYIjog1A3zzpsGuUqMNzVYuENs7bETpNJAptXo1fQvIPqXGx
+	 JgAOuRx9bi+V94X+B5ixwruvQAJBPXwFzZ97VqTbJaIZJymzoQqrkeCOYGNe9Xs1wV
+	 O50ZVL7wm8JpUNHirr88nlDgpfjvS3hrwuWznTSp8b5ACDwHpFb8VDo2+bleTFvUbG
+	 I9d+iBmJJrWM1tW3Z6qD/yy982Hf+GLV3lxg5UnPBVIdtou3IxeWvb1A0HNXI8dYQb
+	 gA6gtgUccipzg==
+Date: Fri, 3 May 2024 12:56:53 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Paul McKenney <paulmckrcu@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4 3/5] x86/syscall: Mark exit[_group] syscall handlers
+ __noreturn
+Message-ID: <20240503195653.5wkdfwno7nybepqc@treble>
+References: <cover.1713559768.git.jpoimboe@kernel.org>
+ <3b99cb2919c88ab3d353337423b2f0f1b9173f0a.1713559768.git.jpoimboe@kernel.org>
+ <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
+ <20240421052540.w7gtahoko2qerhqq@treble>
+ <CAJzB8QF_+51+rrJmq3iXkaAbmbbyKYVf0m_LpQCRSLS_FgHUMQ@mail.gmail.com>
+ <CAJzB8QFx344hSSYy4jigtmQX+KfSpFOn+18WAfZAeym5LUMoKg@mail.gmail.com>
+ <CAJzB8QFxfCCYTMfEYidB+PYvDV5J2zbdsnpyQR-gS-D-0y2gEA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests: default to host arch for LLVM builds
-To: Valentin Obst <kernel@valentinobst.de>, jhubbard@nvidia.com
-Cc: anders.roxell@linaro.org, bpoirier@nvidia.com, broonie@kernel.org,
- guillaume.tucker@collabora.com, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, mpdesouza@suse.com, nathan@kernel.org,
- sashal@kernel.org, shuah@kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <6d398f1d-6882-40fb-8ced-7fe6bee2aee7@nvidia.com>
- <20240428120806.19275-1-kernel@valentinobst.de>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240428120806.19275-1-kernel@valentinobst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJzB8QFxfCCYTMfEYidB+PYvDV5J2zbdsnpyQR-gS-D-0y2gEA@mail.gmail.com>
 
-On 4/28/24 06:08, Valentin Obst wrote:
->>> Align the behavior for gcc and clang builds by interpreting unset
->>> `ARCH` and `CROSS_COMPILE` variables in `LLVM` builds as a sign that the
->>> user wants to build for the host architecture.
->>>
->>> This patch preserves the properties that setting the `ARCH` variable to an
->>> unknown value will trigger an error that complains about insufficient
->>> information, and that a set `CROSS_COMPILE` variable will override the
->>> target triple that is determined based on presence/absence of `ARCH`.
->>>
->>> When compiling with clang, i.e., `LLVM` is set, an unset `ARCH` variable in
->>> combination with an unset `CROSS_COMPILE` variable, i.e., compiling for
->>> the host architecture, leads to compilation failures since `lib.mk` can
->>> not determine the clang target triple. In this case, the following error
->>> message is displayed for each subsystem that does not set `ARCH` in its
->>> own Makefile before including `lib.mk` (lines wrapped at 75 chrs):
->>>
->>>     make[1]: Entering directory '/mnt/build/linux/tools/testing/selftests/
->>>      sysctl'
->>>     ../lib.mk:33: *** Specify CROSS_COMPILE or add '--target=' option to
->>>      lib.mk.  Stop.
->>>     make[1]: Leaving directory '/mnt/build/linux/tools/testing/selftests/
->>>      sysctl'
->>
->> Thanks for fixing this.
->>
->> And yes, the selftests "normal" (non-cross-compile) build is *broken*
->> right now, for clang. I didn't realize from the patch title that this is
->> actually a significant fix. Maybe we should change the subject line (patch
->> title) to something like:
->>
->>      [PATCH] selftests: fix the clang build: default to host arch for LLVM builds
+On Thu, May 02, 2024 at 04:48:13PM -0700, Paul McKenney wrote:
+> On Sun, Apr 21, 2024 at 2:47 PM Paul McKenney <paulmckrcu@gmail.com> wrote:
+> >
+> > And this definitely helped, thank you!
+> >
+> > However, this one still remains:
+> >
+> > vmlinux.o: warning: objtool: ia32_sys_call+0x29b6:
+> > __ia32_sys_exit_group() is missing a __noreturn annotation
 > 
-> Yes, I agree that the title should contain the word 'fix' somewhere. For
-> me its okay if maintainers reword the title when applying the patch,
-> alternatively I can send a v2. (Is it still a v2 if I change the title, or
-> rather a new patch?).
+> And looking at the patched code, this function looks to me to be
+> correctly marked.
 > 
-> Any thoughts on whether this also needs a 'Cc stable'? Its not quite
-> clear to me if this fix meets the requirements. As above, no objections if
-> maintainers should decide to add it.
-> 
->>
->> ?
->>
->> Just a thought. The "Fixes:" tag covers it already, I realize.
->>
->> Anyway, this looks correct, and fixes that aspect of the build for me, so
->> either way, please feel free to add:
->>
->> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> 
+> No idea...  :-/
 
-Thanks for the patch. Applied to linux-kselftest next for Linux 6.10-rc1
+Ah, I think I missed fixing syscall_32.tbl.  Lemme see how to do that...
 
-thanks,
--- Shuah
-
+-- 
+Josh
 
