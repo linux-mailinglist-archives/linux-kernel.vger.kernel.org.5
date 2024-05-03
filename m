@@ -1,227 +1,101 @@
-Return-Path: <linux-kernel+bounces-167155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A788BA506
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:42:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02998BA4FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 781A91C22244
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:42:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D92B2B2367E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C681BF2B;
-	Fri,  3 May 2024 01:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527DCF510;
+	Fri,  3 May 2024 01:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mjPDc+N4"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2079.outbound.protection.outlook.com [40.107.212.79])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jQrYFdbw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0338101F2;
-	Fri,  3 May 2024 01:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714700490; cv=fail; b=K/zNPOWqTf1Y4MEh/dWsBZSEka0823/Qhbe/VJUGeUL+IJSr+v8Mjq5BWnh1uIpKKGn339IU2y+PJ0rtbfku2C1trr2/AOq3tuSxhdKHeCyb3IS3MBzoaiQJ8X0mvM6SMAwA8cKELHlU7aBY9s4Rm4l55vXhA4X9T3ihuoIelPA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714700490; c=relaxed/simple;
-	bh=4l3xkcD1caPDxCyWRL3tPe5FK9CqLpweGdbyFIOYZuU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZsjwDzQp/7jCzF0EXj1sHrL2KuTI1LYTVzZEXbVPjlios3omvaCzTuvBhWBYm780OKKBU0w5q6NmMN3bB8XToAYQcih/L5P9n2Xu6gzeN/IOwAAo01TvHjryXJ7YUUHXFz7MMpa9392i1kUh22VcSy14EEU1My0yNdaDr1OtTgc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mjPDc+N4; arc=fail smtp.client-ip=40.107.212.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bv1CFWy1khJNXWAOuobGvTCgUpY03KdyQefJ6RDESj8x1yTSstqz12ho466PRAscTlDj17Qpe6zZXuDXD/jwpk+WYSMqT9SHLJLKGmvEqc7Pgyr1pY+jaW8eRhwG6brUPTP0WKkoeCFh/Hnv6D50mGb1blw0puXkLD76SfqbUelTH8c+zEDSRO4ODlz5Hn9jDDiaWs4NhxgkTXINcy0/Khw8nh4kjBhqpwfQUMR7wiNAHv1JswIDjgPJiSrfY57rmRlwG+y4Syn49yuUtccEZzlxHVZ9rIqxJdYoZm+th9XvCEH/KNSsq52e49QVlwrkiOz2Yj8zIu7F/SyiJHxCpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kbiOKEBQoR2Hat3wTb0V4CqW2uDZVItbne0hOqpr4HQ=;
- b=J/K3EpzBsWU9vQYSeXAMVkLMo94DRIl7hOdb8L+MIYifspDN1M4fkaAH0MMewJlWxuo0Pc2A5CGXoFGpWBMWLsdrd62LGghACThvWopye3aAh6gBfGeS3Yd1y3ykdWZBj3aDEZYJvnbKE9HgR0K7xywoYk/zwPuDRsh9djTj2Xk+IqrgE+nBNN/WPCeYzfqSnBByBSa+zpXCzNdt0mIqsnTqdz8HX6xbF3Gc9XTYypsJzfPbRzPf+/H3ZW+WWmY5tlI2VqdXccINGPDI2LuecD25+istBJhpngjs9OZMlvKncc76GLtBytLp/vtxA7DE4MXZ7Ww9K6kZRRsLpVF0WQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kbiOKEBQoR2Hat3wTb0V4CqW2uDZVItbne0hOqpr4HQ=;
- b=mjPDc+N4LuwtxLVXOkhemdGXv6iRYnacMeChLT789KXil3CUwcij8nuQM7KDTjiCyIYbJvQNHd4HnUYW3RFWJOyt4sQpq4GROdBOn5XXZQy288T5O3RPfcR9nfrxOys3kZfeVfTmF3KUQU5EYjWiIw1Cd6ElIMNj7s+ci69BLi5D+coD087AoVozE/yD8rSbsLZLL2Nn5lvT2Y23Ul0QD6OIPFViET/xJos6B7gAKMMXuSyNd/QF3/KjbRkXh8gtbOTJ0NfboesiD4wAzs9N3faTPnPDeiUKOCKc3hZuj2ktIWhG0LctAPzkeKUEADj9o9ahTFppjKvZFTGqga9zCw==
-Received: from BY3PR04CA0002.namprd04.prod.outlook.com (2603:10b6:a03:217::7)
- by PH7PR12MB9201.namprd12.prod.outlook.com (2603:10b6:510:2e8::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30; Fri, 3 May
- 2024 01:41:25 +0000
-Received: from CO1PEPF000066EB.namprd05.prod.outlook.com
- (2603:10b6:a03:217:cafe::ab) by BY3PR04CA0002.outlook.office365.com
- (2603:10b6:a03:217::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30 via Frontend
- Transport; Fri, 3 May 2024 01:41:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CO1PEPF000066EB.mail.protection.outlook.com (10.167.249.7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7544.18 via Frontend Transport; Fri, 3 May 2024 01:41:25 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 2 May 2024
- 18:41:07 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 2 May 2024
- 18:41:06 -0700
-Received: from jjang.nvidia.com (10.127.8.12) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Thu, 2 May
- 2024 18:41:06 -0700
-From: Joseph Jang <jjang@nvidia.com>
-To: <shuah@kernel.org>, <alexandre.belloni@bootlin.com>, <avagin@google.com>,
-	<jjang@nvidia.com>, <amir73il@gmail.com>, <brauner@kernel.org>,
-	<mochs@nvidia.com>, <linux-kernel@vger.kernel.org>,
-	<linux-rtc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-CC: <sdonthineni@nvidia.com>, <treding@nvidia.com>,
-	<linux-tegra@vger.kernel.org>
-Subject: [PATCH 1/1] selftest: rtc: Add support rtc alarm content check
-Date: Thu, 2 May 2024 18:41:02 -0700
-Message-ID: <20240503014102.3568130-2-jjang@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240503014102.3568130-1-jjang@nvidia.com>
-References: <20240503014102.3568130-1-jjang@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B816E541
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 01:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714700467; cv=none; b=DtdgnA9s0/b/D8Vxc+8lZXqG9fTSEtH2NTiTIMW4YeNrTANR2i3nCQLtu2KB1QxTM/xj8khwDUDc3UFbV86A22Agy51fbRqnwOS+18YEACq0+ScTfH6EwnLepG7PMmfzACRQX1RaQx6vVuPBcbsCliFx/XHC7NCgWOllq3MXpgY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714700467; c=relaxed/simple;
+	bh=IGq7YAK1DyJEdi0gyI8AFsujwGjRxsNggeBJbUDhPHo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KaQYhHADpzPkV1mkgM7j5o3vOKdDye+CRRR0uItxgOnK2Y7XAsTXAjJTv19L6ib1B4qeNPOQvq9quIkWSQjaIQ+BbcOF8MCyWtVGcKwiP80o4TMhzIIP7gB3WDtj4VfS010yaUM3JK0g23cxA4VRnBdzXVFN7Nr6vrL0qM4AWqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jQrYFdbw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF0C4C113CC;
+	Fri,  3 May 2024 01:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714700467;
+	bh=IGq7YAK1DyJEdi0gyI8AFsujwGjRxsNggeBJbUDhPHo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jQrYFdbwGtgM+zHoTX5rdYIXT0pM8vKbi94UG08dXoxSqtMQPO8UUwVCpPVqzJf3Q
+	 f7z5tKjIQs30PyDXbpVZlrsky70GHoqo15ai+Eput/SV43Rpd0JzXB3ssRJKT2gqvO
+	 ZH8a3S6ADD7Vjwg+8LDtbxXzmdVgnFEmZCNvFACNBvUb1DTdCXznGZ+/idu0QrgPlV
+	 Ci8YOrQAmtrSh32FfzUc5y1Ot5fMpPCUrqi8a2STDNCjABxch8tDm2qwaa3hP945/y
+	 N96C3wVmYeXC6ulI5qaTDzrPl0cLHxtVgpH6gEFVuVY9fTbAJW5gAJmRQLnTea7eeT
+	 fXhZtcjDlLIBw==
+Date: Fri, 3 May 2024 10:41:04 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Alina Yu <alina_yu@richtek.com>
+Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+	johnny_lai@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH v2 2/4] regulator: rtq2208: Fix LDO to be compatible with
+ both fixed and adjustable vout
+Message-ID: <ZjRAsJHn57pZy5UH@finisterre.sirena.org.uk>
+References: <cover.1714467553.git.alina_yu@richtek.com>
+ <ffeecd61c194df1f7f049bd50cb2bbbad3cf1025.1714467553.git.alina_yu@richtek.com>
+ <ZjGmmYWHu-ZQQdIh@finisterre.sirena.org.uk>
+ <20240502073029.GA4055@linuxcarl2.richtek.com>
+ <20240502092614.GA31518@linuxcarl2.richtek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000066EB:EE_|PH7PR12MB9201:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0a14529-bbc5-475e-2d7e-08dc6b1224f7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|36860700004|921011;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?02OfKI3AV/0Nki5pAaOjnofonDZ+4+8lfXWqjm8Erf9yv9UjiJnutVS7LIJX?=
- =?us-ascii?Q?1J14KbugMfIENbcWTM9R/9QuEK0v8PoKZh8TZbX6SP0uclxZd4jhV1tXndcQ?=
- =?us-ascii?Q?En+VZWiG7He7cqCo7Xha7CNYxy6jk3L8mQ8PcTKZcyynlSJjSCNWI8BrdXuI?=
- =?us-ascii?Q?6uX0nTzJmyKTKGTkPlCq9gsi7yCpbKvB1veCSpVacrYlhT0e2OdBx2A/nQ0f?=
- =?us-ascii?Q?kZS27s0zDTqMsCRNKRTwp6O5OU6eRrQgNP7kHKArGzgl0L8cKuPJ5RradZCE?=
- =?us-ascii?Q?X1rqb8w4bNyABOWTjzuPXQjfxBz5ECUFUB1v+PMZhIc+cP3OlIGwulNhGAtW?=
- =?us-ascii?Q?Dt1A2eWBl0WP7hCWsQ1XBViTr30hBHeMpt/aWYKMi8czskbnUM1cn0qinhKn?=
- =?us-ascii?Q?Tyh+q/IHK2Euzj7L8uPhBh3U46UP1fSGO1H0dXsMBcYe7eOlFZ4yXej/s6qz?=
- =?us-ascii?Q?frdqwHnA4xz5yGXQO8EJKRn3S5FNCkevJ79d47Hd3uRzldfje2cVH3U2poXT?=
- =?us-ascii?Q?WKx80hIk7zteFM+aFbo/iumV62uESbuv96WJd+vAorMFN5ZZvw5lS2Z/eag4?=
- =?us-ascii?Q?5ZBDIv/zz9G2mqFQO0Fx7CVhM3u5ZBTzqbQADfFJJTO2JvPIpk2b10taIvUw?=
- =?us-ascii?Q?CCBdIniqbBJTkiXyrirAHEnlRvcDH+krJBXFZyqSOZMxGlS8LXJYF9sriDWQ?=
- =?us-ascii?Q?AMfxJaSFgifkTaMVh7m27nWdln6io2WNJWkzsnjrQvBgpbgdwShPqwBFn3N6?=
- =?us-ascii?Q?iPcE9m+xVKUGYs9O/KQRLH7T5ow9BBFNOKPWHA39UaxPFc0cAZOtxDT2DRBD?=
- =?us-ascii?Q?q8jQdgdrXKvH3XY/b5BZgy1YozvdmRS10M/7tKHG1GJDeFG+2jer0+/iajNM?=
- =?us-ascii?Q?KwoL8uPHFer9ialjcscrZtD8Yk9sKL/kq1wfOH5jUebAx5D2k5lON3JKhGOf?=
- =?us-ascii?Q?E5sV3n9SYA5xWVS3+DrT+M472BBjKLN7k2mE7D0XFQ2x3+HP98V+4mToUF0Q?=
- =?us-ascii?Q?26Qz6j5S4rXxvP28DDG6dnGU68622FSBe/U7mWyGMgDLFQuItT9OYFCB2h/h?=
- =?us-ascii?Q?/gMc+epwBzijNCdm7SC8g2p0o6AmyIfvQCJYCTxHIjSHMTjuuguA1ae07b83?=
- =?us-ascii?Q?9sd3WeWXW/Ll7u0GhkUkBYAncwSxV4OtGPYuBlTh2/YrUmpqoxw8JsVtyM8R?=
- =?us-ascii?Q?e3X2W6GqIR+hrl9HjmXbWpNJvcyPzJ0MpNCHWTABMVMrfIEnMgEae1MOFscg?=
- =?us-ascii?Q?uwRGWPM4/dKvUb9m6h3wNhuiTcuFEcqbQ4GZhYWJSTQqClTHoVetWhykyZel?=
- =?us-ascii?Q?pmt3LO5E3MSyAVjDYhuNwLF+WWlE4HalRH4PAbAS1kKFvVvgrL3nBjtjr5a6?=
- =?us-ascii?Q?Hp1sYfEQ0JeRaZpzkUmiYraf8NkY?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(921011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 01:41:25.1342
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0a14529-bbc5-475e-2d7e-08dc6b1224f7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000066EB.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9201
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="v3Pbxy3XR/i3izJR"
+Content-Disposition: inline
+In-Reply-To: <20240502092614.GA31518@linuxcarl2.richtek.com>
+X-Cookie: lisp, v.:
 
-Some platforms do not support WAKEUP service by default, we use a shell
-script to check the absence of alarm content in /proc/driver/rtc.
 
-The script will validate /proc/driver/rtc when it is not empty and then
-check if could find alarm content in it according to the rtc wakealarm
-is supported or not.
+--v3Pbxy3XR/i3izJR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Requires commit 101ca8d05913b ("rtc: efi: Enable SET/GET WAKEUP services
-as optional")
+On Thu, May 02, 2024 at 05:26:14PM +0800, Alina Yu wrote:
 
-Reviewed-by: Matthew R. Ochs <mochs@nvidia.com>
-Signed-off-by: Joseph Jang <jjang@nvidia.com>
----
- tools/testing/selftests/Makefile              |  1 +
- tools/testing/selftests/rtc/property/Makefile |  5 ++++
- .../selftests/rtc/property/rtc-alarm-test.sh  | 27 +++++++++++++++++++
- 3 files changed, 33 insertions(+)
- create mode 100644 tools/testing/selftests/rtc/property/Makefile
- create mode 100755 tools/testing/selftests/rtc/property/rtc-alarm-test.sh
+> For the fixed LDO Vout, it will be set to either 0.9V or 1.2V, which are outside the range of 1.8V to 3.3V.
+> The determination of whether it is fixed or adjustable lies solely with the user.
+> This modification aims to ensure compatibility with the user's application.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index e1504833654d..f5d43e2132e8 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -80,6 +80,7 @@ TARGETS += riscv
- TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
-+TARGETS += rtc/property
- TARGETS += rust
- TARGETS += seccomp
- TARGETS += sgx
-diff --git a/tools/testing/selftests/rtc/property/Makefile b/tools/testing/selftests/rtc/property/Makefile
-new file mode 100644
-index 000000000000..c6f7aa4f0e29
---- /dev/null
-+++ b/tools/testing/selftests/rtc/property/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+TEST_PROGS := rtc-alarm-test.sh
-+
-+include ../../lib.mk
-+
-diff --git a/tools/testing/selftests/rtc/property/rtc-alarm-test.sh b/tools/testing/selftests/rtc/property/rtc-alarm-test.sh
-new file mode 100755
-index 000000000000..3bee1dd5fbd0
---- /dev/null
-+++ b/tools/testing/selftests/rtc/property/rtc-alarm-test.sh
-@@ -0,0 +1,27 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+if [ ! -f /proc/driver/rtc ]; then
-+	echo "SKIP: the /proc/driver/rtc is empty."
-+	exit 4
-+fi
-+
-+# Check if could find alarm content in /proc/driver/rtc according to
-+# the rtc wakealarm is supported or not.
-+if [ -n "$(ls /sys/class/rtc/rtc* | grep -i wakealarm)" ]; then
-+	if [ -n "$(grep -i alarm /proc/driver/rtc)" ]; then
-+		exit 0
-+	else
-+		echo "ERROR: The alarm content is not found."
-+		cat /proc/driver/rtc
-+		exit 1
-+	fi
-+else
-+	if [ -n "$(grep -i alarm /proc/driver/rtc)" ]; then
-+		echo "ERROR: The alarm content is found."
-+		cat /proc/driver/rtc
-+		exit 1
-+	else
-+		exit 0
-+	fi
-+fi
--- 
-2.34.1
+That's a substantail reconfiguration of the regulator, it would be
+better to have an explicit property for these non-standard fixed
+voltages rather than trying to do this using constraints, or at the very
+least have validation that the values being set are supported by the
+hardware.  The code should also be very clear about what is going on.
 
+--v3Pbxy3XR/i3izJR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmY0QK8ACgkQJNaLcl1U
+h9AG+ggAgPDHwSBgOVlPGTgUQMeT5eYCmBzi9FIfmdiPaU88tF2UzX5hGzI0RuvB
+ntbNtCdIrgaF9Z8n4V+xIYoUhBK53+8+rNXR9YtAjJvK8DPhKLfH0dyEYzUl+Akt
+i38SGrUUfHcS6ZCWFCeK7Gvm3eE5yEIkhkG+rwhivnWiJOpx1HgUGO8Rz1gZbeyc
+0/W6upAeHiSJkwwTYeWS2OBcS1aE/JV/+4BsW+gEmY49QZ83BeV2+00q9M/JInr5
+mugnyUEc9aMaaTOkLZu8F3jzx4ys9nj3i+B7O/aXDDqjOqFFgxOC2t2Bg0bd6AKE
+0/J8trkNef+nN15GAWLn0MQGepvTUA==
+=E/Hq
+-----END PGP SIGNATURE-----
+
+--v3Pbxy3XR/i3izJR--
 
