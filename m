@@ -1,113 +1,80 @@
-Return-Path: <linux-kernel+bounces-167782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25DCA8BAF1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A25158BAF29
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:42:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 436D0B21577
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:40:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7608B20FC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA3541A80;
-	Fri,  3 May 2024 14:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LI/G1r9+"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFEC641A80;
+	Fri,  3 May 2024 14:42:25 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ABE957CB7;
-	Fri,  3 May 2024 14:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 396F679E5
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714747218; cv=none; b=ZyREa1eW3XqPnRRNeaY3OYSqbYB+FLRdeXEIdHvRzc9Yg2hrHxNlxQL97WgoihT78aEEnnR8nNIdWp3xBvunYXJHmIuZDiv0OSg+SsmrG/RcU6uVZLjyixgvZVmHWQYqoUX5n7l+qFIfQefTb9A7zSjIyQ81ldxMMPuqrYM8Jmc=
+	t=1714747345; cv=none; b=YG0GGk9CRu6WliHXE1tUC/1KEPWwS4uzGYSRo0lI+XJgQTopsw/+/8B7chMu/r/d5niH5wggz2PYgyxT6L6z5/RLvCCkzzsZ4wz88i8aJ9y7GR/C+dgvAsU1wJQG1NfKJ1XKTJAysyG4LEozDkU83cUJwWlVnL1BXMKosW+4rxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714747218; c=relaxed/simple;
-	bh=7BtnR9RIBEkfdbceTTLR0pLPolLNCRzRcmlTMaHVZ24=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uN6/r+zs8WqjquOm5ApiQ57ugQvkBKpX8NNwDlnW+aGociqo0WFyCZDMCd03UaFqedoYElPW/l6uNDyd3RfsBk1/AB9BFrXBf/SuEY8MfJhlVCi42fvB7vX3HrhgyA0ofWoTiuo+EzQ7lFZLGIhWbsqHaHSPQxiM0/PNwSp/I64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LI/G1r9+; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D60A1C0005;
-	Fri,  3 May 2024 14:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714747208;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tf6rG3rOuawc5yY8Jvkp/nAZaJ9cong6+YwM20vUweQ=;
-	b=LI/G1r9+F5hHmudrVZgl+FhWe1cx3c4zASY1twGIyWwNBd0bKtOgrb64vqpw+L/vbBWTkZ
-	WTFzxF+zCHvvzjW6FVSIvLh9AnMfTwU677Fox74DwaahvBPH78XbQAFp/syUaLC9rf8Y0m
-	Y/ueil+R5O5WGty2ArXqfbquZLIZ1Q7NuLOsw2pj4FdOgpaBsTr1jr0jk8XcRzFGujTPSF
-	EMzN3ivFepb212GPm9OGEFMxZoL17qfYrSfRaNnTuHxKnn8xDLHHtea0mAk4CX7+6nijDW
-	GLQNWXELwoYlRw+MewekajkgP41hBz+B/UbHP9GVY/U5xLgwUVvf4Kt76Ts2JQ==
-Date: Fri, 3 May 2024 16:40:03 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Saravana
- Kannan <saravanak@google.com>, Bjorn Helgaas <bhelgaas@google.com>, Philipp
- Zabel <p.zabel@pengutronix.de>, Lars Povlsen <lars.povlsen@microchip.com>,
- Steen Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon
- <daniel.machon@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Allan
- Nielsen <allan.nielsen@microchip.com>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 15/17] pci: of_property: Add the interrupt-controller
- property in PCI device nodes
-Message-ID: <20240503164003.36e7f182@bootlin.com>
-In-Reply-To: <20240501173826.GA808463@bhelgaas>
-References: <20240430083730.134918-16-herve.codina@bootlin.com>
-	<20240501173826.GA808463@bhelgaas>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714747345; c=relaxed/simple;
+	bh=mDc7l4BQOtQuW0woQaACXN7GwQ/3uPIg/A4ox0GMq4k=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jMHYeQLjb03hc3czQJ4PDLkLBd3WOcGZjQhbebThHQSuEfbYPz9MbGaAIW7hceoZYtXV37P5xqZn3fL2onUEKj7tkh0RddfS14yd2bryK0SynIUhwPK0TKzCU9Sfherny6WxBLFaogTwlLNYj90RCP0D5EtQqoTFz0UbfEtd9AU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 3 May
+ 2024 17:41:05 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 3 May 2024
+ 17:41:05 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: <syzbot+97b4444a5bd7bf30b3a8@syzkaller.appspotmail.com>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	<syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in skcipher_walk_virt
+Date: Fri, 3 May 2024 07:40:55 -0700
+Message-ID: <20240503144055.3820-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <000000000000dcd2ae06178bccb0@google.com>
+References:
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-Hi Bjorn,
+req->base.flags were not initialized, zero might suit in this case.
+Do it with skcipher_request_set_callback() as it's common practice.
 
-On Wed, 1 May 2024 12:38:26 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-> In subject: s/pci:/PCI:/ to match history. s/Add the/Add/ for brevity.
+---
+ fs/bcachefs/checksum.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Will be done in the next iteration.
-
-> 
-> On Tue, Apr 30, 2024 at 10:37:24AM +0200, Herve Codina wrote:
-> > PCI devices and bridges DT nodes created during the PCI scan are created
-> > with the interrupt-map property set to handle interrupts.
-> > 
-> > In order to set this interrupt-map property at a specific level, a
-> > phandle to the parent interrupt controller is needed.
-> > On systems that are not fully described by a device-tree, the parent
-> > interrupt controller may be unavailable (i.e. not described by the
-> > device-tree).  
-> 
-> Rewrap into one paragraph or add blank line to separate paragraphs.
-
-Will be rewrapped in one paragraph in the next iteration.
-
-Thanks for your review.
-Best regards,
-Hervé
+diff --git a/fs/bcachefs/checksum.c b/fs/bcachefs/checksum.c
+index 7ed779b411f6..088fd2e7bdf1 100644
+--- a/fs/bcachefs/checksum.c
++++ b/fs/bcachefs/checksum.c
+@@ -102,6 +102,7 @@ static inline int do_encrypt_sg(struct crypto_sync_skcipher *tfm,
+ 	int ret;
+ 
+ 	skcipher_request_set_sync_tfm(req, tfm);
++	skcipher_request_set_callback(req, 0, NULL, NULL);
+ 	skcipher_request_set_crypt(req, sg, sg, len, nonce.d);
+ 
+ 	ret = crypto_skcipher_encrypt(req);
 
