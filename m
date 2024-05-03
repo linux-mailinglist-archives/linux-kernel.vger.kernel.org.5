@@ -1,139 +1,89 @@
-Return-Path: <linux-kernel+bounces-168192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E82948BB4EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:34:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F3958BB4EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 175E61C231EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:34:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F2BCB2549E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B936B65194;
-	Fri,  3 May 2024 20:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C1538DD8;
+	Fri,  3 May 2024 20:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MjJP8naR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aRizKplO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D3D250F8
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 20:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F9F18EB0;
+	Fri,  3 May 2024 20:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714768425; cv=none; b=stlJs37wUJjIfQuhRhtB00QLCQoXwV8d4hBOVQeMbIPeiizYxD3+5kSybZ9HAD4YyuAbNZBJhPQXbmxTIsONXComN1vOaPyoTopCljix4jZp4AJcZS+rYUm63ZA48D68EbBLxJM1FkueiFNEZoejl9fLSMQkP/GW8DybVvPBuRM=
+	t=1714768460; cv=none; b=rwS+Jedr14iljmT3JlaWa7p34uEJhsjpXsd4C3br4A9RSpecfPkvVv2D8K3beJLJdwVXE6vMcff//KYRGVSw6MiXrZdwUyJGsaD/jz0X8ePi3jzcJe3sI8faSeyfZGqy0uuZ9OgENiOVHU5dr9Bv6QdJcOjc3q/0xYETLoEUnMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714768425; c=relaxed/simple;
-	bh=qTA6gl03vEuZNwR+0yktOI8EhYVtmjYM4Gw1yRj+4sA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aJYqIgPFb08NZ0DP3GGK31Q+OyTdUOs7VmaMZwzIc4NDF1QIRGg+pQFMTSLwU8yrX4zLnRUDlMWqjEqhdquT0h/BNg/+c//Orh+j1xbWB+EZfPw/9K+YLy9y5XXQC8XLer/8vM21w7MHw4VHECaepVdRccimXkV5OwnIx2Ct/eE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MjJP8naR; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714768423; x=1746304423;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qTA6gl03vEuZNwR+0yktOI8EhYVtmjYM4Gw1yRj+4sA=;
-  b=MjJP8naRUFD8MpRtHOCAgbsg4pxZ9kLNWhdwOKVh5z53KK5K/ukUGM2A
-   uwXmV2JSzIOpsdv3LTR+RxIIi1z/JPiIUps27N5/hWYRANwFQgi1b2raV
-   GYqpXnARN5ic/Go4KjWJdpnVh3y2B26WetBNbU2xZ/S4vMm60PQ6IFGK6
-   6qEqjQeeWWV+gYsxwHRBbUZzPog05rxo3/c4B5TnoasqOlURqGinS43PV
-   Xj+nB8YPYYtBsRhIX3IzVy4J+Xa98gA4bKlgQj7OjVf3utdcnuQf0VEOY
-   FuP3Ul3L+DwwqI9VOQFfvRgG897D0ZbjF6ZXqSASljBNLqrLUd6IWl93p
-   Q==;
-X-CSE-ConnectionGUID: o3iY6SQxSDGrESEQaI/igw==
-X-CSE-MsgGUID: Z4hRwXvWTsKqS8lj9/fB5A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="21274322"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="21274322"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 13:33:37 -0700
-X-CSE-ConnectionGUID: B5kHTAt1QDuB6t/29nEybg==
-X-CSE-MsgGUID: Ksg6DLVySU253L98uN1/Vg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="27431835"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 13:33:36 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	James Morse <james.morse@arm.com>,
-	Babu Moger <babu.moger@amd.com>,
-	Drew Fustini <dfustini@baylibre.com>,
-	Dave Martin <Dave.Martin@arm.com>
-Cc: x86@kernel.org,
+	s=arc-20240116; t=1714768460; c=relaxed/simple;
+	bh=V31YieNAvnRHfjtM5CmyE7r8oMvtOlEeaaFGE9mSUWY=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=D6p3pG9LOYe7wv/E/nbMOwKvYJG+n/mEB5LA9smNUNO9Ccl7W11+HMI/YOFiwPyttuRSQE31/EKdJHBLacpMkImor/6jl/SBbCy4meU2cEi3AyNtyzMTKeqqBw3ALSh3TgNT9ASbtBv2hQEMUwNn5q/v+jNuF7mMHMPd8UDrDzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aRizKplO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AC49C116B1;
+	Fri,  3 May 2024 20:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714768460;
+	bh=V31YieNAvnRHfjtM5CmyE7r8oMvtOlEeaaFGE9mSUWY=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=aRizKplOyfwG7IOiLK3zL4HESG08u2B2wWQPYSsvNkBioujB9UVzUc+yVF8XveUrE
+	 TIfYAI291oLUnIQ9fNVqPqF2MYdD84gYFQ23jolWtduzJyKzWNwA6KbgdOMiF34HL/
+	 Y+I8sLQHlnN9nb24aHKWCvO8qC6o4Qih2eizdSQ4Ib196XrmCcyTFnaB19HW0ZO4/Q
+	 4T8ieE2PP0WqOfYfvvvPUppe+f8pFr0dQIDzBXkj7PNiRY9ax3Nifwhh47N7cm8ar9
+	 nlTtgxIv/bRL8ldgEh4eFjJ0u6rRymGt5NDOAC6BJKAjBxJgpngI2tqTcfeaz/hcLz
+	 hA2NazeGGJ7FA==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Danila Tikhonov <danila@jiaxyga.com>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v17 9/9] x86/resctrl: Update documentation with Sub-NUMA cluster changes
-Date: Fri,  3 May 2024 13:33:25 -0700
-Message-ID: <20240503203325.21512-10-tony.luck@intel.com>
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH v2 1/2] arm64: dts: qcom: pm6150: correct Type-C compatible
+Date: Fri,  3 May 2024 15:34:17 -0500
+Message-ID: <171476845420.82394.12041853165837616623.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240503203325.21512-1-tony.luck@intel.com>
-References: <20240503203325.21512-1-tony.luck@intel.com>
+In-Reply-To: <20240330091311.6224-1-krzysztof.kozlowski@linaro.org>
+References: <20240330091311.6224-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-*** This patch needs updating for new files for monitoring ***
 
-With Sub-NUMA Cluster mode enabled the scope of monitoring resources is
-per-NODE instead of per-L3 cache. Suffixes of directories with "L3" in
-their name refer to Sub-NUMA nodes instead of L3 cache ids.
+On Sat, 30 Mar 2024 10:13:10 +0100, Krzysztof Kozlowski wrote:
+> The first part of the compatible of Type-C node misses ending quote,
+> thus we have one long compatible consisting of two compatible strings
+> leading to dtbs_check warnings:
+> 
+>   sc7180-acer-aspire1.dtb: pmic@0: typec@1500:compatible: 'oneOf' conditional failed, one must be fixed
+>   sc7180-acer-aspire1.dtb: typec@1500: compatible:0: 'qcom,pm6150-typec,\n qcom,pm8150b-typec' does not match '^[a-zA-Z0-9][a-zA-Z0-9,+\\-._/]+$'
+> 
+> [...]
 
-Users should be aware that SNC mode also affects the amount of L3 cache
-available for allocation within each SNC node.
+Applied, thanks!
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- Documentation/arch/x86/resctrl.rst | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+[2/2] arm64: dts: qcom: pm6150: correct USB VBUS regulator compatible
+      commit: 0ea3e1d6f31d8aea72d0d0b53919c585a12a593b
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index 627e23869bca..401f6bfb4a3c 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -375,6 +375,10 @@ When monitoring is enabled all MON groups will also contain:
- 	all tasks in the group. In CTRL_MON groups these files provide
- 	the sum for all tasks in the CTRL_MON group and all tasks in
- 	MON groups. Please see example section for more details on usage.
-+	On systems with Sub-NUMA (SNC) cluster enabled there are extra
-+	directories for each node (located within the "mon_L3_XX" directory
-+	for the L3 cache they occupy). These are named "mon_sub_L3_YY"
-+	where "YY" is the node number.
- 
- "mon_hw_id":
- 	Available only with debug option. The identifier used by hardware
-@@ -484,6 +488,19 @@ if non-contiguous 1s value is supported. On a system with a 20-bit mask
- each bit represents 5% of the capacity of the cache. You could partition
- the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
- 
-+Notes on Sub-NUMA Cluster mode
-+==============================
-+When SNC mode is enabled, Linux may load balance tasks between Sub-NUMA
-+nodes much more readily than between regular NUMA nodes since the CPUs
-+on Sub-NUMA nodes share the same L3 cache and the system may report
-+the NUMA distance between Sub-NUMA nodes with a lower value than used
-+for regular NUMA nodes.
-+The top-level monitoring files in each "mon_L3_XX" directory provide
-+the sum of data across all SNC nodes sharing an L3 cache instance.
-+Users who bind tasks to the CPUs of a specific Sub-NUMA node can read
-+the "llc_occupancy", "mbm_total_bytes", and "mbm_local_bytes" in the
-+"mon_sub_L3_YY" directories to get node local data.
-+
- Memory bandwidth Allocation and monitoring
- ==========================================
- 
+Best regards,
 -- 
-2.44.0
-
+Bjorn Andersson <andersson@kernel.org>
 
