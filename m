@@ -1,94 +1,133 @@
-Return-Path: <linux-kernel+bounces-168326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 613818BB67E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:58:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E998BB6D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:01:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014FA1F241DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:58:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5241F241F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAC75914A;
-	Fri,  3 May 2024 21:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA4025915A;
+	Fri,  3 May 2024 22:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lqcV8oJJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HAzJeiXl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0243D57C8A;
-	Fri,  3 May 2024 21:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9724C57333
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714773490; cv=none; b=aa+uWOWWvCm3sF0KseysJtB7a0y6Ugk+tkNRMVVbxohes1ZKR4uIQJQR6jV+3mh2Azne2d3PWAAKa4uMJ5XVphUSPZtRBOxbG/YHp3kiifdKCP7uixGZtdX+O62wTCTJ93undGJOv5bonaTBlBQI6SDVlTG0GqDWpTbVg3oiq0o=
+	t=1714773683; cv=none; b=LKW8X/Md4/JZ9ZcfokOwWR/6qfubntKxcnD5r//BNsXdXf4h9vS8fPApQzBSf57eC4lkm2fWGxcro/UMZ9A1Z0yX4kDzDQygLhzaxfmtEAe7wtZ3/YaCjB71qvnjm3DO5UGpIiK0Po7MTK8S8Q28tSprmU9zDRuwiSrQsSRbP6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714773490; c=relaxed/simple;
-	bh=Pmgm0glX9FkwDL+qG+ZRYjmYLShv8WqXdvSZfLM8GdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IsJpqlVrazYFIZXmFgsmEByi1IqIdZA6B9c98Qkgl953MFeIPXq93esWWo39lRgdDqOJU+ISU2Ao47EZeIi0ijPIk2c6yFff03v0ltXp/n2dmNLUPHicZErF33By0yqAHmMz26xLwtrWl2EttZbnBxCoGuX/1mB7dVLj1G46J1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lqcV8oJJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECA34C2BBFC;
-	Fri,  3 May 2024 21:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714773489;
-	bh=Pmgm0glX9FkwDL+qG+ZRYjmYLShv8WqXdvSZfLM8GdQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lqcV8oJJHiXbVU1Q6YInX13ctxFLeFOqEJm9imf6VFK5/YXvfMOFchud+cCllv2Qa
-	 edPBUw8Vt6CfW0eeQk4Xumswr28Kvl90K0hFbK37wRrcRYX0wszi77W6pPKDT4pSGi
-	 p9wvA/RSUajHXeGzJV3H2TEIZok61CQqKZAo+JoyfYKtQY7OhcanpXT1BM4UmDYQzj
-	 obRL4GZFIdxWJYpFr/l1K54HdlJzZA5MYnLw8USngBFF8b8/RNEi+lU/RCfrxJ7x9Y
-	 XnMQfOwm/QXJgINcjHT2cznYLaevmNJ93rO1j3NScuAdf7qTvmj0sCQ1S7kfcrdz4D
-	 5rAB9FoC2DJWQ==
-Date: Fri, 3 May 2024 14:58:08 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com,
- gal@nvidia.com, nalramli@fastly.com, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Leon Romanovsky
- <leon@kernel.org>, "open list:MELLANOX MLX5 core VPI driver"
- <linux-rdma@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
-Message-ID: <20240503145808.4872fbb2@kernel.org>
-In-Reply-To: <ZjUwT_1SA9tF952c@LQ3V64L9R2>
-References: <20240503022549.49852-1-jdamato@fastly.com>
-	<c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
-	<ZjUwT_1SA9tF952c@LQ3V64L9R2>
+	s=arc-20240116; t=1714773683; c=relaxed/simple;
+	bh=pUxq7jUksP4Q+cMJXZOkqnA/K+QpYMgfwqOUdO4C2e0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D91a+pogRDj+qf+P1OzDMJHhq6N4elx5ELhDYA2v0X9cm2lF450oazHGc1ePDYwgIyisWkz7e2PbA2wgBnDvghv+0rNlCPCr88bigbqXCsrPysU/Q6S4/FjiZEjVmhb/CldQs46LXjC8JFmobzKRDPofbbf+56yUrxQOq3MtR6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HAzJeiXl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714773680;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0sjv9T+egk2i7mbNVwnFuef2h+PLNLCnFrs/sJ5ral0=;
+	b=HAzJeiXlLy2R/Clb4B2WvYd2TcvYdl/reDnVPcmDDNknteMF3Bo7oa63Ili4m8EfGHc4Oq
+	807ZK25bce04BiPt6OBSLtAX1XVROanc6fA6wGia1u7xlIb7jddxcp3aZOptzVZzu+I9sJ
+	ktmX7kax8q9guN73GI7HM5IOpx5y9xQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-451-48_ZKH75MNSAPskrKHvgoA-1; Fri,
+ 03 May 2024 18:01:17 -0400
+X-MC-Unique: 48_ZKH75MNSAPskrKHvgoA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 14C713C000B5;
+	Fri,  3 May 2024 22:01:17 +0000 (UTC)
+Received: from llong.com (unknown [10.22.34.156])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 757C340C6CC0;
+	Fri,  3 May 2024 22:01:16 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	Vernon Lovejoy <vlovejoy@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH] locking/qspinlock: Save qspinlock owner CPU into mcs_spinlock
+Date: Fri,  3 May 2024 17:59:18 -0400
+Message-Id: <20240503215918.639519-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Fri, 3 May 2024 11:43:27 -0700 Joe Damato wrote:
-> 1. it includes the PTP stats that I don't include in my qstats, and/or
-> 2. some other reason I don't understand
+When examining a contended spinlock in a crash dump, we can trace out the
+list of lock waiter CPUs waiting for the lock by following the linked
+list of mcs_spinlock structures. However, the actual owner of the lock
+is not there making it hard to figure out who the current lock owner is.
 
-Can you add the PTP stats to the "base" values? 
-I.e. inside mlx5e_get_base_stats()?
+Make it easier to figure out this information by saving the lock owner
+CPU into the mcs_spinlock structure of new MCS lock owner, if available,
+when acquiring the lock in the qspinlock slowpath. We can then follow
+the linked list of mcs_spinlock structures to the end to get an encoded
+CPU number of the lock owner, if set.
 
-We should probably touch up the kdoc a little bit, but it sounds like
-the sort of thing which would fall into the realm of "misc delta"
-values:
+This owner information is still not available when the lock is acquired
+directly in the fast path or in the pending code path. There is no easy
+way around that.
 
-diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
-index c7ac4539eafc..f5d9f3ad5b66 100644
---- a/include/net/netdev_queues.h
-+++ b/include/net/netdev_queues.h
-@@ -59,6 +59,8 @@ struct netdev_queue_stats_tx {
-  * statistics will not generally add up to the total number of events for
-  * the device. The @get_base_stats callback allows filling in the delta
-  * between events for currently live queues and overall device history.
-+ * @get_base_stats can also be used to report any miscellaneous packets
-+ * transferred outside of the main set of queues used by the networking stack.
-  * When the statistics for the entire device are queried, first @get_base_stats
-  * is issued to collect the delta, and then a series of per-queue callbacks.
-  * Only statistics which are set in @get_base_stats will be reported
+The additional cost to get the current CPU number in the slowpath should
+be minimal as it should be in a hot cacheline.
 
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/locking/mcs_spinlock.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-SG?
+diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
+index 85251d8771d9..ac0ed0a8f028 100644
+--- a/kernel/locking/mcs_spinlock.h
++++ b/kernel/locking/mcs_spinlock.h
+@@ -13,11 +13,17 @@
+ #ifndef __LINUX_MCS_SPINLOCK_H
+ #define __LINUX_MCS_SPINLOCK_H
+ 
++/*
++ * Save an encoded version of the current MCS lock owner CPU to the
++ * mcs_spinlock structure of the next lock owner.
++ */
++#define MCS_LOCKED	(smp_processor_id() + 1)
++
+ #include <asm/mcs_spinlock.h>
+ 
+ struct mcs_spinlock {
+ 	struct mcs_spinlock *next;
+-	int locked; /* 1 if lock acquired */
++	int locked; /* non-zero if lock acquired */
+ 	int count;  /* nesting count, see qspinlock.c */
+ };
+ 
+@@ -42,7 +48,7 @@ do {									\
+  * unlocking.
+  */
+ #define arch_mcs_spin_unlock_contended(l)				\
+-	smp_store_release((l), 1)
++	smp_store_release((l), MCS_LOCKED)
+ #endif
+ 
+ /*
+-- 
+2.39.3
+
 
