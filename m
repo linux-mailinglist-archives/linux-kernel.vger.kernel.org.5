@@ -1,108 +1,109 @@
-Return-Path: <linux-kernel+bounces-167321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F31E8BA7DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3678BA7E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:36:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39E08281FE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:35:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA66B2820C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4CC1474D3;
-	Fri,  3 May 2024 07:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0051474BF;
+	Fri,  3 May 2024 07:36:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMoxFuP/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6DE139593;
-	Fri,  3 May 2024 07:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (2048-bit key) header.d=richtek.com header.i=@richtek.com header.b="zgH0Y8RL"
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5802B146D5B
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.130.44.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714721705; cv=none; b=aLfS3hptG+p+W96FiVDmXpqqAqKHIvdVnLGhd3X8HkAjKGW4qsc5wx3Y9ZkTha5OyTKdI7t7to6oB5sej+9p9IoAOdcQpKZovskHAw71yADOZCjwCroEtJVMTLWWppgN3aYymnsenLVDb3WbXRemunldoTCr1swhXlJovwwTNyM=
+	t=1714721759; cv=none; b=XVprmk+5TWBRuoCp1cj44AjnHfCeL1jOBhSS+cJ2MCB9jZE29a9jT3oj1vXbYfH3um/z6gepEmRrSzzBSBe3Hm4tXHbxlxlQl1fpeCXGU0glc4b8Ym9wLs8CFFAZHZLcdegZJX16/3BVUT0oIptt6Q9KwzxFlTWknpvYSsIhy9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714721705; c=relaxed/simple;
-	bh=pC91j2Fk6CmGMbzSbYOZVVJ6XRNvvhHzHeGWZQeg3vk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hRhPErDBApxIqRrDEDwo71f+rZ3xBzvhxtU2AKuIK/A8is1ARtvdFBjVE9ibFRmP4lWc7y+WEixg5VLaij2gesKucglVlBx7tLsCuaNganLIRcmMgmMjmDsQ/FjcFMTdYRY2EE4RB08T7orp1sUTlUg8drNfoUVRrCghY1Y7BQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMoxFuP/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 831F9C116B1;
-	Fri,  3 May 2024 07:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714721704;
-	bh=pC91j2Fk6CmGMbzSbYOZVVJ6XRNvvhHzHeGWZQeg3vk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EMoxFuP/8+/tBjtlxuT32p4uAwKGR5ysEaMBdK5a794d6zYEnDCNTIfJ+3in8n4ww
-	 7xpS7babtCyPdelDpyEfi3++9S3duQ0FKEUpy16u1+gyRQC8d35XUOFsy3/3eg9otP
-	 S/LugJbaSia3gfi5Pphf2OrBcW2LFn+HLTjrrexO6KKUm7PFWv/Tyd9QC7G/SAQroG
-	 z6eNRYzg1adI/HkHmE8uVh2Iv1mUqSy72Z6va5COtp/FBs+ch0yHeVLvEG5SKfiFTj
-	 2wXbsDitdFtiY5PWoVnZJPZmpJDCZDEJ4MQ13D6BFGYVDolXPyRIU56NKG1feQQbYr
-	 Wg/Av3N9cjVTg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s2nRh-0000000040a-1OYn;
-	Fri, 03 May 2024 09:35:05 +0200
-Date: Fri, 3 May 2024 09:35:05 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Jaiganesh Narayanan <njaigane@codeaurora.org>,
-	Doug Anderson <dianders@chromium.org>,
-	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain
- support
-Message-ID: <ZjSTqfxgrox0IceO@hovoldconsulting.com>
-References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
- <CACRpkdYw8jzFH5n377G76iMqri70Tf-1Vc=P5D6ESU_U0qRXWQ@mail.gmail.com>
+	s=arc-20240116; t=1714721759; c=relaxed/simple;
+	bh=5Rs3pBpzgm60FTVaM6YXseZbN560iglv7RG+Vh9AXrw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qUEfEYFXYx859RTCdM3DITLM+klInqRw1aW0DaJiSFQGlR7sTidGcASsqgatqpR2K0BF3INC69jNklmr4aZ0jawldCXB2ZvqMG9fiSPL6C29ViyllLLEy+5pMgn9zmfZSQBoOTrteP9L254OLyOoR54vHMIkJfi0RX2fZAWlbgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com; spf=pass smtp.mailfrom=richtek.com; dkim=pass (2048-bit key) header.d=richtek.com header.i=@richtek.com header.b=zgH0Y8RL; arc=none smtp.client-ip=220.130.44.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=richtek.com
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=richtek.com;
+	s=richtek; t=1714721749;
+	bh=10xZCuql4TPgrgP4qz5sC2A8B87AtLlLXWNSC/pTUbw=; l=1345;
+	h=Date:From:To:Subject:Message-ID:MIME-Version;
+	b=zgH0Y8RLTIq7autOsJqemXRl/P/UHs1PqkozOKhB8zn0AVXJrSYkwfHjMYJFnIxUL
+	 OjT2WxncrGCxORsX+0fH7yJtbG5cj9ltwwyitFLd23/w+ie9Z41y/L/RsxSyYI4NNj
+	 W5BwVTmHfNhmObONUoLdf9qETSe/KsBx+/PyXVj9i+UK0EYedZkbvzm59nHzzRO1f1
+	 gmJtmPdARrX1NvDvI8WPimzRgwxlwc1k2NVec9aAncpvEYm+xjTVZxqPcR4jxIFCfw
+	 2q3fEVJvK1r25JxShARwbcFsnHF22Oq19y8djxa2d+xEeMhUvk0S+rvLl8m+oDTkEM
+	 zW23cy8Dm7mNw==
+Received: from 192.168.10.47
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(398666:1:AUTH_RELAY)
+	(envelope-from <alina_yu@richtek.com>)
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Fri, 03 May 2024 15:35:37 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 3 May 2024
+ 15:35:36 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Fri, 3 May 2024 15:35:36 +0800
+Date: Fri, 3 May 2024 15:35:36 +0800
+From: Alina Yu <alina_yu@richtek.com>
+To: Mark Brown <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<johnny_lai@richtek.com>, <cy_huang@richtek.com>
+Subject: Re: [PATCH v2 2/4] regulator: rtq2208: Fix LDO to be compatible with
+ both fixed and adjustable vout
+Message-ID: <20240503073536.GA12846@linuxcarl2.richtek.com>
+References: <cover.1714467553.git.alina_yu@richtek.com>
+ <ffeecd61c194df1f7f049bd50cb2bbbad3cf1025.1714467553.git.alina_yu@richtek.com>
+ <ZjGmmYWHu-ZQQdIh@finisterre.sirena.org.uk>
+ <20240502073029.GA4055@linuxcarl2.richtek.com>
+ <20240502092614.GA31518@linuxcarl2.richtek.com>
+ <ZjRAsJHn57pZy5UH@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYw8jzFH5n377G76iMqri70Tf-1Vc=P5D6ESU_U0qRXWQ@mail.gmail.com>
+In-Reply-To: <ZjRAsJHn57pZy5UH@finisterre.sirena.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Fri, May 03, 2024 at 09:28:41AM +0200, Linus Walleij wrote:
-> On Thu, Apr 25, 2024 at 5:46 AM Bjorn Andersson
-> <quic_bjorande@quicinc.com> wrote:
+On Fri, May 03, 2024 at 10:41:04AM +0900, Mark Brown wrote:
+> On Thu, May 02, 2024 at 05:26:14PM +0800, Alina Yu wrote:
 > 
-> > When a GPIO is configured as OPEN_DRAIN gpiolib will in
-> > gpiod_direction_output() attempt to configure the open-drain property of
-> > the hardware and if this fails fall back to software emulation of this
-> > state.
-> >
-> > The TLMM block in most Qualcomm platform does not implement such
-> > functionality, so this call would be expected to fail. But due to lack
-> > of checks for this condition, the zero-initialized od_bit will cause
-> > this request to silently corrupt the lowest bit in the config register
-> > (which typically is part of the bias configuration) and happily continue
-> > on.
-> >
-> > Fix this by checking if the od_bit value is unspecified and if so fail
-> > the request to avoid the unexpected state, and to make sure the software
-> > fallback actually kicks in.
-> >
-> > It is assumed for now that no implementation will come into existence
-> > with BIT(0) being the open-drain bit, simply for convenience sake.
-> >
-> > Fixes: 13355ca35cd1 ("pinctrl: qcom: ipq4019: add open drain support")
-> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > For the fixed LDO Vout, it will be set to either 0.9V or 1.2V, which are outside the range of 1.8V to 3.3V.
+> > The determination of whether it is fixed or adjustable lies solely with the user.
+> > This modification aims to ensure compatibility with the user's application.
 > 
-> I tried to follow the discussion but couldn't get to a verdict on this patch,
-> should it be applied or not, and if it should be applied, should the Fixes:
-> tag be dropped or left and considered a nonurgent fix as it does not
-> affect current behaviour?
+> That's a substantail reconfiguration of the regulator, it would be
+> better to have an explicit property for these non-standard fixed
+> voltages rather than trying to do this using constraints, or at the very
+> least have validation that the values being set are supported by the
+> hardware.  The code should also be very clear about what is going on.
 
-It should not be applied in its current form (e.g. as the commit message
-is incorrect). Bjorn will be sending a v2.
+May I add the 'richtek,use-fix-dvs' property back ?
+which is the proerty I add in v1 patch series to let the user determines whether the LDO Vout is fixed or not.
 
-Johan
++		fixed_uV = of_property_read_bool(match->of_node, "richtek,use-fix-dvs");
++
++		if (fixed_uV) {
++			desc->n_voltages = 1;
++			desc->fixed_uV = init_data->constraints.min_uV;
++			desc->ops = &rtq2208_regulator_ldo_fix_ops;
++		} else {
++			desc->n_voltages = ARRAY_SIZE(rtq2208_ldo_volt_table);
++			desc->volt_table = rtq2208_ldo_volt_table;
++			desc->ops = &rtq2208_regulator_ldo_adj_ops;
++		}
+
+
+Thanks,
+Alina
 
