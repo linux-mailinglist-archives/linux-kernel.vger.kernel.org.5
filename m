@@ -1,228 +1,286 @@
-Return-Path: <linux-kernel+bounces-168394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78EC38BB7FE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:11:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E56B18BB809
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E94A286874
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:11:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B57FB232E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC4C83A10;
-	Fri,  3 May 2024 23:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD83583CA6;
+	Fri,  3 May 2024 23:14:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="G22qLQx8"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2088.outbound.protection.outlook.com [40.107.21.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2rG8bn6l"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DACD65194;
-	Fri,  3 May 2024 23:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714777906; cv=fail; b=mvbStTkLb4pOLHkXV04rYoNr2n2mY8fOWFdkThpK4S1bPtV8RIEX5dhlSIFSAbbmAvHYrCXmrfD064eHZGnMvdIxpCXEPDaOhkZQFnRNWNBTQ0xiY0OADnuNzRkiBha1CoD+S20EBwxhLtbuDWYYYQhzUbG1B1syPcZXHIapUIo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714777906; c=relaxed/simple;
-	bh=yLHFXL6d71G9zA6ggjpyU+QaC8aUhPbADtwjXl05o7E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=iNLBMUlWCxEyho55hOX1nZOPEAFePdXoUbH85VBsOTNCSJdQ0kTAYSBFje941CGS4UWU9TprBnn6yHV0EduQ/fH5KdNZNMycxqM+3srdv7dAOw/vQ56guaexwSa6Y7ruiSpLYM9OMv9BTzhOQGkaiLEjP3vYV73Z7uwVJHW+2mc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=G22qLQx8; arc=fail smtp.client-ip=40.107.21.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QruS0Pr3MAIRkYTY3dwrfSBOboBgpOvCcgLQ5x8SFl/FRn+qfVvMDtyt/ATqgYqDHYl26SI0w0DHOb8kIPkesmDyeLmTqxF4k/HFWpMYbsYPeI25SqIL2hbEWljv+aFLs9qZbguWR54ZtRHcYD5c1OEEvRF54Jh1dHWHuFgy/ub9lcbNIyN/hiYqmSeMmvzp6gUv1U6ybK9MIkG21AyH6qfLBSiileu7m5LFo73fhzaZHjfhpjauLCcSQI/KiG7RKuQD27zxSIiHqC1FlPnenvsW+3EIgIuGnraZuS6F0+0h3kgRlGoEWvBxQfMwNslx4hNAdP10CjfeEzOBQKqR/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yLHFXL6d71G9zA6ggjpyU+QaC8aUhPbADtwjXl05o7E=;
- b=I9pChR+xiqZG/1InktnyptN0tWaIlLq6/OYRKpHoOVAp45XDfxZuNmYARNpiWOVBM1SnvSa++O1DxuxRn4fOqtx+pXL8W9dNsqAdHNA7YgBzEEvNmL7ha1PD7XaZVCE9NIaLGrtwQjclzdtM5+GEukOK7X22Cma+N9kKAah4ninyoGf+JOuuwJTY2E43F+SRD2a7EfV1nGeKNw77hhNaefEJfIV4n1RK8ih0ko1EyGt81V+QpGVm2CkLgfq6jdxilIiaZ9hE3/tgOTqn/AJtkha6Bn2F1HFCnixpUgm/KYF8bbJ4HRgg2FobwVjotk1kONLGXYFnOzpBK3uTGue1gA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yLHFXL6d71G9zA6ggjpyU+QaC8aUhPbADtwjXl05o7E=;
- b=G22qLQx8wAIGJg3gYaSJatPdN6sKdslMnL/kTsIw2pnLdH+MVskXbKAV8LtVWPrpx+hHvpC+5c5N6c1Gq2sK5K35R94lRpJYAN44ptBONA75mapxlChMZmKHVaJcR1eOjRdSE4vaQ3T9g4KuuzvFKBCNU2zQjManNyuAyTLC0DY=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB9191.eurprd04.prod.outlook.com (2603:10a6:20b:44e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.36; Fri, 3 May
- 2024 23:11:40 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7544.029; Fri, 3 May 2024
- 23:11:40 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Linus Walleij <linus.walleij@linaro.org>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>
-CC: Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter
-	<jonathanh@nvidia.com>, Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu
-	<wellslutw@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- Torgue <alexandre.torgue@foss.st.com>, Emil Renner Berthing
-	<kernel@esmil.dk>, Jianlong Huang <jianlong.huang@starfivetech.com>, Hal Feng
-	<hal.feng@starfivetech.com>, Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
-	<baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, Viresh
- Kumar <vireshk@kernel.org>, Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-	"soc@kernel.org" <soc@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Alim Akhtar
-	<alim.akhtar@samsung.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
-	Patrice Chotard <patrice.chotard@foss.st.com>, Heiko Stuebner
-	<heiko@sntech.de>, Damien Le Moal <dlemoal@kernel.org>, Ludovic Desroches
-	<ludovic.desroches@microchip.com>, Nicolas Ferre
-	<nicolas.ferre@microchip.com>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Aisheng Dong <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
-	Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>, Pengutronix
- Kernel Team <kernel@pengutronix.de>, Chester Lin <chester62515@gmail.com>,
-	Matthias Brugger <mbrugger@suse.com>, "Ghennadi Procopciuc (OSS)"
-	<ghennadi.procopciuc@oss.nxp.com>, Sean Wang <sean.wang@kernel.org>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Sascha Hauer
-	<s.hauer@pengutronix.de>, Andrew Jeffery <andrew@codeconstruct.com.au>, Joel
- Stanley <joel@jms.id.au>, Dan Carpenter <dan.carpenter@linaro.org>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	"linux-stm32@st-md-mailman.stormreply.com"
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	"linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	"linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>, "linux-aspeed@lists.ozlabs.org"
-	<linux-aspeed@lists.ozlabs.org>, "openbmc@lists.ozlabs.org"
-	<openbmc@lists.ozlabs.org>
-Subject: RE: [PATCH 00/21] pinctrl: Use scope based of_node_put() cleanups
-Thread-Topic: [PATCH 00/21] pinctrl: Use scope based of_node_put() cleanups
-Thread-Index: AQHam8XZF+hoIEqtO0+ph11dwkNN67GFHQ8AgAEJP+A=
-Date: Fri, 3 May 2024 23:11:40 +0000
-Message-ID:
- <DU0PR04MB9417D5D76707C413ABC0BAC0881F2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com>
- <CACRpkdaRpJw=kHtya2iww7vvm+Bt6-oPMmz-6VzfhZniSoMP3w@mail.gmail.com>
-In-Reply-To:
- <CACRpkdaRpJw=kHtya2iww7vvm+Bt6-oPMmz-6VzfhZniSoMP3w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB9191:EE_
-x-ms-office365-filtering-correlation-id: 5b44d46e-9f13-438a-f5ee-08dc6bc66415
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230031|376005|7416005|1800799015|366007|38070700009;
-x-microsoft-antispam-message-info:
- =?utf-8?B?QzZwOUVoYzJXWTBHNzY5T1RYYkNJMXA4OUlJRy9VeitoRy9IMHJJejJFZSs1?=
- =?utf-8?B?NjJsQnhmUUZ6Sjk0b2g3MFRPaDVaY3MwSUZyQVRudU5jUU1XV3ZWRmpkNkdK?=
- =?utf-8?B?QS9OZnczZXlFMzhiNFZTNXpWbGJSQUVMOGVqZ3dGaE5IbGRRdDR2K2gzVmI5?=
- =?utf-8?B?bC81WlJaZ0hYTEU5YnVJd2ZKclBZRlYyWitVOUM4ZnllWDZFNFcyZnRzamFE?=
- =?utf-8?B?OFRBWE82bTBUVjk0KzJSWlp0STdCcWxjY1Rha09oOUFYMyttL2E5Yzl3N2Ew?=
- =?utf-8?B?UmVrM0R2endLTUYxaWNwMHhTU1pJM1VJS3NPVUZjQ0pscVNoVHNrWGJSemZ0?=
- =?utf-8?B?NUExUTdBUnZaQjB4MmxkWFoxbGJKL3pBVmRVOUMwcis4djdlVEJ6NXJUZEtl?=
- =?utf-8?B?TFZMbHFEVTFUSHMwc0lZYWNTNk9BWXQ2N05MYWREYnMxclVVT2lYM2Y2UjdS?=
- =?utf-8?B?aXE3NDE3Yi9iRk1vUDRzeDhic1h4OXpwdjNpODZodDJJcmJDR2lOU0MwSDZB?=
- =?utf-8?B?OTA3YkVMK21ldVVOSHhlQVlGSGFpcmN4ZE55ZXdwa05LdkZYNTIyWlE3aGh6?=
- =?utf-8?B?Mk9zek94UXFEOXM5d1NzUXA0THZuMTBYNDBhYWs2elVsZ0FURWRRR1YwVFFq?=
- =?utf-8?B?czIzNndVQWFWVk92clNxYW5MY3JpUjlkQTNqYlpMSXF3emViblFya3FZTnJF?=
- =?utf-8?B?MWJyQ09JVndlRVNpd0ZteXFybW53b203d0tsZXBwUUlQMGNXMzl1cHBpZTlF?=
- =?utf-8?B?U21LR1l1RGpiSGd4bFkvbk15cXFGM0NPNDJyaksrbmRpdS8zY0Vad0hhdHl0?=
- =?utf-8?B?aFhDQ01QN04vRkpjQlowMUcyMzM3d2xHeXp5Q2czaG9yblJkOHloUHV5Vi9w?=
- =?utf-8?B?aGhleFNURHhvaGtEK2trdVpwcndDSmhtVldUNUJVSzdhNzJuc3I0Mnd6RWFj?=
- =?utf-8?B?dVltenZpWUdEYVdSSjI5dDlaTmN0UTVpNU84cUtLVUFxenZlK0hmcHA4ZGpW?=
- =?utf-8?B?Q3VNQTc1dE1DSTErVmh4YWdGRWpSZWlWWDFQUXR2c3dzTUd2cTFOUVkzTmND?=
- =?utf-8?B?cGRtWGpPY2sybVRtaXFQdmVQUEFMWWVodUpscnZEeW1IKzJrc2hCNjZNd013?=
- =?utf-8?B?RW5NRUltcC9tc0FVUzRKYXVKUG9aZkduZVd6cTgwQ2ZIdTVqdXlReHlvTUZM?=
- =?utf-8?B?c1JXdEdBMWMxWW9IeER5ai9aT3F3QTJ1RExrazI2R29NdFRFVXZxYjFlV2xY?=
- =?utf-8?B?bzZDb1BTYkRIOGw2b2gya3Q1OElENVE2Y09pSGZ2cnZ2eDVOYjk1Smw4Rnpj?=
- =?utf-8?B?cnhSNFRhM2Q5ZVk4dU5PeWdza01ET1E1dWQvNzNqZi9oTE5aY05ZeDNoMUVm?=
- =?utf-8?B?cFRwWnA4RFluSUFFelgwTCtaMmZZZWp4cDNTeFR4anAyT0oxQWdHd3hJcDlM?=
- =?utf-8?B?NWVLeHlja1FnN1YxcVY3anNJc2NicWRMRkhhTW5WdHJHaDJMUXF2Q3FLOVRM?=
- =?utf-8?B?dWRHNkpuMWllNWZScGFkUlM2VWlXcDJaWXpuc3hXTlpLdmdEWHAyemMrbnk3?=
- =?utf-8?B?T2FYTnVSdHJ3azJZMXd0TjVPRVdrOGl0UC9rN3lzYW9HRDh6OGFlYXFqQnk1?=
- =?utf-8?B?bm0zSjNENW9TcTFuWWY3N1BLVklyem1qb1diVHdId2JoYkpxMkJPbDRUb2tO?=
- =?utf-8?B?T0dsU0ZsRnVvMWtkS0lZYmN2VStLUFdqUC9WWERqUWhndm1NZGFLSXBEbW5t?=
- =?utf-8?B?bTUvVTBPem5ub1liZU9DLy82bHphTHlHUzdwalpYR1VuTXluNytTTDA4N29R?=
- =?utf-8?B?QVo5cXlKS0pObHdMUk1Udz09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MmhUU2hwU3BRSWozZDRDMkl6VW1oR1AzUUNwS2FTb2VOSzFNRmE5Z1JqWEc0?=
- =?utf-8?B?Zm1tdjJVZzBzRElSMnJhWWdsTG1UT0hXRENZVU5zNVhjaDhjUk1GcFlLMzdn?=
- =?utf-8?B?dnNuWFQ0eCtvNDZEU25nTWJqek5sa0xKUmhpU21SZ0VMcldubS9aTUNVdHF1?=
- =?utf-8?B?U2VBelNjcVR1UkF3QnF6MmhWdmZ2c2YwUUpPT0dQSm0wamtVWVpFSEZHSFhM?=
- =?utf-8?B?NE90NzhlWWV0b1p0eFJuQjA3Yk93V1NLZVZjeW95U1VoZStWbFo3YjJZQVhB?=
- =?utf-8?B?OGtJTXNHZ3l3OGdVeFljWjluRXpJbE9rdUtYcWN6UXFPUm03SXdpRituS1hp?=
- =?utf-8?B?bktOSGg4ZjREUGVLV28xV1VRT0gvcDZLVy9TVmNmczRsaWR3dkxnc2kvMGlV?=
- =?utf-8?B?T0lBSHgzaG1Vd2gwU2ZuUXUwV2lSVEoxbi9qOVlNVExrN2ZiTHBPOUpjZWcr?=
- =?utf-8?B?K0xWd2ErMGVTSkFhSmR1dm9yRWUvQ0VncUptalJlQ2JkYjJWQjlpaktvTHAy?=
- =?utf-8?B?K1RSVzdORVo5b2dhTlJQbDdmOHdab25WMG5lejNBY3BSUklnMjNySDBaT2M4?=
- =?utf-8?B?dEFhanFTa2QwR2pBU29Vc1p2ajhrRXZ1U0lROUhsTXJ4bFFrZ01xRFR4TWlL?=
- =?utf-8?B?a1dzMkxLZnA4Y25SbVhuRGY3WEdnbUdVRkIrY0hhdy9QM21wYWFQU2RWWTlM?=
- =?utf-8?B?aUdQeHB6c2pHRzhDS0FxVG4wZEFEWmliL3crWDlOMDlPMWkvZkFrSEhtS01F?=
- =?utf-8?B?eEY5NlFPMWVsWHJEeG5ZZWMrNE4ySkx5UHo5eFRUNHFhYkJVSWNtdjNETTdW?=
- =?utf-8?B?RVdMaTcxN005dmMxZmQ2c2ZvcFFGZjBHdFdKNE9NWUVGV3FOMFpKSVRSVE9Q?=
- =?utf-8?B?ZURZMmgzdjdNajRoWGVIU2tiV3dXK1RnODFSZ284Smx5ZllhS0dVNGVqc0M1?=
- =?utf-8?B?YzBjUzNHTHVOMEp3Nm5iU3RieGE0Smh0cG51VVUzaTJjZDAwc2p2RWhJS2ht?=
- =?utf-8?B?bytaeFBDMG8zeVZ6dDZYWGpwSlVSZFlqNjdNclpvYi9rMGZZb25qcVQ3czZR?=
- =?utf-8?B?Vm1LQWJ6T0gxL3NYYUR5Z3RDVlhoTzBFWHdVT3daSEpNZmh4NGNsdndlWmVR?=
- =?utf-8?B?ZXh0V3RGb3c3b2FGcTBiajJkR1ZROVRDY3NETjJpUjc0ZmpQUzhnWENQTFo3?=
- =?utf-8?B?L0dTOS9zTlZPSmdDbnREbHRHWC80a2NOWCs1ajNuYWZ2T2pzT0RoNVY0R25S?=
- =?utf-8?B?VjR3elluS0ZYRTU4M0tTcmRma3NGa2JtTkl3eUpFRzB3NTkrakNON0dOUjFq?=
- =?utf-8?B?ZWQrRGc3eStheG1VS2FBNVAyNGY3a3BBWHg0WmtpZmZLa1ZYZVo2eWpyeFdy?=
- =?utf-8?B?azUwVkY2a05NSngxWkVuTTJISWYvN29KRk5HTXFhenQ4MXFMRklUSWFzYnhN?=
- =?utf-8?B?Zk1lUkFTL1ZQNUNueEI1RHpoc1RyOGc5Nkh1R0pDMDUwdHFOU3M5c21IRWRa?=
- =?utf-8?B?c2hBNXRwckxYWFhrTmVIbWVwM2ZkZ0phQXlMdndUWGtNeE5LRTNUN0JKcnhO?=
- =?utf-8?B?UmdtNUJZZ01vMHRLcmVEVzZhUGpuT0MxNlZzRzZlTzNpeTNwMlZSUWtYTmpt?=
- =?utf-8?B?TVUzZ0RVMjNCdXB2dm1wVDFKemJNRlI4WkplSVVoNVdsNWdLK3g3RHJIK0FB?=
- =?utf-8?B?akVueHpXK3kvamlRSjBseDBKT2piU00vK0dwbHVna1JxeDIrdkYyRFp4a3R6?=
- =?utf-8?B?STRabEt6K0VlYWVwLzVwN2Z6U0VFVmpOY29hbUEwSXExRm9MVU5MaHVuSVRV?=
- =?utf-8?B?Sk1hZXpqOVk0ODZpdnd4azFZVUZmZW5wbEVQL0xDNThRRm1iSUJWSDh4VGZp?=
- =?utf-8?B?NjJBNXRQck5RMGR2WENCczdaYlVMSk1Mb1J3NVlaRG5qbmU4ajY2UkI3R0ph?=
- =?utf-8?B?SHhFTWwxdkZqbTZEQklzZkNxR2FSWVV6bkpRRGZmYnZqbnEvMHRSRjZlc3VP?=
- =?utf-8?B?QkszSG1BSlMwMWJHTFZadlZ0bjRYZmFXOEJTMlFjN2hpOEVOQno3OUFWZTNJ?=
- =?utf-8?B?SUdISVpBNWw3c3ZFblRZYVZYWDQwdnRCVXZJSVQwUDd4enlxQWxWeDBTMU50?=
- =?utf-8?Q?lbyQ=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E0A839F5
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714778039; cv=none; b=V34rDGM6rqLaP96wVUlsLUJDVQLqgx8Bky9jHtNSJqSRuh0fEoO44ZrlPT7JMouqaUAeeydg/m0JOPamGCxdTIRzBImZaMFSuXdtLC5iBkqtpr0FXjmSzxGDLCRgBsEA+pw9sBL84mjuwY53/1GzIvch9SyDf9GR9XTdrt905Es=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714778039; c=relaxed/simple;
+	bh=UaoPzNVUXZBeYCI4Q6Lj3hWqihBcIYlP6ERc/5nAvKo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZkDyAaLKtPPnFLkanYFiNJwLJz28nBs49dE8veAc2BOLHxPecm0nkkVhY1Svy5pZsZdjNv9uVrlwKQkepVnknyiHgtqH9I9jn3OxP6JnX3LHWD/x4eAZ34Vr7aDSmgULOPc5ay0gzlQOjuAjAgo+in8loynXlE1cLD7fsVPypWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2rG8bn6l; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de54b28c3b7so197188276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714778037; x=1715382837; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bx7eA7+wetLZJ6nYBQUWynRRLR0EZ2R8LfNtwQgm3Q8=;
+        b=2rG8bn6lhO1TMp8ByZGrDR05RMUa7rSS4DKWBIdkZl42po5cEnWTtBYAa4VuWdJkSl
+         j8EaB9PbJA98Afh5RoUOLTueDA+7EX/JYtYgfCRuoRS2Gu23ubpD37bjUevC1CE8BPcb
+         yFtB7IpbwnxG+BEHqM7hbZ+pvCMDc8C4ddQ2q7vT4MauIq4DptHhLsQ/srtVJO6FW30A
+         0f0u6WwNYUkkvVCChfyHYTkNB9mjNMTUI5SRjmSy1BatHpFNpg7546lgs0kQoxatFwIr
+         ho8uGrROvNHqVwQbsbEvF9Td1LBky6ZlCUZKhFImXQwIOoDlShEuqC8lBpwZFryaUmxF
+         I/DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714778037; x=1715382837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Bx7eA7+wetLZJ6nYBQUWynRRLR0EZ2R8LfNtwQgm3Q8=;
+        b=smOmzsO/tX3xdaNnLZ4Z7eq3VZX8uulDv+C6xvkvVUCyiJq/jROLWiots/euxXToG4
+         VuWTu3yjqrtcYyQ3GUYuCY+iKfplJdpBbJn2fnFPY0bKrOVUjYeg//eeWXUpYNZwRnIj
+         PWMlDWnrfoCvp4mMR7atFvLroM62y8UYKAkdVSTa5dmHPqzqiGXpFQ7w6L0Et+Zl7YHV
+         D1JUzwwzIjY51fs2mGZHyhoqeaEnCAfc7P4HYJzPIWSS7miYgt96qxQ5ytMT7a0YB9yR
+         7yNq5COMl6E92cTw0jsHamWmr8LEG2WpL2BhrsMzuwRm+TymkWwa9lcEp5FCNfzqD4ZW
+         tR9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXo7TPgdQb+XiDFcfLZdO53rD55uGMHDFTMfyckT5jrrdrLPxm9mzgzdik4LoK0R71jxcHt2Wiz1F5/e0PEamwXTUto/q/XlPGk4xUG
+X-Gm-Message-State: AOJu0Ywbam2+CiA9dkX7ElATHUqictDdq716EP9zlVb8Abn8jGcXEL30
+	OccnZjuXbGfR8Soa5IkQPVbfwqLtC50wXrXptHwM28oYC0Q3Ny7z4CEott+FIJuCUJPJ0zAhwCy
+	VEzo/a+Aq85vD/Plm7kWrevfhBbbCtQrLES3v
+X-Google-Smtp-Source: AGHT+IEs7oOCdBwjSrckkdk5ke5Sbh3Li4ral7+Wxq1yd2IFmVkyGkWEZTAmKm+Qy4XRPd/wxXjPvJxVkWCooTOeuN0=
+X-Received: by 2002:a05:6902:248a:b0:dd0:76e:d630 with SMTP id
+ ds10-20020a056902248a00b00dd0076ed630mr5363668ybb.53.1714778036906; Fri, 03
+ May 2024 16:13:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b44d46e-9f13-438a-f5ee-08dc6bc66415
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2024 23:11:40.6410
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XWzUJl2JaHLV99jsMXx0K2J7ZLDHv9l3R3NjqLiga1b4fp0hG0yFwEEW2Oz1wVjKHKLFyXgaIIj61nL5nHeH+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9191
+References: <20240327022903.776-1-justinjiang@vivo.com> <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
+ <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com> <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
+ <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
+ <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com> <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
+ <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com> <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
+ <2ebca2fd-9465-4e64-b3cc-ffb88ef87800@vivo.com> <d4209754-5f26-422d-aca0-45cccbc44ad0@amd.com>
+ <289b9ad6-58a3-aa39-48ae-a244fe108354@quicinc.com>
+In-Reply-To: <289b9ad6-58a3-aa39-48ae-a244fe108354@quicinc.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Fri, 3 May 2024 16:13:44 -0700
+Message-ID: <CABdmKX3Zu8LihAFjMuUHx4xzZoqgmY7OKdyVz-D26gM-LECn6A@mail.gmail.com>
+Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
+To: Charan Teja Kalla <quic_charante@quicinc.com>
+Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	zhiguojiang <justinjiang@vivo.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
+	opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgTGludXMsDQoNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAwMC8yMV0gcGluY3RybDogVXNlIHNj
-b3BlIGJhc2VkIG9mX25vZGVfcHV0KCkgY2xlYW51cHMNCj4gDQo+IEhpIFBlbmcsDQo+IA0KPiB0
-aGFua3MgZm9yIGRvaW5nIHRoaXMhIEkgYW0gdmVyeSBtdWNoIGluIGZhdm9yIG9mIHVzaW5nIHNj
-b3BlZCBtYW5hZ2VtZW50DQo+IG9mIHJlc291cmNlcyB3aGVyZSBpdCBtYWtlcyBpdCBlYXNpZXIg
-dG8gZG8gdGhlIHJpZ2h0IHRoaW5nLg0KPiANCj4gSSBhZ3JlZSB3aXRoIEtyenlzenRvZidzIGNv
-bW1lbnQgdGhhdCB3ZSBzaG91bGQgYXZvaWQgc2NvcGluZyBpbiBjYXNlcyB3aGVyZQ0KPiB0aGVy
-ZSBpcyBhIGNsZWFyIHBhdGggZ3JhYi91c2UvcmVsZWFzZSBzbyB0aGUgY29kZSBpcyBlYXN5IHRv
-IHJlYWQgYWxyZWFkeSBhcyBpdA0KPiBpcy4gTGV0J3MgZHJvcCB0aG9zZS4NClllYWgsIHdpbGwg
-ZHJvcCB0aGVtIGluIHYyLg0KDQo+IA0KPiBJIHNhdyB0aGVyZSB3YXMgc29tZSBwYXRjaCB0aGF0
-IHdhcyBldmVuIGEgZml4LCBwZXJoYXBzIEkgc2hvdWxkIHBpY2sgdGhhdA0KPiBvbmUgc2VwYXJh
-dGVseSBmb3IgZml4ZXMsIGJ1dCBwcm9iYWJseSBpdCBpcyBub24tdXJnZW50Lg0KDQpOb3QgdXJn
-ZW50LCBJIHdpbGwgYWRkIGZpeCB0YWcgaW4gdjIuDQoNClRoYW5rcywNClBlbmcuDQo+IA0KPiBJ
-IHN1cHBvc2Ugd2Ugd2lsbCBqdXN0IGFwcGx5IHYyIGFmdGVyIHBlb3BsZSBoYWQgc29tZSB0aW1l
-IHRvIGxvb2sgYXQgaXQhDQo+IA0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0K
+On Fri, May 3, 2024 at 6:40=E2=80=AFAM Charan Teja Kalla
+<quic_charante@quicinc.com> wrote:
+>
+> Thanks Christian/TJ for the inputs!!
+>
+> On 4/18/2024 12:16 PM, Christian K=C3=B6nig wrote:
+> > As far as I can see the EPOLL holds a reference to the files it
+> > contains. So it is perfectly valid to add the file descriptor to EPOLL
+> > and then close it.
+> >
+> > In this case the file won't be closed, but be kept alive by it's
+> > reference in the EPOLL file descriptor.
+>
+> I am not seeing that adding a 'fd' into the epoll monitoring list will
+> increase its refcount.  Confirmed by writing a testcase that just do
+> open + EPOLL_CTL_ADD and see the /proc/../fdinfo of epoll fd(Added
+> file_count() info to the output)
+> # cat /proc/136/fdinfo/3
+> pos:    0
+> flags:  02
+> mnt_id: 14
+> ino:    1041
+> tfd:        4 events:       19 data:                4  pos:0 ino:81 sdev:=
+5
+> refcount: 1<-- The fd added to the epoll monitoring is still 1(same as
+> open file refcount)
+>
+> From the code too, I don't see a file added in the epoll monitoring list
+> will have an extra refcount but momentarily (where it increases the
+> refcount of target file, add it to the rbtree of the epoll context and
+> then decreasing the file refcount):
+> do_epoll_ctl():
+>         f =3D fdget(epfd);
+>         tf =3D fdget(fd);
+>         epoll_mutex_lock(&ep->mtx)
+>         EPOLL_CTL_ADD:
+>                 ep_insert(ep, epds, tf.file, fd, full_check); // Added to=
+ the epoll
+> monitoring rb tree list as epitem.
+>         mutex_unlock(&ep->mtx);
+>         fdput(tf);
+>         fdput(f);
+>
+>
+> Not sure If i am completely mistaken what you're saying here.
+>
+> > The fs layer which calls dma_buf_poll() should make sure that the file
+> > can't go away until the function returns.
+> >
+> > Then inside dma_buf_poll() we add another reference to the file while
+> > installing the callback:
+> >
+> >                         /* Paired with fput in dma_buf_poll_cb */
+> >                         get_file(dmabuf->file); No, exactly that can't
+> > happen either.
+> >
+>
+> I am not quite comfortable with epoll internals but I think below race
+> is possible where "The 'file' passed to dma_buf_poll() is proper but
+> ->f_count =3D=3D 0, which is indicating that a parallel freeing is
+> happening". So, we should check the file->f_count value before taking
+> the refcount.
+>
+> (A 'fd' registered for the epoll monitoring list is maintained as
+> 'epitem(epi)' in the rbtree of 'eventpoll(ep, called as epoll context).
+>
+> epoll_wait()                                __fput()(as file->f_count=3D0=
+)
+> ------------------------------------------------------------------------
+> a) ep_poll_callback():
+>      Is the waitqueue function
+>    called when signaled on the
+>    wait_queue_head_t of the registered
+>    poll() function.
+>
+>    1) It links the 'epi' to the ready list
+>       of 'ep':
+>        if (!ep_is_linked(epi))
+>          list_add_tail_lockless(&epi->rdllink,
+>                 &ep->rdllist)
+>
+>    2) wake_up(&ep->wq);
+>         Wake up the process waiting
+>         on epoll_wait() that endup
+>         in ep_poll.
+>
+>
+> b) ep_poll():
+>     1) while (1) {
+>         eavail =3D ep_events_available(ep);
+>         (checks ep->rdlist)
+>         ep_send_events(ep);
+>         (notify the events to user)
+>     }
+>     (epoll_wait() calling process gets
+>      woken up from a.2 and process the
+>      events raised added to rdlist in a.1)
+>
+>    2) ep_send_events():
+>         mutex_lock(&ep->mtx);
+>         (** The sync lock is taken **)
+>         list_for_each_entry_safe(epi, tmp,
+>                         &txlist, rdllink) {
+>             list_del_init(&epi->rdllink);
+>             revents =3D ep_item_poll(epi, &pt, 1)
+>             (vfs_poll()-->...f_op->poll(=3Ddma_buf_poll)
+>         }
+>         mutex_unlock(&ep->mtx)
+>         (**release the lock.**)
+>
+>         (As part of procession of events,
+>          each epitem is removed from rdlist
+>          and call the f_op->poll() of a file
+>          which will endup in dma_buf_poll())
+>
+>    3) dma_buf_poll():
+>         get_file(dmabuf->file);
+>         (** f_count changed from 0->1 **)
+>         dma_buf_poll_add_cb(resv, true, dcb):
+>         (registers dma_buf_poll_cb() against fence)
+>
+>
+>                                 c) eventpoll_release_file():
+>                                    mutex_lock(&ep->mtx);
+>                                    __ep_remove(ep, epi, true):
+>                                    mutex_unlock(&ep->mtx);
+>                                   (__ep_remove() will remove the
+>                                    'epi' from rbtree and if present
+>                                    from rdlist as well)
+>
+>                                 d) file_free(file), free the 'file'.
+>
+> e) dma_buf_poll_cb:
+>  /* Paired with get_file in dma_buf_poll */
+>  fput(dmabuf->file);
+>  (f_count changed from 1->0, where
+>   we try to free the 'file' again
+>   which is UAF/double free).
+>
+>
+>
+> In the above race, If c) gets called first, then the 'epi' is removed
+> from both rbtree and 'rdlink' under ep->mtx lock thus b.2 don't end up
+> in calling the ->poll() as it don't see this event in the rdlist.
+>
+> Race only exist If b.2 executes first, where it will call dma_buf_poll
+> with __valid 'struct file' under ep->mtx but its refcount is already
+> could have been zero__. Later When e) is executed, it turns into double
+> free of the 'file' structure.
+>
+> If you're convinced with the above race, should the fix here will be
+> this simple check:
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 8fe5aa67b167..e469dd9288cc
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -240,6 +240,10 @@ static __poll_t dma_buf_poll(struct file *file,
+> poll_table *poll)
+>         struct dma_resv *resv;
+>         __poll_t events;
+>
+> +       /* Check parallel freeing of file */
+> +       if (!file_count(file))
+> +               return 0;
+> +
+>
+> Thanks,
+> Charan
+
+Hi Charan,
+
+It looks like a similar conclusion about epoll was reached at:
+https://lore.kernel.org/all/a87d7ef8-2c59-4dc5-ba0a-b821d1effc72@amd.com/
+
+I agree with Christian that it should not be possible for the file to
+be freed while inside dma_buf_poll. Aside from causing problems in
+dma_buf_poll, ep_item_poll itself would have issues dereferencing the
+freed file pointer.
+
+Christian's patch there makes me wonder about what the epoll man page
+says about closing files.
+"Will closing a file descriptor cause it to be removed from all epoll
+interest lists?" Answer: Yes
+https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man/man7/e=
+poll.7#n442
+
+It looks like eventpoll_release_file is responsible for that, but if
+the epitem is changed to hold a reference then that can't be true
+anymore because __fput will never call eventpoll_release_file (until
+EPOLL_CTL_DEL). But how do you call EPOLL_CTL_DEL if you've closed all
+your references to the file in userspace? So I think epoll needs a
+slightly more complicated fix.
 
