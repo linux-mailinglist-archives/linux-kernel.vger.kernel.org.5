@@ -1,118 +1,117 @@
-Return-Path: <linux-kernel+bounces-167412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC7C8BA935
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:48:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BEF08BA93C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 893D9B2122C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:48:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A08C61F21B84
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B15514D2BC;
-	Fri,  3 May 2024 08:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2667914A601;
+	Fri,  3 May 2024 08:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="YY49NBns"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A86414A0A2;
-	Fri,  3 May 2024 08:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HCrXgZ1E"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FFD1474AA
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 08:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714726088; cv=none; b=J1JRKpzRPYEoFlNqhuHCRMTPIWDa0JK9O1YZdvV2WdPRlU4O+jfnlB6u3RAH+u5R4Xdnl/fhQUuTqc9Kdh0yo9m/6YityvZXmJIdTZvybuz20umBATeLZUq8BynMMXyf3nSG5Rt8c3R7UwTAsq5ukm+FolWniz0GR115d6IQDKc=
+	t=1714726281; cv=none; b=IdjFwBPiAYhMOmWNZ5mPMYJPdA9TiHRsr3GCchQu9cc9u4qvnCLCUk2VxtnaoV2AQD44ZC7J796TTrI88gXgXreAabPaZQhQ3JfrrdyzERvCVPakhjIbydra5CPKVt9rclOTQNp4GytKIvaGGvmxFqQ5aG7k5aQl0SnmI5EyPAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714726088; c=relaxed/simple;
-	bh=Etxg/YHMDKlpBP32lFDLlbJbSn/TfzZAQBVqlraiDDQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oDIVzWHAQKYZAJWj1DmMeVmFm/CeZhby4KgK05SK3rxfKlSJS3Qw2ROjRyTKhlOnL9O8lXraCeUEo84indLQOdOgbrU5IekS0y54NHGS6KYVAzdaeJ7MUHHOEoBcfGEGIl5ZXRjgHHdlJ9l1dmPpoBmTdLFQcZPrLa1oD2VLfqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=YY49NBns; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id C9B0220B2C80; Fri,  3 May 2024 01:48:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C9B0220B2C80
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1714726086;
-	bh=i7337QBeIGytOvVKmvrACz56gMsVGvMlwWZTi53xsLE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YY49NBnsr3733U23ONC3HeNSrFWhcfqJUUOhGmt7SF2sx8ELfV27k8uB3Qh4zpyy7
-	 2m9l5urjC7tt5mvzIANbyq/jaTnKqxyjdnawdBUZQMA37FuLWSRSTiBvoS2EOzcrXj
-	 bSmPiBcruCWnyQzZzPTBlcfeHLRZylpxj25fi7GQ=
-Date: Fri, 3 May 2024 01:48:06 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Breno Leitao <leitao@debian.org>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>, linux-hyperv@vger.kernel.org,
-	shradhagupta@microsoft.com
-Subject: Re: [PATCH net-next v2 0/2] Add sysfs attributes for MANA
-Message-ID: <20240503084806.GA1248@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
- <ZikbpoXWmcQrBP3V@nanopsycho>
- <20240430053138.GA6429@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1714726281; c=relaxed/simple;
+	bh=IEjd9yHeRN2jxLghIr0Q/jIHE64VNvDXmfQrbY/lmKM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=KyaUsxTmEvfatMhp8hQrdy8MA1228SS8jvHR/d5skNcLSxm8qI+CAJaVxnFCwvl1sjjQ8zrv1073L4CRiEKhNJdWUTdj4+UoO1tQSWlj2GgBa4aXqPqGyFDvEf9TPyJbYW7PBhBv2kqtI2UV4thUV+tzWglp7nLTCb4urNabKeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HCrXgZ1E; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2e271acb015so1638971fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 01:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714726278; x=1715331078; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZWk/psw7Jn7h8F9Bpz9pTT51OJv92Z7OG1gjIzaGghI=;
+        b=HCrXgZ1EX0CBIZ7mbj3uk+1mDN13w1okTDa8Y/rgCmAPRi0/bOG913P6prd1wdWIt6
+         aqEXgzerEWWyWmk8K/WpxcrWynH6PSvSpj5teKdFzj56bJtlpmcib7jKJc3llm/1aiMh
+         d8QUWW68QgTHqVU6Z0DMqyHZtiqTIyju40ud8kQ4fYum7vSk9xBb31WT5kLIFnEG/OJ2
+         1b9HnK7T42e7c6hwf09untSlj6RMPsuMtKXwpBgyuyH8AAcYN3TtJKN8cnuDO6svdZy7
+         EBYowrzKn6YR5jNOBDdhBZm+aUTU1ykNcKmL/wfpr10dL/y3fO6LrYZEG4ICRKYDtrnP
+         akgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714726278; x=1715331078;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZWk/psw7Jn7h8F9Bpz9pTT51OJv92Z7OG1gjIzaGghI=;
+        b=J6Kxn4c0/609mjMFe9mQqsdPrBniMiFq8gLX8nrwAaBJgB5+IjzonZx3pzeJxAc0B0
+         J1btZn9mondlPhhwLZJkT/KKDoIUGt/H83Aezaz9HqNWIvAhbc21sbCFRvirOlInRSbM
+         dnvhdgjdJPmE7VgQ6Syp1koz+tuu2yhNUaPtUPV8INCML41oVFUh/wT1Hl0Hp/Q1DtVq
+         N3z6ma8VkGY5HacNTD+6P0Rd9k2CpTc+v+GUGkiAiuw7bByebhNb8Rrw9fHdLLss4dBo
+         5mKABPUBlqyGYQuEY8Zj/wcWB78lHo256ITGAJAO+KYS5TVo0TgIu1HvL83mJtbG9Xvq
+         L9Eg==
+X-Forwarded-Encrypted: i=1; AJvYcCX1IXW/GpiB4fsmJVFXfwBJZn/YyzMBwDYRsJYWsja4h8IH6bz7g/bRF9glguwECmnQo/G4CaQW6HcuvGF9Kzu0KCBzcrKXRpAqOcYm
+X-Gm-Message-State: AOJu0YwqdEQwmqz5Skmmtmgvu6VLFSJqfLMAoOYqpewTf3zUfYf5SYJX
+	ANovNlGOmhQx3cPx3OgykH0Ha9SRfMEbdvlXn1ODxOXHrFLp1eJTvtkNNHwm/LdWWoJqJbvZMTa
+	uqZ0=
+X-Google-Smtp-Source: AGHT+IHcI2LurCc2hKenAfI5jjKmPmOLR9ME3lIwcmztZCp99vEXqtLskwgBUgkpuv4Q6SUOsRVoww==
+X-Received: by 2002:a05:6512:2eb:b0:51d:70d9:ece0 with SMTP id m11-20020a05651202eb00b0051d70d9ece0mr1451847lfq.6.1714726277628;
+        Fri, 03 May 2024 01:51:17 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id i15-20020adfb64f000000b0034af40b2efdsm3204178wre.108.2024.05.03.01.51.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 01:51:17 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>, 
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
+ dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240426160256.3089978-1-jbrunet@baylibre.com>
+References: <20240426160256.3089978-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH 0/2] drm/meson: fix hdmi auxiliary system operation
+ without display
+Message-Id: <171472627680.386161.1617857178874394298.b4-ty@linaro.org>
+Date: Fri, 03 May 2024 10:51:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430053138.GA6429@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
-On Mon, Apr 29, 2024 at 10:31:38PM -0700, Shradha Gupta wrote:
-> On Wed, Apr 24, 2024 at 04:48:06PM +0200, Jiri Pirko wrote:
-> > Wed, Apr 24, 2024 at 12:32:54PM CEST, shradhagupta@linux.microsoft.com wrote:
-> > >These patches include adding sysfs attributes for improving
-> > >debuggability on MANA devices.
-> > >
-> > >The first patch consists on max_mtu, min_mtu attributes that are
-> > >implemented generically for all devices
-> > >
-> > >The second patch has mana specific attributes max_num_msix and num_ports
-> > 
-> > 1) you implement only max, min is never implemented, no point
-> > introducing it.
-> Sure. I had added it for the sake of completeness.
-> > 2) having driver implement sysfs entry feels *very wrong*, don't do that
-> > 3) why DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MAX
-> >    and DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MIN
-> >    Are not what you want?
-> Thanks for pointing this out. We are still evaluating if this devlink param
-> could be used for our usecase where we only need a read-only msix value for VF.
-> We keep the thread updated.
-The attribute that we want is per VF msix max. This is per PF and would not be
-the right one for our use case.
-Do you have any other recommendations/suggestions around this?
+Hi,
 
-Regards,
-Shradha.
-> > 
-> > >
-> > >Shradha Gupta (2):
-> > >  net: Add sysfs atttributes for max_mtu min_mtu
-> > >  net: mana: Add new device attributes for mana
-> > >
-> > > Documentation/ABI/testing/sysfs-class-net     | 16 ++++++++++
-> > > .../net/ethernet/microsoft/mana/gdma_main.c   | 32 +++++++++++++++++++
-> > > net/core/net-sysfs.c                          |  4 +++
-> > > 3 files changed, 52 insertions(+)
-> > >
-> > >-- 
-> > >2.34.1
-> > >
-> > >
+On Fri, 26 Apr 2024 18:02:52 +0200, Jerome Brunet wrote:
+> CEC and ARC should work even when HDMI is not actively used for the
+> display but it is not the case with Amlogic HDMI.
+> 
+> This is important for devices such as sound bars which may use DSI
+> to display a UI and HDMI for CEC/ARC. A display is not required for these
+> functions
+> 
+> [...]
+
+Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-fixes)
+
+[1/2] drm/meson: dw-hdmi: power up phy on device init
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/04703bfd7f99c016a823c74712b97f8b5590ce87
+[2/2] drm/meson: dw-hdmi: add bandgap setting for g12
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/08001033121dd92b8297a5b7333636b466c30f13
+
+-- 
+Neil
+
 
