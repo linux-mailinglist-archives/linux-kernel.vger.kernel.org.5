@@ -1,402 +1,163 @@
-Return-Path: <linux-kernel+bounces-167153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2670E8BA4FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:41:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D338BA502
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:41:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82051F2178A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:41:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9F40B230EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3990D17BA4;
-	Fri,  3 May 2024 01:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD26168B8;
+	Fri,  3 May 2024 01:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OeYICMz5"
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gaccD0vE"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2057.outbound.protection.outlook.com [40.107.92.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FACC13FF9;
-	Fri,  3 May 2024 01:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714700476; cv=none; b=f52OMS99CD6g6Zxn/jl66TAqYkfWCPJ1Ipz4tXG+qwk+IzAVjMj4zEMJldY66oU+LzqRzx1YVDmvKO2e4YYgURWT5/TRHeRwJo9WBFHclXQi6GjFtZRMoL8Nj08g+7FDdq70k4nCk0KO88QFyMYwcSeBeR+tRULwV2jcuT1nU14=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714700476; c=relaxed/simple;
-	bh=DbzoiEyfXukURI2KnddVlRQjElhA8rvJYcCRelBLuaA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IVzoP882hJccqhqSnn4oCCnzwWCAsbdlEFpi0azFaCcqt49729RwAg0aEyuzBqbbYm7W9ILKyBaXJ1m+sTrqag8YIXAFAElAfa2Ge+xxt9j4kTHsPo7RBPfFJl+QL6UYMwbyF5tlvkG8uU9Dzp32NpQAb6Wjca76L35b4ga9PsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OeYICMz5; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7efcdc89872so2095149241.3;
-        Thu, 02 May 2024 18:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714700473; x=1715305273; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VlRJGegZy6w5LS1pjceiS9E4YpXz8vFlDYvpW3ED23Q=;
-        b=OeYICMz5RF5MsbJihAh91blsue7nOVQ37AmIMNF1Da4K7Sb9WKkb0z+i3kNkskIb+g
-         ookMVZoZktqGLnqQWUnWLrYRPBmjWtuyOUiZiFWs+C3bgKfRKTyqEnekP/6SaIVMhqlD
-         1iGnFiqRhjOmYn6A1EI2bT6+TucX9aZ9jvzrVWkPnQY2KUt4mmUnixDBQdfiv4C77do2
-         tqxHtAymtY1Hggul+6o0KxJm7bVmaSNLZRSXFvQv0tmQU85qet5pykY+FXnmQohPah6l
-         jTjrl3M5z5WK2q4Xip8z1y9UMg+xxV+m8mYLPZtdJrHbZVxq/AfyHVClGO/Uc1r4qnck
-         JIFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714700473; x=1715305273;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VlRJGegZy6w5LS1pjceiS9E4YpXz8vFlDYvpW3ED23Q=;
-        b=noqnkdr8dLwTltkHHkoEySjwTEme/jhSVFKCHC7wJnmJZuGbUlLNCrddmPbb+TT2+Y
-         8lrIjzwAQAjez1URruPDdSNG8PpzcJsZX9xED+JR37TgRofUH7Jx5UiDg1xojn6miFb8
-         WjvRH9Bdr5c2Lm2wmFNYH2jSWuMy1yyy7Yw9AKZsOE1NO7AOpo/9GY9xCriB/+XOy8Pv
-         O+gbx4wUhGvela/fPluGgp0pkxHmTTZHME0Qa/X/5eNtZzSAF/4RCFQcSZBLBI1GjGpu
-         yQWJC7LxVvqnIMitOA4Pnu9foKjhnQU/spC9qLRokaGR91qFGsVGiUg/nxNsY1YfUSbQ
-         Us3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVoLkpSmz1jImNuSwOQJcP/zwzEy9RCD4UH9C6RcCtrwwW18G2x3AZvrY26Jx2gl46mTRc/bqfIvNX0655ZH7QGOOvEbyP6TugS/APRRgghfvNP1ehxw9Rt27e6yC/1en2TtI/sKL0N9MREOQ==
-X-Gm-Message-State: AOJu0YylkohIMmu/HkgdufcaTbTQzZKH2lxbzdrEagTZyREooBBoKbik
-	cz+oCIL8ttcZIU3EU35WnFvQp0RZz03kBl5YmRwnILNCvwEKmpcu7TF3mbjiu0VTmb6LeKtFZMQ
-	e4WRHfCi8lVhvDHctY82UMb6l/hM=
-X-Google-Smtp-Source: AGHT+IFBeWjdtaBlerRRX5wmmVtg2RU/hEPFQQBEd4Yx452buoaBo5IsvlOtb3rX30HdP6R0GMkt8aPyuEQNfNrCIUw=
-X-Received: by 2002:a05:6122:99d:b0:4d3:398f:8633 with SMTP id
- g29-20020a056122099d00b004d3398f8633mr1485097vkd.10.1714700471440; Thu, 02
- May 2024 18:41:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB52CA7D;
+	Fri,  3 May 2024 01:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714700488; cv=fail; b=HfR0k0w3Bmq7g6ryRNnoNWRhWlnV73WNegXCz3gVU5RJKthQWCxQL8EJUEkXeFzK+zkjs/4PERA9W/JcFpKuxCAOP/yavV3hYu56zE/A5zR6PWjLzYTfQys1YMQOchcizCFvqOUT1Gooy29ARBjaCi50NiBeka7CnLDRoKCtKQE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714700488; c=relaxed/simple;
+	bh=6oX4B/ywuu6wOeHi2XgQRNMny4WuFOkHoN1Ym67S0EI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iuxNJ8hp7r2jhuzysBQlcHkCDEByYJj1XgsRc/gl+9NyzXB2+P8IXzTNW/0dReelgzAHSKuu0I7S/mFB3POyElo9NnW2LP6WR6DyHTZ2fj4LAebFFNjaJa6s0Uz8GhVAhqNH9TyDA54Ke9d5hd1RnrkfLSRvFvSaPV0vBvq+6qI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gaccD0vE; arc=fail smtp.client-ip=40.107.92.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b9/01bGtWa9t9LISJZ59Q6WyR0uWcWx7XnSYX2ApUx1Gb13Kup3elGeB9u2XC/lF1MuvmKDJpFvXjDm0c7q4WcoPLqGR2/I7Nl3k6TtFrv1B8mkzezbV2VSV4WGrtzSU/PYH7tD/WHlCn1JFQRW1pY7C8CTzNVU63O0UBA3z+bhBhSGJggACCvnLH7lSZDhEho5hfcv3yX0HXeELhHC+2iIWwungYNXmHWrgsRBW3B33oG+miPUY4ZxK1n96of6h14mO95a6/eXLwjKS16Cb99q2QDC8jH0gxUa+RNi8p4pQdVJ6Z19/GgM5rm1kd+n+/Nk2f+l7AW7T8c8UtliB+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4G6XthwEd4WBPaTnjOVzBYeGHj6pKvuamTwpStqDBE0=;
+ b=oNFMan02B2zU8XWXC4tvwfoLFKOiZWUcwnQxH37ysGQnsQhW4V2tbMyGWYftPFCDzRQ3ntnKCO3kMNsipFMh0Rk6Vgko9D3q4wL/8+/8sNRdxYRQq2pi/K7vIuR655W7aUmY9KUZzRrOhUWEgoglEF2yaWqhdEJJ2cTgcIpZArKfDrRod4zfc9+37jcNQ4AkSJ6MHeH2t2e/e5GPUE/e2kREUIy8amhLXIXabPn8j/FrdGdSY9Azv5LhXAiLnSWuRN9hOnE6LONVUYk1IxJdFUNhWQHe6z+Wm0tWxnO0u+9U/5fCWP54sm4Hrq89WGnXX2K/+X3oTEllhbh78d7i4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4G6XthwEd4WBPaTnjOVzBYeGHj6pKvuamTwpStqDBE0=;
+ b=gaccD0vEngx65PmdzhSQoZ0B8CaNAgf8rO3AeBnRdk0WjbxJ5jt86S7ltgE1FzBf1fddrbpGYU1Tn2x8M7/otVUAz/k78DspKhC03qi7Wv6IIdLEZg2Ei3KCeAhgOhywbxeIzt97hM8zugcEDz7BWX6d6eXwY5hvnCTErJrWp30d2IzIPjcBXW5yVJDrY1pGaFj2EHisgRzGTXDcLeqmot007mYvZEyqsidIJVjh/Sc5tlPcGNvTRjeeP1Cf48XD5s32HvBIPbi4vrBaJmjoD/bXJy8hQJOyFssZD6qKpw+mKTVSugQ9A0dl4+zPqPeDlDl2j4EGxePtdXL1yTuzKQ==
+Received: from BY3PR04CA0017.namprd04.prod.outlook.com (2603:10b6:a03:217::22)
+ by BL1PR12MB5898.namprd12.prod.outlook.com (2603:10b6:208:396::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Fri, 3 May
+ 2024 01:41:23 +0000
+Received: from CO1PEPF000066EB.namprd05.prod.outlook.com
+ (2603:10b6:a03:217:cafe::37) by BY3PR04CA0017.outlook.office365.com
+ (2603:10b6:a03:217::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29 via Frontend
+ Transport; Fri, 3 May 2024 01:41:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000066EB.mail.protection.outlook.com (10.167.249.7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7544.18 via Frontend Transport; Fri, 3 May 2024 01:41:22 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 2 May 2024
+ 18:41:06 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 2 May 2024
+ 18:41:05 -0700
+Received: from jjang.nvidia.com (10.127.8.12) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Thu, 2 May
+ 2024 18:41:05 -0700
+From: Joseph Jang <jjang@nvidia.com>
+To: <shuah@kernel.org>, <alexandre.belloni@bootlin.com>, <avagin@google.com>,
+	<jjang@nvidia.com>, <amir73il@gmail.com>, <brauner@kernel.org>,
+	<mochs@nvidia.com>, <linux-kernel@vger.kernel.org>,
+	<linux-rtc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+CC: <sdonthineni@nvidia.com>, <treding@nvidia.com>,
+	<linux-tegra@vger.kernel.org>
+Subject: [PATCH 0/1] selftest: rtc: Add support rtc alarm content check
+Date: Thu, 2 May 2024 18:41:01 -0700
+Message-ID: <20240503014102.3568130-1-jjang@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502235603.19290-1-apais@linux.microsoft.com>
- <202405021743.D06C96516@keescook> <CAOMdWSLa-dp34aq3RepQABpnGs-TnyQgUxFm--MHVHFuVYTgFg@mail.gmail.com>
-In-Reply-To: <CAOMdWSLa-dp34aq3RepQABpnGs-TnyQgUxFm--MHVHFuVYTgFg@mail.gmail.com>
-From: Allen <allen.lkml@gmail.com>
-Date: Thu, 2 May 2024 18:40:58 -0700
-Message-ID: <CAOMdWSLh80OHx=som1WeK_L_=2LVK1rehXH88t3Ew--4dSE4ew@mail.gmail.com>
-Subject: Re: [PATCH v3] fs/coredump: Enable dynamic configuration of max file
- note size
-To: Kees Cook <keescook@chromium.org>
-Cc: Allen Pais <apais@linux.microsoft.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, ebiederm@xmission.com, mcgrof@kernel.org, 
-	j.granados@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000066EB:EE_|BL1PR12MB5898:EE_
+X-MS-Office365-Filtering-Correlation-Id: 66b732d1-e05e-489e-2913-08dc6b1223ae
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|36860700004|376005|1800799015|921011;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?ZiOj4n7InmYl2YM95NtxFslYhWDbfJ/KVEPSltieBOqigYmDDTlLm5qv1Lpl?=
+ =?us-ascii?Q?qdRyix4F8p+zb2Opi6It9kSmPD6IZE5hKKUVSVM/hztrxNsIcov6PaU96nCU?=
+ =?us-ascii?Q?8TmOtR+lZB7363IDbjbKNy/TlmKFVlD/bfehV31VIUQ2pW9aX3MTwArlVYHv?=
+ =?us-ascii?Q?lJ2nNG/swWszjwBO6KAdKnmvF001G5o1B51nCHsS2Li7A/niNx5odebfhm08?=
+ =?us-ascii?Q?zC95Y9pc+IdC3sQwg4+8kh/9Nr9sB6pFHXt7rrqDnc5pVPeT5gH5LcqEhWmj?=
+ =?us-ascii?Q?dYMERqrev1GiUdtApe+4U98loL3Twd7V7dFTEK1LZsrZ4OPmTOQBLCPERM8U?=
+ =?us-ascii?Q?BTmNXyJAqTfjSgo54of5SfRDbdhuJfzjqt45BW8wP0nsOjV5G4LnPzqazIll?=
+ =?us-ascii?Q?/HiI1hw+5PYkIYXW9MuCq2MgqmWSNJjOkjq1d3b9ag5qHmvnSm0Sr9jViryu?=
+ =?us-ascii?Q?pXzgPYuQkJbl1p7dmvCMBxvUlSFyFRp+6wjv1Q27KszZhKipQxWvkn/xkKBC?=
+ =?us-ascii?Q?t8PvZRb/8CaDSFn3ZWU2V5VqER0F2TfSYcCZubfzwNjnBuymJRjSUO/VjuIy?=
+ =?us-ascii?Q?k/L4OEKgPrt2VNoedJiUtIhwpKzfqIm/jcpAdyg2aU7Mzu7agWoDUBtqGQkF?=
+ =?us-ascii?Q?0uLVVWGR1fWOsE3A5O/IfpB30lWvKrzF20HC+8UlSj66GAMsHnYSew2KPQxd?=
+ =?us-ascii?Q?z69WeXMivTLy+nReXjvHDy/DSyzL9aN6Zn/1Q3QZB/QmKnES/RvRST3HR/YM?=
+ =?us-ascii?Q?iCi0zt7RlATXQ18JOhSOTW5Y841kCAgeN3EEFY/EfgAS4/PvVc9VA6Z+aaVP?=
+ =?us-ascii?Q?QsmSX2129pR82uVuA2GY0EHaQ/SrNBtaRLXFDPMx47NJ7HWptqlkNuSsuzOp?=
+ =?us-ascii?Q?85IWWlWUKPZs+rdgDkA+q25aFFuDFrQgmB4LGbyNuVtNp5xaQtPBhudkFGMe?=
+ =?us-ascii?Q?8XFM+nEZTDrMbt0EQyeWJApx7gx3VSxtbltdNBEJmzMT07YJ5b7nnEZEuI4c?=
+ =?us-ascii?Q?mK7jE5P6vxP/REJdrV3eIW/CoSmBEKD5jmigELfP2uBRBMm3EoUzaalh6LSW?=
+ =?us-ascii?Q?oZZZxCg8/uWdVypC0uASR8P5YCRU9a9uHCVoag0uzD6n1nj1pH0B+1DBd5Tu?=
+ =?us-ascii?Q?+dm8ClX89QqRrkJWakPwTzTJa8eX8x13xyoxueDk0EkRHx4fkyOCgK8DG4oy?=
+ =?us-ascii?Q?burIcKlo1yxPr4NEF2Vp7pJp9IIA0MjNS/NgZLzK+YpA6Y/+7jYHQdWqPGZM?=
+ =?us-ascii?Q?iJoiNk+i2JY2OS0yrLll2r9ZxE0xYV//JKhSqSd9Mu8oX2kTusQ1FvZbi9jA?=
+ =?us-ascii?Q?LpcBNx3D2e2fLACi6vhRJM6AY/ITaZ8LBj2bynaVF3ajyUmdURM7wbSM/zi2?=
+ =?us-ascii?Q?9/R643Fg6D3rg7dDgxz8zKlk8Aa7?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 01:41:22.9623
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66b732d1-e05e-489e-2913-08dc6b1223ae
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000066EB.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5898
 
-> > > Introduce the capability to dynamically configure the maximum file
-> > > note size for ELF core dumps via sysctl. This enhancement removes
-> > > the previous static limit of 4MB, allowing system administrators to
-> > > adjust the size based on system-specific requirements or constraints.
-> > >
-> > > - Remove hardcoded `MAX_FILE_NOTE_SIZE` from `fs/binfmt_elf.c`.
-> > > - Define `max_file_note_size` in `fs/coredump.c` with an initial value
-> > >   set to 4MB.
-> > > - Declare `max_file_note_size` as an external variable in
-> > >   `include/linux/coredump.h`.
-> > > - Add a new sysctl entry in `kernel/sysctl.c` to manage this setting
-> > >   at runtime.
-> >
-> > The above bullet points should be clear from the patch itself. The
-> > commit is really more about rationale and examples (which you have
-> > below). I'd remove the bullets.
->
-> Sure, I have it modified to:
->
-> fs/coredump: Enable dynamic configuration of max file note size
->
->     Introduce the capability to dynamically configure the maximum file
->     note size for ELF core dumps via sysctl.
->
->     Why is this being done?
->     We have observed that during a crash when there are more than 65k mmaps
->     in memory, the existing fixed limit on the size of the ELF notes section
->     becomes a bottleneck. The notes section quickly reaches its capacity,
->     leading to incomplete memory segment information in the resulting coredump.
->     This truncation compromises the utility of the coredumps, as crucial
->     information about the memory state at the time of the crash might be
->     omitted.
->
->     This enhancement removes the previous static limit of 4MB, allowing
->     system administrators to adjust the size based on system-specific
->     requirements or constraints.
->
->     Eg:
->     $ sysctl -a | grep core_file_note_size_max
->     kernel.core_file_note_size_max = 4194304
-> .......
-> >
-> > >
-> > > $ sysctl -a | grep core_file_note_size_max
-> > > kernel.core_file_note_size_max = 4194304
-> > >
-> > > $ sysctl -n kernel.core_file_note_size_max
-> > > 4194304
-> > >
-> > > $echo 519304 > /proc/sys/kernel/core_file_note_size_max
-> > >
-> > > $sysctl -n kernel.core_file_note_size_max
-> > > 519304
-> > >
-> > > Attempting to write beyond the ceiling value of 16MB
-> > > $echo 17194304 > /proc/sys/kernel/core_file_note_size_max
-> > > bash: echo: write error: Invalid argument
-> > >
-> > > Why is this being done?
-> > > We have observed that during a crash when there are more than 65k mmaps
-> > > in memory, the existing fixed limit on the size of the ELF notes section
-> > > becomes a bottleneck. The notes section quickly reaches its capacity,
-> > > leading to incomplete memory segment information in the resulting coredump.
-> > > This truncation compromises the utility of the coredumps, as crucial
-> > > information about the memory state at the time of the crash might be
-> > > omitted.
-> >
-> > I'd make this the first paragraph of the commit log. "We have this
-> > problem" goes first, then "Here's what we did to deal with it", then you
-> > examples. :)
-> >
->  Done.
->
-> > >
-> > > Signed-off-by: Vijay Nag <nagvijay@microsoft.com>
-> > > Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-> > >
-> > > ---
-> > > Chagnes in v3:
-> > >    - Fix commit message to reflect the correct sysctl knob [Kees]
-> > >    - Add a ceiling for maximum pssible note size(16M) [Allen]
-> > >    - Add a pr_warn_once() [Kees]
-> > > Changes in v2:
-> > >    - Move new sysctl to fs/coredump.c [Luis & Kees]
-> > >    - rename max_file_note_size to core_file_note_size_max [kees]
-> > >    - Capture "why this is being done?" int he commit message [Luis & Kees]
-> > > ---
-> > >  fs/binfmt_elf.c          |  8 ++++++--
-> > >  fs/coredump.c            | 15 +++++++++++++++
-> > >  include/linux/coredump.h |  1 +
-> > >  3 files changed, 22 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> > > index 5397b552fbeb..5294f8f3a9a8 100644
-> > > --- a/fs/binfmt_elf.c
-> > > +++ b/fs/binfmt_elf.c
-> > > @@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote *note, user_siginfo_t *csigdata,
-> > >       fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
-> > >  }
-> > >
-> > > -#define MAX_FILE_NOTE_SIZE (4*1024*1024)
-> > >  /*
-> > >   * Format of NT_FILE note:
-> > >   *
-> > > @@ -1592,8 +1591,13 @@ static int fill_files_note(struct memelfnote *note, struct coredump_params *cprm
-> > >
-> > >       names_ofs = (2 + 3 * count) * sizeof(data[0]);
-> > >   alloc:
-> > > -     if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
-> > > +     /* paranoia check */
-> > > +     if (size >= core_file_note_size_max) {
-> > > +             pr_warn_once("coredump Note size too large: %u "
-> > > +             "(does kernel.core_file_note_size_max sysctl need adjustment?)\n",
-> >
-> > The string can be on a single line (I think scripts/check_patch.pl will
-> > warn about this, as well as the indentation of "size" below...
->
->  It does warn, but if I leave it as a single line, there's still a warning:
-> WARNING: line length of 135 exceeds 100 columns, which is why I
-> split it into multiple lines.
->
-> >
-> > > +             size);
-> > >               return -EINVAL;
-> > > +     }
-> > >       size = round_up(size, PAGE_SIZE);
-> > >       /*
-> > >        * "size" can be 0 here legitimately.
-> > > diff --git a/fs/coredump.c b/fs/coredump.c
-> > > index be6403b4b14b..ffaed8c1b3b0 100644
-> > > --- a/fs/coredump.c
-> > > +++ b/fs/coredump.c
-> > > @@ -56,10 +56,16 @@
-> > >  static bool dump_vma_snapshot(struct coredump_params *cprm);
-> > >  static void free_vma_snapshot(struct coredump_params *cprm);
-> > >
-> > > +#define MAX_FILE_NOTE_SIZE (4*1024*1024)
-> > > +/* Define a reasonable max cap */
-> > > +#define MAX_ALLOWED_NOTE_SIZE (16*1024*1024)
-> >
-> > Let's call this CORE_FILE_NOTE_SIZE_DEFAULT and
-> > CORE_FILE_NOTE_SIZE_MAX to match the sysctl.
-> >
->
->  Sure, will update it in v4.
->
-> > > +
-> > >  static int core_uses_pid;
-> > >  static unsigned int core_pipe_limit;
-> > >  static char core_pattern[CORENAME_MAX_SIZE] = "core";
-> > >  static int core_name_size = CORENAME_MAX_SIZE;
-> > > +unsigned int core_file_note_size_max = MAX_FILE_NOTE_SIZE;
-> > > +unsigned int core_file_note_size_allowed = MAX_ALLOWED_NOTE_SIZE;
-> >
-> > The latter can be static and const.
-> >
-> > For the note below, perhaps add:
-> >
-> > static const unsigned int core_file_note_size_min = CORE_FILE_NOTE_SIZE_DEFAULT;
-> >
->
->  core_file_note_size_min will be used in fs/binfmt_elf.c at:
->
->     if (size >= core_file_note_size_min) ,
-> did you mean
-> static const unsigned int core_file_note_size_allowed =
-> CORE_FILE_NOTE_SIZE_MAX;??
-> > >
+In order to make sure SET/GET WAKEUP services as optional patch has been
+integrated correctly, we have created a shell script to validate
+/proc/driver/rtc when it is not empty and then check the absence of alarm
+content in RTC metadata according to the rtc wakealarm is supported or not.
 
-Kees,
+Joseph Jang (1):
+  selftest: rtc: Add support rtc alarm content check
 
- My bad, I misunderstood what you asked for. Here is the final diff,
-if it looks fine,
-i can send out a v4.
-
-Note, there is a warning issued by checkpatch.pl (WARNING: line length
-of 134 exceeds 100 columns)
-for the pr_warn_once() and adding const trigger a build
-warning(warning: initialization discards
- 'const' qualifier from pointer target type), which is why i dropped it.
-
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 5397b552fbeb..19bd85d1e42e 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote
-*note, user_siginfo_t *csigdata,
-        fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
- }
-
--#define MAX_FILE_NOTE_SIZE (4*1024*1024)
- /*
-  * Format of NT_FILE note:
-  *
-@@ -1592,8 +1591,11 @@ static int fill_files_note(struct memelfnote
-*note, struct coredump_params *cprm
-
-        names_ofs = (2 + 3 * count) * sizeof(data[0]);
-  alloc:
--       if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
-+       /* paranoia check */
-+       if (size >= core_file_note_size_allowed) {
-+               pr_warn_once("coredump Note size too large: %u (does
-kernel.core_file_note_size_min sysctl need adjustment?\n", size);
-                return -EINVAL;
-+       }
-        size = round_up(size, PAGE_SIZE);
-        /*
-         * "size" can be 0 here legitimately.
-diff --git a/fs/coredump.c b/fs/coredump.c
-index be6403b4b14b..69085bb494dc 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -56,10 +56,16 @@
- static bool dump_vma_snapshot(struct coredump_params *cprm);
- static void free_vma_snapshot(struct coredump_params *cprm);
-
-+#define CORE_FILE_NOTE_SIZE_DEFAULT (4*1024*1024)
-+/* Define a reasonable max cap */
-+#define CORE_FILE_NOTE_SIZE_MAX (16*1024*1024)
-+
- static int core_uses_pid;
- static unsigned int core_pipe_limit;
- static char core_pattern[CORENAME_MAX_SIZE] = "core";
- static int core_name_size = CORENAME_MAX_SIZE;
-+static unsigned int core_file_note_size_min = CORE_FILE_NOTE_SIZE_DEFAULT;
-+unsigned int core_file_note_size_allowed = CORE_FILE_NOTE_SIZE_MAX;
-
- struct core_name {
-        char *corename;
-@@ -1020,6 +1026,15 @@ static struct ctl_table coredump_sysctls[] = {
-                .mode           = 0644,
-                .proc_handler   = proc_dointvec,
-        },
-+       {
-+               .procname       = "core_file_note_size_min",
-+               .data           = &core_file_note_size_min,
-+               .maxlen         = sizeof(unsigned int),
-+               .mode           = 0644,
-+               .proc_handler   = proc_douintvec_minmax,
-+               .extra1         = &core_file_note_size_min,
-+               .extra2         = &core_file_note_size_allowed,
-+       },
- };
-
- static int __init init_fs_coredump_sysctls(void)
-diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-index d3eba4360150..776bde5f9752 100644
---- a/include/linux/coredump.h
-+++ b/include/linux/coredump.h
-@@ -46,6 +46,7 @@ static inline void do_coredump(const
-kernel_siginfo_t *siginfo) {}
- #endif
-
- #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
-+extern unsigned int core_file_note_size_allowed;
- extern void validate_coredump_safety(void);
- #else
- static inline void validate_coredump_safety(void) {}
-
-
-Thanks,
-Allen
-> > >  struct core_name {
-> > >       char *corename;
-> > > @@ -1020,6 +1026,15 @@ static struct ctl_table coredump_sysctls[] = {
-> > >               .mode           = 0644,
-> > >               .proc_handler   = proc_dointvec,
-> > >       },
-> > > +     {
-> > > +             .procname       = "core_file_note_size_max",
-> > > +             .data           = &core_file_note_size_max,
-> > > +             .maxlen         = sizeof(unsigned int),
-> > > +             .mode           = 0644,
-> > > +             .proc_handler   = proc_douintvec_minmax,
-> > > +             .extra1         = &core_file_note_size_max,
-> >
-> > This means you can never shrink it if you raise it from the default.
-> > Let's use the core_file_note_size_min above.
->
-> Sure, will fix it in v4.
-> >
-> > > +             .extra2         = &core_file_note_size_allowed,
-> > > +     },
-> > >  };
-> > >
-> > >  static int __init init_fs_coredump_sysctls(void)
-> > > diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-> > > index d3eba4360150..14c057643e7f 100644
-> > > --- a/include/linux/coredump.h
-> > > +++ b/include/linux/coredump.h
-> > > @@ -46,6 +46,7 @@ static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
-> > >  #endif
-> > >
-> > >  #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
-> > > +extern unsigned int core_file_note_size_max;
-> > >  extern void validate_coredump_safety(void);
-> > >  #else
-> > >  static inline void validate_coredump_safety(void) {}
-> > > --
-> > > 2.17.1
-> > >
-> >
-> > I think v4 will be all good to go, assuming no one else pops up. :)
-> > Thanks for the changes!
->
-> Thank you for the reviews. Will send out v4 soon.
->
-> --
->        - Allen
-
-
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/rtc/property/Makefile |  5 ++++
+ .../selftests/rtc/property/rtc-alarm-test.sh  | 27 +++++++++++++++++++
+ 3 files changed, 33 insertions(+)
+ create mode 100644 tools/testing/selftests/rtc/property/Makefile
+ create mode 100755 tools/testing/selftests/rtc/property/rtc-alarm-test.sh
 
 -- 
-       - Allen
+2.34.1
+
 
