@@ -1,176 +1,144 @@
-Return-Path: <linux-kernel+bounces-167864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70D048BB07C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:01:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 761A78BB07D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:01:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C010281469
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:01:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983321C226E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE52155322;
-	Fri,  3 May 2024 16:01:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDF026AF5
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A082715535A;
+	Fri,  3 May 2024 16:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Aef4gjis"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB1C155397;
+	Fri,  3 May 2024 16:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714752061; cv=none; b=O6d8d/8Zq4lPH0T0vzHF3XvU3fD40ay0FTxcU1uV3lEfubGlZvb9TkHVvBZ+P0K/bdlbrTc9CNNCWGezjWybMPVCH3e6czTMW1yGbCr5KaawJcppvgoTO08I52H647fdRHkCjdgvbtH8zBKf6P+N7bGqjeG76Sc9kkWZy4Ahstg=
+	t=1714752109; cv=none; b=lLvPhr80AxlLJGTIScnhDSt3+BT/io0fKsaSlOCyn+XxzzpWbaW6aWymwXBt6CWWLQOCynEAWJDMuqAfqr8Yi0HFAUOGU2koPtbYGmVG+yJ9NVDDdTkg4Vc43Pws0pQbPPjmHImnABrB2JcjyBvzV/yuhX0lc8qFFC/Hsl/hwP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714752061; c=relaxed/simple;
-	bh=AzrwmgjmsQOHBRTm2KCP6QAVQci1+KUTVkY25ZOI5G4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fUF9C3UM72BYbeEXYFTUCHDRBsGXcD89KAf2ywy68YQNmYQFlP9ETH435kHNa204U8r6Ty4PRwi7lpjBXKq9f/0Y2cWcc0EtvVIzgvtqQNEUUFYvQDsR4sOJ8gj5NrjOAgRKDoumVVpWbSVnGc1c7R5GMMZSobmQ/rziENqgOsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C3BD13D5;
-	Fri,  3 May 2024 09:01:23 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.34.156])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41A513F793;
-	Fri,  3 May 2024 09:00:52 -0700 (PDT)
-Date: Fri, 3 May 2024 17:00:49 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Liao Chang <liaochang1@huawei.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-	oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, tglx@linutronix.de, ardb@kernel.org,
-	broonie@kernel.org, anshuman.khandual@arm.com,
-	miguel.luis@oracle.com, joey.gouly@arm.com, ryan.roberts@arm.com,
-	jeremy.linton@arm.com, ericchancf@google.com,
-	kristina.martsenko@arm.com, robh@kernel.org,
-	scott@os.amperecomputing.com, songshuaishuai@tinylab.org,
-	shijie@os.amperecomputing.com, akpm@linux-foundation.org,
-	bhe@redhat.com, horms@kernel.org, mhiramat@kernel.org,
-	rmk+kernel@armlinux.org.uk, shahuang@redhat.com,
-	takakura@valinux.co.jp, dianders@chromium.org, swboyd@chromium.org,
-	sumit.garg@linaro.org, frederic@kernel.org, reijiw@google.com,
-	akihiko.odaki@daynix.com, ruanjinjie@huawei.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev
-Subject: Re: [PATCH v3 1/8] arm64/sysreg: Add definitions for immediate
- versions of MSR ALLINT
-Message-ID: <ZjUKMWPknEhLYoK8@FVFF77S0Q05N>
-References: <20240415064758.3250209-1-liaochang1@huawei.com>
- <20240415064758.3250209-2-liaochang1@huawei.com>
+	s=arc-20240116; t=1714752109; c=relaxed/simple;
+	bh=toj4JNt/0SGplSZYRBmdaHv21iUmacqFjF9Z0TMqpOA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FZMhHZZ6FdsITVSPlfIMa9zVjsejDeC4VjZGbGQsa9T+Ots5UqpX57LWqCVSr2Dxdl9ESA6GRKkQZm8+d/tAr5vzTK2m0mNGDXLiS3JeibxfZxXVq/5uHFNIM9Sap/2yop8++ZdqOjBiwyOzWhArOJWM76fjQ2gqN17CW32otBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Aef4gjis; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714752106; x=1746288106;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=toj4JNt/0SGplSZYRBmdaHv21iUmacqFjF9Z0TMqpOA=;
+  b=Aef4gjis7rRRV46GE/fA1fJr86OSPAwk/+aiwA+B3Ab9n1BJ9+AHkKKv
+   3Hn7GXpBYwuHgcmjyX5jwl4OEFYCQjCzA4cI1NMmoAqPzdyG038NhriJY
+   6ns7I8Dca0RY6Cch1Sdx58TR+3TpFJuL/1xpGic0dDFX7/kPoun+G8Slx
+   kH236MaDrWgS0TApe+BL4VMsRe6QczlDWNEseQeFNiFlYJO3q2n5RZ00P
+   jUv5MpceaKkntFykJMzmmua04Yqg6AyLJFm7aZcN9St4rRiH6DweCo0nu
+   DkjKtxxHgYFqwHC/Ah97I3A8j9vWQQ3obB7YbUphMo5ziLfDiogAOqWrF
+   g==;
+X-CSE-ConnectionGUID: S9IwbmWQQkyLt3owFLwLJw==
+X-CSE-MsgGUID: z/Nf2RK4RGiM7e8Pn3ejug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="11098772"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="11098772"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 09:01:34 -0700
+X-CSE-ConnectionGUID: QMbUy9s0QV2EjF4/eXWwKg==
+X-CSE-MsgGUID: 8sTeKWiSRAOZATLgO+dLjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="27891983"
+Received: from zhangche-mobl.amr.corp.intel.com (HELO [10.209.82.31]) ([10.209.82.31])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 09:01:32 -0700
+Message-ID: <b78a383d-27bb-43e3-8e61-f8a6b25b2708@intel.com>
+Date: Fri, 3 May 2024 09:01:31 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415064758.3250209-2-liaochang1@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] x86/virt/tdx: Move TDMR metadata fields map table to
+ local variable
+To: Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: x86@kernel.org, kirill.shutemov@linux.intel.com, peterz@infradead.org,
+ tglx@linutronix.de, bp@alien8.de, mingo@redhat.com, hpa@zytor.com,
+ seanjc@google.com, pbonzini@redhat.com, isaku.yamahata@intel.com,
+ jgross@suse.com
+References: <cover.1709288433.git.kai.huang@intel.com>
+ <41cd371d8a9caadf183e3ab464c57f9f715184d3.1709288433.git.kai.huang@intel.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <41cd371d8a9caadf183e3ab464c57f9f715184d3.1709288433.git.kai.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 06:47:51AM +0000, Liao Chang wrote:
-> From: Mark Brown <broonie@kernel.org>
+On 3/1/24 03:20, Kai Huang wrote:
+> The kernel reads all TDMR related global metadata fields based on a
+> table which maps the metadata fields to the corresponding members of
+> 'struct tdx_tdmr_sysinfo'.
 > 
-> Encodings are provided for ALLINT which allow setting of ALLINT.ALLINT
-> using an immediate rather than requiring that a register be loaded with
-> the value to write. Since these don't currently fit within the scheme we
-> have for sysreg generation add manual encodings like we currently do for
-> other similar registers such as SVCR.
-> 
-> Since it is required that these immediate versions be encoded with xzr
-> as the source register provide asm wrapper which ensure this is the
-> case.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  arch/arm64/include/asm/nmi.h    | 27 +++++++++++++++++++++++++++
->  arch/arm64/include/asm/sysreg.h |  2 ++
->  2 files changed, 29 insertions(+)
->  create mode 100644 arch/arm64/include/asm/nmi.h
+> Currently this table is a static variable.  But this table is only used
+> by the function which reads these metadata fields and becomes useless
+> after reading is done.
 
-We have helpers for manipulating PSTATE bits; AFAICT we only need the three
-lines below:
+Is this intended to be a problem statement?  _How_ is this a problem?
 
-----8<----
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 9e8999592f3af..5c209d07ae57e 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -94,18 +94,21 @@
- 
- #define PSTATE_PAN                     pstate_field(0, 4)
- #define PSTATE_UAO                     pstate_field(0, 3)
-+#define PSTATE_ALLINT                  pstate_field(1, 0)
- #define PSTATE_SSBS                    pstate_field(3, 1)
- #define PSTATE_DIT                     pstate_field(3, 2)
- #define PSTATE_TCO                     pstate_field(3, 4)
- 
- #define SET_PSTATE_PAN(x)              SET_PSTATE((x), PAN)
- #define SET_PSTATE_UAO(x)              SET_PSTATE((x), UAO)
-+#define SET_PSTATE_ALLINT(x)           SET_PSTATE((x), ALLINT)
- #define SET_PSTATE_SSBS(x)             SET_PSTATE((x), SSBS)
- #define SET_PSTATE_DIT(x)              SET_PSTATE((x), DIT)
- #define SET_PSTATE_TCO(x)              SET_PSTATE((x), TCO)
- 
- #define set_pstate_pan(x)              asm volatile(SET_PSTATE_PAN(x))
- #define set_pstate_uao(x)              asm volatile(SET_PSTATE_UAO(x))
-+#define set_pstate_allint(x)           asm volatile(SET_PSTATE_ALLINT(x))
- #define set_pstate_ssbs(x)             asm volatile(SET_PSTATE_SSBS(x))
- #define set_pstate_dit(x)              asm volatile(SET_PSTATE_DIT(x))
----->8---- 
+> Change the table to function local variable.  This also saves the
+> storage of the table from the kernel image.
 
-The addition of <asm/nmi.h> and refrences to <linux/cpumask.h> and
-arm64_supports_nmi() don't seem like they should be part of this patch.
-
-Mark.
-
-> 
-> diff --git a/arch/arm64/include/asm/nmi.h b/arch/arm64/include/asm/nmi.h
-> new file mode 100644
-> index 000000000000..0c566c649485
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/nmi.h
-> @@ -0,0 +1,27 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2022 ARM Ltd.
-> + */
-> +#ifndef __ASM_NMI_H
-> +#define __ASM_NMI_H
-> +
-> +#ifndef __ASSEMBLER__
-> +
-> +#include <linux/cpumask.h>
-> +
-> +extern bool arm64_supports_nmi(void);
-> +
-> +#endif /* !__ASSEMBLER__ */
-> +
-> +static __always_inline void _allint_clear(void)
-> +{
-> +	asm volatile(__msr_s(SYS_ALLINT_CLR, "xzr"));
-> +}
-> +
-> +static __always_inline void _allint_set(void)
-> +{
-> +	asm volatile(__msr_s(SYS_ALLINT_SET, "xzr"));
-> +}
-> +
-> +#endif
-> +
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 9e8999592f3a..b105773c57ca 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -167,6 +167,8 @@
->   * System registers, organised loosely by encoding but grouped together
->   * where the architected name contains an index. e.g. ID_MMFR<n>_EL1.
->   */
-> +#define SYS_ALLINT_CLR			sys_reg(0, 1, 4, 0, 0)
-> +#define SYS_ALLINT_SET			sys_reg(0, 1, 4, 1, 0)
->  #define SYS_SVCR_SMSTOP_SM_EL0		sys_reg(0, 3, 4, 2, 3)
->  #define SYS_SVCR_SMSTART_SM_EL0		sys_reg(0, 3, 4, 3, 3)
->  #define SYS_SVCR_SMSTOP_SMZA_EL0	sys_reg(0, 3, 4, 6, 3)
-> -- 
-> 2.34.1
-> 
+I'm confused how this would happen.  Could you please explain your logic
+a bit here?
 
