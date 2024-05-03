@@ -1,365 +1,719 @@
-Return-Path: <linux-kernel+bounces-168346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDDFD8BB70F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:28:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BE98BB757
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:34:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88C13283E86
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:28:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 270D5B23077
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D180E5CDF2;
-	Fri,  3 May 2024 22:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F67130A68;
+	Fri,  3 May 2024 22:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsnNZQLT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40BF250F8;
-	Fri,  3 May 2024 22:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="K+1vEBqz"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5964F82D6C;
+	Fri,  3 May 2024 22:32:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714775286; cv=none; b=rWtyrY9NdM1qJFfBi9NSZNetRjKTwwK2F/l47+HVO+0VhGRxo2uasKmWLN7+yvt/7AX3CUOCObDXHFoIavMOxmBUcGb0WdcIwDBZMRxuOWNLRE0acZQVs7rE0l0eMjkFIvBJfe+7SLxSX1rWugJ3KunnsFJ9/wNsIPWqFMwNJsQ=
+	t=1714775558; cv=none; b=fLbVjKnXSMTUJhUsSzPZABo3q/dPQlp4pUvn2kFgHf3n0MzpRsrZCmRC+wy6qKKom+Y2lLHrQbeBnLmTt1yKoTCIPbijMCrkibG+UIPK2ji+00ZixPzVn8hngZYnvV/UQKWbYNPtjOtH1+5GTnxnSlfAJUQO/Mv8H1QKy55zCKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714775286; c=relaxed/simple;
-	bh=O0uaKV28+bfcdftHvU+JWI3cAKEj5aCSXdnEQBFBSDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=kfyx7Crz6/qDFG/dO7Blz/IOLhceW1+wLj+2VM8u7PpxrLs1Co4E7x4QWmgGvs12saVNEUJXj8gk2iTf1nnW90OCxUzxB7MCd7wbvAhJnoZhl3qG6b3E+t4k5JVI5SGXsu5lEXGAlED+W5lGDKtGOgTcaGtrRIZj6C0tl2ENWWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NsnNZQLT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF668C2BBFC;
-	Fri,  3 May 2024 22:28:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714775286;
-	bh=O0uaKV28+bfcdftHvU+JWI3cAKEj5aCSXdnEQBFBSDM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=NsnNZQLT28HBGBYZy1Iw6xEbTnCHdv+cFuf2qTEz7QXyo9455RwVSV0lwyTvqmoHo
-	 CDNSjfYx9DZtDvrZeS7oRQ0mjyxNotUm2uFyPhPoUswmaAvtXTxDfM8H8VUJVQgWpS
-	 KJRk0Jai/c3bOe1CylBrToTvf5kXQdS66huFLvSeYElbnFbdLREK1A6XHGgeOTIjfG
-	 EoEXMJxK6aMuZ1jz9rsBPrErUkoY3I4hgunsBiuAQfhqNq1obcJ0YUfZoUtjkjZ4pN
-	 urYS6QxdkLnYSenC4GIc4o58lcDWEk8Y+iSSPGi89a1iXY+RXP/SuPCuN0X/ELx03l
-	 vyghy6TYdidjQ==
-Date: Fri, 3 May 2024 17:28:03 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "David E. Box" <david.e.box@linux.intel.com>
-Cc: Jian-Hong Pan <jhp@endlessos.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Johan Hovold <johan@kernel.org>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Francisco Munoz <francisco.munoz.ruiz@linux.intel.com>
-Subject: Re: [PATCH v5 4/4] PCI/ASPM: Fix L1.2 parameters when enable link
- state
-Message-ID: <20240503222803.GA1608065@bhelgaas>
+	s=arc-20240116; t=1714775558; c=relaxed/simple;
+	bh=i5JYvknqcfnjAGqedbNat90N7o4YxqHnqz1rYIDFzCw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=aKngkLBg6wRhBakRN1YtFNc1pH8ZfGXkvKfkzV5eSo0xcC5hNpAurmJ4axwRVlTQqRv08r3URxFgSPauwql7AslPesDgreMAj4n9v9TZiAoL7Mq867lWiRnMEBvjTRSzPZ2Iz3u+MHF1TwfGx8emdhd2XabsrGIyJgm3xAoXtF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=K+1vEBqz; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+	id B84C6207DBD5; Fri,  3 May 2024 15:32:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B84C6207DBD5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1714775552;
+	bh=64y4JfiU5dqwj74R7yq7qSHaiWIPbXnXi/lPLCRegnI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=K+1vEBqzJmYKfJ0+YtLpVnDjc/XEGDx7mYsiKjiklaUR/j7oO8v9+Hg/m8rdKcM+e
+	 mXxhQPlN1b7x1sOgOqqU16aDPcDcwrkIR7v1HeoVPICZg1j7Tnl9x0hFtbUBTAQrGa
+	 kzsyGHtJuOjARkH6bSEvXN262XvvtKFYKEw5pagQ=
+From: Fan Wu <wufan@linux.microsoft.com>
+To: corbet@lwn.net,
+	zohar@linux.ibm.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	tytso@mit.edu,
+	ebiggers@kernel.org,
+	axboe@kernel.dk,
+	agk@redhat.com,
+	snitzer@kernel.org,
+	eparis@redhat.com,
+	paul@paul-moore.com
+Cc: linux-doc@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	audit@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Fan Wu <wufan@linux.microsoft.com>
+Subject: [PATCH v18 00/21] Integrity Policy Enforcement LSM (IPE)
+Date: Fri,  3 May 2024 15:32:10 -0700
+Message-Id: <1714775551-22384-1-git-send-email-wufan@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <876d19b7702dc16010b56bce049e2ab60bf68e3b.camel@linux.intel.com>
 
-[+cc Francisco]
+IPE is a Linux Security Module that takes a complementary approach to
+access control. Unlike traditional access control mechanisms that rely on
+labels and paths for decision-making, IPE focuses on the immutable security
+properties inherent to system components. These properties are fundamental
+attributes or features of a system component that cannot be altered,
+ensuring a consistent and reliable basis for security decisions.
 
-On Fri, May 03, 2024 at 12:15:49PM -0700, David E. Box wrote:
-> On Fri, 2024-05-03 at 17:45 +0800, Jian-Hong Pan wrote:
-> > David E. Box <david.e.box@linux.intel.com> 於 2024年5月1日 週三 上午2:26寫道：
-> > > On Tue, 2024-04-30 at 15:46 +0800, Jian-Hong Pan wrote:
-> > > > David E. Box <david.e.box@linux.intel.com> 於 2024年4月27日 週六 上午8:03寫道：
-> > > > > On Wed, 2024-04-24 at 19:02 +0800, Jian-Hong Pan wrote:
-> > > > > > Currently, when enable link's L1.2 features with
-> > > > > > __pci_enable_link_state(),
-> > > > > > it configs the link directly without ensuring related L1.2 parameters,
-> > > > > > such
-> > > > > > as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD have
-> > > > > > been
-> > > > > > programmed.
-> > > > > > 
-> > > > > > This leads the link's L1.2 between PCIe Root Port and child device
-> > > > > > gets
-> > > > > > wrong configs when a caller tries to enabled it.
-> > > > > > 
-> > > > > > Here is a failed example on ASUS B1400CEAE with enabled VMD:
-> > > > > > 
-> > > > > > 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor
-> > > > > > PCIe
-> > > > > > Controller (rev 01) (prog-if 00 [Normal decode])
-> > > > > >     ...
-> > > > > >     Capabilities: [200 v1] L1 PM Substates
-> > > > > >         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+
-> > > > > > L1_PM_Substates+
-> > > > > >                   PortCommonModeRestoreTime=45us PortTPowerOnTime=50us
-> > > > > >         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > > > >                    T_CommonMode=45us LTR1.2_Threshold=101376ns
-> > > > > >         L1SubCtl2: T_PwrOn=50us
-> > > > > > 
-> > > > > > 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue
-> > > > > > SN550
-> > > > > > NVMe
-> > > > > > SSD (rev 01) (prog-if 02 [NVM Express])
-> > > > > >     ...
-> > > > > >     Capabilities: [900 v1] L1 PM Substates
-> > > > > >         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > > > > L1_PM_Substates+
-> > > > > >                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
-> > > > > >         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > > > >                    T_CommonMode=0us LTR1.2_Threshold=0ns
-> > > > > >         L1SubCtl2: T_PwrOn=10us
-> > > > > > 
-> > > > > > According to "PCIe r6.0, sec 5.5.4", before enabling ASPM L1.2 on the
-> > > > > > PCIe
-> > > > > > Root Port and the child NVMe, they should be programmed with the same
-> > > > > > LTR1.2_Threshold value. However, they have different values in this
-> > > > > > case.
-> > > > > > 
-> > > > > > Invoke aspm_calc_l12_info() to program the L1.2 parameters properly
-> > > > > > before
-> > > > > > enable L1.2 bits of L1 PM Substates Control Register in
-> > > > > > __pci_enable_link_state().
-> > > > > > 
-> > > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
-> > > > > > Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> > > > > > ---
-> > > > > > v2:
-> > > > > > - Prepare the PCIe LTR parameters before enable L1 Substates
-> > > > > > 
-> > > > > > v3:
-> > > > > > - Only enable supported features for the L1 Substates part
-> > > > > > 
-> > > > > > v4:
-> > > > > > - Focus on fixing L1.2 parameters, instead of re-initializing whole
-> > > > > > L1SS
-> > > > > > 
-> > > > > > v5:
-> > > > > > - Fix typo and commit message
-> > > > > > - Split introducing aspm_get_l1ss_cap() to "PCI/ASPM: Introduce
-> > > > > >   aspm_get_l1ss_cap()"
-> > > > > > 
-> > > > > >  drivers/pci/pcie/aspm.c | 12 ++++++++++++
-> > > > > >  1 file changed, 12 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > > > > > index c55ac11faa73..553327dee991 100644
-> > > > > > --- a/drivers/pci/pcie/aspm.c
-> > > > > > +++ b/drivers/pci/pcie/aspm.c
-> > > > > > @@ -1402,6 +1402,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
-> > > > > >  static int __pci_enable_link_state(struct pci_dev *pdev, int state,
-> > > > > > bool
-> > > > > > locked)
-> > > > > >  {
-> > > > > >         struct pcie_link_state *link = pcie_aspm_get_link(pdev);
-> > > > > > +       struct pci_dev *child = link->downstream, *parent = link-
-> > > > > > >pdev;
-> > > > > > +       u32 parent_l1ss_cap, child_l1ss_cap;
-> > > > > > 
-> > > > > >         if (!link)
-> > > > > >                 return -EINVAL;
-> > > > > > @@ -1433,6 +1435,16 @@ static int __pci_enable_link_state(struct
-> > > > > > pci_dev
-> > > > > > *pdev, int state, bool locked)
-> > > > > >                 link->aspm_default |= ASPM_STATE_L1_1_PCIPM |
-> > > > > > ASPM_STATE_L1;
-> > > > > >         if (state & PCIE_LINK_STATE_L1_2_PCIPM)
-> > > > > >                 link->aspm_default |= ASPM_STATE_L1_2_PCIPM |
-> > > > > > ASPM_STATE_L1;
-> > > > > > +       /*
-> > > > > > +        * Ensure L1.2 parameters: Common_Mode_Restore_Times,
-> > > > > > T_POWER_ON
-> > > > > > and
-> > > > > > +        * LTR_L1.2_THRESHOLD are programmed properly before enable
-> > > > > > bits
-> > > > > > for
-> > > > > > +        * L1.2, per PCIe r6.0, sec 5.5.4.
-> > > > > > +        */
-> > > > > > +       if (state & link->aspm_capable & ASPM_STATE_L1_2_MASK) {
-> > > > > 
-> > > > > This is still mixing PCIE_LINK_STATE flags with ASPM_STATE flags.
+To elaborate, in the context of IPE, system components primarily refer to
+files or the devices these files reside on. However, this is just a
+starting point. The concept of system components is flexible and can be
+extended to include new elements as the system evolves. The immutable
+properties include the origin of a file, which remains constant and
+unchangeable over time. For example, IPE policies can be crafted to trust
+files originating from the initramfs. Since initramfs is typically verified
+by the bootloader, its files are deemed trustworthy; "file is from
+initramfs" becomes an immutable property under IPE's consideration.
 
-FWIW, Ilpo has removed the ASPM_STATE flags, so eventually this would
-have to be updated to apply on the current pci/aspm branch.  We're at
-rc6 already, so likely this will end up being v6.11 material so you'll
-be able to rebase on v6.10-rc1 when it comes out.
+The immutable property concept extends to the security features enabled on
+a file's origin, such as dm-verity or fs-verity, which provide a layer of
+integrity and trust. For example, IPE allows the definition of policies
+that trust files from a dm-verity protected device. dm-verity ensures the
+integrity of an entire device by providing a verifiable and immutable state
+of its contents. Similarly, fs-verity offers filesystem-level integrity
+checks, allowing IPE to enforce policies that trust files protected by
+fs-verity. These two features cannot be turned off once established, so
+they are considered immutable properties. These examples demonstrate how
+IPE leverages immutable properties, such as a file's origin and its
+integrity protection mechanisms, to make access control decisions.
 
-> > > > Thanks for your review, but I notice some description in PCIe spec,
-> > > > 5.5.4 L1 PM Substates Configuration:
-> > > > "Prior to setting either or both of the enable bits for L1.2, the
-> > > > values for TPOWER_ON, Common_Mode_Restore_Time, and, if the ASPM L1.2
-> > > > Enable bit is to be Set, the LTR_L1.2_THRESHOLD (both Value and Scale
-> > > > fields) must be programmed." => I think this includes both "ASPM L1.2
-> > > > Enable" and "PCI-PM L1.2 Enable" bits.
-> > > 
-> > > That's fine. While the spec clearly calls out the ASPM L1.2 Enable bit here,
-> > > I
-> > > see no harm in including PCI-PM L1.2 in that check. This is what the code
-> > > already does in aspm_l1ss_init().
-> > > 
-> > > The issue is the mixed used of two different types of flags that don't have
-> > > the
-> > > same meaning. 'state' contains PCIE_LINK_STATE flags which are part of the
-> > > caller API to the pci_<enabled/disable>_link_state() functions. The
-> > > ASPM_STATE
-> > > flags are used internally to aspm.c to track all states and their meaningful
-> > > combinations such as ASPM_STATE_L1_2_MASK which includes ASPM L1.2 and PCI-
-> > > PM
-> > > L1.2. You should not do bit operations between them.
-> > > 
-> > > Also, you should not require that the timings be calculated only if L1_2 is
-> > > enabled. You should calculate the timings as long as it's capable. This is
-> > > also
-> > > what aspm_l1ss_init() does.
-> > > 
-> > > The confusion might be over the fact that you are having
-> > > __pci_enable_link_state() call aspm_calc_l12_info(). This should have been
-> > > handled during initialization of the link in aspm_l1ss_init() and I'm not
-> > > sure
-> > > why it didn't. Maybe it's because, for VMD, ASPM default state would have
-> > > started out all disabled and this somehow led to aspm_l1ss_init() not
-> > > getting
-> > > called. But looking through the code I don't see it. It would be great if
-> > > you
-> > > can confirm why they weren't calculated before.
-> > 
-> > I debug it again.  If I delete the pci_reset_bus() in vmd controller like:
-> > 
-> > diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-> > index 87b7856f375a..39bfda4350bf 100644
-> > --- a/drivers/pci/controller/vmd.c
-> > +++ b/drivers/pci/controller/vmd.c
-> > @@ -930,25 +930,6 @@ static int vmd_enable_domain(struct vmd_dev *vmd,
-> > unsigned long features)
-> >         pci_scan_child_bus(vmd->bus);
-> >         vmd_domain_reset(vmd);
-> > 
-> > -       /* When Intel VMD is enabled, the OS does not discover the Root Ports
-> > -        * owned by Intel VMD within the MMCFG space. pci_reset_bus() applies
-> > -        * a reset to the parent of the PCI device supplied as argument. This
-> > -        * is why we pass a child device, so the reset can be triggered at
-> > -        * the Intel bridge level and propagated to all the children in the
-> > -        * hierarchy.
-> > -        */
-> > -       list_for_each_entry(child, &vmd->bus->children, node) {
-> > -               if (!list_empty(&child->devices)) {
-> > -                       dev = list_first_entry(&child->devices,
-> > -                                              struct pci_dev, bus_list);
-> > -                       ret = pci_reset_bus(dev);
-> 
-> Hi Nirmal. It's not clear to me from the comment why there's a need to do a bus
-> reset. It looks like it is causing misconfiguration of the ASPM L1.2 timings
-> which would have been done above in pci_scan_child_bus(). Jian-Hong discovered
-> that without the above reset code, the timings are correct.
+For the IPE policy, specifically, it grants the ability to enforce
+stringent access controls by assessing security properties against
+reference values defined within the policy. This assessment can be based on
+the existence of a security property (e.g., verifying if a file originates
+from initramfs) or evaluating the internal state of an immutable security
+property. The latter includes checking the roothash of a dm-verity
+protected device, determining whether dm-verity possesses a valid
+signature, assessing the digest of a fs-verity protected file, or
+determining whether fs-verity possesses a valid built-in signature. This
+nuanced approach to policy enforcement enables a highly secure and
+customizable system defense mechanism, tailored to specific security
+requirements and trust models.
 
-I don't understand that comment either.  If we don't enumerate the
-Root Ports below VMD, it sounds like something is wrong, and reset
-doesn't seem like the right fix.
+IPE is compiled under CONFIG_SECURITY_IPE.
 
-The reset was added by 0a584655ef89 ("PCI: vmd: Fix secondary bus
-reset for Intel bridges") for guest reboots.  Maybe Francisco can shed
-more light on it.
+Use Cases
+---------
 
-> This patch recalculates the timings during the call to pci_enable_link_state()
-> which is called during pci_bus_walk() below. Originally I thought the
-> recalculation might have been needed by all callers to pci_enabled_link_state()
-> since it changes the default BIOS configuration. But it looks like the reset is
-> the cause and only the VMD driver would need the recalculation as a result. I
-> don't see qcom doing a reset.
-> 
-> Jian-Hong, given this (and assuming the reset is needed) I would not call
-> aspm_calc_l12_info() from pci_enable_link_state() but instead try redoing the
-> whole ASPM initialization right after the resets are done, maybe by calling
-> pci_scan_child_bus() again. What do you think Bjorn?
+IPE works best in fixed-function devices: Devices in which their purpose
+is clearly defined and not supposed to be changed (e.g. network firewall
+device in a data center, an IoT device, etcetera), where all software and
+configuration is built and provisioned by the system owner.
 
-I would expect pci_reset_bus() to save and restore config space, but
-if we don't enumerate all the devices correctly, I suppose we wouldn't
-do that for devices we don't know about.
+IPE is a long-way off for use in general-purpose computing: the Linux
+community as a whole tends to follow a decentralized trust model,
+known as the web of trust, which IPE has no support for as of  yet.
+There are exceptions, such as the case where a Linux distribution
+vendor trusts only their own keys, where IPE can successfully be used
+to enforce the trust requirement.
 
-> > -                       if (ret)
-> > -                               pci_warn(dev, "can't reset device: %d\n",
-> > ret);
-> > -
-> > -                       break;
-> > -               }
-> > -       }
-> > -
-> >         pci_assign_unassigned_bus_resources(vmd->bus);
-> > 
-> >         pci_walk_bus(vmd->bus, vmd_pm_enable_quirk, &features);
-> > 
-> > Although PCI-PM_L1.2 is disabled, both PCI bridge and the NVMe's
-> > LTR1.2_Threshold are configured as 101376ns:
-> > 
-> > 10000:e0:06.0 PCI bridge [0604]: Intel Corporation 11th Gen Core
-> > Processor PCIe Controller [8086:9a09] (rev 01) (prog-if 00 [Normal
-> > decode])
-> > ...
-> >   Capabilities: [200 v1] L1 PM Substates
-> >   L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-> >     PortCommonModeRestoreTime=45us PortTPowerOnTime=50us
-> >   L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> >      T_CommonMode=45us LTR1.2_Threshold=101376ns
-> >   L1SubCtl2: T_PwrOn=50us
-> > 
-> > 10000:e1:00.0 Non-Volatile memory controller [0108]: Sandisk Corp WD
-> > Blue SN550 NVMe SSD [15b7:5009] (rev 01) (prog-if 02 [NVM Express])
-> > ...
-> >   Capabilities: [900 v1] L1 PM Substates
-> >   L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
-> >     PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
-> >   L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> >      T_CommonMode=0us LTR1.2_Threshold=101376ns
-> >   L1SubCtl2: T_PwrOn=50us
-> > 
-> > Then, I apply the patch "PCI: vmd: Set PCI devices to D0 before enable
-> > PCI PM's L1 substates".  Both PCI bridge and the NVMe's PCI-PM_L1.2 is
-> > enabled and LTR1.2_Threshold is configured as 101376ns.
-> > 
-> > 10000:e0:06.0 PCI bridge [0604]: Intel Corporation 11th Gen Core
-> > Processor PCIe Controller [8086:9a09] (rev 01) (prog-if 00 [Normal
-> > decode])
-> > ...
-> >   Capabilities: [200 v1] L1 PM Substates
-> >   L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-> >     PortCommonModeRestoreTime=45us PortTPowerOnTime=50us
-> >   L1SubCtl1: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> >      T_CommonMode=45us LTR1.2_Threshold=101376ns
-> >   L1SubCtl2: T_PwrOn=50us
-> > 
-> > 10000:e1:00.0 Non-Volatile memory controller [0108]: Sandisk Corp WD
-> > Blue SN550 NVMe SSD [15b7:5009] (rev 01) (prog-if 02 [NVM Express])
-> > ...
-> >   Capabilities: [900 v1] L1 PM Substates
-> >   L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
-> >     PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
-> >   L1SubCtl1: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> >      T_CommonMode=0us LTR1.2_Threshold=101376ns
-> >   L1SubCtl2: T_PwrOn=50us
-> > 
-> > I do not know VMD very much.  However, from the test result, it looks
-> > like LTR1.2_Threshold has been configured properly originally.  But,
-> > LTR1.2_Threshold is misconfigured by 'pci_reset_bus()'.
-> > ...
-> > > > > 'state' should not even matter.
-> > > > > The timings should always be calculated and programmed as long
-> > > > > as L1_2 is capable. That way the timings are ready even if L1_2 isn't
-> > > > > being
-> > > > > enabled now (in case the user enables it later).
-> > > > > 
-> > > > > > +               parent_l1ss_cap = aspm_get_l1ss_cap(parent);
-> > > > > > +               child_l1ss_cap = aspm_get_l1ss_cap(child);
-> > > > > > +               aspm_calc_l12_info(link, parent_l1ss_cap,
-> > > > > > child_l1ss_cap);
-> > > > > > +       }
-> > > > > >         pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> > > > > > 
-> > > > > >         link->clkpm_default = (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> > > > > 
-> > > 
-> 
+Additionally, while most packages are signed today, the files inside
+the packages (for instance, the executables), tend to be unsigned. This
+makes it difficult to utilize IPE in systems where a package manager is
+expected to be functional, without major changes to the package manager
+and ecosystem behind it.
+
+The digest_cache LSM[1] is a system that when combined with IPE, could be
+used to enable general purpose computing scenarios.
+
+Policy
+-------
+
+IPE policy is a plain-text policy composed of multiple statements
+over several lines. There is one required line, at the top of the
+policy, indicating the policy name, and the policy version, for
+instance:
+
+  policy_name=Ex_Policy policy_version=0.0.0
+
+The policy version indicates the current version of the policy. This is
+used to prevent roll-back of policy to potentially insecure previous
+versions of the policy.
+
+The next portion of IPE policy, are rules. Rules are formed by key=value
+pairs, known as properties. IPE rules require two keys: "action", which
+determines what IPE does when it encounters a match against the policy
+and "op", which determines when that rule should be evaluated.
+
+Thus, a minimal rule is:
+
+  op=EXECUTE action=ALLOW
+
+This example rule will allow any execution. A rule is required to have the
+"op" property as the first token of a rule, and the "action" as the last
+token of the rule.
+
+Additional properties are used to assess immutable security properties
+about the files being evaluated. These properties are intended to be
+deterministic attributes that are resident in the kernel.
+
+For example:
+
+  op=EXECUTE dmverity_signature=FALSE action=DENY
+
+This rule with property dmverity_signature will deny any file not from
+a signed dmverity volume to be executed.
+
+All available properties for IPE described in the documentation patch of
+this series.
+
+Rules are evaluated top-to-bottom. As a result, any revocation rules,
+or denies should be placed early in the file to ensure that these rules
+are evaluated before a rule with "action=ALLOW" is hit.
+
+Any unknown syntax in IPE policy will result in a fatal error to parse
+the policy.
+
+Additionally, a DEFAULT operation must be set for all understood
+operations within IPE. For policies to remain completely forwards
+compatible, it is recommended that users add a "DEFAULT action=ALLOW"
+and override the defaults on a per-operation basis.
+
+For more information about the policy syntax, see the kernel
+documentation page.
+
+Early Usermode Protection
+--------------------------
+
+IPE can be provided with a policy at startup to load and enforce.
+This is intended to be a minimal policy to get the system to a state
+where userspace is setup and ready to receive commands, at which
+point a policy can be deployed via securityfs. This "boot policy" can be
+specified via the config, SECURITY_IPE_BOOT_POLICY, which accepts a path
+to a plain-text version of the IPE policy to apply. This policy will be
+compiled into the kernel. If not specified, IPE will be disabled until a
+policy is deployed and activated through the method above.
+
+Policy Examples
+----------------
+
+Allow all:
+
+  policy_name=Allow_All policy_version=0.0.0
+  DEFAULT action=ALLOW
+
+Allow only initramfs:
+
+  policy_name=Allow_Initramfs policy_version=0.0.0
+  DEFAULT action=DENY
+
+  op=EXECUTE boot_verified=TRUE action=ALLOW
+
+Allow any signed and validated dm-verity volume and the initramfs:
+
+  policy_name=Allow_Signed_DMV_And_Initramfs policy_version=0.0.0
+  DEFAULT action=DENY
+
+  op=EXECUTE boot_verified=TRUE action=ALLOW
+  op=EXECUTE dmverity_signature=TRUE action=ALLOW
+
+Prohibit execution from a specific dm-verity volume, while allowing
+all signed volumes and the initramfs:
+
+  policy_name=Deny_DMV_By_Roothash policy_version=0.0.0
+  DEFAULT action=DENY
+
+  op=EXECUTE dmverity_roothash=sha256:cd2c5bae7c6c579edaae4353049d58eb5f2e8be0244bf05345bc8e5ed257baff action=DENY
+
+  op=EXECUTE boot_verified=TRUE action=ALLOW
+  op=EXECUTE dmverity_signature=TRUE action=ALLOW
+
+Allow only a specific dm-verity volume:
+
+  policy_name=Allow_DMV_By_Roothash policy_version=0.0.0
+  DEFAULT action=DENY
+
+  op=EXECUTE dmverity_roothash=sha256:401fcec5944823ae12f62726e8184407a5fa9599783f030dec146938 action=ALLOW
+
+Allow any fs-verity file with a valid built-in signature:
+
+  policy_name=Allow_Signed_And_Validated_FSVerity policy_version=0.0.0
+  DEFAULT action=DENY
+
+  op=EXECUTE fsverity_signature=TRUE action=ALLOW
+
+Allow execution of a specific fs-verity file:
+
+  policy_name=ALLOW_FSV_By_Digest policy_version=0.0.0
+  DEFAULT action=DENY
+
+  op=EXECUTE fsverity_digest=sha256:fd88f2b8824e197f850bf4c5109bea5cf0ee38104f710843bb72da796ba5af9e action=ALLOW
+
+Deploying Policies
+-------------------
+
+First sign a plain text policy, with a certificate that is present in
+the SYSTEM_TRUSTED_KEYRING of your test machine. Through openssl, the
+signing can be done via:
+
+  openssl smime -sign -in "$MY_POLICY" -signer "$MY_CERTIFICATE" \
+    -inkey "$MY_PRIVATE_KEY" -outform der -noattr -nodetach \
+    -out "$MY_POLICY.p7s"
+
+Then, simply cat the file into the IPE's "new_policy" securityfs node:
+
+  cat "$MY_POLICY.p7s" > /sys/kernel/security/ipe/new_policy
+
+The policy should now be present under the policies/ subdirectory, under
+its "policy_name" attribute.
+
+The policy is now present in the kernel and can be marked as active,
+via the securityfs node:
+
+  echo 1 > "/sys/kernel/security/ipe/$MY_POLICY_NAME/active"
+
+This will now mark the policy as active and the system will be enforcing
+$MY_POLICY_NAME.
+
+There is one requirement when marking a policy as active, the policy_version
+attribute must either increase, or remain the same as the currently running
+policy.
+
+Policies can be updated via:
+
+  cat "$MY_UPDATED_POLICY.p7s" > \
+    "/sys/kernel/security/ipe/policies/$MY_POLICY_NAME/update"
+
+Additionally, policies can be deleted via the "delete" securityfs
+node. Simply write "1" to the corresponding node in the policy folder:
+
+  echo 1 > "/sys/kernel/security/ipe/policies/$MY_POLICY_NAME/delete"
+
+There is only one requirement to delete policies, the policy being
+deleted must not be the active policy.
+
+NOTE: Any securityfs write to IPE's nodes will require CAP_MAC_ADMIN.
+
+Integrations
+-------------
+
+This patch series adds support for fsverity via digest and signature
+(fsverity_signature and fsverity_digest), dm-verity by digest and
+signature (dmverity_signature and dmverity_roothash), and trust for
+the initramfs (boot_verified).
+
+Please see the documentation patch for more information about the
+integrations available.
+
+Testing
+--------
+
+KUnit Tests are available. Recommended kunitconfig:
+
+    CONFIG_KUNIT=y
+    CONFIG_SECURITY=y
+    CONFIG_SECURITYFS=y
+    CONFIG_PKCS7_MESSAGE_PARSER=y
+    CONFIG_SYSTEM_DATA_VERIFICATION=y
+    CONFIG_FS_VERITY=y
+    CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y
+    CONFIG_BLOCK=y
+    CONFIG_MD=y
+    CONFIG_BLK_DEV_DM=y
+    CONFIG_DM_VERITY=y
+    CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG=y
+    CONFIG_NET=y
+    CONFIG_AUDIT=y
+    CONFIG_AUDITSYSCALL=y
+    CONFIG_BLK_DEV_INITRD=y
+
+    CONFIG_SECURITY_IPE=y
+    CONFIG_IPE_PROP_DM_VERITY=y
+    CONFIG_IPE_PROP_DM_VERITY_SIGNATURE=y
+    CONFIG_IPE_PROP_FS_VERITY=y
+    CONFIG_IPE_PROP_FS_VERITY_BUILTIN_SIG=y
+    CONFIG_SECURITY_IPE_KUNIT_TEST=y
+
+Simply run:
+
+    make ARCH=um mrproper
+    ./tools/testing/kunit/kunit.py run --kunitconfig <path/to/config>
+
+And the tests will execute and report the result.
+
+In addition, IPE has a python based integration
+test suite https://github.com/microsoft/ipe/tree/test-suite that
+can test both user interfaces and enforcement functionalities.
+
+Documentation
+--------------
+
+There is both documentation available on github at
+https://microsoft.github.io/ipe, and Documentation in this patch series,
+to be added in-tree.
+
+Known Gaps
+-----------
+
+IPE has two known gaps:
+
+1. IPE cannot verify the integrity of anonymous executable memory, such as
+  the trampolines created by gcc closures and libffi (<3.4.2), or JIT'd code.
+  Unfortunately, as this is dynamically generated code, there is no way
+  for IPE to ensure the integrity of this code to form a trust basis. In all
+  cases, the return result for these operations will be whatever the admin
+  configures the DEFAULT action for "EXECUTE".
+
+2. IPE cannot verify the integrity of interpreted languages' programs when
+  these scripts invoked via ``<interpreter> <file>``. This is because the
+  way interpreters execute these files, the scripts themselves are not
+  evaluated as executable code through one of IPE's hooks. Interpreters
+  can be enlightened to the usage of IPE by trying to mmap a file into
+  executable memory (+X), after opening the file and responding to the
+  error code appropriately. This also applies to included files, or high
+  value files, such as configuration files of critical system components.
+
+Appendix
+---------
+
+A. IPE Github Repository: https://github.com/microsoft/ipe
+B. IPE Users' Guide: Documentation/admin-guide/LSM/ipe.rst
+
+References
+-----------
+
+1: https://lore.kernel.org/lkml/20240415142436.2545003-1-roberto.sassu@huaweicloud.com/
+
+FAQ:
+----
+
+Q: What is the difference between IMA and IPE?
+
+A: See the documentation patch for more on this topic.
+
+Previous Postings
+-----------------
+
+v1: https://lore.kernel.org/all/20200406181045.1024164-1-deven.desai@linux.microsoft.com/
+v2: https://lore.kernel.org/all/20200406221439.1469862-1-deven.desai@linux.microsoft.com/
+v3: https://lore.kernel.org/all/20200415162550.2324-1-deven.desai@linux.microsoft.com/
+v4: https://lore.kernel.org/all/20200717230941.1190744-1-deven.desai@linux.microsoft.com/
+v5: https://lore.kernel.org/all/20200728213614.586312-1-deven.desai@linux.microsoft.com/
+v6: https://lore.kernel.org/all/20200730003113.2561644-1-deven.desai@linux.microsoft.com/
+v7: https://lore.kernel.org/all/1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com/
+v8: https://lore.kernel.org/all/1654714889-26728-1-git-send-email-deven.desai@linux.microsoft.com/
+v9: https://lore.kernel.org/lkml/1675119451-23180-1-git-send-email-wufan@linux.microsoft.com/
+v10: https://lore.kernel.org/lkml/1687986571-16823-1-git-send-email-wufan@linux.microsoft.com/
+v11: https://lore.kernel.org/lkml/1696457386-3010-1-git-send-email-wufan@linux.microsoft.com/
+v12: https://lore.kernel.org/lkml/1706654228-17180-1-git-send-email-wufan@linux.microsoft.com/
+v13: https://lore.kernel.org/lkml/1709168102-7677-1-git-send-email-wufan@linux.microsoft.com/
+v14: https://lore.kernel.org/lkml/1709768084-22539-1-git-send-email-wufan@linux.microsoft.com/
+v15: https://lore.kernel.org/lkml/1710560151-28904-1-git-send-email-wufan@linux.microsoft.com/
+v16: https://lore.kernel.org/lkml/1711657047-10526-1-git-send-email-wufan@linux.microsoft.com/
+v17: https://lore.kernel.org/lkml/1712969764-31039-1-git-send-email-wufan@linux.microsoft.com/
+
+Changelog
+----------
+
+v2:
+  Split the second patch of the previous series into two.
+  Minor corrections in the cover-letter and documentation
+  comments regarding CAP_MAC_ADMIN checks in IPE.
+
+v3:
+  Address various comments by Jann Horn. Highlights:
+    Switch various audit allocators to GFP_KERNEL.
+    Utilize rcu_access_pointer() in various locations.
+    Strip out the caching system for properties
+    Strip comments from headers
+    Move functions around in patches
+    Remove kernel command line parameters
+    Reconcile the race condition on the delete node for policy by
+      expanding the policy critical section.
+
+  Address a few comments by Jonathan Corbet around the documentation
+    pages for IPE.
+
+  Fix an issue with the initialization of IPE policy with a "-0"
+    version, caused by not initializing the hlist entries before
+    freeing.
+
+v4:
+  Address a concern around IPE's behavior with unknown syntax.
+    Specifically, make any unknown syntax a fatal error instead of a
+    warning, as suggested by Mickaël Salaün.
+  Introduce a new securityfs node, $securityfs/ipe/property_config,
+    which provides a listing of what properties are enabled by the
+    kernel and their versions. This allows usermode to predict what
+    policies should be allowed.
+  Strip some comments from c files that I missed.
+  Clarify some documentation comments around 'boot_verified'.
+    While this currently does not functionally change the property
+    itself, the distinction is important when IPE can enforce verified
+    reads. Additionally, 'KERNEL_READ' was omitted from the documentation.
+    This has been corrected.
+  Change SecurityFS and SHA1 to a reverse dependency.
+  Update the cover-letter with the updated behavior of unknown syntax.
+  Remove all sysctls, making an equivalent function in securityfs.
+  Rework the active/delete mechanism to be a node under the policy in
+    $securityfs/ipe/policies.
+  The kernel command line parameters ipe.enforce and ipe.success_audit
+    have returned as this functionality is no longer exposed through
+    sysfs.
+
+v5:
+  Correct some grammatical errors reported by Randy Dunlap.
+  Fix some warnings reported by kernel test bot.
+  Change convention around security_bdev_setsecurity. -ENOSYS
+    is now expected if an LSM does not implement a particular @name,
+    as suggested by Casey Schaufler.
+  Minor string corrections related to the move from sysfs to securityfs
+  Correct a spelling of an #ifdef for the permissive argument.
+  Add the kernel parameters re-added to the documentation.
+  Fix a minor bug where the mode being audited on permissive switch
+    was the original mode, not the mode being swapped to.
+  Cleanup doc comments, fix some whitespace alignment issues.
+
+v6:
+  Change if statement condition in security_bdev_setsecurity to be
+    more concise, as suggested by Casey Schaufler and Al Viro
+  Drop the 6th patch in the series, "dm-verity move signature check..."
+    due to numerous issues, and it ultimately providing no real value.
+  Fix the patch tree - the previous iteration appears to have been in a
+    torn state (patches 8+9 were merged). This has since been corrected.
+
+v7:
+  * Reword cover letter to more accurate convey IPE's purpose
+    and latest updates.
+  * Refactor series to:
+      1. Support a context structure, enabling:
+          1. Easier Testing via KUNIT
+          2. A better architecture for future designs
+      2. Make parser code cleaner
+  * Move patch 01/12 to [14/16] of the series
+  * Split up patch 02/12 into four parts:
+      1. context creation [01/16]
+      2. audit [07/16]
+      3. evaluation loop [03/16]
+      4. access control hooks [05/16]
+      5. permissive mode [08/16]
+  * Split up patch 03/12 into two parts:
+      1. parser [02/16]
+      2. userspace interface [04/16]
+  * Reword and refactor patch 04/12 to [09/16]
+  * Squash patch 05/12, 07/12, 09/12 to [10/16]
+  * Squash patch 08/12, 10/12 to [11/16]
+  * Change audit records to MAC region (14XX) from Integrity region (18XX)
+  * Add FSVerity Support
+  * Interface changes:
+      1. "raw" was renamed to "pkcs7" and made read only
+      2. "raw"'s write functionality (update a policy) moved to "update"
+      3. introduced "version", "policy_name" nodes.
+      4. "content" renamed to "policy"
+      5. The boot policy can now be updated like any other policy.
+  * Add additional developer-level documentation
+  * Update admin-guide docs to reflect changes.
+  * Kunit tests
+  * Dropped CONFIG_SECURITY_IPE_PERMISSIVE_SWITCH - functionality can
+    easily come later with a small patch.
+  * Use partition0 for block_device for dm-verity patch
+
+v8:
+  * Add changelog information to individual commits
+  * A large number of changes to the audit patch.
+  * split fs/ & security/ changes to two separate patches.
+  * split block/, security/ & drivers/md/ changes to separate patches.
+  * Add some historical context to what lead to the creation of IPE
+    in the documentation patch.
+  * Cover-letter changes suggested by Roberto Sassu.
+
+v9:
+  * Rewrite IPE parser to use kernel match_table parser.
+  * Adapt existing IPE properties to the new parser.
+  * Remove ipe_context, quote policy syntax, kernel_read for simplicity.
+  * Add new function in the security file system to delete IPE policy.
+  * Make IPE audit builtin and change several audit formats.
+  * Make boot_verified property builtin
+
+v10:
+  * Address various code style/format issues
+  * Correct the rcu locking for active policy
+  * Fix memleak bugs in the parser, optimize the parser per upstream feedback
+  * Adding new audit events for IPE and update audit formats
+  * Make the dmverity property auto selected
+  * Adding more context in the commit messages
+
+v11:
+  * Address various code style/format issues
+  * Add finalize hook to device mapper
+  * move the security hook for dm-verity to the new device mapper finalize hook
+
+v12:
+  * Address locking issues
+  * Change the implementation of boot_verified to trust initramfs only
+  * Update audit format for IPE decision events
+  * Refactor code for lsm_id
+  * Add IPE test suite link
+
+v13:
+  * Rename the new security hook in initramfs
+  * Make the policy grammar independent of kernel config
+  * Correct IPE audit format
+  * Refactor policy update code
+
+v14:
+  * Add more code comments/docs for dmverity/fsverity
+  * Fix incorrect code usage and format in dmverity
+  * Drop one accepted commit of dmverity
+
+v15:
+  * Fix grammar issues
+  * Add more documentation to fsverity
+  * Switch security hooks from *_setsecurity() to *_setintegrity()
+  * Cleanup unnecessary headers
+
+v16:
+  * Fix format issues, refactor names
+  * Further improve documentation for fsverity
+  * Fix bugs in dmverity implementation
+  * Switch to use call_int_hook() for *_setintegrity()
+
+v17:
+  * Fix various code/Documentation style issues
+  * Switch to use reverse christmas tree style
+  * add ipe_ prefix to all non-static functions
+  * Correct documentation for fsverity
+  * Rewrite design concept part of IPE Documentation
+  * Fix incorrect interface path in IPE Documentation
+
+v18:
+  * Add two new kconfigs and make them auto-selected
+  * Fix incorrect error handling and switch to use crypto_ahash_alg_name() in dmverity
+  * Move the inode_setintegrity hook call into fsverity_verify_signature() in fsverity
+  * Fix typos and cleanup unnecessary code
+  * Improve policy examples inside documentation
+  * Remove insecure hash algorithms and adapt the documentation accordingly
+  * Update the documentation regarding the new Kconfig switches
+
+Deven Bowers (13):
+  security: add ipe lsm
+  ipe: add policy parser
+  ipe: add evaluation loop
+  ipe: add LSM hooks on execution and kernel read
+  ipe: add userspace interface
+  uapi|audit|ipe: add ipe auditing support
+  ipe: add permissive toggle
+  block,lsm: add LSM blob and new LSM hooks for block device
+  dm verity: expose root hash digest and signature data to LSMs
+  ipe: add support for dm-verity as a trust provider
+  scripts: add boot policy generation program
+  ipe: kunit test for parser
+  Documentation: add ipe documentation
+
+Fan Wu (8):
+  initramfs|security: Add a security hook to do_populate_rootfs()
+  ipe: introduce 'boot_verified' as a trust provider
+  security: add new securityfs delete function
+  dm: add finalize hook to target_type
+  security: add security_inode_setintegrity() hook
+  fsverity: expose verified fsverity built-in signatures to LSMs
+  ipe: enable support for fs-verity as a trust provider
+  MAINTAINERS: ipe: add ipe maintainer information
+
+ Documentation/admin-guide/LSM/index.rst       |   1 +
+ Documentation/admin-guide/LSM/ipe.rst         | 792 ++++++++++++++++++
+ .../admin-guide/kernel-parameters.txt         |  12 +
+ Documentation/filesystems/fsverity.rst        |  26 +-
+ Documentation/security/index.rst              |   1 +
+ Documentation/security/ipe.rst                | 446 ++++++++++
+ MAINTAINERS                                   |  10 +
+ block/bdev.c                                  |   7 +
+ drivers/md/dm-verity-target.c                 | 100 +++
+ drivers/md/dm-verity.h                        |   6 +
+ drivers/md/dm.c                               |  12 +
+ fs/verity/signature.c                         |  21 +-
+ include/linux/blk_types.h                     |   3 +
+ include/linux/device-mapper.h                 |   9 +
+ include/linux/lsm_hook_defs.h                 |   9 +
+ include/linux/lsm_hooks.h                     |   1 +
+ include/linux/security.h                      |  53 ++
+ include/uapi/linux/audit.h                    |   3 +
+ include/uapi/linux/lsm.h                      |   1 +
+ init/initramfs.c                              |   3 +
+ scripts/Makefile                              |   1 +
+ scripts/ipe/Makefile                          |   2 +
+ scripts/ipe/polgen/.gitignore                 |   2 +
+ scripts/ipe/polgen/Makefile                   |   5 +
+ scripts/ipe/polgen/polgen.c                   | 145 ++++
+ security/Kconfig                              |  11 +-
+ security/Makefile                             |   1 +
+ security/inode.c                              |  25 +
+ security/ipe/.gitignore                       |   2 +
+ security/ipe/Kconfig                          |  96 +++
+ security/ipe/Makefile                         |  31 +
+ security/ipe/audit.c                          | 279 ++++++
+ security/ipe/audit.h                          |  19 +
+ security/ipe/digest.c                         | 118 +++
+ security/ipe/digest.h                         |  26 +
+ security/ipe/eval.c                           | 394 +++++++++
+ security/ipe/eval.h                           |  70 ++
+ security/ipe/fs.c                             | 247 ++++++
+ security/ipe/fs.h                             |  16 +
+ security/ipe/hooks.c                          | 312 +++++++
+ security/ipe/hooks.h                          |  52 ++
+ security/ipe/ipe.c                            |  99 +++
+ security/ipe/ipe.h                            |  26 +
+ security/ipe/policy.c                         | 229 +++++
+ security/ipe/policy.h                         |  98 +++
+ security/ipe/policy_fs.c                      | 470 +++++++++++
+ security/ipe/policy_parser.c                  | 556 ++++++++++++
+ security/ipe/policy_parser.h                  |  11 +
+ security/ipe/policy_tests.c                   | 296 +++++++
+ security/security.c                           | 122 ++-
+ .../selftests/lsm/lsm_list_modules_test.c     |   3 +
+ 51 files changed, 5271 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/admin-guide/LSM/ipe.rst
+ create mode 100644 Documentation/security/ipe.rst
+ create mode 100644 scripts/ipe/Makefile
+ create mode 100644 scripts/ipe/polgen/.gitignore
+ create mode 100644 scripts/ipe/polgen/Makefile
+ create mode 100644 scripts/ipe/polgen/polgen.c
+ create mode 100644 security/ipe/.gitignore
+ create mode 100644 security/ipe/Kconfig
+ create mode 100644 security/ipe/Makefile
+ create mode 100644 security/ipe/audit.c
+ create mode 100644 security/ipe/audit.h
+ create mode 100644 security/ipe/digest.c
+ create mode 100644 security/ipe/digest.h
+ create mode 100644 security/ipe/eval.c
+ create mode 100644 security/ipe/eval.h
+ create mode 100644 security/ipe/fs.c
+ create mode 100644 security/ipe/fs.h
+ create mode 100644 security/ipe/hooks.c
+ create mode 100644 security/ipe/hooks.h
+ create mode 100644 security/ipe/ipe.c
+ create mode 100644 security/ipe/ipe.h
+ create mode 100644 security/ipe/policy.c
+ create mode 100644 security/ipe/policy.h
+ create mode 100644 security/ipe/policy_fs.c
+ create mode 100644 security/ipe/policy_parser.c
+ create mode 100644 security/ipe/policy_parser.h
+ create mode 100644 security/ipe/policy_tests.c
+
+--
+2.44.0
+
 
