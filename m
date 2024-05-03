@@ -1,136 +1,152 @@
-Return-Path: <linux-kernel+bounces-167813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA5D8BAF90
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:13:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 058268BAF97
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7A5FB21757
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:13:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D6D5B2171E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416794D9FD;
-	Fri,  3 May 2024 15:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303834E1B3;
+	Fri,  3 May 2024 15:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2wehOd5"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="urYQiP8M"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3592D4AEFE
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD24C1BF31
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714749192; cv=none; b=BPJVwlRPTtIJVPBeT9AyEt6b/P58ike/CMNaW0U0tvrvGFL15OvdzI8QzMBbkMBJrJsEqyCCh9IO09cydBAqnsUILAWxy64xehSSKgl07cpfkCBkOMKPILEQiYYxFmyVUgF7saXZnvbbay2s/jQKAbzazVr99CbK6wjyBcDFdZk=
+	t=1714749260; cv=none; b=R3/kix+xGPAnEdF38ibs2hTWNDBW8rJSl0xnVzwxWiHe4xXYJRxR4fn0PPkHJz1YYVyfUNYg+HFoIth70cwc/f1ZB1xuYa6CHIdfAsc5RaAaHJyqhd4jiYMAwgyWxVNejbtuiw91kaVZMEM/pfVhL2oiITem2LVRs8ObQDJWsF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714749192; c=relaxed/simple;
-	bh=MtOV16US9OOPVT6yc/4gvRUr6dERERtu6jNTTBEhL/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kA+cGZjvGvHV8786mCFzVBcSwGYmTHsedTHoWS3fh/Big0m/piFP7m4je5+lxSrfwrjFyrvL5QlreRBHF7uddPx0K6rwpmAAoRiLASTFDKCZ/17HjQ8ykp/RlFlZl3dToa2qjh+M63pYPi/TZTNZbsMtLwgnKoi3C3varhPA7oY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2wehOd5; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5b1e962fde1so206636eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 08:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714749189; x=1715353989; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0E75BNad58i/+8lefPGC1oKY9AkzjRMB+ho54nCF1QE=;
-        b=l2wehOd5TY160nINQm5RK0CXQSqSQxRoEhLCbfrSio2vLAsJDmIAy0PfaZSWrCpIid
-         iX3Zf9wLL0o0Vb9jjG27el0G5IeeiKRjEuRzAxg7XcKflvgDzdcpjGVJmTJ6KGSI6Bd4
-         gNX52m19X34oOiZzE7WLdKAIApIq3Lo6OlXZb3IigtUmfA60IfJObKUFuO5OLuwFGbkK
-         xH0NiZ0o1hPfZG6sTyCQE5AuL7WYXAM9XyUfp7Rr7f5NyvjPX8VE8JalH8vM+mnJYepL
-         nTgBzwXa6KkrujmB6RK0AZBdtFCjLfn8SulrA5e4e4AbLg+7DUcXewsit7Y7oJm4bM35
-         xX4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714749189; x=1715353989;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0E75BNad58i/+8lefPGC1oKY9AkzjRMB+ho54nCF1QE=;
-        b=tcs/vStuOaK/e7Zqyb6BcIhf+613gqW/KZ99x2Ztm6H2h7qbPKNDHy1txh/nLHqUhx
-         fiBPcRU+qUBFZYTyJpPLtBRAqQDx1Rzs5ix2L7WyYWz4hVqoPLrnN36f7TdL0OXqeVfz
-         jlC7NAXIBVKJ+PcHwQJKG03zzpRCjBxk+BeGTH5NY3bUopDOPF7+hs+iZswKyY8VZXGc
-         uNHBuEvHM/QdpUS8IXe7M0kywOm1ayiqNKLNhDPFK3T8C4XkvCEpvFtbaIf6gpsCyOZ2
-         wnUWP3Gz896dssuaHxW8EbJtaqVB3Ugi4Qbh0/3suGkJQaQ0AcoHhM6hpYkDygdv6Ilt
-         gzvw==
-X-Gm-Message-State: AOJu0Yy7MkzsPVpGTsVuCoolom0NQM2JBKKodTD0A6SueOUsaWGhszX8
-	GGo1YJ7m0iTYbSmcGk92YRkAq86L0+DO6DhSHWrpRfwwH2ofxUjY
-X-Google-Smtp-Source: AGHT+IFkdjnjtFRWLZi+MoTQekf+FSH/HdLuPb1m6XeCfCP6c/peyTWy4gBI8GYYLYI+KL6YfrKwgg==
-X-Received: by 2002:a05:6358:3127:b0:186:26e2:62b6 with SMTP id c39-20020a056358312700b0018626e262b6mr3123947rwe.19.1714749189116;
-        Fri, 03 May 2024 08:13:09 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id bx18-20020a056a02051200b005cd835182c5sm2887557pgb.79.2024.05.03.08.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 08:13:08 -0700 (PDT)
-Date: Fri, 3 May 2024 08:13:05 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] lib: make test_bitops compilable into the kernel
- image
-Message-ID: <ZjT/AeqiVj/n5v/W@yury-ThinkPad>
-References: <20240502233204.2255158-1-yury.norov@gmail.com>
- <20240502233204.2255158-2-yury.norov@gmail.com>
- <ZjRFJ2Kig7l+hieS@visitorckw-System-Product-Name>
- <ZjRIcp7tFadFLGIc@yury-ThinkPad>
- <ZjRK1+Td32rx8r9Q@visitorckw-System-Product-Name>
+	s=arc-20240116; t=1714749260; c=relaxed/simple;
+	bh=xDdguUN/yGwVqMvoOr3gev43Xar4/4wzHsi1BswfBSE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VRpVDKiVD0PfVRllKvXZfo6ZdULWiasnXGu06n1OJOGUYHG8mg9IPQY3kyWB9mwhXLtScImbiDWOQTSzACCNgDEiu7iOUyTMDDNR5QJmBCGgoub1Hug7IH+NkbnXiKNA7X26hio7ar93TOWuTaaj12SlrBpBy6Z0ziuW1GOVQyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=urYQiP8M; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 443FE0dr022273;
+	Fri, 3 May 2024 10:14:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714749240;
+	bh=pXJAKxRZZcWDNZTuHwoEtDOpGE1n/3X/l3Ho5YAz60c=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=urYQiP8MW4+DeGpiAb5f4GOkgiZsACi/Kra7P9hw5m0RlfyWvviSeRcj0P2HcxMkt
+	 vExVCziEqceoJUAUV5VPyu18QAdR4wj+C64nIhvr8mLtjkKsmHPzGF6DY3ZryCKkdK
+	 LHZ3SQo7mNDOv/Hs9hp3wC+GP6jK/rAzPir8zdNw=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 443FE0DP046693
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 3 May 2024 10:14:00 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 3
+ May 2024 10:14:00 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 3 May 2024 10:13:59 -0500
+Received: from [10.249.129.115] ([10.249.129.115])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 443FDsHo111504;
+	Fri, 3 May 2024 10:13:55 -0500
+Message-ID: <758be932-d791-48e5-ae36-de7542c7a2a3@ti.com>
+Date: Fri, 3 May 2024 20:43:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjRK1+Td32rx8r9Q@visitorckw-System-Product-Name>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/bridge: sii902x: Fix mode_valid hook
+To: Maxime Ripard <mripard@kernel.org>
+CC: <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
+        <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
+        <jernej.skrabec@gmail.com>, <maarten.lankhorst@linux.intel.com>,
+        <tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240408081435.216927-1-j-choudhary@ti.com>
+ <20240415-venomous-enthusiastic-wildebeest-a7a446@houat>
+Content-Language: en-US
+From: Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <20240415-venomous-enthusiastic-wildebeest-a7a446@houat>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, May 03, 2024 at 10:24:23AM +0800, Kuan-Wei Chiu wrote:
-> On Thu, May 02, 2024 at 07:14:10PM -0700, Yury Norov wrote:
-> > On Fri, May 03, 2024 at 10:00:07AM +0800, Kuan-Wei Chiu wrote:
-> > > On Thu, May 02, 2024 at 04:32:01PM -0700, Yury Norov wrote:
-> > > > The test is limited to be compiled as a module. There's no technical
-> > > > reason for it. Now that the test bears performance benchmark, it would
-> > > > be reasonable to allow running it at kernel load time, before userspace
-> > > > starts, to reduce possible jitter.
-> > > > 
-> > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > > > ---
-> > > >  lib/Kconfig.debug | 1 -
-> > > >  1 file changed, 1 deletion(-)
-> > > > 
-> > > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > > index c63a5fbf1f1c..fc8fe1ea5b49 100644
-> > > > --- a/lib/Kconfig.debug
-> > > > +++ b/lib/Kconfig.debug
-> > > > @@ -2436,7 +2436,6 @@ config TEST_LKM
-> > > >  
-> > > >  config TEST_BITOPS
-> > > >  	tristate "Test module for compilation of bitops operations"
-> > > > -	depends on m
-> > > 
-> > > 
-> > > Perhaps it would be better to modify the description in the following
-> > > help section at the same time?
-> > 
-> > What exactly you want to change?
-> >
-> It seems to me that the entire description is written specifically for
-> the module. For instance, "doesn't run or load unless explicitly
-> requested by name. for example: modprobe test_bitops." In my view, this
-> description is no longer accurate.
+Hello Maxime,
 
-In-kernel module is still module. Everything is the same as for .ko,
-except that it's loaded automatically and earlier for you. To me this
-part of the description is correct.
+Thanks for the review.
 
-If you feel it should be reworded - feel free to submit a patch. Now
-that we add more functionality in that, it's probably worth to do. Not
-in this series, though.
+On 15/04/24 13:10, Maxime Ripard wrote:
+> Hi,
+> 
+> On Mon, Apr 08, 2024 at 01:44:35PM +0530, Jayesh Choudhary wrote:
+>> Currently, mode_valid hook returns all mode as valid. Add the check
+>> for the maximum and minimum pixel clock that the bridge can support
+>> while validating a mode.
+>>
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> ---
+>>   drivers/gpu/drm/bridge/sii902x.c | 16 +++++++++++++++-
+>>   1 file changed, 15 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
+>> index 8f84e98249c7..658819199c84 100644
+>> --- a/drivers/gpu/drm/bridge/sii902x.c
+>> +++ b/drivers/gpu/drm/bridge/sii902x.c
+>> @@ -163,6 +163,16 @@
+>>   
+>>   #define SII902X_AUDIO_PORT_INDEX		3
+>>   
+>> +/*
+>> + * The maximum resolution supported by the HDMI bridge is 1080p@60Hz
+>> + * and 1920x1200 requiring a pixel clock of 165MHz and the minimum
+>> + * resolution supported is 480p@60Hz requiring a pixel clock of 25MHz
+>> + *
+>> + * (drm_display_mode clock is in kHz)
+>> + */
+>> +#define SII902X_MIN_PIXEL_CLOCK			25000
+>> +#define SII902X_MAX_PIXEL_CLOCK			165000
+>> +
+> 
+> You should probably add a KHZ suffix or something to make it obvious.
+> The natural unit for a frequency is Hertz.
 
-Thanks,
-Yury
+Okay.
+Instead of adding the kHz in comments, I will add that in suffix
+like SII902X_MIN_PIXEL_CLOCK_KHZ.
+
+> 
+>>   struct sii902x {
+>>   	struct i2c_client *i2c;
+>>   	struct regmap *regmap;
+>> @@ -313,7 +323,11 @@ static int sii902x_get_modes(struct drm_connector *connector)
+>>   static enum drm_mode_status sii902x_mode_valid(struct drm_connector *connector,
+>>   					       struct drm_display_mode *mode)
+>>   {
+>> -	/* TODO: check mode */
+>> +	if (mode->clock < SII902X_MIN_PIXEL_CLOCK)
+>> +		return MODE_CLOCK_LOW;
+>> +
+>> +	if (mode->clock > SII902X_MAX_PIXEL_CLOCK)
+>> +		return MODE_CLOCK_HIGH;
+>>   
+>>   	return MODE_OK;
+>>   }
+> 
+> It's something you should do in atomic_check too
+> 
+
+Like using clock from adjusted mode in crtc_state?
+Will update in the next revision.
+
+Warm Regards,
+-Jayesh
 
