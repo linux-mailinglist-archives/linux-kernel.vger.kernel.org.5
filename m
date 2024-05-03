@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-167759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53AA8BAEC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:21:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A27868BAEE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:23:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 462F51F243F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:21:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 592B41F2264F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:23:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA38155344;
-	Fri,  3 May 2024 14:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3814156986;
+	Fri,  3 May 2024 14:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="auFdrfyc"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hi5Rgki0"
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A910153BCB;
-	Fri,  3 May 2024 14:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C4D154BF3;
+	Fri,  3 May 2024 14:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714746080; cv=none; b=Tysru9FD+8nTetfX2HovI9QC4NZ12EEk6eOHg5hNsCpKrVFyLS+C48gwaesu9dE7KPL5a3kMwF77OpNrp9frVZQycPTxBtLpmDcwenvKBNYYwuO04h4f/5f6vdl+Tp+NDacjZ95VSxZjKneZZmQe1DVjPsaGIpUTNcv0vWHvHMw=
+	t=1714746082; cv=none; b=p8nIPv2rpo9GYj1i/s+S0PDhvWteq6d7aX1p9zVL2MI0/PMnjiJ11z2JNPLBsEj2PmjOsosWTdLZfszDBVHSmUXhgPDr8lfaOWYO6LF+Se4xe2yjME95Zwm0q6mE9JFN8ThXFGcpUnReQrJc1RVZQabyrNT0zOsGmcdTdJRAyiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714746080; c=relaxed/simple;
-	bh=gXnfQAgrZrJmKu4c7d9//TfZQIsdHFJrk0CW6RdsEbo=;
+	s=arc-20240116; t=1714746082; c=relaxed/simple;
+	bh=/8WKSj8z+PwGRoB7v9CKzRHvu5T8bI/rz8wOFPwwC9Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UY1IfoqeplASERUy4q/9tPMfg/shF7lJywSx4hrNSvOfz6V+13OeR2OwC1lrSeB6Ggga2R1eT7vEMsdugceFY/XfW94/j7esrQHlJ2lHL+Y82gdDjqqRgnqJhuxiocXwIAfFUbWtQlRGWU6hl7jhKJcXjF9aD/DKz5N6DyI3x8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=auFdrfyc; arc=none smtp.client-ip=217.70.183.196
+	 In-Reply-To:To:Cc; b=F8qWryE8rt6PizehNBnslBowcfgR/cSLsV+pTBM9RQU/Cpk7p9jGdqaZUJQQbzvrJgLWmX6/abpERWo14sfEGZlhgphOzv8NTWNwY/JQLdfXgymW9jreeKyexyGwsEOAsokDQ4Sy31jFkSNxx3tCKe7O1epKoWH0TTBJREeNTSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hi5Rgki0; arc=none smtp.client-ip=217.70.183.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4ACD2E0011;
-	Fri,  3 May 2024 14:21:09 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2752AE0008;
+	Fri,  3 May 2024 14:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714746070;
+	t=1714746071;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YSit5l5HNYYTyzvi3BDpZSbmAXfYnPnJDQ+PPWXph2M=;
-	b=auFdrfycfJlDBfQJRT7H48CB+saPXuS6J8hrJ1OWU5Q8N6RVx3dQROly6uFI6Id6j/nCEu
-	BEQuFyl2ftXapbylh9aAQe63F6kQJmcAOYS084cMNI3581UvJFu03DRSEHg+cmS60xWVe+
-	q0YCMaROy0G9crzAhmb+hTZ0T8cTBk9pc30y06eKs/aq6/iRHFnObPeu/EZQng3JypPU7A
-	Mi6/NAM5AFEQg3JVirSb+OtCICz4fwx/8XgOWMfODD1tmgxOZzsJg4NllT2QrqHcLE/wcK
-	NN6lMp97LG+tfghLUK0b7gafQDh+Fq3XbGRMM88vKo8leVZM5neTUC/0T+CL/g==
+	bh=AxYpvnPVBmTt3NbX4kfm6Echib8luItPMHNWvwB5PdM=;
+	b=hi5Rgki0kjWKWubEKXyaPKioINsk1mPjF6oFXi7CO28GP82RL2pVkYlspOxnGRKD8kjQAS
+	TmpifjNV4e5zrR0EROYtkg+NnmtWfpwRUhw254DkN1QERqp+6h5FFzM/GAyvBrULvQIk16
+	aYj9dr7LuAEN8WZ9UHHerUldNCAtU7CFuhweO1Y//OcPHUiYDA6Dl2g9yB45ZfeuJRFf9h
+	QHW6/WK6lHueVY/0YDSZJe/WDOSV6aulMHFdC1Ek//AUDXYHiulXjm/NOcLSR3itSB7ckx
+	MWcSq4mpPgJCe5Qjyn8qW6XLfk4ggwGPh3QM6htr/oMi9nq/QdfCrKRtFGePCw==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Fri, 03 May 2024 16:20:46 +0200
-Subject: [PATCH v2 01/11] dt-bindings: clock: mobileye,eyeq5-clk: drop
+Date: Fri, 03 May 2024 16:20:47 +0200
+Subject: [PATCH v2 02/11] dt-bindings: clock: mobileye,eyeq5-reset: drop
  bindings
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240503-mbly-olb-v2-1-95ce5a1e18fe@bootlin.com>
+Message-Id: <20240503-mbly-olb-v2-2-95ce5a1e18fe@bootlin.com>
 References: <20240503-mbly-olb-v2-0-95ce5a1e18fe@bootlin.com>
 In-Reply-To: <20240503-mbly-olb-v2-0-95ce5a1e18fe@bootlin.com>
 To: Rob Herring <robh@kernel.org>, 
@@ -86,27 +86,26 @@ properties.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- .../bindings/clock/mobileye,eyeq5-clk.yaml         | 51 ----------------------
- 1 file changed, 51 deletions(-)
+ .../bindings/reset/mobileye,eyeq5-reset.yaml       | 43 ----------------------
+ 1 file changed, 43 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+diff --git a/Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml b/Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
 deleted file mode 100644
-index 2d4f2cde1e58..000000000000
---- a/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+index 062b4518347b..000000000000
+--- a/Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
 +++ /dev/null
-@@ -1,51 +0,0 @@
+@@ -1,43 +0,0 @@
 -# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 -%YAML 1.2
 ----
--$id: http://devicetree.org/schemas/clock/mobileye,eyeq5-clk.yaml#
+-$id: http://devicetree.org/schemas/reset/mobileye,eyeq5-reset.yaml#
 -$schema: http://devicetree.org/meta-schemas/core.yaml#
 -
--title: Mobileye EyeQ5 clock controller
+-title: Mobileye EyeQ5 reset controller
 -
 -description:
--  The EyeQ5 clock controller handles 10 read-only PLLs derived from the main
--  crystal clock. It also exposes one divider clock, a child of one of the PLLs.
--  Its registers live in a shared region called OLB.
+-  The EyeQ5 reset driver handles three reset domains. Its registers live in a
+-  shared region called OLB.
 -
 -maintainers:
 -  - Grégory Clement <gregory.clement@bootlin.com>
@@ -115,35 +114,28 @@ index 2d4f2cde1e58..000000000000
 -
 -properties:
 -  compatible:
--    const: mobileye,eyeq5-clk
+-    const: mobileye,eyeq5-reset
 -
 -  reg:
--    maxItems: 2
+-    maxItems: 3
 -
 -  reg-names:
 -    items:
--      - const: plls
--      - const: ospi
+-      - const: d0
+-      - const: d1
+-      - const: d2
 -
--  "#clock-cells":
--    const: 1
--
--  clocks:
--    maxItems: 1
+-  "#reset-cells":
+-    const: 2
 -    description:
--      Input parent clock to all PLLs. Expected to be the main crystal.
--
--  clock-names:
--    items:
--      - const: ref
+-      The first cell is the domain (0 to 2 inclusive) and the second one is the
+-      reset index inside that domain.
 -
 -required:
 -  - compatible
 -  - reg
 -  - reg-names
--  - "#clock-cells"
--  - clocks
--  - clock-names
+-  - "#reset-cells"
 -
 -additionalProperties: false
 
