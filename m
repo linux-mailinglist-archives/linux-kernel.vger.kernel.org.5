@@ -1,228 +1,143 @@
-Return-Path: <linux-kernel+bounces-167458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887AF8BA9D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:23:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD8C8BA9DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:26:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A85631C2198A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:23:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00C6287148
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F9A1514EF;
-	Fri,  3 May 2024 09:20:59 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B02E14F9C6;
+	Fri,  3 May 2024 09:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="WQdh+Gho"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A8E14D2BC;
-	Fri,  3 May 2024 09:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAB414F121;
+	Fri,  3 May 2024 09:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714728058; cv=none; b=FYUyPiX+sWUSRGkUcAs2gytwftYaz46lvHRMk7Odb/6+sMGvyTY9A/UWq54OVsKd7rxwZa25aUer+xijeFHMg9BZqNBy5jcesU44/rnbVihKluyE5Ywz8vtRm/N6DOcYQdz54uS7FiWuz4jJYu+8RJ97fDyzEKk09+pPXOAdMcU=
+	t=1714728361; cv=none; b=Kshnjp//HIJj+fIZSZWenjQKby3bLCM4sUV2BbTdDrcKTBeGVwNz24ynDnrjgIOPe1XdYWuNGl1+eh72cIwoUmLHGC6Cq3kGzUBp3qrqG2QOOg6M6c/zXwpS3VBIJeDWX8f+zxRZKRBT2PpyLKtD7n8pJT8TT500jMUotTd+X9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714728058; c=relaxed/simple;
-	bh=b/BN+fNuxRuORWf9+ySA1VDQ+emZr+DHAxB7JhCbPC8=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tZlZqThgacuwhfTsJyiGegkY9zGfycdnSxonmYwnWUVrzpPQpBGOH7IhXMxYNbPzVglUJOLgGgbAMk74L6jeUcMUz25zR/DwcAlFvnNuaLzb8FR92zDk/MnlqIjpWuSr1nAAvZi0uP9Upthm/EceSBaS1Qi6QwWSoF/odwX3oPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VW4z25zRKz6D92V;
-	Fri,  3 May 2024 17:20:30 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0020F140B39;
-	Fri,  3 May 2024 17:20:53 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 3 May
- 2024 10:20:52 +0100
-Date: Fri, 3 May 2024 10:20:51 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20240503102051.00004a99@Huawei.com>
-In-Reply-To: <6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240404184901.00002104@Huawei.com>
-	<6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714728361; c=relaxed/simple;
+	bh=C42jwh62YhIOEUfzrCeStGfYKqLsoksaGYYiDrdm6hY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IIh89rxSVyJ4P8VRXIGfVpEJAgjBYEH5Rv9hfEx9XNTvGWqS7PpvvtZL52Na99DlN3lTrjceuL6vE3e+0gg2fcW++IDYqq34f/NFYgeqTKJ9YLPz8/lIUUuh05DPBUnO9Qq/2Z3mF9JJbq/f4/y2yq4ta7ehnaeGM2nIY11uzck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=WQdh+Gho; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1714728358; x=1746264358;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C42jwh62YhIOEUfzrCeStGfYKqLsoksaGYYiDrdm6hY=;
+  b=WQdh+Gho3t16BPFI/JhkBY24Zw6kl9iIYKFOrNkKY09gPI+ZmhI2scZl
+   5NWeOGht0J7Hx9HYr87M6eqDw5S9QShoBgIC3P9QzouFRiIw1uffhuoTm
+   Uc91tYBN+EIb0F2LnothLkhg6QA93qPkSlfoFMKjG7rts+Tns4ws5PHtp
+   hfWUW8OgSfRX3WmPjndeVJgZHBQW5gdq6W75kYtbJ7f6oSx5hZEQmJAXF
+   3q+w6D/Uv8cblOBTfmCjWS/BMZbH/FyAYmPBhPqItSSuu0hiyVEimyiDR
+   vZPlw1gU1Pqe6avJG16D5ukisKzy5ovfqXPOrh1hyhFwBAyTfID0d/ei8
+   A==;
+X-CSE-ConnectionGUID: aYalchxHR+2BpTVuKX/c7A==
+X-CSE-MsgGUID: AcWUS+V4QUazJYLAUlpsuQ==
+X-IronPort-AV: E=Sophos;i="6.07,251,1708412400"; 
+   d="scan'208";a="25631541"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 May 2024 02:25:51 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 3 May 2024 02:25:11 -0700
+Received: from localhost (10.10.85.11) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Fri, 3 May 2024 02:25:11 -0700
+Date: Fri, 3 May 2024 14:52:48 +0530
+From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+To: Paolo Abeni <pabeni@redhat.com>
+CC: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>, <netdev@vger.kernel.org>,
+	<lxu@maxlinear.com>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
+	<linux@armlinux.org.uk>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next] net: phy: add wol config options in phy device
+Message-ID: <ZjSs6JNb2WSmhHF5@HYD-DK-UNGSW21.microchip.com>
+References: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
+ <d28a2bea1c7bb28dd1870116ddbdba78cf3817a4.camel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <d28a2bea1c7bb28dd1870116ddbdba78cf3817a4.camel@redhat.com>
 
-On Wed, 1 May 2024 16:49:24 -0700
-Ira Weiny <ira.weiny@intel.com> wrote:
+Hi Paolo,
 
-> Jonathan Cameron wrote:
-> >   
-> > > 
-> > > Fan Ni's latest v5 of Qemu DCD was used for testing.[2]  
-> > Hi Ira, Navneet.  
-> > > 
-> > > Remaining work:
-> > > 
-> > > 	1) Integrate the QoS work from Dave Jiang
-> > > 	2) Interleave support  
-> > 
-> > 
-> > More flag.  This one I think is potentially important and don't
-> > see any handling in here.  
-> 
-> Nope I admit I missed the spec requirement.
-> 
-> > 
-> > Whilst an FM could in theory be careful to avoid sending a
-> > sparse set of extents, if the device is managing the memory range
-> > (which is possible all it supports) and the FM issues an Initiate Dynamic
-> > Capacity Add with Free (again may be all device supports) then we
-> > can't stop the device issuing a bunch of sparse extents.
-> > 
-> > Now it won't be broken as such without this, but every time we
-> > accept the first extent that will implicitly reject the rest.
-> > That will look very ugly to an FM which has to poke potentially many
-> > times to successfully allocate memory to a host.  
-> 
-> This helps me to see see why the more bit is useful.
-> 
-> > 
-> > I also don't think it will be that hard to support, but maybe I'm
-> > missing something?   
-> 
-> Just a bunch of code and refactoring busy work.  ;-)  It's not rocket
-> science but does fundamentally change the arch again.
-> 
-> > 
-> > My first thought is it's just a loop in cxl_handle_dcd_add_extent()
-> > over a list of extents passed in then slightly more complex response
-> > generation.  
-> 
-> Not exactly 'just a loop'.  No matter how I work this out there is the
-> possibility that some extents get surfaced and then the kernel tries to
-> remove them because it should not have.
+Thank you for review comments.
 
-Lets consider why it might need to back out.
-1) Device sends an invalid set of extents - so maybe one in a later message
-   overlaps with an already allocated extent.   Device bug, handling can
-   be extremely inelegant - up to crashing the kernel.  Worst that happens
-   due to race is probably a poison storm / machine check fun?  Not our
-   responsibility to deal with something that broken (in my view!) Best effort
-   only.
+The 05/02/2024 15:49, Paolo Abeni wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Tue, 2024-04-30 at 10:36 +0530, Raju Lakkaraju wrote:
+> > @@ -725,6 +726,8 @@ static int gpy_set_wol(struct phy_device *phydev,
+> >               ret = phy_read(phydev, PHY_ISTAT);
+> >               if (ret < 0)
+> >                       return ret;
+> > +
+> > +             phydev->wolopts |= WAKE_MAGIC;
+> 
+> I'm wondering if 'phydev->wolopts' could/should be handled in the
+> common code.
 
-2) Host can't handle the extent for some reason and didn't know that until
-   later - can just reject the ones it can't handle. 
+Ok. I will change.
 
 > 
-> To be most safe the cxl core is going to have to make 2 round trips to the
-> cxl region layer for each extent.  The first determines if the extent is
-> valid and creates the extent as much as possible.  The second actually
-> surfaces the extents.  However, if the surface fails then you might not
-> get the extents back.  So now we are in an invalid state.  :-/  WARN and
-> continue I guess?!??!
+> >       } else {
+> >               /* Disable magic packet matching */
+> >               ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
+> > @@ -748,6 +751,8 @@ static int gpy_set_wol(struct phy_device *phydev,
+> >               if (ret & (PHY_IMASK_MASK & ~PHY_IMASK_LSTC))
+> >                       phy_trigger_machine(phydev);
+> >
+> > +             phydev->wolopts |= WAKE_PHY;
+> > +
+> >               return 0;
+> >       }
+> >
+> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> > index 616bd7ba46cb..9740f08ad98e 100644
+> > --- a/drivers/net/phy/phy_device.c
+> > +++ b/drivers/net/phy/phy_device.c
+> > @@ -2038,6 +2038,11 @@ int phy_suspend(struct phy_device *phydev)
+> >       if (phydev->suspended)
+> >               return 0;
+> >
+> > +     if (phydev->wolopts) {
+> > +             wol.wolopts = phydev->wolopts;
+> > +             phy_ethtool_set_wol(phydev, &wol);
+> 
+> The above will fail when the phy does not provide wol operations -
+> should never happen when 'wolopts != 0', but possibly worth catching
+> the error?
 
-Yes. Orchestrator can decide how to handle - probably reboot server in as
-gentle a fashion as possible.
-
-
-> 
-> I think the safest way to handle this is add a new kernel notify event
-> called 'extent create' which stops short of surfacing the extent.  [I'm
-> not 100% sure how this is going to affect interleave.]
-> 
-> I think the safest logic for add is something like:
-> 
-> 	cxl_handle_dcd_add_event()
-> 		add_extent(squirl_list, extent);
-> 
-> 		if (more bit) /* wait for more */
-> 			return;
-> 
-> 		/* Create extents to hedge the bets against failure */
-> 		for_each(squirl_list)
-> 			if (notify 'extent create' != ok)
-> 				send_response(fail);
-> 				return;
-> 		
-> 		for_each(squirl_list)
-> 			if (notify 'surface' != ok)
-> 				/*
-> 				 * If the more bit was set, some extents
-> 				 * have been surfaced and now need to be
-> 				 * removed...
-> 				 *
-> 				 * Try to remove them and hope...
-> 				 */
-
-If we failed to surface them all another option is just tell the device
-that.   Responds with the extents that successfully surfaced and reject
-all others (or all after the one that failed?)  So for the lower layers
-send the device a response that says "thanks but I only took these ones"
-and for the upper layers pretend "I was only offered these ones"
-
-> 				WARN_ON('surface extents failed');
-> 				for_each(squirl_list)
-> 					notify 'remove without response'
-> 				send_response(fail);
-> 				return;
-> 
-> 		send_response(squirl_list, accept);
-> 
-> The logic for remove is not changed AFAICS because the device must allow
-> for memory to be released at any time so the host is free to release each
-> of the extents individually despite the 'more' bit???
-
-Yes, but only after it accepted them - which needs to be done in one go.
-So you can't just send releases before that (the device will return an
-error and keep them in the pending list I think...)
+In another mail thread, Andrew gave different comment.
+I will address that comment.
 
 > 
-> > 
-> > I don't want this to block getting initial DCD support in but it
-> > will be a bit ugly if we quickly support the more flag and then end
-> > up with just one kernel that an FM has to be careful with...  
+> Thanks,
 > 
-> I'm not sure which is worse.  Given your use case above it seems like the
-> more bit may be more important for 'dumb' devices which want to add
-> extents in blocks before responding to the FM.  Thus complicating the FM.
-> 
-> It seems 'smarter' devices which could figure this out (not requiring the
-> more bit) are the ones which will be developed later.  So it seems the use
-> case time line is the opposite of what we need right now.
-
-Once we hit shareable capacity (which the smarter devices will use) then
-this become the dominant approach to non contiguous allocations because
-you can't add extents with a given tag in multiple goes.
-
-So I'd expect the more flag to be more common not less over time.
-> 
-> For that reason I'm inclined to try and get this in.
+> Paolo
 > 
 
-Great - but I'd not worry too much about bad effects if you get invalid
-lists from the device.  If the only option is shout and panic, then fine
-though I'd imagine we can do slightly better than that, so maybe warn
-extensively and don't let the region be used.
-
-Jonathan
-
-> Ira
-> 
-
+-- 
+Thanks,                                                                         
+Raju
 
