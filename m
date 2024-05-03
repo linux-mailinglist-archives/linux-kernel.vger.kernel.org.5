@@ -1,155 +1,133 @@
-Return-Path: <linux-kernel+bounces-167800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A05818BAF56
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 274618BAF5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:06:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BE582846B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:01:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A87EA2823B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E5448788;
-	Fri,  3 May 2024 15:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BDA1EEFC;
+	Fri,  3 May 2024 15:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHgsbqhf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="lK7TLf8v";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="d3ZL6Ft9"
+Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723871BF24;
-	Fri,  3 May 2024 15:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBDE57C84;
+	Fri,  3 May 2024 15:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714748483; cv=none; b=f+n2tIxZ7GMSH/3/m1wE9fv8xrOUnR2Z/mhK7r98SVHO4/Xh0H2Jioc6iPHvznd8rmRWs4xJsU0Q6tvCLg3dUNgEWDLb7jDXRJZL3Bu+nkqp+JoFkNWRocxw2rej0HjGDcE5nO9M7yNm/PGdK8AqD52OJJvnkO5BT4pRHiZkN50=
+	t=1714748767; cv=none; b=Y0w7+qEmDjMZxhFi/3cr7WJh2ld+89YAZPKHNCKh8q9RCLD8YNEr7ag0/VExnIX+nXjQ+JkyyVHwDlQZQIoXj65jGvdvnI134GLWcnQVm5YUDm23hO0cW4jGBV/jsTbj5Hqx2NKF8ifTMif4fSBXmTt2wckz5h/Yr4iaXC21SKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714748483; c=relaxed/simple;
-	bh=UXXUMTs3xuoh35OPltFV2PaGUabtM91G4z1H+6ANXqc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ucLI/M10a4HdtHkV4BzMUf15WyCYQQJOYnTQXIwj5kfbJD5RjX1vnQg20yALnF2Z/P4L8HoTgECI72rXajLBT1irq1OmMG7Y4pVE5HOQ3EmvO1cdZYD8QMCQB5H39hoEJk6ZTPokf9kBcqzAljZu9ja0fE6x8cT5do2HeQolzoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHgsbqhf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F87C116B1;
-	Fri,  3 May 2024 15:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714748483;
-	bh=UXXUMTs3xuoh35OPltFV2PaGUabtM91G4z1H+6ANXqc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RHgsbqhfhhnWXt7vZEq/n3A1dRZyUltjDpSXa3bsBvFJodtas18PnkKRMEsFBCt5M
-	 pQgCTY7uYcfQ0Yzi5RaIbOTGiOL0p9EQu/8n0JySlanhTSbU13ozsG17wfSfhbpcPl
-	 8dNTB/hv2LdNudWXK5sC8C5iBEFR60B9Bs0+NwUwCucjz+ivfvAanNUvQ6L2+kjiM2
-	 6IpS/xhzto24IeMVWxXP08xWIB7x14R5hUM1aKVnIh1+YDsV5yqgN8mlP4/HbtV2Vc
-	 Bubs2zNjvEG6jcfYFCDUoLrKboifhW8QU45Pi0ER5IFrgGEFhbcN/LeJHNZUsXoR6t
-	 7xOmbYjkcCz6Q==
-Date: Fri, 3 May 2024 16:01:16 +0100
-From: Will Deacon <will@kernel.org>
-To: Sebastian Ene <sebastianene@google.com>
-Cc: catalin.marinas@arm.com, james.morse@arm.com, jean-philippe@linaro.org,
-	maz@kernel.org, oliver.upton@linux.dev, qperret@google.com,
-	qwandor@google.com, sudeep.holla@arm.com, suzuki.poulose@arm.com,
-	tabba@google.com, yuzenghui@huawei.com, lpieralisi@kernel.org,
-	kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 2/4] KVM: arm64: Add support for FFA_PARTITION_INFO_GET
-Message-ID: <20240503150114.GB18656@willie-the-truck>
-References: <20240418163025.1193763-2-sebastianene@google.com>
- <20240418163025.1193763-4-sebastianene@google.com>
+	s=arc-20240116; t=1714748767; c=relaxed/simple;
+	bh=JnpGwDMbq5BJ45XOyGa6afSjXzlIb4yHoH5QASjnFbg=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=eC0/JgH6s5wLqAPScd48Usz86wIbSaG878loGQxEsK6KyWNjcfFmhkskXzLQTLodtLE8etuE4xiXKf6NADd34ZWt0XZF84C8jb7tvIWs5mcYXjuj4VFv9T+CzGEdWMntKymAHGypaz612tz44CrH80EZ14k89ioXhn+CgvHUtE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=lK7TLf8v; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=d3ZL6Ft9; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 9D10813803B7;
+	Fri,  3 May 2024 11:06:02 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 03 May 2024 11:06:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1714748762; x=1714835162; bh=JbVGGat4e5
+	HAZ02u9XPTjIFCrew1jWN9uR5HkNHLs3M=; b=lK7TLf8vrFhT+1WnJsXkGgy6T4
+	BYVijdxdGtOcVpZIZQG4xpRoGrZly+BWL2Xkdi/AF1q9UQmLtJgnekuQU8Gvip9N
+	qAuREOv91ycGHxV38u7VRECiASV50H46G5qqozccoetwwVNQRPba+6bn/fn0p0Ab
+	pBiivUJ8fFUvJYDobLgsgYMLoTckD7WR3oWFUqzdi+3uIVyJehXgzV+1R3zzvqXJ
+	6ZOkRv4KM4fmDDNQz8BbPcu7/u+61Nu25bGh5VTqfgigB/3Q0Ri5gZYXlBTWUSZm
+	r8pu9vGn8jgyk4Wwjn2+AbK3WjfC46WGpvuXYA8qGslAqtjm41TrQ5FAhRbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714748762; x=1714835162; bh=JbVGGat4e5HAZ02u9XPTjIFCrew1
+	jWN9uR5HkNHLs3M=; b=d3ZL6Ft9U3/8PK4t9hNei5S/rBllz4MFbVHmJKr7kaoV
+	KoFSHVxhpJCQ6KHxF5UplOMyCyPskRWxGaxySb3mix2wCpzRa5WL6yElOyjF5nDH
+	QzHi3p0Bv3Mwy128xFy8Q4JmWVr9t0ze/LFsvfDvxzTamLOHai3zXD8o4m1/Rj3s
+	/ajvQXFJPbJLwQtReHGXchey2pd46tN0Em6fyGaVN2KilXkE0/W8vV9xejFknWTd
+	7OX5kHIwVtmG0KYBYWNruOx62B5lCnHzaddC7aTbQvPRHtwmEV73riPe4MaTCpmS
+	XWeCyvYKuJxDp6eNqoizaz2mxnkfMSg838K4Ip627A==
+X-ME-Sender: <xms:Wf00ZtpwdLsh-nFAWhxyJlAsFsdAxNH6oA7_h45bup7xm3YqKcAl_A>
+    <xme:Wf00ZvoE5sqtEyIzpqh4Mx_K48izWBRegWNaOedaP_xDGg0WHbafGMOMSwJovbhLI
+    MYEr4Zx0jR_R-TUNmM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvtddgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:Wf00ZqMSQWaEGJZ6d3Do3tJEzRZPJPbWMSbtTitfxX7augEPjCY8SA>
+    <xmx:Wf00Zo7Nms0sPRdN2ETZKyo2NubkvqwxZ3AlCkPvBaAASYL2nlnsVw>
+    <xmx:Wf00Zs7dwn7CdDNkIj50iapNJmYf16XvHmxWp9pzIlcG3XAf5p9Eig>
+    <xmx:Wf00ZgghDqvcLuHz6ULCONW3w_F8PPJ6vmLzRJFDGkS-CWYNhwwU3w>
+    <xmx:Wv00ZsiFDsFAeByJsXqq40ltjTO8C6AkCJXphqz6zMPUdtKFCD1MyKv6>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 112F9B6008D; Fri,  3 May 2024 11:06:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-417-gddc99d37d-fm-hotfix-20240424.001-g2c179674
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418163025.1193763-4-sebastianene@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-Id: <d59d9b67-3f0c-423c-a76d-74056a8444cb@app.fastmail.com>
+In-Reply-To: <F1D1D3D4-CFB0-47A8-87F0-E1D8A6B5904F@toblux.com>
+References: <20240420223836.241472-1-thorsten.blum@toblux.com>
+ <42e6a510-9000-44a4-b6bf-2bca9cf74d5e@linux.intel.com>
+ <C0856D2E-53FF-45EB-B0F9-D4F836C7222C@toblux.com>
+ <e7e4ff27-ebb3-4ed6-a7cc-36c36ab90a36@app.fastmail.com>
+ <99B58F85-CC9C-49F6-9A34-B8A59CABE162@toblux.com>
+ <F1D1D3D4-CFB0-47A8-87F0-E1D8A6B5904F@toblux.com>
+Date: Fri, 03 May 2024 17:05:39 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Thorsten Blum" <thorsten.blum@toblux.com>
+Cc: 
+ =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
+ "Xiao W Wang" <xiao.w.wang@intel.com>,
+ "Palmer Dabbelt" <palmer@rivosinc.com>,
+ "Charlie Jenkins" <charlie@rivosinc.com>,
+ "Namhyung Kim" <namhyung@kernel.org>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "Youling Tang" <tangyouling@loongson.cn>,
+ "Tiezhu Yang" <yangtiezhu@loongson.cn>, "Jinyang He" <hejinyang@loongson.cn>,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bitops: Change function return types from long to int
+Content-Type: text/plain
 
-On Thu, Apr 18, 2024 at 04:30:24PM +0000, Sebastian Ene wrote:
-> Handle the FFA_PARTITION_INFO_GET host call inside the pKVM hypervisor
-> and copy the response message back to the host buffers. Save the
-> returned FF-A version as we will need it later to interpret the response
-> from the TEE.
-> 
-> Signed-off-by: Sebastian Ene <sebastianene@google.com>
-> ---
->  arch/arm64/kvm/hyp/nvhe/ffa.c | 46 +++++++++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/ffa.c b/arch/arm64/kvm/hyp/nvhe/ffa.c
-> index 023712e8beeb..d53f50c73acb 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/ffa.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/ffa.c
-> @@ -674,6 +674,49 @@ static void do_ffa_version(struct arm_smccc_res *res,
->  	hyp_spin_unlock(&host_buffers.lock);
->  }
->  
-> +static void do_ffa_part_get(struct arm_smccc_res *res,
-> +			    struct kvm_cpu_context *ctxt)
-> +{
-> +	DECLARE_REG(u32, uuid0, ctxt, 1);
-> +	DECLARE_REG(u32, uuid1, ctxt, 2);
-> +	DECLARE_REG(u32, uuid2, ctxt, 3);
-> +	DECLARE_REG(u32, uuid3, ctxt, 4);
-> +	DECLARE_REG(u32, flags, ctxt, 5);
-> +	u32 off, count, sz, buf_sz;
-> +
-> +	hyp_spin_lock(&host_buffers.lock);
-> +	if (!host_buffers.rx) {
-> +		ffa_to_smccc_res(res, FFA_RET_INVALID_PARAMETERS);
+On Fri, May 3, 2024, at 16:49, Thorsten Blum wrote:
+> On 22. Apr 2024, at 17:55, Arnd Bergmann <arnd@arndb.de> wrote:
+>>> 
+>>> I can generally merge such a series with architecture specific
+>>> changes through the asm-generic tree, with the appropriate Acks
+>>> from the maintainers.
+>
+> What would it take for this patch (with only generic type changes) to be
+> applied?
+>
+> I did some further investigations and disassembled my test kernel images.
+> The patch reduced the number of ARM instructions by 872 with GCC 13 and by
+> 2,354 with GCC 14. Other architectures that rely on the generic bitops
+> functions will most likely also benefit from this patch.
+>
+> Tests were done with base commit 9d1ddab261f3e2af7c384dc02238784ce0cf9f98.
 
-This should be FFA_RET_BUSY per the spec.
+Sorry for failing to follow up earlier, I think this is ok, thanks
+for your thorough work on this. I've applied it to the asm-generic
+tree now.
 
-> +		goto out_unlock;
-> +	}
-> +
-> +	arm_smccc_1_1_smc(FFA_PARTITION_INFO_GET, uuid0, uuid1,
-> +			  uuid2, uuid3, flags, 0, 0,
-> +			  res);
-> +
-> +	if (res->a0 != FFA_SUCCESS)
-> +		goto out_unlock;
-> +
-> +	count = res->a2;
-> +	if (!count)
-> +		goto out_unlock;
-> +
-> +	if (host_buffers.ffa_version > FFA_VERSION_1_0) {
-
-The spec says that the size field is populated based on the flags
-parameter. Why aren't you checking that instead of the version number?
-
-> +		buf_sz = sz = res->a3;
-> +		if (sz > sizeof(struct ffa_partition_info))
-> +			buf_sz = sizeof(struct ffa_partition_info);
-
-I don't think this is right, as if the payload really is bigger than
-'struct ffa_partition_info' we'll truncate the data (and you don't
-adjust res->a3 afaict).
-
-Can't we just copy the whole thing back to the host? We're not
-interpreting the thing, so we can just treat it like a stream of bytes.
-
-> +	} else {
-> +		/* FFA_VERSION_1_0 lacks the size in the response */
-> +		buf_sz = sz = 8;
-
-Can you define that as a constant in arm_ffa.h, please? It's the size of
-a 1.0 partition info structure.
-
-> +	}
-> +
-> +	WARN_ON((count - 1) * sz + buf_sz > PAGE_SIZE);
-
-We should bounds-check against 'KVM_FFA_MBOX_NR_PAGES * PAGE_SIZE' and
-return an error (FFA_RET_ABORTED) if the size is over that.
-
-> +	for (off = 0; off < count * sz; off += sz)
-> +
-> +		memcpy(host_buffers.rx + off, hyp_buffers.rx + off, buf_sz);
-
-I think this is wrong if bit 0 of 'flags' is set to 1. In that case, I
-think you just get back the number of partitions and that's it, so we
-shouldn't be going near the mailboxes.
-
-Will
+     Arnd
 
