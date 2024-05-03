@@ -1,101 +1,243 @@
-Return-Path: <linux-kernel+bounces-168148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E77D8BB44B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:43:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C50498BB44D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 345281F228EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:43:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7BB31C21604
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A903C158A39;
-	Fri,  3 May 2024 19:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5334158D60;
+	Fri,  3 May 2024 19:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="L+2VW4/8"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="2oFPrmCc"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01E6158A04
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A15A158A04
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714765410; cv=none; b=e4YvWmSGX91IcvZ/Y9yZK5MTSKCM4el86lxjh8YzS6jAMymGFlPtYAkvLd9U3rgxkDbkGYxEyDmLrrevaToRWAosOcEKHo8olsyl5WL+82QxsXBxCgByI7NIRYPWKxWc03U7gHoSFxm7e4tvNtmArETJWWicOYRDPq6qQkSHKxI=
+	t=1714765463; cv=none; b=jzymy5ArPk0xd6uDKPBAhSD1tUnpIq2WJNitRDqB8vODoYnty8HhsrTxCe8n9Nkkv9OX9+WiDd+6aRtZQvTPSFbqamAdLDQf+e2blvgSnxBi3gSxS1D79MyHA21ZhwtCHImPisLP4QuEsd98MoN1zTXnfEFY1HmFnLxnZtIiEyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714765410; c=relaxed/simple;
-	bh=tRo3l+NY6pKlyguTf4ZErUgbx5G9G0vJfh3NkwVHbv8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RAFvtuvb9gsEnmoqn/zD9QrWbEDbWhDsjZJwSNOKRRzS+r94wsCbVoZaWoeL7xfcPwVLP3eW5FL2UIcFpKD4OIK+A7SKZr4mpxB8bYXcuStcxgUeuiujF3aAj9KrIqwYG41CPmcZkwwGDh4dFmGstmLhNjAoNkrs4xHzzQTrKEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=L+2VW4/8; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d9c78d7f97so193739f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:43:27 -0700 (PDT)
+	s=arc-20240116; t=1714765463; c=relaxed/simple;
+	bh=0NLlSbUWjtfkSNMe90tPQL2xSqgQxt8SNfb42yWTU8Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MGj43Y6+nDU1qy33hFRLD2Of3T72dwraw/orhwU09mSf/av9toxro38+OrwZNVGxWunUbBJfBMwOPvaR063NwRN+7okHzUuDz+ZFF978sU3Od/CBF2qrwe0cPnHWL/iuuoKZzQoRsdB36l9luXSTIdEU8gOr7JPswoydqfi+/Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=2oFPrmCc; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d3907ff128so12827a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1714765407; x=1715370207; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CoehBqnXPQ17o2dkVZhBr+IIq52xBLa/0bscC+2UHww=;
-        b=L+2VW4/8OZAOrSx0eMkiW0V69snecqC2GOVIpcwZnFkBgdOsXDuQz1diIyA74mhATG
-         tPEvYtUpD7c+blT7ZftG9fIE5/lolPotHzijLuVq5VVXtcam0ozxoPItCI1EmRN5BQU3
-         VvK/PXTx+vFb5iQme2Wks4CQAVYYBRmw6piKE=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714765461; x=1715370261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CGjDpzqhZQyAQMKyqH+Z7WQdcPMW4kVzNIgeNLfdaAY=;
+        b=2oFPrmCcjzasyoCpy5AhnCPSBFINufmdYubjfIa/ZpLhV9vXxe8Ab0fmp1qlLA17GO
+         N4wUO8m1SF1FI5xDq7sPKJTdsQ5clYcPEWZZCrWDTMWkIou3dNxyeULIUnTkVbWE620S
+         8EjzELyznOoBaMQglczLqTy9ZMByUIwdyQwXVuFM0KyvqCb6nEVfaaOj+xMqjK+uSmOV
+         VHOp/0s600qSUKASTlwUzDP9u4nsInS/qdtzhnW40vLkks4NHtU4yhIKGx9fm9V52h8i
+         Ri0TKS6cMttWgjfe/4yC/lGe6d24MONCPSVfjglG+F4ZyFtcMgbpKCBuy3F4+Mrx3CPt
+         5e0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714765407; x=1715370207;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CoehBqnXPQ17o2dkVZhBr+IIq52xBLa/0bscC+2UHww=;
-        b=e5lxcPLyKXKJQ2gvn+Agz1imadHKsQvGjnaMOFjM9REMMX7GYueqpkzYP3F5Bb6CUK
-         PzurDJ3Z7KOsvS+6eJSdOvcLywqVzi4J4DIUZcTHd2bYxtXjb17E6/v6oEKiamhbQs37
-         0BmYemjFpT02qD/vHL46Ero6SdE2I8Bje6ZuE9xO6HC5+rNyvod4FbnOZLiVxH4WIhmd
-         mQuGWIAydc3YNYa2oYl/oJiCop43nPYCCXcoAKIF0LPEN0nE1MkCiojUH1ALliFTDtZS
-         4WMlO1cC6K9QryuwKbTb4WOPjvXrSy366HylJWF2VQ2DbnBFdgTR22NDEJQU0OkRVpy9
-         brSw==
-X-Gm-Message-State: AOJu0Yxfni8D5UQMMCp+N6obZuj1GIaAcMKK1FOkK6NlUj2PxKIaqy+n
-	dU2LN/C49eG8Ns9EiPS5/pD7+MPbg79kGy/1YsU+Qn5VtXD3/jVRzoAYZ0IGev8=
-X-Google-Smtp-Source: AGHT+IG9sDNLiicfk/AlMxI0Uk0RAKTyF0DWx5qbaxCi1rjdOmrTdOLWZifYuj1bIkRUBQrj+qo5HQ==
-X-Received: by 2002:a5d:8909:0:b0:7de:b279:fb3e with SMTP id b9-20020a5d8909000000b007deb279fb3emr3636654ion.1.1714765407144;
-        Fri, 03 May 2024 12:43:27 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id u9-20020a05663825c900b00487bcf58da9sm943699jat.90.2024.05.03.12.43.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 12:43:26 -0700 (PDT)
-Message-ID: <a4e28fb2-6dc2-49f5-831f-95c9fc60570b@linuxfoundation.org>
-Date: Fri, 3 May 2024 13:43:26 -0600
+        d=1e100.net; s=20230601; t=1714765461; x=1715370261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CGjDpzqhZQyAQMKyqH+Z7WQdcPMW4kVzNIgeNLfdaAY=;
+        b=eH71HYY6Yl36iMixrtGV5NTT9jsxlyFENkYtS/UUaTgaVqIKSOhqFY7Z1+c+9+cISr
+         vt1LLpxi0TtUWUp/XGCRU1zHmkxEiAamIMzozZ0sFAVl92dDNqwgVcZ76yrTSn3LYIuZ
+         WQamCzIOIP06LDmG2RS1RC6XSjXoFvLGDcD/BAIqbIC46NDjp8J6oldtQT+ImLh1IJN4
+         FtLchqDSOnP2IS+w3vbiptytuEeqMrIuOXOdiTj+KbTmtfGoKR4+C0jRalhOOn6g8ovE
+         +IrgDI4j5ZfWDgMcs1zX5qLtJUxZTXTGBGvQ17R9PKMo9bq7iZr4ivnNECe1adoIK0hF
+         foLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJ0ktL3mRnbePQ3q09j4Cq+cJuTXxt4MEbelKdp0GKcixzU31ylqw7xDovMFM/j6LF6n9EUcme0+oj1h6EcYm08to6tBQO8m/cU0gM
+X-Gm-Message-State: AOJu0Yx4p51t387ymxZKIEbMYSvUNlmoMywlCJ4FQ8DYwsBUCDb/5/tD
+	Qeb3mdLZAg+DMRw7gbcUoCbnVa9lAI/V9HiD3tmevba7j/liDUioAmYCq1D7FJ0kAOVaPPtLev2
+	EzEwxZ7P+BWQOEEHBeQ24zNCdmkm60EKZPSos+Q==
+X-Google-Smtp-Source: AGHT+IHresXDj8zjJo2L5u68znPjhx0ovrbhxu+59NRfgJ//aE/UKF6ubHAqLADqE7qY9hVfIpPoveM7rHNL5OQZ3Ao=
+X-Received: by 2002:a17:90b:354e:b0:2b4:33ee:25a1 with SMTP id
+ lt14-20020a17090b354e00b002b433ee25a1mr3442632pjb.26.1714765460928; Fri, 03
+ May 2024 12:44:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] selftest/tty: Use harness framework in tty
-To: Shengyu Li <shengyu.li.evgeny@gmail.com>, shuah@kernel.org,
- msekleta@redhat.com, gregkh@linuxfoundation.org, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240430161807.96050-1-shengyu.li.evgeny@gmail.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240430161807.96050-1-shengyu.li.evgeny@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <cover.1714494653.git.tjeznach@rivosinc.com> <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
+ <20240501145621.GD1723318@ziepe.ca> <CAH2o1u63GjMnYrfa8W-c1hdp+TAA0R-FyxXM4dEiFF+KEGWwbA@mail.gmail.com>
+ <20240503181059.GC901876@ziepe.ca>
+In-Reply-To: <20240503181059.GC901876@ziepe.ca>
+From: Tomasz Jeznach <tjeznach@rivosinc.com>
+Date: Fri, 3 May 2024 12:44:09 -0700
+Message-ID: <CAH2o1u7av8zMucB2sKxBOZtd1eqEC4Qmgin=8VQ03pWbQdZUUg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] iommu/riscv: Paging domain support
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Anup Patel <apatel@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, 
+	Nick Kossifidis <mick@ics.forth.gr>, Sebastien Boeuf <seb@rivosinc.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/30/24 10:18, Shengyu Li wrote:
-> Similarly, this one is based on automated tools and a very
-> small percentage of manual modifications to automatically refactor
-> the version that uses kselftest_harness.h, which is logically clearer.
-> 
-> Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
-> ---
-> 
-> v2: Fixed the last Assert
+On Fri, May 3, 2024 at 11:11=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+>
+> On Fri, May 03, 2024 at 10:44:14AM -0700, Tomasz Jeznach wrote:
+> > > > +     list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> > > > +             if (bond->dev =3D=3D dev) {
+> > > > +                     list_del_rcu(&bond->list);
+> > > > +                     found =3D bond;
+> > > > +             }
+> > > > +     }
+> > > > +     spin_unlock_irqrestore(&domain->lock, flags);
+> > > > +
+> > > > +     /* Release and wait for all read-rcu critical sections have c=
+ompleted. */
+> > > > +     kfree_rcu(found, rcu);
+> > > > +     synchronize_rcu();
+> > >
+> > > Please no, synchronize_rcu() on a path like this is not so
+> > > reasonable.. Also you don't need kfree_rcu() if you write it like thi=
+s.
+> > >
+> > > This still looks better to do what I said before, put the iommu not
+> > > the dev in the bond struct.
+> > >
+> > >
+> >
+> > I was trying not to duplicate data in bond struct and use whatever is
+> > available to be referenced from dev pointer (eg iommu / ids / private
+> > iommu dev data).
+>
+> I'm not sure that is a valuable goal considering the RCU
+> complexity.. But I suppose it would be a bit of a hassle to replicate
+> the ids list into bond structurs. Maybe something to do when you get
+> to ATS since you'll probably want to replicate the ATS RIDs. (see what
+> Intel did, which I think is pretty good)
+>
+> > If I'm reading core iommu code correctly, device pointer and iommu
+> > pointers should be valid between _probe_device and _release_device
+> > calls. I've moved synchronize_rcu out of the domain attach path to
+> > _release_device, LMK if that would be ok for now.  I'll have a
+> > second another to rework other patches to avoid storing dev pointers
+> > at all.
+>
+> Yes, that seems better.. I'm happier to see device hot-unplug be slow
+> than un attach
+>
+> There is another issue with the RCU that I haven't wrapped my head
+> around..
+>
+> Technically we can have concurrent map/unmap/invalidation along side
+> device attach/detach. Does the invalidation under RCU work correctly?
+>
+> For detach I think yes:
+>
+>    Inv CPU                                   Detach CPU
+>
+>   write io_pte                               Update device descriptor
+>   rcu_read_lock
+>     list_for_each
+>       <make invalidation command>            <make description inv cmd>
+>       dma_wmb()                              dma_wmb()
+>       <doorbell>                             <cmd doorbell>
+>   rcu_read_unlock
+>                                              list_del_rcu()
+>                                              <wipe ASID>
+>
+> In this case I think we never miss an invalidation, the list_del is
+> always after the HW has been fully fenced, so I don't think we can
+> have any issue. Maybe a suprious invalidation if the ASID gets
+> re-used, but who cares.
+>
+> Attach is different..
+>
+>    Inv CPU                                   Attach CPU
+>
+>   write io_pte
+>   rcu_read_lock
+>     list_for_each // empty
+>                                              list_add_rcu()
+>                                              Update device descriptor
+>                                              <make description inv cmd>
+>                                              dma_wmb()
+>                                              <cmd doorbell>
+>   rcu_read_unlock
+>
+> As above shows we can "miss" an invalidation. The issue is narrow, the
+> io_pte could still be sitting in write buffers in "Inv CPU" and not
+> yet globally visiable. "Attach CPU" could get the device descriptor
+> installed in the IOMMU and the IOMMU could walk an io_pte that is in
+> the old state. Effectively this is because there is no release/acquire
+> barrier passing the io_pte store from the Inv CPU to the Attach CPU to th=
+e
+> IOMMU.
+>
+> It seems like it should be solvable somehow:
+>  1) Inv CPU releases all the io ptes
+>  2) Attach CPU acquires the io ptes before updating the DDT
+>  3) Inv CPU acquires the RCU list in such a way that either attach
+>     CPU will acquire the io_pte or inv CPU will acquire the RCU list.
+>  4) Either invalidation works or we release the new iopte to the SMMU
+>     and don't need it.
+>
+> But #3 is a really weird statement. smb_mb() on both sides may do the
+> job??
+>
 
-See feedback on your v1. Same comments apply here.
-Explain why this refactor is necessary.
+Actual attach sequence is slightly different.
 
-thanks,
--- Shuah
+ Inv CPU                            Attach CPU
+
+ write io_pte
+  rcu_read_lock
+    list_for_each // empty
+                                    list_add_rcu()
+                                    IOTLB.INVAL(PSCID)
+                                    <make description inv cmd>
+                                    dma_wmb()
+                                    <cmd doorbell>
+ rcu_read_unlock
+
+I've tried to cover this case with riscv_iommu_iotlb_inval() called
+before the attached domain is visible to the device. This is something
+to optimize to avoid invalidating the whole PSCID if the domain was
+already attached to the same IOMMU, but I'd leave it for a separate
+patch series.
+
+> > > The number of radix levels is a tunable alot of iommus have that we
+> > > haven't really exposed to anything else yet.
+> >
+> > Makes sense. I've left an option to pick mode from MMU for cases where
+> > dev/iommu is not known at allocation time (with iommu_domain_alloc()).
+> > I'd guess it's reasonable to assume IOMMU supported page modes will
+> > match MMU.
+>
+> Reasonable, but for this case you'd be best to have a global static
+> that unifies the capability of all the iommu instances. Then you can
+> pick the right thing from the installed iommus, and arguably, that is
+> the right thing to do in all cases as we'd slightly prefer domains
+> that work everywhere in that edge case.
+>
+
+That is a viable option. If you're ok I'll address this as a separate patch=
+.
+I've been trying to avoid adding more global variables, but it might
+not be avoidable.
+
+> Jason
+
+Best,
+- Tomasz
 
