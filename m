@@ -1,127 +1,93 @@
-Return-Path: <linux-kernel+bounces-167376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 793388BA89E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7647C8BA8A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:24:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 335232830C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:24:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F927283105
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11CF314885A;
-	Fri,  3 May 2024 08:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A9D149C53;
+	Fri,  3 May 2024 08:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hKYOko+8"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rtg4hZx0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7910114882E
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 08:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C4F148313;
+	Fri,  3 May 2024 08:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714724642; cv=none; b=nk8vLCMr28TKJZkgzM3jR+KW7FhWCLdgYF11JV9okF7R4hd9xJYc0g70Rb3qlc5X/e3+DBmhR8U9FB2lEaeY1JoAVblKHEpoh906OMnvCWrYRd6zaArrTCNKjmAceovmWYnq3MBRiEMu3VUHr/2v0Ya7ae++x24odVq9+cv6SYg=
+	t=1714724691; cv=none; b=nLbUFLaETMiSADHcng8j/7A3RaLkyAdH17XLtXMiQupwPp/Wn/R7nvToe6XySkssbB+g2m8Jq26UlclGtrUlURYCVflyM/tzB5OvOXD460K6CT8zqJEGMx7dymvIQz2QWTHPaYrdrwGJOJcCRApa6I/D725IRbEAuh7azBRdIQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714724642; c=relaxed/simple;
-	bh=CGnQNTm/qqU9IBROhR5EBNNaq9Y0pf++RJ9C0wJT1Xo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=goLRncIPCgY8QJugVt07sjihdPd8JeafA3Wst/dHwHatXXQfh/crGkiJ3xkF4Y0iUuwCb5zEK+JkJuKNLqLr4RhPOgOPojoC38orLZmSchfDI5FMKV0aGkgdehSiwQ/R1xEjJCjzvseIWQvWhWHtZZFl/MIDQbHjgFlZPYlkVjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hKYOko+8; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41b782405d5so76870205e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 01:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714724639; x=1715329439; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=et6LYnCnjjrqaS0ajC2g4eAsd21FS3OIwXp1rsweKIM=;
-        b=hKYOko+8F7pKWEeGPtxdqqRGDMC28V34f0AvPuuEaXGZS/lhF1nUECIAFrg0+tY5vj
-         SlNurk+8hBwdPj8saIdfkJwJ1Z8JLvIfZFN9bL9saGI/gsoRx16VO8auj7DskkgSB0t/
-         DlxtatV9DPBjnuIrk3+NgqXR8gVIm97GGDL9Tcs3XJYLO9RANEiCYwkqAJHmbbzt+Nsg
-         JYvB+3Bh8rCoTKKIIpeixqJz9FIiWh/Ovuhkt2Yv8i/Roq9agYxomUSJPv3dIUV7INWn
-         lmNJ28sCONomyqfip1h92zxQM2B5PfN7VX0kBFbuBboEAWZfph6EiihNHiESHC/XHV5B
-         Cv/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714724639; x=1715329439;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=et6LYnCnjjrqaS0ajC2g4eAsd21FS3OIwXp1rsweKIM=;
-        b=mh9sppKVlhpdu9EvmykMAlM4BGIt4hGrn54nqqcKuikflPlXSA5WszkP7Jcj/CO5xx
-         w6GwLm1v/3g1kxLhzE54dctZ5AqSM4W09EODnnki0FMyGBSSmzPmiyoEMdLfGjSgBWbA
-         40u6SeuW0RX6h26yo4bgOqvK/zXOCwzdUhhNuPKbHf4EzbuPTwDpimEvVa+Kr8i3EtA+
-         ciqPlMJZ+v9xSSFLaBJF/Rh9tZAGwJ9nXb4SJTc6Vflq47DebhyTWKy1fLoE2GDvTeD9
-         P9Imw3uKAo/B49CLFZc9AxZq/EHlVN63jMRuVYIW7V6kd+yH7TDvECDiQ58y+23YiQ0y
-         S4mg==
-X-Forwarded-Encrypted: i=1; AJvYcCXnPiPumOlKoopjZBOyrEh86u09bZpPf17dBS4yd7IK17XHUMMXY+U++UXXT+38Yt8hBX3VkV93cWWuVdwHQKSwEupF50qAQULqHPv6
-X-Gm-Message-State: AOJu0YwzsJR+GMqtCwfJX5ZQ481AmkvqLih1w3GTMKQV9XDAgTJ4hR/0
-	CGg+h3u351juTlQJeQQZd9p+zDoEO/NrV0MG55Y9+sIXEioYmRy+Pt+La+TCNns=
-X-Google-Smtp-Source: AGHT+IFbJvf/A1i/LY+L7YNCn2NMJ6Ar57AENdV/ab6ZsQGTGBVmw4kitluYmeYo8l2QW3VK+WFZ2w==
-X-Received: by 2002:a5d:480e:0:b0:34d:ce14:c419 with SMTP id l14-20020a5d480e000000b0034dce14c419mr1886518wrq.7.1714724638437;
-        Fri, 03 May 2024 01:23:58 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id s3-20020adfe003000000b0034e8a10039esm136834wrh.10.2024.05.03.01.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 01:23:58 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: linux-amlogic@lists.infradead.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- khilman@baylibre.com, jbrunet@baylibre.com
-In-Reply-To: <20240422-amlogic-v6-9-upstream-deconfig-dsi-v1-1-01511908477c@linaro.org>
-References: <20240422-amlogic-v6-9-upstream-deconfig-dsi-v1-1-01511908477c@linaro.org>
-Subject: Re: [PATCH] arm64: defconfig: enable Khadas TS050 panel as module
-Message-Id: <171472463780.344144.1485415806892562407.b4-ty@linaro.org>
-Date: Fri, 03 May 2024 10:23:57 +0200
+	s=arc-20240116; t=1714724691; c=relaxed/simple;
+	bh=8krA6oPxNixCEtNeNzJAv63F5yfpATT0K9/1XWZCeGA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XahqiRTfxjfjxAq+9bg9SL8qmbHaN4Qwba6LkB5cVC8+7ZWh5aD0YpGaLUjZZT+MFYkhZVCQfLSMgWIXkNFg8TFOoKJUXkb6nnonwF4g9BEWm69SullVMkZ2MyPkY2R8UlLoKefbgvqd91U90Ml85WsyxBpZbpXI96s4V01VYEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rtg4hZx0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7177C116B1;
+	Fri,  3 May 2024 08:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714724690;
+	bh=8krA6oPxNixCEtNeNzJAv63F5yfpATT0K9/1XWZCeGA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Rtg4hZx0dy65+Q3VXMkenm1Z4XbllBwBQU1G2FH2aWOQA/whveWb+LPEE8q9oMiqv
+	 GJsAbw8RC2yAbObkT+EzxykcFeEGtq+jOZZSIB62WX51Wwq4xlKgyvvzKWBpQOcCvT
+	 fRYkQ+tuOSBUCM6XKm5p96ollDIJE9kIgAJ1136y+91fqsp98csZpqctDViKcQcmX3
+	 89JJYyVykEuTmthi6lRYKmiU8i2rPH/LkR54VUZda43brEyTwvyc1ayuTOFE40cDyJ
+	 Ba9MVPkLepzSDiWrmAEZWovdIOOwSQdJfS1PjTlETIJpvLYqn/tMO247hOH3+ClBlH
+	 Tp+ZV4MWejNhw==
+Date: Fri, 3 May 2024 09:24:44 +0100
+From: Lee Jones <lee@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] dt-bindings: mfd: Use full path to other schemas
+Message-ID: <20240503082444.GJ1227636@google.com>
+References: <20240503072116.12430-1-krzysztof.kozlowski@linaro.org>
+ <a2886f72-210e-41a1-aae0-c079a4d11396@linaro.org>
+ <0af10387-ddfb-47b0-b59e-eeba1644be1c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0af10387-ddfb-47b0-b59e-eeba1644be1c@kernel.org>
 
-Hi,
+On Fri, 03 May 2024, Krzysztof Kozlowski wrote:
 
-On Mon, 22 Apr 2024 19:18:25 +0200, Neil Armstrong wrote:
-> Enable the Khadas TS050 panel driver as module since it's
-> required to use the TS050 panel on the Khadas VIM3 and VIM3L
-> boards.
+> On 03/05/2024 10:08, Tudor Ambarus wrote:
+> > 
+> > 
+> > On 5/3/24 08:21, Krzysztof Kozlowski wrote:
+> >>  .../bindings/mfd/samsung,s2mpa01.yaml         |  2 +-
+> >>  .../bindings/mfd/samsung,s2mps11.yaml         | 12 ++---
+> >>  .../bindings/mfd/samsung,s5m8767.yaml         |  4 +-
+> > 
+> > Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > 
-> 
+> So this should be Ack. You cannot review part of the patch ("I have
+> carried out a technical review of this patch...").
+> https://elixir.bootlin.com/linux/v6.8-rc5/source/Documentation/process/submitting-patches.rst
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.10/defconfig)
-
-[1/1] arm64: defconfig: enable Khadas TS050 panel as module
-      https://git.kernel.org/amlogic/c/fb73c312a939cfcf9bae0d88fdb382516b424e50
-
-These changes has been applied on the intermediate git tree [1].
-
-The v6.10/defconfig branch will then be sent via a formal Pull Request to the Linux SoC maintainers
-for inclusion in their intermediate git branches in order to be sent to Linus during
-the next merge window, or sooner if it's a set of fixes.
-
-In the cases of fixes, those will be merged in the current release candidate
-kernel and as soon they appear on the Linux master branch they will be
-backported to the previous Stable and Long-Stable kernels [2].
-
-The intermediate git branches are merged daily in the linux-next tree [3],
-people are encouraged testing these pre-release kernels and report issues on the
-relevant mailing-lists.
-
-If problems are discovered on those changes, please submit a signed-off-by revert
-patch followed by a corrective changeset.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+Reviewed-by is totally appropriate here.
 
 -- 
-Neil
-
+Lee Jones [李琼斯]
 
