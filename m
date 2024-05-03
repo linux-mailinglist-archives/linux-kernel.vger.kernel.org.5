@@ -1,100 +1,172 @@
-Return-Path: <linux-kernel+bounces-167342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17DA38BA82F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:58:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58078BA83A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:01:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB5161F2238A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:58:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C2FF1F22345
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A3F1474CF;
-	Fri,  3 May 2024 07:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423C3147C7F;
+	Fri,  3 May 2024 08:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K5JhXjhu"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T9uBq+cA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D7B12B89
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CEC1482F8;
+	Fri,  3 May 2024 08:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714723086; cv=none; b=UVbF0427AQqIYvJc12dM2v/dIYdXgOy+P49/LUIRya/j+Yt62cyBQLOAlG+TGgi5nk4jClfUX+8x8MFqgpK2sQX4uK+AsCACxF2dZ1bqQykHKZA+bUHG8Q5P3ggUb4Pgu4XTzJkvpywS7HJPb+vfIFHBkGmzDiXrrO8a86vs9W0=
+	t=1714723266; cv=none; b=F9YAEtFTf8ZLS7rwa7WXkkYFx3HvhqjLwXt/KQ3Nl0/L0T++nlzjsJudncj5zJHw+yo1jcea5PqCQ/0Dmd5zHJB9Nq6NCLtuVyxfNFPHKCNwQ2I6Fzyc4kSX3y/9TQ9PfnZ7irenCzW6m4QWQKaZc5gJl+wvjBYt36wff5Q9cts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714723086; c=relaxed/simple;
-	bh=9lds1dTNJm20KO2gDxu3lgrciPV698y5y+f6AzLSwyE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dzjopa3guE/isZCtgbbg13Ggshaj4yX6uBvqo70oYnex3uM/ZMVdNAlCmGjtc2c6MOB8VDg5AJx+apCL4YIgYFXyXD+hqSx1j6UqaLRlImT7Etv6yPXMdN/pLG77UZd8jqWKyPJ/bRebNXnYbkm8mVdIWMxhibUSoKzg+LoSR7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K5JhXjhu; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-de6074a464aso4849337276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 00:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714723084; x=1715327884; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9lds1dTNJm20KO2gDxu3lgrciPV698y5y+f6AzLSwyE=;
-        b=K5JhXjhucB4znLF+uB/FGtrBnpkQ6Ed1SqK6TBeAL/h9zDvnt3Ht35b5qknF/ut0Lz
-         Egr0k1YMgX4ZyYmbJSeSczilgscglEImgPLM175CZ+on0CiQrtiC95KJRFWRSylzk/bO
-         pMopCT3MEWyq5DbQLX6b6mSfeyqmvUDJsorft1j4otZ18uyCSmvkE3/E0/rxc1i+Y/J4
-         WAPAmcypM76lvsEn0mBU5LyGMS2rYkuJDOE0xevaEOjzEk0rD3/se15RzZMktNWGu+wv
-         lhQKCHW7Uy7DSVBHx7lqWF47lgoQUFP5CCXO5Hr+EI3LhMBozgQLtc36O8HIWmgaM3rX
-         1flw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714723084; x=1715327884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9lds1dTNJm20KO2gDxu3lgrciPV698y5y+f6AzLSwyE=;
-        b=cnB5PHD+EtrsXUZxjUxnO8SdoNA8fvf9BdI0x3npQpXUtc6G8EqJ1Pp1c7QTezJvUY
-         Zk22jXUT24ltwF6Q1HZr6nFjc2xucJM24JzukAHkP9+oaua7EY4IDrvtrGmKrpqtKSM3
-         nFczmIjDAHZM6BenrDVCOhPZCgbaejRs+BvKA/VzDXA+hA/87Naz/VDW26RPWRbswlSR
-         HGJsBPaXb2S+AOl5j1oEvzQHq3STRiQRIfW/Im0lVha2NhUgzfTldQ2SubFhzUhsFXAA
-         fwooI6d8VrbiWdKbgwr3EZLj6A5iXm9KbqIZG28dodKAtzzokUlPVj6QjoCxR3nh5gMX
-         651A==
-X-Forwarded-Encrypted: i=1; AJvYcCV9gAE4ZTq5h5q4B9ei2q0lHC0RTez+jJ3WcUFhvsxOCH5jKBD8HfhR3issK7diHVNxwBpAxKn6B86Q7//jUiOpPPrZa1liOUpdVXca
-X-Gm-Message-State: AOJu0Yxsx4RBjV4fvngiWvlQcKG9iJOT0RmJAXfCoAzUzfE0G/v50obf
-	hyCRA7l4pJ8PeK9vGIQwIjP/b9uZ2dQAOsgcLlwIxIbU8MezhdzKaWc2luszob6KnrC/uK2Qu0a
-	+MdqoQMPlbovgfNNE5lzpkpGvW7dSeakT9KlClw==
-X-Google-Smtp-Source: AGHT+IEG4nOciPICYFkjWxdsB7yxrB7cRVj6SjUMBpSK0kxFtgIH4MKqI3NxijFyX2wkk8IVPl+GECzNHLPUJ6D97IM=
-X-Received: by 2002:a25:cec5:0:b0:de5:6a82:49dd with SMTP id
- x188-20020a25cec5000000b00de56a8249ddmr2210883ybe.13.1714723083855; Fri, 03
- May 2024 00:58:03 -0700 (PDT)
+	s=arc-20240116; t=1714723266; c=relaxed/simple;
+	bh=TO5f2lnqO/3Ie6pc6C92Bo2q513ZSZunZDH/5RorKxg=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=VSEuxDacETjW+3lQb0QUgXCZzIBRpfeA7oPuoMq5Eh3dZouubfCeYPyNJ4EqZjuu2qmqd0tRUhJKaXb3R5bTAv7R5QFry89lYAoq4U2Yry3aFyvVVNlvqmSS1F71wov3XEJZoc7EzCjfWxlgJifZ8IRrqeYob0oTTNIY6lY5yac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T9uBq+cA; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714723264; x=1746259264;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=TO5f2lnqO/3Ie6pc6C92Bo2q513ZSZunZDH/5RorKxg=;
+  b=T9uBq+cA1rmui9crWZLCsB78fVR+z6RqriXCltdSxmWwi+IEOEgzNRon
+   mWTNQ6f8+gMM97pufe5VPYb2+4DnITym7qbwCdyDpwl8+0Wf/RXtDZpqJ
+   YBw+FV3ndg3EMlshph/yymla31AFGlBe9P3o8ApiMZC1YbaoGMFtgW6n4
+   7kC5jMgrWPki9oEjqJzRztEghIgjpvs3ONVDNtwcGLFyVoVnTKptrrbx8
+   i9QUFlExw6u0QGgoBqZzwlgPDkzv0HC/z5iL5ADQSrrysxLKNeEYPqBGs
+   y/2HeSrvrQ8+5j/K6eBdgzhaS54wdTP0SiS8yjioMElzhFzEQoT9JZ9nw
+   g==;
+X-CSE-ConnectionGUID: Sylcqrs4QdGf8KqCl/BMAQ==
+X-CSE-MsgGUID: 2j1DXgU9ThWpMzd/aHQveA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10683629"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10683629"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 01:01:04 -0700
+X-CSE-ConnectionGUID: IwrodcDXRfODX6qLeczlWw==
+X-CSE-MsgGUID: z+a5zPNGTtSwGUSowE6FSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="64836547"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.56])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 01:01:00 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 3 May 2024 11:00:53 +0300 (EEST)
+To: John Hubbard <jhubbard@nvidia.com>
+cc: Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+    Fenghua Yu <fenghua.yu@intel.com>, 
+    Reinette Chatre <reinette.chatre@intel.com>, 
+    Valentin Obst <kernel@valentinobst.de>, linux-kselftest@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH] selftests/resctrl: fix clang build warnings related to
+ abs(), labs() calls
+In-Reply-To: <20240503023209.80787-1-jhubbard@nvidia.com>
+Message-ID: <793bd068-c3b4-6330-41a4-bea597b1d820@linux.intel.com>
+References: <20240503023209.80787-1-jhubbard@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424185039.1707812-1-opendmb@gmail.com> <20240424185039.1707812-2-opendmb@gmail.com>
-In-Reply-To: <20240424185039.1707812-2-opendmb@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 3 May 2024 09:57:53 +0200
-Message-ID: <CACRpkdZKdnDqDMnWFaZwwVW1BqcOMa8qFiu-aUbQa7UnXFtcnQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: gpio: brcmstb: add gpio-ranges
-To: Doug Berger <opendmb@gmail.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Phil Elwell <phil@raspberrypi.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Apr 24, 2024 at 8:51=E2=80=AFPM Doug Berger <opendmb@gmail.com> wro=
-te:
+On Thu, 2 May 2024, John Hubbard wrote:
 
-> Add optional gpio-ranges device-tree property to the Broadcom
-> Set-Top-Box GPIO controller.
->
-> Signed-off-by: Doug Berger <opendmb@gmail.com>
+> First of all, in order to build with clang at all, one must first apply
+> Valentin Obst's build fix for LLVM [1]. Furthermore, for this particular
+> resctrl directory, my pending fix [2] must also be applied. Once those
+> fixes are in place, then when building with clang, via:
+> 
+>     make LLVM=1 -C tools/testing/selftests
+> 
+> ..two types of warnings occur:
+> 
+>     warning: absolute value function 'abs' given an argument of type
+>     'long' but has parameter of type 'int' which may cause truncation of
+>     value
+> 
+>     warning: taking the absolute value of unsigned type 'unsigned long'
+>     has no effect
+> 
+> Fix these by:
+> 
+> a) using labs() in place of abs(), when long integers are involved, and
+> 
+> b) don't call labs() unnecessarily.
+> 
+> [1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f9ed7d1c49f@valentinobst.de/
+> [2] https://lore.kernel.org/all/20240503021712.78601-1-jhubbard@nvidia.com/
+> 
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  tools/testing/selftests/resctrl/cmt_test.c | 4 ++--
+>  tools/testing/selftests/resctrl/mba_test.c | 2 +-
+>  tools/testing/selftests/resctrl/mbm_test.c | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
+> index a81f91222a89..05a241519ae8 100644
+> --- a/tools/testing/selftests/resctrl/cmt_test.c
+> +++ b/tools/testing/selftests/resctrl/cmt_test.c
+> @@ -40,11 +40,11 @@ static int show_results_info(unsigned long sum_llc_val, int no_of_bits,
+>  	int ret;
+>  
+>  	avg_llc_val = sum_llc_val / num_of_runs;
+> -	avg_diff = (long)abs(cache_span - avg_llc_val);
+> +	avg_diff = (long)(cache_span - avg_llc_val);
+>  	diff_percent = ((float)cache_span - avg_llc_val) / cache_span * 100;
+>  
+>  	ret = platform && abs((int)diff_percent) > max_diff_percent &&
+> -	      abs(avg_diff) > max_diff;
+> +	      labs(avg_diff) > max_diff;
+>  
+>  	ksft_print_msg("%s Check cache miss rate within %lu%%\n",
+>  		       ret ? "Fail:" : "Pass:", max_diff_percent);
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+This seems fine but...
 
-Yours,
-Linus Walleij
+> diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
+> index 7946e32e85c8..673b2bb800f7 100644
+> --- a/tools/testing/selftests/resctrl/mba_test.c
+> +++ b/tools/testing/selftests/resctrl/mba_test.c
+> @@ -77,7 +77,7 @@ static bool show_mba_info(unsigned long *bw_imc, unsigned long *bw_resc)
+>  
+>  		avg_bw_imc = sum_bw_imc / (NUM_OF_RUNS - 1);
+>  		avg_bw_resc = sum_bw_resc / (NUM_OF_RUNS - 1);
+> -		avg_diff = (float)labs(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+> +		avg_diff = (float)(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+>  		avg_diff_per = (int)(avg_diff * 100);
+>  
+>  		ksft_print_msg("%s Check MBA diff within %d%% for schemata %u\n",
+> diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
+> index d67ffa3ec63a..c873793d016d 100644
+> --- a/tools/testing/selftests/resctrl/mbm_test.c
+> +++ b/tools/testing/selftests/resctrl/mbm_test.c
+> @@ -33,7 +33,7 @@ show_bw_info(unsigned long *bw_imc, unsigned long *bw_resc, size_t span)
+>  
+>  	avg_bw_imc = sum_bw_imc / 4;
+>  	avg_bw_resc = sum_bw_resc / 4;
+> -	avg_diff = (float)labs(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+> +	avg_diff = (float)(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+>  	avg_diff_per = (int)(avg_diff * 100);
+>  
+>  	ret = avg_diff_per > MAX_DIFF_PERCENT;
+
+But how are these two cases same after your change when you ended up 
+removing taking the absolute value entirely?
+
+
+-- 
+ i.
+
 
