@@ -1,110 +1,92 @@
-Return-Path: <linux-kernel+bounces-168153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A61F8BB458
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:50:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B138BB460
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:51:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F67283F39
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:50:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3431C2295C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0A5158D6E;
-	Fri,  3 May 2024 19:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB90158D74;
+	Fri,  3 May 2024 19:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjsYKxmY"
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Vcue1ghk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1269D51A;
-	Fri,  3 May 2024 19:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEFA1581FD;
+	Fri,  3 May 2024 19:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714765844; cv=none; b=o65FYk/8WIysCF2ZMU0owfRdEGuhIuuypu4NOuc46mwgbuSO7ND/FRUBBZ96nWhNwXBds8gJDsbGIsxRL2DaJP9kMkHtgHm9a4WHlTw75Q8srOHudmQ4E0SaiAWwrbr9SkWt465ghJ5kKzqjblhhldtymRQ8QbIIwKy3tq9skQI=
+	t=1714765865; cv=none; b=SQKx1aqXii+VvVvWMpZE5fJaStp0CbW58B1/w//mP6TwR8IyVVcaV1/6prhMh1+Ej8KEaa9tOUhZyfHmEeLlzmtZzmbtLcBFphA/+zUkgF4djmnVPN0JZpW/JpyU1Di8h0NU+Do+coArdm1UN8kIRzBkl4h3wbyfkurzUV4EOwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714765844; c=relaxed/simple;
-	bh=KN3OMp2RxTcIZRuhyPTjSWHGJjFCoqc9Q5ufOJcmQ5Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uEDUoLOr0zFAw0mBeThMkNqz1hHHKiz/BBGoKPqx1GVT5xugFEUZCcs2InlnZius8UfA8cW3uN5T//eXBPZzNCmPacDJe4QJu2kJQy3XS1CB6LWeC/3ng0GyMwoAu9cwg19NTgxirvM0YwC+/LqC0AszRGKYIec0QUoxeQe188Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjsYKxmY; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6a04bae512aso264226d6.2;
-        Fri, 03 May 2024 12:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714765841; x=1715370641; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BuVUTGivGv+RNT3apO0p2n+zz8phIuPLwQeuA6Csm8A=;
-        b=IjsYKxmYgzJ6QPqKHHfiZjZBG+4Aupn9Zv4gT0HYIgmD/kCuYpWwZvOEHkc06AhPJU
-         JV1OBrbtFRlKgqE4Hfv/encjGtYzN3SZFAjd3eWL7abu0HCFYzNaIkcKytN4pVQna5j0
-         KD6hh9rE+QCuFIiq6UA97yPZvjdOXIGIdUarJGVx6m8Js0eta2xZE1az2PPYoQFQrbAV
-         vm0cvmZwi26Pztbu9YbKX8txReXdEKh3vNhJnZe7dn470VOCIRotjZNivXXOqJWqJofj
-         iO5BlM5JtgySYx/7A/zZ7iYWBMkJLGBSEabMxekSZA1VefdEij/TyhO4k3TG1iW2GpbG
-         cQLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714765841; x=1715370641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BuVUTGivGv+RNT3apO0p2n+zz8phIuPLwQeuA6Csm8A=;
-        b=GkENZD4CjwwsIjO5i4FUf6UYkFUHGBzDzGCpLx/Xz5c/DH5K1dSQH3HFhhE64JcCdJ
-         98Bc/j4HguRQva4khcgnw7k7TC0FmhUBnrdiKK8ZQ9oujcmJ7qEEEnm6SvbqnZowNTCK
-         SZtao2tNvP32gzfFtOyAdmtsoSy1XICIHrlF1tbEL7ZLv9+XGfuemMYRfzq9snJPgU1D
-         ggowPqfoSWYv3KJREtMbkgdueHHtqHP2HWqVyixMejBN70Vd874wvJMlQphF8YUqoQEj
-         0r17GWyeJvUi9w5wWPQK8Zmjlr9P9vYMN64whUBe0jsUDqbbXmVQAL8PvNcMbRpr/x1t
-         ibNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaoMmlcw6ZX5I0EKXX4DsoPd7UK3m7Og9pAQupoBei45dOnwMCLteygjmvUxobHB0MOiSoYBFMU8OtVIvj1FS5/2RoovkrZSjXk+/CxSz8pqtFdM6mmhEMR32V+YHdZkaLcCuZopp7TikvQSAfNahl06St698NK0fkVAdATVo+KRcizlNMtQ==
-X-Gm-Message-State: AOJu0YwohYinGBzpnVOZB0ok26g6RWaifglNTXCwXlUoMaCXuTswuFhg
-	03zFU/mowiFFwDc2oo55u5Lf2Hfie9WpUGavHAs2S92JPhuSTswzZUv12w894/v8fatKygciMT3
-	3H0C/GIFv5OLdZU0aNJk35Kic1lM=
-X-Google-Smtp-Source: AGHT+IHwsKaZ7g4EJ175fFjyaFI1whbPu9tvhSXfH4HIZV0Fc9Dc2fTEfVQKadr/oY7bJDXaWRRTj2m7au4X01JgX1U=
-X-Received: by 2002:a05:6214:da8:b0:6a0:cd1b:9f9f with SMTP id
- h8-20020a0562140da800b006a0cd1b9f9fmr3712807qvh.38.1714765841550; Fri, 03 May
- 2024 12:50:41 -0700 (PDT)
+	s=arc-20240116; t=1714765865; c=relaxed/simple;
+	bh=2JyPRo2Ro2xyGaHzv78UPZmNJQTNXNYjBIsAi3zZbGc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c3KjKacnWgJSjqI37srDcNTK/KgIqQkVPWzqZ0RQVhU9yEcRY9Qfmps7u5DKvSL8jLtbxTFAivDtZrUKsalqkJVQxh835kAw2rxbEs3CnwWvJGAlUr/lmsWrMihHdzOAlmyU8I3IAUQZKMSG3+OUZ1OnQCBeyTpIQK0D9EPZxHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Vcue1ghk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=dT/tZ4BeVrX503tjBuNztLOilBaPjVoqnxlR5AjEN90=; b=Vcue1ghkLjZN/Pe40AnCT5GmP9
+	p8Ci91b4oylITVwrlE0lJHNHQ8hYq8UsAy82XhSPcb+39l0pSU2jMCfwsg7UsBtpZdXW/2K3xIxGK
+	u9HR7Zh2jJwR8nfJ2le4iJHsE2UB+SHcXEycw6svdqdqv/C/4U7+4JyRa+LItfjvHwd2Ds5L1J61F
+	NTthaERztVnLYJ4DMtLSk5GPab0AxaDZJmRKX7Jo8NFhujqnDUmCjPDEcrf0hO5NLpC7lg2XzhU69
+	fnoJsP0dMW8pBG/xWO/jjigWBxxAZ1sUDpqirxvfJSUOJp6BTVnpp8l394Zwx7d2VYgPLAvr8HYML
+	e/xZoG2Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2yvs-00000000EEx-2NIY;
+	Fri, 03 May 2024 19:51:00 +0000
+Date: Fri, 3 May 2024 12:51:00 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, ebiederm@xmission.com, keescook@chromium.org,
+	j.granados@samsung.com, allen.lkml@gmail.com
+Subject: Re: [PATCH v3] fs/coredump: Enable dynamic configuration of max file
+ note size
+Message-ID: <ZjVAJOsC-EtlIXd6@bombadil.infradead.org>
+References: <20240502235603.19290-1-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240503035105.93280-1-jhubbard@nvidia.com> <20240503035105.93280-5-jhubbard@nvidia.com>
-In-Reply-To: <20240503035105.93280-5-jhubbard@nvidia.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Fri, 3 May 2024 12:50:28 -0700
-Message-ID: <CAKEwX=OzV+hCXwwFhnAWKvsrDq_vMaS6GaJgRn8LG_EsB80OCw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] selftests/cgroup: fix uninitialized variables in test_zswap.c
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Waiman Long <longman@redhat.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Valentin Obst <kernel@valentinobst.de>, linux-kselftest@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502235603.19290-1-apais@linux.microsoft.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Thu, May 2, 2024 at 8:51=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> w=
-rote:
->
-> First of all, in order to build with clang at all, one must first apply
-> Valentin Obst's build fix for LLVM [1]. Once that is done, then when
-> building with clang, via:
->
->     make LLVM=3D1 -C tools/testing/selftests
->
-> ...clang finds and warning about some uninitialized variables. Fix these
-> by initializing them.
->
-> [1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f=
-9ed7d1c49f@valentinobst.de/
->
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Thanks for the cleanups, this is certainly now in the right direction.
+Generic long term growth questions below.
 
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> ---
+On Thu, May 02, 2024 at 11:56:03PM +0000, Allen Pais wrote:
+> Why is this being done?
+> We have observed that during a crash when there are more than 65k mmaps
+> in memory, the existing fixed limit on the size of the ELF notes section
+> becomes a bottleneck. The notes section quickly reaches its capacity,
+
+I'm not well versed here on how core dumps associate mmaps to ELF notes
+section, can you elaborate? Does each new mmap potentially peg
+information on ELF notes section? Where do we standardize on this? Does
+it also change depending on any criteria of the mmap?
+
+Depending on the above, we might want to be proactive to get a sense of
+when we want to go beyond the new 16 MiB max cap on new mmaps for instance.
+How many mmaps can we have anyway too?
+
+> leading to incomplete memory segment information in the resulting coredump.
+> This truncation compromises the utility of the coredumps, as crucial
+> information about the memory state at the time of the crash might be
+> omitted.
+
+  Luis
 
