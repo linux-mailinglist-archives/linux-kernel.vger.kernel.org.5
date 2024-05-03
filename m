@@ -1,140 +1,209 @@
-Return-Path: <linux-kernel+bounces-168166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3649D8BB4A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:16:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBD028BB4A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:18:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62808B22E89
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:16:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E27B1F24044
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34383158D9D;
-	Fri,  3 May 2024 20:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7D9158DB2;
+	Fri,  3 May 2024 20:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NzJCjyfO"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJNjDVMe"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F8B155321
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 20:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B0F155321;
+	Fri,  3 May 2024 20:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714767390; cv=none; b=F5sVMAXgsQtq7E56yV7S5P50z9Q2tM0S6MZUxIdCwxUPVkkIqvJWAVnC3+h8xbi6dvb/is7AxBP0tn56cses1rjb1fOzAoaUIzRdf2v78pCPo82Y1vwB4kQLhDMREycKWF7UV9H15BeLQ1UH49cwZQih8chsa1YVo1y7Z2UsjQs=
+	t=1714767469; cv=none; b=VhjzIbxvk/VRoig7JvyHTSzWWCXdiVY4FJR5S+J5SfAcPaxo/aMtyRPNNMQf5bEQiRK+sbJrXdDGABXd4I0jSPxuTG/w8ROkiEEGZibZDFt2rt+N0tpSd3Bi7uD7xhZgSOosrw+TDuJkdCJWnKSxeekx1ih7rqDsx8VhkYsKEh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714767390; c=relaxed/simple;
-	bh=pf+pNFxmMm1HFvn7js6D1XqSBUysWOw89rU+1scNx50=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ExIMYCTNSbT7R5q6iNTfEnULz/nxcSwmdItes66wzOAsFxIstb1b7pnLt93gvwu86PLpqGjkudYFaEhYt+B3eCLGj31mSI+u1yh/eiuHjlm0l35NaXJcX55XhUEHE5R4Mjqc8pfXnT495Mqqu4DtpMuo8zH8FkImzhOV67yZ3FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NzJCjyfO; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5dca1efad59so35515a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 13:16:27 -0700 (PDT)
+	s=arc-20240116; t=1714767469; c=relaxed/simple;
+	bh=vyZsYiKlF4nOHndUv9Dr2L04M+i797IctslKsozXv7k=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AtEq3v+SrRsAtBj6UEThB9RN/Yje/SgKkI/fFMED3XCt/FpY1zhViR+H6qza2h6bbBO/mR+VB9fCuWL7jDlaF+57YRfwBMmXaDti2It3lSvway9ZVQMTwpJ5dm8402UU5mOZy2Uz/Iys+9iBo/uWRxxgQLI1d4xu0vMqzQGXBo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJNjDVMe; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2e271acb015so973791fa.1;
+        Fri, 03 May 2024 13:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714767387; x=1715372187; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NjXuBsA7zZ0oIxrlLeiGnoyK8wpbBUktncdxO0iL2YE=;
-        b=NzJCjyfOflwbz9Z3Hp6sa2Ei3LrQrl0eEOMtuvg5lOnbLtM4zte7OjQ/W33RCI3QwK
-         vg9hzdHLWRPC6zIG2NIv26mUMUgWlaD9a1F4qtgBT6fbIZzt+c/fHYfGo4kxAsZHXFAB
-         2K1hVBIZ4nRbifi6uRXe8ZIfC/rXalGCtyF1k=
+        d=gmail.com; s=20230601; t=1714767466; x=1715372266; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+IWQYp5T2Zl1VQkBfkG2UPdbY2+2qD1xC85V4mipGdk=;
+        b=MJNjDVMegfDoDXucydMarwn+L5Qaxfym+HiMV2goQkM+42yVOyRJ8Lbsmp7NsIQCGV
+         /ezJKgDAWE6enduIT6V0GDi7q59by5Ee7k79EPJ6zyZF/7tR/x4iSBu7DT99JsS0FeqB
+         k57b6Rd2Cuac26F4nvAEbUDO3aBvXNOeB0n09/Swi7BJvd8OkcQdLoVU/VsbdHkaSv8m
+         dMKwdSxvRvCu/V6xt615qAEgskld8YZptkPUmYFOBANR0JQAhu4fzoULK/N18AzIgNTx
+         fk4T/Hdwne/5mmxIMaRaTUCoayhlpy4dOC/kGlX1Yn/Aa9zlOBpuSeFHwJulzbOOTh8l
+         coRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714767387; x=1715372187;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NjXuBsA7zZ0oIxrlLeiGnoyK8wpbBUktncdxO0iL2YE=;
-        b=KcE53soUx48BG2gs0dDWKQd4VJ2jXYk9bj5TSndvXODt1SvaIfhX5iApCMpb5Gt+V2
-         UN1ruDmuBntnC9G9xPMZgvx4y7LzBOeADMxzpGpUL/F2fu/Tdp7K02PE5rxOqLGtSl53
-         Q4MpiB8MHvhZ6SesjyIKLXRyVxrKgEDlAx8kWDN8NQqtQaySNpv/JVRLZ+bhpo7ASPkF
-         GUKdneslZSiyFBCgVgolDNF1/D4xQWfr2eST3JQrg1S2JSoGXcuCvv0/+ImymflgcnBW
-         fUBXzW2u1okAnc8vhs2evIC/lJ+WADFWImsHDii96AbJj29iUK7SdUE6hwaPU1tE6n99
-         LsSw==
-X-Forwarded-Encrypted: i=1; AJvYcCWylMrAk46cjE9cmUsj3+pMI60sxpXn7FaKK7CTeMRR70n37hsfp9DYDwlJ+or2OCIGJdcyaCecYJpZcPvk+oWdCJFxvtdVwSxlKXYb
-X-Gm-Message-State: AOJu0YxkDINti3S4q9OiGeK6EzYa9qiRMArryRmyXJg8K3al3+MRQnbN
-	3pIOrOaF8xpGDyF1DzzBCmRVFJhLDgxPlQ3TsFAaViqY5BIMK0gPDb+btDE+mg==
-X-Google-Smtp-Source: AGHT+IEAqfDwqCSvcN8OuGiJ0swOLO/fi75RqAG5LMAhNjNj16WfYkFbQ5AiOphfNtiKx6xIeY4mqQ==
-X-Received: by 2002:a17:90b:886:b0:2b1:3cc7:ae83 with SMTP id bj6-20020a17090b088600b002b13cc7ae83mr3668935pjb.32.1714767387520;
-        Fri, 03 May 2024 13:16:27 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id gc19-20020a17090b311300b002b05e390c59sm3545286pjb.27.2024.05.03.13.16.27
+        d=1e100.net; s=20230601; t=1714767466; x=1715372266;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+IWQYp5T2Zl1VQkBfkG2UPdbY2+2qD1xC85V4mipGdk=;
+        b=W1eyWJqeaJuGLujzDceGLVsPNdV/STf8ae3uz1mlZMltwzWmUqkD7L5fbcxSqXa1kR
+         5c2e+eDZ8wBzPko0w/mL2Ba0r9tRncKRP/a0bbP0ExjZV4LT54xvZQghFrzHlHn80doH
+         9MNPRfCS+oudh0TXvHE695RvfUVDoAyuA2ww6up5FtFekTxWIYiolDe0nbY7lWACN1If
+         V0oCCXF1y+iAcUTeNJuHIawNpgvPVfxce0c0lhLXiKma8NU7bsLCIsUK3z+y88m1/r+C
+         twN5BpbQedBseTITTf7dULH7GLo7dco0NnZ6X52Q/6Zdt+0enOniRI6wWf+EEY7EDXPb
+         J3mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVHEudf77a8s6hdgA0Z5dUr5a4ny2Q2W/QBbqs4escJjk0xy9ghn4XbNcTsjUuSotFWSMLFogTlG31vvnLb8oR0X7mE6ycm0kZ265Wv9LSJ8fh1N0fuEV4XV0mL1KEJNZ5CRE2UrqMbJqjZx62apRzzP1ydDX0tcDB8oKlVkarQJfZoKfzX8fh0FXdhwt0MzeLWxoovCeh4iFQtA3QdjQcz/tkgQzz4/M/XUk9xSNfjr2O+c5TQ7iW/75sX
+X-Gm-Message-State: AOJu0Ywg2+i/MXgvekiked/NN/M8Ex8y2bGxMvthqOCRat8hx1Uarjn9
+	863ZPge1WyqIi3KQoqZPsaEAfw3fRhlKWmQ+VrhS0ktH4TiTh/Wj
+X-Google-Smtp-Source: AGHT+IEtIGM4F5KZzPi9VvGDIN5JQj/cCOTn+HlUGnzm7mBlNIItFfkHkfv9B/ZsX9SzV19oZT9crA==
+X-Received: by 2002:a2e:3618:0:b0:2d8:be29:4ca9 with SMTP id d24-20020a2e3618000000b002d8be294ca9mr2679583lja.39.1714767465925;
+        Fri, 03 May 2024 13:17:45 -0700 (PDT)
+Received: from krava ([83.240.62.36])
+        by smtp.gmail.com with ESMTPSA id q11-20020a056402248b00b005726b83071esm2085459eda.4.2024.05.03.13.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 13:16:27 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jann Horn <jannh@google.com>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] fs: WARN when f_count resurrection is attempted
-Date: Fri,  3 May 2024 13:16:25 -0700
-Message-Id: <20240503201620.work.651-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 03 May 2024 13:17:44 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 3 May 2024 22:17:41 +0200
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
+	"songliubraving@fb.com" <songliubraving@fb.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"mhiramat@kernel.org" <mhiramat@kernel.org>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"yhs@fb.com" <yhs@fb.com>, "oleg@redhat.com" <oleg@redhat.com>,
+	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"broonie@kernel.org" <broonie@kernel.org>
+Subject: Re: [PATCHv4 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up
+ return probe
+Message-ID: <ZjVGZeY-_ySqgfER@krava>
+References: <20240502122313.1579719-1-jolsa@kernel.org>
+ <20240502122313.1579719-3-jolsa@kernel.org>
+ <20240503113453.GK40213@noisy.programming.kicks-ass.net>
+ <ZjTg2cunShA6VbpY@krava>
+ <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
+ <ZjU4ganRF1Cbiug6@krava>
+ <6c143c648e2eff6c4d4b5e4700d1a8fbcc0f8cbc.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1386; i=keescook@chromium.org;
- h=from:subject:message-id; bh=pf+pNFxmMm1HFvn7js6D1XqSBUysWOw89rU+1scNx50=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmNUYZ53nnbAADcogtkELI+D9ycJdn+pb9aefol
- 66UgNHNLRaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjVGGQAKCRCJcvTf3G3A
- JszHD/9djHZkCfUTJG1NBb3v6t6W29SB91Q2iuAlm76cE5d6kGsEagP3JkHy5CVPK+fB+YXCFAj
- 3aDVoCAdyYlyA115UlUtIiPsA8u6bXNHzFHhPTqcPg6FwlpDiXHQ9Z0UifMo60EwUbulmSwNe5c
- ZgUTI5sWBFE64w4Ypz/qXYH+Q78dMwMwDP5PmkO8dQAxRVJc2PYxJ+g9CEKdKuq4Bm1SH21Ea+U
- Zs2uWdofnwqQvLVsl82EVnl/RPoYX1AJX4mtPDpMgL/n49+BUT88pTa2w0GIalXNsY0os9rfBBJ
- i6qNMChvDdenE3QpeMxmWLNlAdCA4dFYwnuqfVlb2Je8/4u6mXalIZiaUDVCpHqFBXuXjvnfW7I
- F9Cz9Ah80rLXmRNijfTMsB0u93V0diOciv/914qmiaukoJiAzOCNqoMncV/9dfLpsURf08oOy26
- yneYGRMD9FgEGxGvUPPR6Vw79tTtwB3/d6oIv0b9RzffmukU5v6qUP2MiAjSjcNmECVVuXsEbQt
- MmNztwez3USCFAZS2SY3Msz2alKSzLAmMJDYKmd/L4EZWZEplt7xOKc6rDjOiCVUD0C2HtlfICe
- 46Kb98XHn1ZjswhLT2hykrtD2eVBkS7UGoSMKDxwM5fkmgXlhvFC3RY0njUjpOSM9JQq+b2Uc1X
- Wx/OMIJ EUHtkgQA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c143c648e2eff6c4d4b5e4700d1a8fbcc0f8cbc.camel@intel.com>
 
-It should never happen that get_file() is called on a file with
-f_count equal to zero. If this happens, a use-after-free condition
-has happened[1], and we need to attempt a best-effort reporting of
-the situation to help find the root cause more easily. Additionally,
-this serves as a data corruption indicator that system owners using
-warn_limit or panic_on_warn would like to have detected.
+On Fri, May 03, 2024 at 07:38:18PM +0000, Edgecombe, Rick P wrote:
+> +Some more shadow stack folks from other archs. We are discussing how uretprobes
+> work with shadow stack.
+> 
+> Context:
+> https://lore.kernel.org/lkml/ZjU4ganRF1Cbiug6@krava/
+> 
+> On Fri, 2024-05-03 at 21:18 +0200, Jiri Olsa wrote:
+> > 
+> > hack below seems to fix it for the current uprobe setup,
+> > we need similar fix for the uretprobe syscall trampoline setup
+> 
+> It seems like a reasonable direction.
+> 
+> Security-wise, applications cannot do this on themselves, or it is an otherwise
+> privileged thing right?
 
-Link: https://lore.kernel.org/lkml/7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com/ [1]
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+when uretprobe is created, kernel overwrites the return address on user
+stack to point to user space trampoline, so the setup is in kernel hands
+
+with the hack below on top of this patchset I'm no longer seeing shadow
+stack app crash on uretprobe.. I'll try to polish it and send out next
+week, any suggestions are welcome ;-)
+
+thanks,
+jirka
+
+
 ---
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org
----
- include/linux/fs.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 00fc429b0af0..fa9ea5390f33 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1038,7 +1038,8 @@ struct file_handle {
- 
- static inline struct file *get_file(struct file *f)
- {
--	atomic_long_inc(&f->f_count);
-+	long prior = atomic_long_fetch_inc_relaxed(&f->f_count);
-+	WARN_ONCE(!prior, "struct file::f_count incremented from zero; use-after-free condition present!\n");
- 	return f;
+diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
+index 42fee8959df7..d374305a6851 100644
+--- a/arch/x86/include/asm/shstk.h
++++ b/arch/x86/include/asm/shstk.h
+@@ -21,6 +21,8 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clon
+ void shstk_free(struct task_struct *p);
+ int setup_signal_shadow_stack(struct ksignal *ksig);
+ int restore_signal_shadow_stack(void);
++void uprobe_change_stack(unsigned long addr);
++void uprobe_push_stack(unsigned long addr);
+ #else
+ static inline long shstk_prctl(struct task_struct *task, int option,
+ 			       unsigned long arg2) { return -EINVAL; }
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 59e15dd8d0f8..804c446231d9 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -577,3 +577,24 @@ long shstk_prctl(struct task_struct *task, int option, unsigned long arg2)
+ 		return wrss_control(true);
+ 	return -EINVAL;
  }
++
++void uprobe_change_stack(unsigned long addr)
++{
++	unsigned long ssp;
++
++	ssp = get_user_shstk_addr();
++	write_user_shstk_64((u64 __user *)ssp, (u64)addr);
++}
++
++void uprobe_push_stack(unsigned long addr)
++{
++	unsigned long ssp;
++
++	ssp = get_user_shstk_addr();
++	ssp -= SS_FRAME_SIZE;
++	write_user_shstk_64((u64 __user *)ssp, (u64)addr);
++
++	fpregs_lock_and_load();
++	wrmsrl(MSR_IA32_PL3_SSP, ssp);
++	fpregs_unlock();
++}
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 81e6ee95784d..259457838020 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -416,6 +416,7 @@ SYSCALL_DEFINE0(uretprobe)
+ 	regs->r11 = regs->flags;
+ 	regs->cx  = regs->ip;
  
--- 
-2.34.1
-
++	uprobe_push_stack(r11_cx_ax[2]);
+ 	return regs->ax;
+ 
+ sigill:
+@@ -1191,8 +1192,10 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs
+ 		return orig_ret_vaddr;
+ 
+ 	nleft = copy_to_user((void __user *)regs->sp, &trampoline_vaddr, rasize);
+-	if (likely(!nleft))
++	if (likely(!nleft)) {
++		uprobe_change_stack(trampoline_vaddr);
+ 		return orig_ret_vaddr;
++	}
+ 
+ 	if (nleft != rasize) {
+ 		pr_err("return address clobbered: pid=%d, %%sp=%#lx, %%ip=%#lx\n",
 
