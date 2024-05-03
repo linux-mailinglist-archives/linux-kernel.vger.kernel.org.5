@@ -1,102 +1,96 @@
-Return-Path: <linux-kernel+bounces-168156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 637988BB465
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:57:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A6C8BB46B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:58:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96BF4B22F80
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:57:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27056285E85
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54E9158D6B;
-	Fri,  3 May 2024 19:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdBrOvgB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A821C158D7E;
+	Fri,  3 May 2024 19:58:07 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB51D134B1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3D141C72
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714766221; cv=none; b=JqUi6syx6xwUGYlQgr0zrohXmDJTuW9M7cyTp3BeF8AZ/Tod2zl67jJQL85d8CpFz4LHjjh0dwVpkcQm33mMaGm/x/7ZRV+a//Fmhueq88PYQEY8RhliwEiY8JlC+2zVmmCrFrwumroEE3yH1rumGbiv60P/MKmBG2MkXbtbHss=
+	t=1714766287; cv=none; b=c8WZaa3vRRyyBL0FqrtQZ1BGKLH1Lc/GtN5nWAlqCimhas+xYsIur6OkQZrgllKBafXRu4so1imw02ixh6szbqDfWVc6R0ygdiNK+EUtYw+SX6h1ArYGL8NKEFOtwRrrW5yzSZmblzSvsipOA8/rKTu2MTvk7EfzJLcIvaIHpMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714766221; c=relaxed/simple;
-	bh=knb1DEkpKuqFaWNSw8KT86PDMZ9bNb4DcRO+iDpfW84=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fHP6YEXzjTs1F3GyVTVd+1g+L+FCsGvsLcQoVoNXGV2AtspTnVeP7XcYVp/a8/1yTHhKWcOszfXdWTIHdx30HhTFS24kunLJwA+E6SuHSvYYhNSunLd7MvoIfmN6ldKQ2fXd9ASqPgf++Y7ptCOeieCiku72o3qG5+RV3xxmWww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZdBrOvgB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FB5C116B1;
-	Fri,  3 May 2024 19:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714766220;
-	bh=knb1DEkpKuqFaWNSw8KT86PDMZ9bNb4DcRO+iDpfW84=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZdBrOvgByA8AcQ3Urzlz/wRFh1/Q0UliYFNV9eywCgS2OMZAnmQ2JbQeJa9JaSrEL
-	 QBJWlHR8UOPR1P6JctyYIjog1A3zzpsGuUqMNzVYuENs7bETpNJAptXo1fQvIPqXGx
-	 JgAOuRx9bi+V94X+B5ixwruvQAJBPXwFzZ97VqTbJaIZJymzoQqrkeCOYGNe9Xs1wV
-	 O50ZVL7wm8JpUNHirr88nlDgpfjvS3hrwuWznTSp8b5ACDwHpFb8VDo2+bleTFvUbG
-	 I9d+iBmJJrWM1tW3Z6qD/yy982Hf+GLV3lxg5UnPBVIdtou3IxeWvb1A0HNXI8dYQb
-	 gA6gtgUccipzg==
-Date: Fri, 3 May 2024 12:56:53 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Paul McKenney <paulmckrcu@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v4 3/5] x86/syscall: Mark exit[_group] syscall handlers
- __noreturn
-Message-ID: <20240503195653.5wkdfwno7nybepqc@treble>
-References: <cover.1713559768.git.jpoimboe@kernel.org>
- <3b99cb2919c88ab3d353337423b2f0f1b9173f0a.1713559768.git.jpoimboe@kernel.org>
- <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
- <20240421052540.w7gtahoko2qerhqq@treble>
- <CAJzB8QF_+51+rrJmq3iXkaAbmbbyKYVf0m_LpQCRSLS_FgHUMQ@mail.gmail.com>
- <CAJzB8QFx344hSSYy4jigtmQX+KfSpFOn+18WAfZAeym5LUMoKg@mail.gmail.com>
- <CAJzB8QFxfCCYTMfEYidB+PYvDV5J2zbdsnpyQR-gS-D-0y2gEA@mail.gmail.com>
+	s=arc-20240116; t=1714766287; c=relaxed/simple;
+	bh=GxOghFVCZOu1BSfEKDJHdFXujzxM0Vhi46jNlkXNViI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=BdYUY7uVstJMo52McjZW/4HhywUgjcq8ybKYqdjbm4F5WmqgXrR7AauhGnl0kf05qv+uHRnof60yJF2H53ZyWx5tfpLiHAs8Xx3013tjOq82Powpg9yZ5tBEAdnK5g8msmym25vcAm1hi2DDLAIh/NEWXLvybCo/KphMy2kjDh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7da42114485so3394139f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:58:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714766285; x=1715371085;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pwVY/fyH1gQuGakUUTvfCy/Q1T0f0xT1xNncswAUms0=;
+        b=Q6UAEJtCMcu8ozn27YYJvCEUNK8RYD6CJa75Do7QYt/bRKig8Ww1fFmOFakrGcCCej
+         18jz8yfNnREG5jljA8piACPHUi9dD+YdGgSDJrwX8I4zmqc/ky/f7HV0DVntubNhZ0T+
+         4mDHEBqxjFPf5InG89V8EigqwJdy3zjy5/I/lVswuOlqS821D2bKO9wrym/nCHeZR+GF
+         Ecdr1nGi06wK890b1E9UxaEfumtdSlvLDHQpLgcKD7Pfg0PdcLmBDglHar79sAm5Trk4
+         jFHywnaW1N4dkIuMH3nXLOmSghsZ5NdZQYPB0GssOHoChJoRMPYOc7dljoG8x3UhX2XK
+         c2cw==
+X-Forwarded-Encrypted: i=1; AJvYcCXsVS8NsR5P165ibJX28GKGQH9UOj5RfXa2+EyDVjI1P5EdCtoxTACd/wTawTrrwjO5sQXOmr/gyyVrhgQjg4RfsrNiRX8BwRV+8RbD
+X-Gm-Message-State: AOJu0YyjMnacDKr+yqHS8vipE075YaudLdpyRqOWiXeEjB0fhkBGBElV
+	uKEvAkJyjciGWuexofdrktzWVkoOW88SMAEKprIc4j1aBNo+LIVtL8hU8ACa/Esr8y/+mcIdPSq
+	wL+kBAIHBpfk+V4nw1aoBLaVM4GXspijHc246g28pJPcCpMs7nnPRU44=
+X-Google-Smtp-Source: AGHT+IFsKhYlfy6o3M/ol0YgBhmeqITegGAPVwX3qSt2L72wwyPU5neB1NYYig825a03FvrKiVlSZ/AuOfzjIlZAaX292wXvouR3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJzB8QFxfCCYTMfEYidB+PYvDV5J2zbdsnpyQR-gS-D-0y2gEA@mail.gmail.com>
+X-Received: by 2002:a05:6e02:218d:b0:36c:307b:7f08 with SMTP id
+ j13-20020a056e02218d00b0036c307b7f08mr196694ila.0.1714766283713; Fri, 03 May
+ 2024 12:58:03 -0700 (PDT)
+Date: Fri, 03 May 2024 12:58:03 -0700
+In-Reply-To: <00000000000022a23c061604edb3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000036c3d90617922353@google.com>
+Subject: Re: [syzbot] [kasan?] [mm?] INFO: rcu detected stall in __run_timer_base
+From: syzbot <syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, brauner@kernel.org, davem@davemloft.net, 
+	dvyukov@google.com, elver@google.com, glider@google.com, hdanton@sina.com, 
+	jhs@mojatatu.com, kasan-dev@googlegroups.com, keescook@chromium.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, luyun@kylinos.cn, netdev@vger.kernel.org, 
+	pctammela@mojatatu.com, syzkaller-bugs@googlegroups.com, victor@mojatatu.com, 
+	viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, May 02, 2024 at 04:48:13PM -0700, Paul McKenney wrote:
-> On Sun, Apr 21, 2024 at 2:47 PM Paul McKenney <paulmckrcu@gmail.com> wrote:
-> >
-> > And this definitely helped, thank you!
-> >
-> > However, this one still remains:
-> >
-> > vmlinux.o: warning: objtool: ia32_sys_call+0x29b6:
-> > __ia32_sys_exit_group() is missing a __noreturn annotation
-> 
-> And looking at the patched code, this function looks to me to be
-> correctly marked.
-> 
-> No idea...  :-/
+syzbot has bisected this issue to:
 
-Ah, I think I missed fixing syscall_32.tbl.  Lemme see how to do that...
+commit da71714e359b64bd7aab3bd56ec53f307f058133
+Author: Jamal Hadi Salim <jhs@mojatatu.com>
+Date:   Tue Aug 22 10:12:31 2023 +0000
 
--- 
-Josh
+    net/sched: fix a qdisc modification with ambiguous command request
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b9b317180000
+start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1079b317180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b9b317180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=1acbadd9f48eeeacda29
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16435913180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111600cb180000
+
+Reported-by: syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com
+Fixes: da71714e359b ("net/sched: fix a qdisc modification with ambiguous command request")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
