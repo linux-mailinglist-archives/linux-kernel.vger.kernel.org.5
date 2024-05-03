@@ -1,106 +1,171 @@
-Return-Path: <linux-kernel+bounces-168218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B75F8BB548
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:12:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60D738BB54D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:12:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CBA41C22FE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:12:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CD14286F65
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:12:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B7E54650;
-	Fri,  3 May 2024 21:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4885680038;
+	Fri,  3 May 2024 21:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Rs9B3xI+"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MntQvuHK"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A5341746;
-	Fri,  3 May 2024 21:11:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F6356750;
+	Fri,  3 May 2024 21:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714770681; cv=none; b=hYSoo5VppYtLtSnFe0b5JYEbsOzi0YpdGota5peXEnsoDee0BS1ARUTrZiBPWGxI2CAIEUrdYkP1MtNlg2hH6Ttmu/DoSRsXA2fXwd2AOoAnQlLzCyACIXvoExA1gNjEfQhW1XPB/ifd2Yt9vBn1kRcEsVfVxD9Q1h0Ch44Jc9k=
+	t=1714770686; cv=none; b=j8CHgqQnbcpVaMSAFzUH1U797M0WtGrJiMwqTY5Yv0Gu8a8YWkuywA/K3QK6SZ/RPtczhjdiE40ioWEHnyrI+bc3nYSPqjLbDKMcaiprwZwK+mRIVKyeGnrpqHHOchyvGfEUtHfjpjKREPUy/KfA3eExYQxJCa68BKLhf7GPuvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714770681; c=relaxed/simple;
-	bh=ir4jVAwHqZZPJB/DE9uWzxgHlCj8HSje/nWd9XFDyhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l/2br5Z+mvgfi+nJgRC8/+n6F3fzgUJOBSVgagc1/SC0AhUuP7gHGeDjW9TIl2OIDUyIiRxx0owzJdTEJStOCyyJfkif54BA5xaxAZEUYiR/mHnQIX4lzzd52/Pb4IjuylT4lfppqkvE5IcmymX6ciw3G/lDMf+tlQRnqe/0/dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Rs9B3xI+; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=NY7dpnWNXhQQKVFdAJPJlG4e4ZXMaDmQRQbDTVWLCeE=; b=Rs9B3xI+XdmJK5vPYQK8J22QKS
-	EgQQjCflBDYUtxW7SIX67RGaVIh3sQxNGH90bxispPeYAm3Rch22e5sDAaxhSEmNW2ySJllWffdb5
-	a4oV0hJkK1wMLB0wsYYYxmpIJp7sPoevLWMdPWdjnwETEp1S5NfsIj1h0wJX1d3jNqehubjWUYPn+
-	7uDmwbVMNILcV4WyvLYqHObXMuav53kC37sidi15Uw1VLUrj5+Sngx5+0djz5feXF5HjHfmThe2Wn
-	SpKgjexjGpBfd+US1tn2T08npPs/aGPCeX21rEsxXS0Wot3Ugzg/2Yns9RIFdjTU5nMXuJMK+yyG7
-	QAAoXHQQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s30BR-00B72n-1X;
-	Fri, 03 May 2024 21:11:09 +0000
-Date: Fri, 3 May 2024 22:11:09 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Bui Quang Minh <minhquangbui99@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
-	io-uring@vger.kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?]
- [io-uring?] general protection fault in __ep_remove)
-Message-ID: <20240503211109.GX2118490@ZenIV>
-References: <0000000000002d631f0615918f1e@google.com>
- <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
- <202405031110.6F47982593@keescook>
- <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
- <202405031207.9D62DA4973@keescook>
- <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
- <202405031237.B6B8379@keescook>
- <202405031325.B8979870B@keescook>
+	s=arc-20240116; t=1714770686; c=relaxed/simple;
+	bh=Ptv+iiSLneObGvUrCzFwLGZUkxeli0QQbmY91UDllNw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mg37qJJDBMQMWfvYQ83jmA0AS7uJOJnuK71WFdKf7RD02MNyW/YOpRUBSMzwINS6Xeb5SD6A6AxPNp373So2raThoQAw2HZu35P1OK/a4GBkjV4xBIE8J7thoZ7lJHLjcpPDIN6RPfLemHUt53HXQXK3uCD9eV7lFcX3488EwOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MntQvuHK; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de610800da0so128577276.2;
+        Fri, 03 May 2024 14:11:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714770684; x=1715375484; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HCH2vBIEGFjFQvxPgHBnwRPp7VBESajmVne9dYH/eVU=;
+        b=MntQvuHKnjC/3nU3BAkBiRes0PQ4JhAvel/+lkFD0ChhjUTEHOt4ikBs5XDdgexs63
+         KcsfXagkSF8mmBB59x/IkqM1EfW6/igCL80xmUXxX0qWFCdAmHQj4rb5gz+wq7qz9xRQ
+         x+BlRFDdea9lvFGxbEV8fnPF/LzuK2fxdqZ1wGvFns2OcqawCs5JbPrQanHrlHTamUKe
+         jIsxXVTNVXk7HEGzK10n+LcUMWsNHBAPPkhmv1PSBDvrY11m5aSR6j8ABkxvTRYMmuqs
+         fD+6123HPyMnTFG92xD4DUTSV3oXev9d/ghQNoQZeMNr99EKVp26kBncv88JBIkxXeaN
+         /FyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714770684; x=1715375484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HCH2vBIEGFjFQvxPgHBnwRPp7VBESajmVne9dYH/eVU=;
+        b=TV9rqQI4INgv7YRszh4Ax5Eo36Xt7C8Orlgh/InZYcprutsDg/9WlFUpdOGyQIK7/2
+         PO37YHy75C7q/lu3vt/JPW6SEbKTNEMkCd88qRgbfc3tIZzXu2RCObSgj1cfpdKw0caO
+         BQw5WvqKf2x0/IYkECJ2qPlqkcYLGcGTfkn3eNJ7pISoeX5I8hkJ0EwEgIh2JHmkk2tq
+         Hg//3atvdYuJuhVazBXM3Gy6H4wyeHCK4pg7p7R9eECY7mbshRffxIGV5znbxglhGbz/
+         ztG5889seMO8Jp8hHwS9Kh5w2L9cs7xR1yloIksyX6kqzCLQdeU/FC4C6AOBFtbYH75T
+         ACTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUlKaa/A1hQgDVPp/FB+q0iqcQVRweqAL2VfHc6/RAZEh6OWdEJhRUDC7PPsGYelUEAvV24zc7zDhSQi4rPHtpDUzRQA2ArMzkyJnPw9rSuz+YnhlYvre+WEjXlskGZjZVPOJXsVhy5ngaufvyoXbd1PZfNVxs7x2jdHn5nw07J33/LrSU=
+X-Gm-Message-State: AOJu0Yz5jZougQjEmu8w9GcMC5a2pVz7Dr2un3qyRtLVXeVVjvqP3LbY
+	YY7v2i0VTuhubZot99MqjrGVlapj0GJgt3BbxSi61znsCmY60Wf7fMjz2GeVDrMf3arW+98x0Qo
+	6daIWe+v8v3V0pJ+2+ek+fBYT0VA=
+X-Google-Smtp-Source: AGHT+IHRR1xYiGTzniE4e11IA4rOYDsUqBia4twRF3gawFqReZVK4ExijFnmA9WB80LUmdaOWcuc/nvUWWIQ7oAolgE=
+X-Received: by 2002:a25:ad88:0:b0:de5:526d:c9c9 with SMTP id
+ z8-20020a25ad88000000b00de5526dc9c9mr3987341ybi.61.1714770684086; Fri, 03 May
+ 2024 14:11:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202405031325.B8979870B@keescook>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240503135455.966-1-ansuelsmth@gmail.com> <20240503135455.966-6-ansuelsmth@gmail.com>
+ <5529fe79-e2f8-47ab-a0cf-2b37bb13bbd7@broadcom.com>
+In-Reply-To: <5529fe79-e2f8-47ab-a0cf-2b37bb13bbd7@broadcom.com>
+From: =?UTF-8?Q?Daniel_Gonz=C3=A1lez_Cabanelas?= <dgcbueu@gmail.com>
+Date: Fri, 3 May 2024 23:11:13 +0200
+Message-ID: <CABwr4_sz4DKjp_cJqTNBCyQSUhXGJM4_h1JSiK-h=8uAbPPoVQ@mail.gmail.com>
+Subject: Re: [PATCH 5/6] mips: bmips: enable RAC on BMIPS4350
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Christian Marangi <ansuelsmth@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+	=?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>, 
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 03, 2024 at 01:28:37PM -0700, Kees Cook wrote:
-> 
-> Is this the right approach? It still feels to me like get_file() needs
-> to happen much earlier...
+Hi Florian.
+Bits 0 and 1 are already enabled by the bootloader, so no need to
+write 0xF. I checked it on some devices with BCM6328, 6358, 6368 SoCs.
 
-I don't believe it needs to happen at all.  The problem is not that
-->release() can be called during ->poll() - it can't and it doesn't.
-It's that this instance of ->poll() is trying to extend the lifetime
-of that struct file, when it might very well be past the point of no
-return.
+Example, without the patch, reading the RAC Configuration Register 0 and 1:
 
-What we need is
-	* promise that ep_item_poll() won't happen after eventpoll_release_file().
-AFAICS, we do have that.
-	* ->poll() not playing silly buggers.
+- BCM6368 booting from TP0:
+root@OpenWrt:/# devmem 0xff400000
+0x02A07015
+root@OpenWrt:/# devmem 0xff400008
+0x0000000F
 
-As it is, dma_buf ->poll() is very suspicious regardless of that
-mess - it can grab reference to file for unspecified interval.
-Have that happen shortly before reboot and you are asking for failing
-umount.
+- BCM6368 booting from TP1:
+root@OpenWrt:/# devmem 0xff400000
+0x02A0701F
+root@OpenWrt:/# devmem 0xff400008
+0x00000005
+root@OpenWrt:/#
 
-->poll() must be refcount-neutral wrt file passed to it.  I'm seriously
-tempted to make ->poll() take const struct file * and see if there's
-anything else that would fall out.
+Regards.
+Daniel
+
+El vie, 3 may 2024 a las 20:56, Florian Fainelli
+(<florian.fainelli@broadcom.com>) escribi=C3=B3:
+>
+> On 5/3/24 06:54, Christian Marangi wrote:
+> > From: Daniel Gonz=C3=A1lez Cabanelas <dgcbueu@gmail.com>
+> >
+> > The data RAC is left disabled by the bootloader in some SoCs, at least =
+in
+> > the core it boots from.
+> > Enabling this feature increases the performance up to +30% depending on=
+ the
+> > task.
+> >
+> > Signed-off-by: Daniel Gonz=C3=A1lez Cabanelas <dgcbueu@gmail.com>
+> > Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> > [ rework code and reduce code duplication ]
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> >   arch/mips/kernel/smp-bmips.c | 12 ++++++++++++
+> >   1 file changed, 12 insertions(+)
+> >
+> > diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.=
+c
+> > index 6048c471b5ee..7bde6bbaa41f 100644
+> > --- a/arch/mips/kernel/smp-bmips.c
+> > +++ b/arch/mips/kernel/smp-bmips.c
+> > @@ -617,6 +617,18 @@ void bmips_cpu_setup(void)
+> >               __raw_readl(bmips_cbr_addr + BMIPS_RAC_ADDRESS_RANGE);
+> >               break;
+> >
+> > +     case CPU_BMIPS4350:
+> > +             u32 rac_addr =3D BMIPS_RAC_CONFIG_1;
+> > +
+> > +             if (!(read_c0_brcm_cmt_local() & (1 << 31)))
+> > +                     rac_addr =3D BMIPS_RAC_CONFIG;
+> > +
+> > +             /* Enable data RAC */
+> > +             cfg =3D __raw_readl(bmips_cbr_addr + rac_addr);
+> > +             __raw_writel(cfg | 0xa, bmips_cbr_addr + rac_addr);
+>
+> This enables data pre-fetching (bit 3) and data-caching (bit 1), have
+> you tried with 0xF to see if this provides any additional speed-up?
+>
+> Looks correct to me otherwise, I wonder if a flush would be in order
+> right after enabling, though I did not see any specific instructions
+> towards that part in the programming notes.
+>
+> > +             __raw_readl(bmips_cbr_addr + rac_addr);
+> > +             break;
+> > +
+> >       case CPU_BMIPS4380:
+> >               /* CBG workaround for early BMIPS4380 CPUs */
+> >               switch (read_c0_prid()) {
+>
+> --
+> Florian
+>
 
