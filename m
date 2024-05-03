@@ -1,167 +1,159 @@
-Return-Path: <linux-kernel+bounces-167824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0C8E8BAFD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:31:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC298BAFDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84666283464
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:31:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36395B22660
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A857153589;
-	Fri,  3 May 2024 15:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C853815216C;
+	Fri,  3 May 2024 15:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Dr9O6AP+"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BsRENZ7u"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179FE4F898;
-	Fri,  3 May 2024 15:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63FCA1514E5;
+	Fri,  3 May 2024 15:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714750288; cv=none; b=LIYh8N3vsmcA/gIJPrsq/HKCgAxFfXjuWaqF7mMcI57A6S+r2shmDqpdEeUSu68JCFTfLigTYSv/+66qlPyQs6BnW+vqXhGs69WvpncRs3C4ZsfP+lTQVJs6z5b8YIMzU5j9cD1gQHIbI4qjBgHjIACswtCvfZz62W4UHjoLUdk=
+	t=1714750343; cv=none; b=TtwCo6USa1nGBfA+5jCs9GnKOOBSFNFMDHdiw8EtM2WshkCKcTpiKv3WU0cJuCwpFP44N5SM4uZZ0kp1KOx1b1wpue9ZJUtJ6OqfPSev+avRJAjAhJ/FkAeroyOHq9+EAgRXuES53EysI1dSBKV+2Nuh8OjTjF/MMk3bzdEXneY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714750288; c=relaxed/simple;
-	bh=ZTeqTIx6NtGxx8vrxI3M+OcWZ4Fj8MiLEDhysehAouk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Aa6/l00rx9rms93RB5zQuqit2YwmTiBxI0T2sPWypkClKvOEkzEC9YI1P2JWmRRsTu8W/twfP3PWK1bpKmg1pxT2V/zj+N8Z0m+La4ikpYnIJuDJnqs/Bf7qZ4pcLKsK3cT1D3xJMKOVOVeOVdALQu8sqkqCjZYO9q7evJI/SxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Dr9O6AP+; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4436hOkY022022;
-	Fri, 3 May 2024 10:31:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=pMP28VeqYfHHwml5T9dmOpi3+UZclYD9X6K1JwLGHJo=; b=
-	Dr9O6AP+oXJuidoEdBkHvdZCO3Bzt0nNAUUADrXr1Y1kDQsMpNmHzFxhVc9Q1K6h
-	5izS3niLeL8BO1z77Thvvj7KiaAiZrvW2lFqstbkEE5P6+HYeiU3Dtg907wworxv
-	M6A0Tk2aYXJzV8roem1kCWwgWhSbtR3+a1wIxQxHiPNno+ASYDc3ovhsuLO89Lz0
-	FLlaz2MKtCD6UAaUBsbnNQHBNHoefLac8xiURenWE6sOE7BMdlNKOSAyXeC8IA1h
-	1LaJUoNpdeqgXa3hxwdf8y4TUGS1SyB7xQ6GDLN8Arxig5t49ueVbekrFkMy59ZF
-	elrlc2ltlAjPW0x7uR7bhw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xrxry6xm0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 10:31:17 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 16:31:15 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Fri, 3 May 2024 16:31:15 +0100
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 55FED82026C;
-	Fri,  3 May 2024 15:31:15 +0000 (UTC)
-Message-ID: <d9c5b863-53a5-4255-ab15-9ac3cb10ec10@opensource.cirrus.com>
-Date: Fri, 3 May 2024 16:31:15 +0100
+	s=arc-20240116; t=1714750343; c=relaxed/simple;
+	bh=yxFVHXgO+anV8vLASPVvYb2Vlv6942qfs+GdKOTjrw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OLuIOJWJP51SEF9wj8OXVvfih1mvZLIJ2F92EHREXKJVlqQF+O4gNQrKKO8lx4Ofd8TmfP6WLMKLC0Ui9IozVre/pkrMruR0+D3URG5tBRlWkuNTGH2ERI7QZCLcevpKw6uLTvaAgRJ3yL6FDvOM125BM0h1/EXaYguX7c2g2/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BsRENZ7u; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714750341; x=1746286341;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yxFVHXgO+anV8vLASPVvYb2Vlv6942qfs+GdKOTjrw4=;
+  b=BsRENZ7ukJo8Qnmr4DEsX+1ZtJbgsHRVRaArPZYAnv0Ue0/SITPsHLte
+   Teb/GCWW1nVwWYTFfQ5aizD5gv3FBxcndlc9k8nQtMW3V/HgCROLWO31D
+   IQLlC6Is60D4iyZt0JLrOOAY5YbdBh2/YHWqOx36M1ohaPXq6I0/AN7nt
+   VpuZ1G+GGfcDAWfLj4u2ta30KfvmnbsW5h+CfdshEf73In0kWuAtqxCQ4
+   pWLCd49MicS/qhWZFVQOJ/EM1s8P/4ViFV8l6H5Y0CjWv9UKyulqQVx/l
+   7G4ry+3ZE00bjAeDpOd65rI8m3gDEYe6cvb7/ekyrQZ26qy5q1QSkFBzu
+   Q==;
+X-CSE-ConnectionGUID: uI+qh72/RFCU5sdhG255Nw==
+X-CSE-MsgGUID: UpGh5VboTrWuniVMwWU+Fg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10488958"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="10488958"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:32:21 -0700
+X-CSE-ConnectionGUID: 2M/Q9VVTTQOObdpg6it7mw==
+X-CSE-MsgGUID: PPYkXuJ2SFy8qL2n0L+0bA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="28070781"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:32:14 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2utO-00000003gli-2OHk;
+	Fri, 03 May 2024 18:32:10 +0300
+Date: Fri, 3 May 2024 18:32:10 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 17/17] serial: 8250: Add 8250_acpi driver
+Message-ID: <ZjUDeuCQNCuYgATA@smile.fi.intel.com>
+References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
+ <20240501121742.1215792-18-sunilvl@ventanamicro.com>
+ <ZjNaR-YtVTm4pbP7@smile.fi.intel.com>
+ <ZjNh0Llcx+0VHevy@sunil-laptop>
+ <ZjNmdfR2J6hNnYle@smile.fi.intel.com>
+ <ZjN3GQI3gegYOIgS@sunil-laptop>
+ <ZjOy2G0qN5G076i0@smile.fi.intel.com>
+ <ZjTtx88zk4GvCImk@sunil-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ALSA: hda/cs_dsp_ctl: Actually remove ALSA controls
-To: Takashi Iwai <tiwai@suse.de>
-CC: <tiwai@suse.com>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-sound@vger.kernel.org>
-References: <20240503144920.61075-1-rf@opensource.cirrus.com>
- <87msp79b7o.wl-tiwai@suse.de>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <87msp79b7o.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: BAPHobn_D-X9cL0eHn5O9nS7ov3uewiI
-X-Proofpoint-GUID: BAPHobn_D-X9cL0eHn5O9nS7ov3uewiI
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjTtx88zk4GvCImk@sunil-laptop>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 03/05/2024 16:17, Takashi Iwai wrote:
-> On Fri, 03 May 2024 16:49:20 +0200,
-> Richard Fitzgerald wrote:
->>
->> hda_cs_dsp_control_remove() must remove the ALSA control when
->> deleting all the infrastructure for handling the control.
->>
->> Without this it is possible for ALSA controls to be left in
->> the Soundcard after the amp driver module has been unloaded.
->> So the get/set callbacks point to code that no longer exists.
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> Fixes: 3233b978af23 ("ALSA: hda: hda_cs_dsp_ctl: Add Library to support CS_DSP ALSA controls")
->> ---
->> Note: it would be better to use the control private_free to do the
->> cleanup, and that is my plan long-term. But that is a larger change
->> to the code.
->>
->> I like to keep bugfix patches as simple as possible so they are
->> low-risk and easy to cherry-pick into older kernels. So this patch
->> fixes the bug. Sometime I will send a patch for future kernel
->> versions that reworks the cleanup to use private_free.
-> 
-> I also like to keep as simple as possible :)
-> 
-> One slight concern is whether cs_dsp kctls can be deleted at the
-> snd_card removal (disconnect) before this function gets called.
-> That is, snd_card_free() of the main card may delete all associated
-> kctls, and may this function be called afterwards?
-> If yes, this change would lead to a UAF.
-> 
+On Fri, May 03, 2024 at 07:29:35PM +0530, Sunil V L wrote:
+> On Thu, May 02, 2024 at 06:35:52PM +0300, Andy Shevchenko wrote:
+> > On Thu, May 02, 2024 at 04:50:57PM +0530, Sunil V L wrote:
+> > > On Thu, May 02, 2024 at 01:09:57PM +0300, Andy Shevchenko wrote:
+> > > > On Thu, May 02, 2024 at 03:20:08PM +0530, Sunil V L wrote:
+> > > > > On Thu, May 02, 2024 at 12:17:59PM +0300, Andy Shevchenko wrote:
 
-That's a good question. This is is safe for the cs35l56 driver because
-if the soundcard (or HDA codec driver) is removed, the HDA codec will
-destroy the component binding in its HDA_FIXUP_ACT_FREE. This will cause
-an unbind() call to the amp driver, which will (indirectly) call this
-function to remove all the controls. So they will have been removed
-before the soundcard is cleaned up.
+..
 
-But it turns out that the cs35l41 driver doesn't clean up the cs_dsp
-instance in its unbind() call so the controls _won't_ be cleaned up
-and a double-free is possible. The firmware handling in the cs35l41
-driver is strange and confusing so I'm not sure whether this is a bug
-or something necessary.
+> > > > > This driver is not a duplicate of 8250_pnp. It just relies on UART
+> > > > > enumerated as platform device instead of using PNP interfaces.
+> > > > > Isn't it better and simple to have an option to enumerate as platform
+> > > > > device instead of PNP? 
+> > > > 
+> > > > Ah, then extract platform driver first from 8250_core.c.
+> > > > 
+> > > Let me know if I understand your suggestion correctly. Do you mean call
+> > > something like serial8250_acpi_init() from serial8250_init() and
+> > > register the driver directly in serial8250_acpi_init()?
+> > 
+> > Extract the code to be 8250_platform.c and update that file.
+> > I have locally the extraction of RSA code, I will see if I can help you
+> > with the rest.
+> > 
+> Thanks!. That will be helpful. TBH, I don't understand what to do for
+> extracting the platform driver code. There are already several vendor
+> specific UART drivers (ex: 8250_fsl.c) which are enumerated as platform
+> devices. 8250_core.c looks cleanly supporting such drivers which can
+> register themselves with the core. For generic UART, DT has 8250_of.c
+> and ACPI has 8250_pnp.c. But 8250_pnp.c comes with baggage of PNP
+> contract. So, the driver in this patch is similar to vendor specific
+> drivers to support generic uart devices which are enumerated as platform
+> device.
 
-> The structure is so complex and I can't follow immediately,
-> unfortunately...
-> 
+> I can rename 8250_acpi.c to 8250_platform.c if that is better.
 
-Yes, I know. When this hda_cs_dsp_ctl code was first submitted to the
-kernel you suggested using private_free instead of this manual cleanup
-but for some reason that wasn't implemented.
+No, that's not what I meant. We _already_ have a generic platform driver,
+it's just inline in the 8250_core.c and needs to be extracted. When it's done,
+you may simply add an ACPI table to it.
 
-> 
-> thanks,
-> 
-> Takashi
-> 
->> ---
->>   sound/pci/hda/hda_cs_dsp_ctl.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
->> index 463ca06036bf..a42653d3473d 100644
->> --- a/sound/pci/hda/hda_cs_dsp_ctl.c
->> +++ b/sound/pci/hda/hda_cs_dsp_ctl.c
->> @@ -203,6 +203,10 @@ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
->>   {
->>   	struct hda_cs_dsp_coeff_ctl *ctl = cs_ctl->priv;
->>   
->> +	/* Only public firmware controls will have an associated kcontrol */
->> +	if (ctl && ctl->kctl)
->> +		snd_ctl_remove(ctl->card, ctl->kctl);
->> +
->>   	kfree(ctl);
->>   }
->>   EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_remove, SND_HDA_CS_DSP_CONTROLS);
->> -- 
->> 2.39.2
->>
+> Could you please help with a patch even if not compiled so that I can
+> understand your suggestion better? 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
