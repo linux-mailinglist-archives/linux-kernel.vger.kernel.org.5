@@ -1,119 +1,156 @@
-Return-Path: <linux-kernel+bounces-167264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58D3E8BA6B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 503A98BA6B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:38:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 158D0283071
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 05:38:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BF862829B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 05:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082EF139CF2;
-	Fri,  3 May 2024 05:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4029139CEF;
+	Fri,  3 May 2024 05:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="UA4S3TaY"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JRYkBbDX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8151139586;
-	Fri,  3 May 2024 05:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F532139586;
+	Fri,  3 May 2024 05:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714714677; cv=none; b=o15nY1mSzNvRBDhe4at7eDdD3h7Np2cl/wU+GYgyAsc0xIg20xlG1AUuPCNg192b81cIr4aPCt8rVzg5kOgqv+wPuxu3lEAh8M9qt2/gfyu9jDjJdudLqEEqF3fvUTtNupnF2M0518uXLn9C0oSuxliWHokTI2ug9cFu6QhWIMU=
+	t=1714714700; cv=none; b=cz2uWggIYHXtCcqpYDqENqMpIfZGa6HqE7KTZWwVjk20d/uVoUWN1zL56xFZBj+8dd92HmPgoJ80vauMaStnJ3olBLrl2eB35+HsF1IPpZPW3Af81h1UWFDOGsnbbj6GPDMISU5X6FzlSH/+/Cdjev0LDqADIdXClrFzdJotPw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714714677; c=relaxed/simple;
-	bh=22yr4JE/Jesym0pYV5K2emmGFHkQz07wrwb3qp9PgFU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dEclMAPT1y0ffXZ1gOV1w9y2mrQET2LyoUyc18wpgr5Sqz1bNiSvZxLDXu6hSIwHl843p0QwK2yMJz4XFkog0rGA4DrL1VTOPbWOb4tLAInefl5vfhMUpDx/JnTL+B7K379hcW5qOdGEcCCarviA7pUN54xUurN2SOsfddz3LPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=UA4S3TaY; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714714637; x=1715319437; i=markus.elfring@web.de;
-	bh=oOtFA4UEkaQZQ1lTyzIvZngv43cOzODmoGwEEoq2la4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=UA4S3TaYm4fRVdRmIks5BAWnJ36HE8fL6gRMNBP1/4h8s2lU6CXaDyZN3lCn0Bxo
-	 NVVnv4RIlko/++PSFnDgBojyeWZDMnN+o43ONQhGcCyn80EX1kpGL8MKNRlMhTDuu
-	 Hs+ez28oExk9Xl/SdqWxrtmIDd+OkGNmT1oy6HQFffHKVOomXFbDKwJrJcju6zz5B
-	 hUJT4qKeI4ofidzSAzpIq1oBPYdKEimln8NY0TWopIQlU0HbmpuMUJaRohxATlO9i
-	 5e4zn2kh+4WkbKOhKSxP7jpJFAFcTOCJt37q7/1pM5qFK5Euis4tC94cW8nFf2ggF
-	 6GUf6FeqxQo7y8h8ag==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mtgyj-1svYaA1Y5P-00tWSo; Fri, 03
- May 2024 07:37:17 +0200
-Message-ID: <89f07a73-90c6-4a81-9cec-7a1b7d61ea6b@web.de>
-Date: Fri, 3 May 2024 07:36:54 +0200
+	s=arc-20240116; t=1714714700; c=relaxed/simple;
+	bh=rKKCeOF3G9JpimaU43Lw2IpoOJrnNfrZXT1xQPXth8A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CsJA7GGRBkLhW2oV1Pg5KtXXipjAvjaNPwcBOWww8gVVacoSpRngdmUop8kzmhFGtnu3QFTAbjViLVP47wP5iVsjAex7ksVJPKq3t3IVO/dgxGHi4BQVDZMXqijSbedZiM1GAR0zys/QhF8olwy9Jc0QtyUS7iPBAZd/SVXdr4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JRYkBbDX; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714714699; x=1746250699;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rKKCeOF3G9JpimaU43Lw2IpoOJrnNfrZXT1xQPXth8A=;
+  b=JRYkBbDXPBWorQJQs4RmdDhb6Ly6khOldhDix3cpkQ6UcFW24WsW4WWl
+   aQx/ukKvMBFvKGRyy64tbIZzfLLb9TtwNLBxY2TMk6n0KSMpkQmnac3P6
+   doUsWMriLMlK6Xq75iJa/xDmB3TTeidDnl1Nnz0HxgJRHzo+o6IPg/6ar
+   LxJak5Defmy7j0v3qwUt6I3jOxBY9cyKcpbTYfWVNFAe4ZT2ZBW2tPw7p
+   kU6TVrUK4rWcBWIamIg5BC88mZAy4JWdHLGiH1ci+C83kOzg6XSpfXX/g
+   oS6qvjVWThtPXkj8btkvIIFIRdKSHfWeNi27RkdvGuHBouklELWg3NAw2
+   A==;
+X-CSE-ConnectionGUID: fTFehmlBSdKr3RpYmun82w==
+X-CSE-MsgGUID: y6r98hMaSBKNSE4jWhHSMA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="13463445"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="13463445"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 22:38:18 -0700
+X-CSE-ConnectionGUID: k8feyb1gQr+mYHjcJFVckg==
+X-CSE-MsgGUID: WZxVMUhvTvuHjXpz3ZIjMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="27372199"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 02 May 2024 22:38:15 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s2lcb-000BLs-1D;
+	Fri, 03 May 2024 05:38:13 +0000
+Date: Fri, 3 May 2024 13:37:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Udipto Goswami <quic_ugoswami@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Udipto Goswami <quic_ugoswami@quicinc.com>
+Subject: Re: [PATCH] phy: qcom-snps-femto-v2: Add load and voltage setting
+ for LDO's used
+Message-ID: <202405031311.9f1PrPou-lkp@intel.com>
+References: <20240502123312.31083-1-quic_ugoswami@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/2] ax25: change kfree in ax25_dev_free to
- ax25_dev_free
-To: Duoming Zhou <duoming@zju.edu.cn>, linux-hams@vger.kernel.org,
- netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, =?UTF-8?Q?J=C3=B6rg_Reuter?=
- <jreuter@yaina.de>, Paolo Abeni <pabeni@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Lars Kellogg-Stedman <lars@oddbit.com>
-References: <cover.1714690906.git.duoming@zju.edu.cn>
- <81bc171fb2246201236c341e9b7d799f509d7dd4.1714690906.git.duoming@zju.edu.cn>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <81bc171fb2246201236c341e9b7d799f509d7dd4.1714690906.git.duoming@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2G4b2DUHON8LbQ7M64u0z49A9zJHgVDnju2Aqmpy+hZ13onF16L
- sUDbvo4qvAYISGBFqGCsTU3N6O86PdtaaXMeK9RLunLpO9KNAUzZIEQ7xOVPio92bAvq2WW
- q7vlrz8WDaWhSKjM7qGOfl3GyXux1j9nWjNxh1gdpb5f9VwzbvEI8njH8Hsu/lZt+Mbpj8V
- FSFQy3YaJf6NOocuiSYJQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ovAlsWP0Fnk=;Hkpc6Yy9FQkb8E3PpAoQFb7as34
- Y5fLGMAzq1qZcLpDOxNRg9Wv5zMb8nCATTX6gNCr17IrLB2o+zFVBWLlRGbWXpUGsbWBhVTAY
- GIF1VqPPp+gVgRnCfbqHFfkoTFhOkzgYjr/ZgOWBXfGmTOs+rQ37O3+A72cRepC5GOpLg04jg
- rCebK03XkioB3Diei/anLqhLBhCO8HdngrWek16fFcwrv8TlGTu6mVP9WrUrtfa+ZCbuysC81
- btJ8n/PynSPb6dHmSaKjh2FDZaMebDlPKUGlD2GnJUPBt9RzpNcgX0p4j9T+OdlhtsRqjHm79
- omn6IaxUyob46islDe4+TopceN9b3MGCSEW8P3svY47pdYa4mO8O0by4WSAjCdCrCHDolficm
- MxTmSFl9srWH4CkVLWMkB6dcdvaZ51scUfScAykEV/Ayi+qWxHiyg+T8vkLpbCQYUhNuDJLPP
- N5mYpKUueQ86VT/Djgi3RhSzyBcRJjHZYmSr/hd7N14sBtENl0KGpRpYrITljKFMky0vetULi
- 7M3Jzn8uUAnCEAO+8CU+wkbgInoFpTOE3hqOqgDK3rUwtN6EdBQjZFw1mxm5IqUeWYfTCCviI
- 5My6Dq/c99aMM8tsm9Abo6/HlAtnocqhugeP7N6hh7VOfy/53dhE5Vt56pYob2B82MSDf52FA
- wa9CTxlVAebKIP1uabewjuZ4LXuiGbGp3XAImMAxk3FqZ6blRYSwHKSeBQu6FZhTb3ekiAmsp
- efgFDA+8uD+GisXm9T8cMOCYBqFnwQ4FZKtccGyF/AE8hald8Wpfee+NzMDyhHZQShKeJp0HA
- 76EhGX8mEHw2H93+4VE1DH37YQPNmLSO6AxxXnkZxRF9p2jW7/6U3xDtf5j2paIVxb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502123312.31083-1-quic_ugoswami@quicinc.com>
 
-> The ax25_dev is managed by reference counting, so it should not be
-> deallocated directly by kfree() in ax25_dev_free(), replace it with
-> ax25_dev_put() instead.
+Hi Udipto,
 
-You repeated a wording mistake in the summary phrase from a previous cover=
- letter.
-Please avoid confusion about desired code replacements.
-How do you think about to append parentheses to involved function names?
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.9-rc6 next-20240502]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Udipto-Goswami/phy-qcom-snps-femto-v2-Add-load-and-voltage-setting-for-LDO-s-used/20240502-203521
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240502123312.31083-1-quic_ugoswami%40quicinc.com
+patch subject: [PATCH] phy: qcom-snps-femto-v2: Add load and voltage setting for LDO's used
+config: x86_64-buildonly-randconfig-003-20240503 (https://download.01.org/0day-ci/archive/20240503/202405031311.9f1PrPou-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240503/202405031311.9f1PrPou-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405031311.9f1PrPou-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c:168: warning: Function parameter or struct member 'vreg_list' not described in 'qcom_snps_hsphy'
 
 
-Would you find the following change description a bit nicer?
+vim +168 drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
 
-   The object =E2=80=9Cax25_dev=E2=80=9D is managed by reference counting.
-   Thus it should not be directly released by a kfree() call in ax25_dev_f=
-ree().
-   Replace it with a ax25_dev_put() call instead.
+df2217ff17a820 Krishna Kurapati    2022-09-06  136  
+51e8114f80d076 Wesley Cheng        2020-05-04  137  /**
+51e8114f80d076 Wesley Cheng        2020-05-04  138   * struct qcom_snps_hsphy - snps hs phy attributes
+51e8114f80d076 Wesley Cheng        2020-05-04  139   *
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  140   * @dev: device structure
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  141   *
+51e8114f80d076 Wesley Cheng        2020-05-04  142   * @phy: generic phy
+51e8114f80d076 Wesley Cheng        2020-05-04  143   * @base: iomapped memory space for snps hs phy
+51e8114f80d076 Wesley Cheng        2020-05-04  144   *
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  145   * @num_clks: number of clocks
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  146   * @clks: array of clocks
+51e8114f80d076 Wesley Cheng        2020-05-04  147   * @phy_reset: phy reset control
+51e8114f80d076 Wesley Cheng        2020-05-04  148   * @vregs: regulator supplies bulk data
+51e8114f80d076 Wesley Cheng        2020-05-04  149   * @phy_initialized: if PHY has been initialized correctly
+dcbec046507615 Wesley Cheng        2020-06-25  150   * @mode: contains the current mode the PHY is in
+2a881183dc5ab2 Krzysztof Kozlowski 2023-05-07  151   * @update_seq_cfg: tuning parameters for phy init
+51e8114f80d076 Wesley Cheng        2020-05-04  152   */
+51e8114f80d076 Wesley Cheng        2020-05-04  153  struct qcom_snps_hsphy {
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  154  	struct device *dev;
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  155  
+51e8114f80d076 Wesley Cheng        2020-05-04  156  	struct phy *phy;
+51e8114f80d076 Wesley Cheng        2020-05-04  157  	void __iomem *base;
+51e8114f80d076 Wesley Cheng        2020-05-04  158  
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  159  	int num_clks;
+8a0eb8f9b9a002 Adrien Thierry      2023-06-29  160  	struct clk_bulk_data *clks;
+51e8114f80d076 Wesley Cheng        2020-05-04  161  	struct reset_control *phy_reset;
+51e8114f80d076 Wesley Cheng        2020-05-04  162  	struct regulator_bulk_data vregs[SNPS_HS_NUM_VREGS];
+4dac559b5584a2 Udipto Goswami      2024-05-02  163  	const struct qcom_snps_hsphy_regulator_data *vreg_list;
+51e8114f80d076 Wesley Cheng        2020-05-04  164  
+51e8114f80d076 Wesley Cheng        2020-05-04  165  	bool phy_initialized;
+dcbec046507615 Wesley Cheng        2020-06-25  166  	enum phy_mode mode;
+df2217ff17a820 Krishna Kurapati    2022-09-06  167  	struct phy_override_seq update_seq_cfg[NUM_HSPHY_TUNING_PARAMS];
+51e8114f80d076 Wesley Cheng        2020-05-04 @168  };
+51e8114f80d076 Wesley Cheng        2020-05-04  169  
 
-
-Would you like to extend patch version descriptions (or changelogs) accord=
-ingly?
-
-Regards,
-Markus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
