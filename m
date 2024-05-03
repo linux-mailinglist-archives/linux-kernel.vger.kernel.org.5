@@ -1,139 +1,109 @@
-Return-Path: <linux-kernel+bounces-167093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155588BA472
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:16:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6628BA475
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:18:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D7CCB21ABD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:16:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A0B2284DB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF2E1848;
-	Fri,  3 May 2024 00:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D211C36;
+	Fri,  3 May 2024 00:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jE9MBYW0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="WJglenFn"
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66BCD193;
-	Fri,  3 May 2024 00:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6856A193;
+	Fri,  3 May 2024 00:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714695404; cv=none; b=UbLAFCsnFXc46wxr+4VN8PoeW5/GCvrmDiTvNCJJLK9oYeWdy5M8gs09SWJOviQA88tpCNsKm699g9s1qpuagg1yMaQP8sruOfCLlsZpcPoZTJB1woSAT6TIjUtvhQzVSN1cBHnPBD2T3YSWeaGwkwWO34+A2/EtJZD5yhtZG7Y=
+	t=1714695524; cv=none; b=ZpaGxVexsrIqv4Kz+L6kVWAQE8tyFDiqHkyZAMacMsjDZGiHXDH0AWdtipfK0Ll6kstDpkYEYhTbU5R3Sa+dExfLDh8m+LbO6L06I3qx1IMc8okjLcG62G7XCwlP287ie3yayDZZowJqLLqkptde8dY0mjFbiQQHiYLyEx4kPik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714695404; c=relaxed/simple;
-	bh=rF9pMJbFN+/L4ZoAlKzy29Ti9M/pRpKGV6oAQsWdR1U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TldA1HSUdQY98zpPCdVb247szETIQhxneaBONMiLDdJyiIm5vBHDLgU28Gvm7RfxilEB+YRQnYkRSfrHcsCfZqyI7jXDhq6fN3qcjAZxtlqP7xxMc5dWeV0mXbyXkXxwUxY9cIWixvjjxAS6s++BiCxazYHRHZqppcnrf5bF3+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jE9MBYW0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB5AEC113CC;
-	Fri,  3 May 2024 00:16:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714695403;
-	bh=rF9pMJbFN+/L4ZoAlKzy29Ti9M/pRpKGV6oAQsWdR1U=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=jE9MBYW0/uaiCob3sBSXc2FxZEpI/ydtwE3pxzz5xa2XMBRbKxWJQqBuHx4GxhoMG
-	 UV2PnD7x/vzSR1Q4Pg6hyuWqDlr0iBM9NO/Tr/d9ILgFtJlvvLVEcVKhljk0NYlG89
-	 t5xNgfMtE3mw4AIOahzMQ65c8Ca8uiDA0+1ym/EhJA1I53mR1aOuSwJlHpnSsHZmYW
-	 mpqtznkmFzkVVioPIyVBgmeWuDpb4V4P4hV9w6qEfCMXjtSWUho4OVhG+Igqr60ov7
-	 dyFgeqK/1gwvKD0bgzMkyXMrV2OsA8+S8Xf/VmSjeXwsOHm43y5OwM1Vf/3NoFO6mu
-	 cpcW2JKaHJVqQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 754DCCE0991; Thu,  2 May 2024 17:16:43 -0700 (PDT)
-Date: Thu, 2 May 2024 17:16:43 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	elver@google.com, akpm@linux-foundation.org, tglx@linutronix.de,
-	peterz@infradead.org, dianders@chromium.org, pmladek@suse.com,
-	arnd@arndb.de, kernel-team@meta.com,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-sh@vger.kernel.org
-Subject: Re: [PATCH v2 cmpxchg 12/13] sh: Emulate one-byte cmpxchg
-Message-ID: <628950f5-b220-48cb-a3a6-818be9e46f40@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240501230130.1111603-12-paulmck@kernel.org>
- <1376850f47279e3a3f4f40e3de2784ae3ac30414.camel@physik.fu-berlin.de>
- <b7ae0feb-d401-43ee-8d5f-ce62ca224638@paulmck-laptop>
- <6f7743601fe7bd50c2855a8fd1ed8f766ef03cac.camel@physik.fu-berlin.de>
- <9a4e1928-961d-43af-9951-71786b97062a@paulmck-laptop>
- <20240502205345.GK2118490@ZenIV>
- <0a429959-935d-4800-8d0c-4e010951996d@paulmck-laptop>
- <20240502220757.GL2118490@ZenIV>
- <3dac400c-d18f-4f4e-b598-cad6948362d6@paulmck-laptop>
- <CAHk-=whaCSxengJHP82WUwrjKjYsVeD_zEN_We+gmyHpJJayoQ@mail.gmail.com>
+	s=arc-20240116; t=1714695524; c=relaxed/simple;
+	bh=iSY/EcBkl6M2WDfei+JmiBgnUw4IF2mgm7jlDQyvb/A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U+51f5wk7SAkt6evpNPIjO7PnEPwXutTyqI8xElmx9hxNjggvnHIGr7lBZ6f2GlSWFAqFcQuz8P3rxG8V1qeFyA3KCqZdmpEQjS73sQZ5L9jD58vj0uRKpEaiSXrTyyOhCfiq1Nd0n8drzIJXdssiiWbgRWK8r23uc8nqB2quAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=WJglenFn; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
+	:Subject; bh=S3+XujSNwKFc1eyZFjrWRqLEvo5FCdCdxPoPAWMrF5g=; b=WJglenFnw3Pd5li1
+	uIzgTgNiBYDLOnrpMaOA/mU1VqmDgwOPhK6i9tSj+eWXgXabOkDz3jm14lG/Np56KKTySKizB82Lw
+	gRd5LNOeR3gGz0TjFzTEqzaUL3Mj7Rh1v6WbLdIg7uKTP1AhEYV1Mq+xNK/6/ZJQVtK2xPVPkAH5Y
+	rkozDnowBcJqABOUNf9Yx4JuFVjq7vLFNFTGRVLg9TFB9WlgaQd3n/yAANoizFuuH5/FhBH7+ySwb
+	fTu7bqKY8yCYQEfjvhtlIMvMGAfgHVf0pexhvKLL/eijcXKsOA+5cME+d+O1PK1lvhd/pivPigb/c
+	VWx6WTeOejgtpii8dQ==;
+Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
+	by mx.treblig.org with esmtp (Exim 4.96)
+	(envelope-from <linux@treblig.org>)
+	id 1s2gdI-004MfL-2H;
+	Fri, 03 May 2024 00:18:36 +0000
+From: linux@treblig.org
+To: 3chas3@gmail.com
+Cc: linux-atm-general@lists.sourceforge.net,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: [PATCH] atm/fore200e: Delete unused 'fore200e_boards'
+Date: Fri,  3 May 2024 01:18:22 +0100
+Message-ID: <20240503001822.183061-1-linux@treblig.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whaCSxengJHP82WUwrjKjYsVeD_zEN_We+gmyHpJJayoQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 02, 2024 at 04:32:35PM -0700, Linus Torvalds wrote:
-> On Thu, 2 May 2024 at 16:12, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > One of RCU's state machines uses smp_store_release() to start the
-> > state machine (only one task gets to do this) and cmpxchg() to update
-> > state beyond that point.  And the state is 8 bits so that it and other
-> > state fits into 32 bits to allow a single check for multiple conditions
-> > elsewhere.
-> 
-> Note that since alpha lacks the release-acquire model, it's always
-> going to be a full memory barrier before the store.
-> 
-> And then the store turns into a load-mask-store for older alphas.
-> 
-> So it's going to be a complete mess from a performance standpoint regardless.
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-And on those older machines, a mess functionally because the other
-three bytes in that same 32-bit word can be concurrently updated.
-Hence Arnd's patch being necessary here.
+This list looks like it's been unused since the OF conversion in
+2008 in
 
-EV56 and later all have single-byte stores, so they are OK.  They were
-introduced in the mid-1990s, so even they are antiques.  ;-)
+commit 826b6cfcd5d4 ("fore200e: Convert over to pure OF driver.")
 
-> Happily, I doubt anybody really cares.
+This also means we can remove the 'entry' member for the list.
 
-Here is hoping!
+Build tested only.
 
-> I've occasionally wondered if we have situations where the
-> "smp_store_release()" only cares about previous *writes* being ordered
-> (ie a "smp_wmb()+WRITE_ONCE" would be sufficient).
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+---
+ drivers/atm/fore200e.c | 3 ---
+ drivers/atm/fore200e.h | 1 -
+ 2 files changed, 4 deletions(-)
 
-Back in the day, rcu_assign_pointer() worked this way.  But later there
-were a few use cases where ordering prior reads was needed.
+diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
+index 9fb1575f8d883..cb00f8244e411 100644
+--- a/drivers/atm/fore200e.c
++++ b/drivers/atm/fore200e.c
+@@ -94,9 +94,6 @@
+ 
+ static const struct atmdev_ops   fore200e_ops;
+ 
+-static LIST_HEAD(fore200e_boards);
+-
+-
+ MODULE_AUTHOR("Christophe Lizzi - credits to Uwe Dannowski and Heikki Vatiainen");
+ MODULE_DESCRIPTION("FORE Systems 200E-series ATM driver - version " FORE200E_VERSION);
+ 
+diff --git a/drivers/atm/fore200e.h b/drivers/atm/fore200e.h
+index caf0ea6a328a8..5d95fe9fd8364 100644
+--- a/drivers/atm/fore200e.h
++++ b/drivers/atm/fore200e.h
+@@ -830,7 +830,6 @@ typedef struct fore200e_vc_map {
+ /* per-device data */
+ 
+ typedef struct fore200e {
+-    struct       list_head     entry;                  /* next device                        */
+     const struct fore200e_bus* bus;                    /* bus-dependent code and data        */
+     union        fore200e_regs regs;                   /* bus-dependent registers            */
+     struct       atm_dev*      atm_dev;                /* ATM device                         */
+-- 
+2.44.0
 
-And in this case, we just barely need that full store-release
-functionality.  There is a preceding mutex lock-unlock pair that provides
-a full barrier post-boot on almost all systems.
-
-> It makes no difference on x86 (all stores are relases), power64 (wmb
-> and store_release are both LWSYNC) or arm64 (str is documentated to be
-> cheaper than DMB).
-> 
-> On alpha, smp_wmb()+WRITE_ONCE() is cheaper than smp_store_release(),
-> but nobody sane cares.
-> 
-> But *if* we have a situation where the "smp_store_release()" might be
-> just a "previous writes need to be visible" rather than ordering
-> previous reads too, we could maybe introduce that kind of op. I
-> _think_ the RCU writes tend to be of that kind?
-
-Most of the time, rcu_assign_pointer() only needs to order prior writes,
-not both reads and writes.  In theory, we could make an something like
-an rcu_assign_pointer_reads_too(), though hopefully with a shorter name,
-and go back to smp_wmb() for rcu_assign_pointer().
-
-But in practice, I am having a really hard time convincing myself that
-it would be worth it.
-
-							Thanx, Paul
 
