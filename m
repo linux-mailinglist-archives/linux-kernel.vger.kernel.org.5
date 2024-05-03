@@ -1,203 +1,163 @@
-Return-Path: <linux-kernel+bounces-168319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD068BB662
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:48:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88ACB8BB664
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B7D1C23DE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A8B7B27156
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A568563F;
-	Fri,  3 May 2024 21:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623DE5FB9A;
+	Fri,  3 May 2024 21:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="ai5UqITR"
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [167.172.40.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AX7jmaB+"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDC25B1FB
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.172.40.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F9654277
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772787; cv=none; b=qYpDKPNcKLtZ0E8ohZpn4cBZOXwJ0jce0ldNDphChIqqiImlBuUFEOqmJTjDXZf78BQOc6StNEf1YkMQdPhZKkT45oiJuH5Q2Seh+Bqf0sReaKUoOiheJ4kfiVJqXH4xj9aEG7sNiHOeIPnLitT+eaG6Rc2eGjYx1lBeDvEeHCc=
+	t=1714772848; cv=none; b=PVySrnezKiWMswKWEF0BjlXdo21z91Op98i9WTyJ465NgmHxxzcpmf0EGbv78kgtzXKQ4HsMBzzmRc0YZNBqwoI21BAS0YJeT1MyGefEIe4D5gIVWnYwWN3XQTMhpFXxcF/QopDu6adkmJ1krKNbacqpEZgohh4OP75uD1YCHzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772787; c=relaxed/simple;
-	bh=vCATFAVm5j2l/tgS89AFZ3qjqyT58OStIRa316aPxP4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QY0xWwjMR/0qR1//n9ViHoOYh+dXIcouthDHEmw1qAOrXAKznDNI9uIfTgl0FpWJrkQi3lG+HhOLH06qUCfrGAy715Y2X5BP7R7iAr0wlEUQ/DNm9+LXUoHq5VnwElrtZrkSYdO2s8a0VLWfDloVL4HIVLuZgNBYPxdSIxAvdIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se; dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b=ai5UqITR; arc=none smtp.client-ip=167.172.40.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
- Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
- s=fe-e1b5cab7be; t=1714772772;
- bh=yJluxrbqMAEdPs4Fo4cA70yAXpw93jOBKBZ/ta4Y4TQ=;
- b=ai5UqITRcaaBjabCnd1fzYfTiHFXQkY6itWKCk3KXZzdR51JrmNnb+8mcHfInc7J3tk3zjocR
- 6WG8ELeCdTHEzBu1iqg4dhIOz5gwhAKTYTsMf+hif3E053p0PRrn50BDK+oIaUOJf0SjXFHGTUj
- VSuEviCRVwErU5SBjCpZDbIBp6tX9IC9FXsmVW9ue2jvIMYg/3r8J+AVE33S1sdu71FX29pZefD
- AMoxC+jaVBsNMtbow5py60GZyHxe/Bs1Pd13KReKOHbH1zcSBuc7WmMYBwEqjQX5bNB/JzVSxCK
- u3LMoIdEB8YZ2NQsZIxPIz/g2g1Ztx93OAv9p+/Z79Ow==
-Message-ID: <d613aa4d-8c87-4735-8209-00510d5097fb@kwiboo.se>
-Date: Fri, 3 May 2024 23:46:06 +0200
+	s=arc-20240116; t=1714772848; c=relaxed/simple;
+	bh=7vIHot/zZ5cFNzfgHcYFZ0omvFDlKOCx44Kmqgg9rKc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=jCqP9mteNo4XYS7edre8oqBzghK51I8Dmj0bH8nSWOpGcn7uhwiKSDrdLAk63kXTE31mwL3Ax70Eg6tVZBMyySAafKIcDXU10VYA9VKgYODCD2tKL71HcXAzRFAB8LLErQ1KyTaWGuy8GoFNb1Tiu+ns2nMUPIWj8lt1VOfH8Rg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AX7jmaB+; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so93833a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714772845; x=1715377645; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Ew0UVNQBCxGa1IBF/GdCeKaoEE06xBYgK5JUyIdRUg=;
+        b=AX7jmaB+/h+AGSlYkg+3Yv3v+7MRMsqEoR6XUFHj/QBvtMcyFth0W8LmkxvlBUGble
+         JhssWQ6wslc2BQL3S7V7fpeccDkByAGgfvY6gsbzDyT6WAdF4ExV7Y6d/O/xAMTK8zNO
+         m3cjv1oO7BnxkdzMseKVECDp1E9aFjUFUE9ZhXvQGgL3An6tkje3XU0hrZV2X1myQgzt
+         eGjq55Q3/04gH1CSAipwkSkjfCdsZqLm7wu6BKhiUbPKGpYnrqcUXk02FQp+tZgao/Hy
+         Ltb7ytL5JVFWjwCqWVN5vbH793ACEXz/w0oodg8ZknBVUQeAYrh4QsP1w99tMrtcu1nl
+         zdxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714772845; x=1715377645;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Ew0UVNQBCxGa1IBF/GdCeKaoEE06xBYgK5JUyIdRUg=;
+        b=oFW1uGBKXCo2bCsBV8RqaGJ5HXjLD2S7p1jwZ/hBZuJs7DXeWUPBoOGfxC0NLDZcZr
+         WJNerNpxzU2yvsumhyaYvECinylOGNGHe8ZHTqMJuiJHTVkVxvk/Cqlfv2YMWKjHBeXK
+         ifp/o66cgQb2vVskr0SntzdyX3gD80R1cjHc+o3h1+UdZyXzorCwBGWcbY1VLlykluhB
+         hR5FD2ib7jXZ0wRqT7AUaBECRq1EutyQ1tXCVeSRgC/sbfBTrDUgaKEKVQK8qTz+lbbB
+         1EsuwU/0CtK3Woh0ukylk5E3g6yl6YjHkXMuAy3gxkLetS511q8l7a1HI0L3NS8mo5ZV
+         xhEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkSYIG0sfljQTDobj1ZpiVg51lb4dgyulxZRRmLOTdByxwqMZu4F3PGaSm7S9Ufrl5kMVPswTBk5Tyt7rO97TKqtLlznSJFxfcEvoo
+X-Gm-Message-State: AOJu0YwF2GzkSpqHs6NBNNk7y3tr8kA1d1ImgCp/XH+0Hc7rSg/jdxxN
+	bhKk67Ye8QkTdHL6Sd4QnQW0QEt47aenBoWgGbFWq8dbNe5s7RA7w1AJwi4jIrrB+7ai8P+rtDD
+	TZw==
+X-Google-Smtp-Source: AGHT+IGAQfxrBmGUL6g62HFmK8YrYjNTl4Xymu23x3cWXe8g7J6SefYdAbO6AERmhDMTdmB21aewhsKY5Mc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:34c7:0:b0:600:90b7:43ea with SMTP id
+ b190-20020a6334c7000000b0060090b743eamr8773pga.6.1714772845390; Fri, 03 May
+ 2024 14:47:25 -0700 (PDT)
+Date: Fri, 3 May 2024 14:47:23 -0700
+In-Reply-To: <20231102154628.2120-1-parshuram.sangle@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: Add Radxa ROCK 3C
-To: Chukun Pan <amadeus@jmu.edu.cn>
-Cc: Heiko Stuebner <heiko@sntech.de>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240428123618.72170-1-amadeus@jmu.edu.cn>
- <20240428123618.72170-3-amadeus@jmu.edu.cn>
-Content-Language: en-US
-From: Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <20240428123618.72170-3-amadeus@jmu.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 167.172.40.54
-X-ForwardEmail-ID: 66355b2215cb5945d1c987e2
+Mime-Version: 1.0
+References: <20231102154628.2120-1-parshuram.sangle@intel.com>
+Message-ID: <ZjVba9wOiIlhqjfi@google.com>
+Subject: Re: [PATCH 0/2] KVM: enable halt poll shrink parameter
+From: Sean Christopherson <seanjc@google.com>
+To: Parshuram Sangle <parshuram.sangle@intel.com>
+Cc: kvm@vger.kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org, 
+	jaishankar.rajendran@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Chukun,
-
-On 2024-04-28 14:36, Chukun Pan wrote:
-> The Radxa ROCK 3C is a development board with the
-> Rockchip RK3566 SoC. It has the following features:
+On Thu, Nov 02, 2023, Parshuram Sangle wrote:
+> KVM halt polling interval growth and shrink behavior has evolved since its
+> inception. The current mechanism adjusts the polling interval based on whether
+> vcpu wakeup was received or not during polling interval using grow and shrink
+> parameter values. Though grow parameter is logically set to 2 by default,
+> shrink parameter is kept disabled (set to 0).
 > 
-> - 1/2/4GB LPDDR4
-> - 1x HDMI Type A
-> - 1x PCIE 2.0 slot
-> - 1x FAN connector
-> - 3.5mm jack with mic
-> - 1GbE RTL8211F Ethernet
-> - 1x USB 3.0, 3x USB 2.0
-> - 40-pin expansion header
-> - MicroSD card/eMMC socket
-> - 16MB SPI NOR (gd25lq128d)
-> - AP6256 or AIC8800 WiFi/BT
+> Disabled shrink has two issues:
+> 1) Resets polling interval to 0 on every un-successful poll assuming it is
+> less likely to receive a vcpu wakeup in further shrunk intervals.
+> 2) Even on successful poll, if total block time is greater or equal to current
+> poll_ns value, polling interval is reset to 0 instead shrinking gradually.
 > 
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> ---
->  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
->  .../boot/dts/rockchip/rk3566-rock-3c.dts      | 750 ++++++++++++++++++
->  2 files changed, 751 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-rock-3c.dts
+> These aspects reduce the chances receiving valid wakeup during polling and
+> lose potential performance benefits for VM workloads.
 > 
+> Below is the summary of experiments conducted to assess performance and power
+> impact by enabling the halt_poll_ns_shrink parameter(value set to 2).
+> 
+> Performance Test Summary: (Higher is better)
+> --------------------------------------------
+> Platform Details: Chrome Brya platform
+> CPU - Alder Lake (12th Gen Intel CPU i7-1255U)
+> Host kernel version - 5.15.127-20371-g710a1611ad33
+> 
+> Android VM workload (Score)   Base      Shrink Enabled (value 2)    Delta
+> ---------------------------------------------------------------------------
+> GeekBench Multi-core(CPU)     5754      5856                        2%
+> 3D Mark Slingshot(CPU+GPU)    15486     15885                       3%
+> Stream (handopt)(Memory)      20566     21594                       5%
+> fio seq-read (Storage)        727       747                         3%
+> fio seq-write (Storage)       331       343                         3%
+> fio rand-read (Storage)       690       732                         6%
+> fio rand-write (Storage)      299       300                         1%
+> 
+> Steam Gaming VM (Avg FPS)     Base      Shrink Enabled (value 2)    Delta
+> ---------------------------------------------------------------------------
+> Metro Redux (OpenGL)          54.80     59.60                       9%
+> Dota 2 (Open GL)              48.74     51.40                       5%
+> Dota 2 (Vulkan)               20.80     21.10                       1%
+> SpaceShip (Vulkan)            20.40     21.52                       6%
+> 
+> With Shrink enabled, majority of workloads show higher % of successful polling.
+> Reduced latency of returning control back to VM and avoided overhead of vm_exit
+> contribute to these performance gains.
+> 
+> Power Impact Assessment Summary: (Lower is better)
+> --------------------------------------------------
+> Method : DAQ measurements of CPU and Memory rails
+> 
+> CPU+Memory (Watt)             Base      Shrink Enabled (value 2)    Delta
+> ---------------------------------------------------------------------------
+> Idle* (Host)                  0.636     0.631                       -0.8%
+> Video Playback (Host)         2.225     2.210                       -0.7%
+> Tomb Raider (VM)              17.261    17.175                      -0.5%
+> SpaceShip Benchmark(VM)       17.079    17.123                       0.3%
+> 
+> *Idle power - Idle system with no application running, Android and Borealis
+> VMs enabled running no workload. Duration 180 sec.
+> 
+> Power measurements done for Chrome idle scenario and active Gaming VM 
+> workload show negligible power overhead since additional polling creates
+> very short duration bursts which are less likely to have gone to a
+> complete idle CPU state.
+> 
+> NOTE: No tests are conducted on non-x86 platform with this changed config
+> 
+> The default values of grow and shrink parameters get commonly used by
+> various VM deployments unless specifically tuned for performance. Hence
+> referring to performance and power measurements results shown above, it is
+> recommended to have shrink enabled (with value 2) by default so that there
+> is no need to explicitly set this parameter through kernel cmdline or by
+> other means.
 
-[snip]
+I am by no means an expert on halt polling or power management, but all of this
+seems like a reasonable tradeoff.  And even without the numbers you provided,
+starting from scratch after a single failure is rather odd.
 
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +
-> +	vdd_cpu: regulator@1c {
-> +		compatible = "tcs,tcs4525";
-> +		reg = <0x1c>;
-> +		fcs,suspend-voltage-selector = <1>;
-> +		regulator-name = "vdd_cpu";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <800000>;
-> +		regulator-max-microvolt = <1150000>;
-> +		regulator-ramp-delay = <2300>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +
-> +	rk809: pmic@20 {
-> +		compatible = "rockchip,rk809";
-> +		reg = <0x20>;
-
-[snip]
-
-> +		codec {
-> +			mic-in-differential;
-
-This should be rockchip,mic-in-differential or removed.
-
-> +		};
-> +	};
-> +
-> +	eeprom: eeprom@50 {
-> +		compatible = "belling,bl24c16a", "atmel,24c16";
-> +		reg = <0x50>;
-> +		pagesize = <16>;
-> +	};
-> +};
-> +
-
-[snip]
-
-> +
-> +&sdmmc0 {
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	disable-wp;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
-> +	sd-uhs-sdr50;
-
-Do you have any references to issues related to why sd-uhs-sdr104 is not
-used here?
-
-My testing shows that io-domain is getting notified and correctly
-configured during boot. And card seem to be working correctly.
-
-[    2.162780] mmc_host mmc1: Bus speed (slot 0) = 375000Hz (slot req 400000Hz, actual 375000HZ div = 0)
-
-[    2.229408] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
-[    2.230042] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
-[    2.231493] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000
-[    2.232121] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000 done
-[    2.257294] mmc_host mmc1: Bus speed (slot 0) = 150000000Hz (slot req 150000000Hz, actual 150000000HZ div = 0)
-[    2.269482] dwmmc_rockchip fe2b0000.mmc: Successfully tuned phase to 254
-[    2.270098] mmc1: new ultra high speed SDR104 SDXC card at address aaaa
-[    2.271533] mmcblk1: mmc1:aaaa SD64G 59.5 GiB
-[    2.277357]  mmcblk1: p1
-
-Also when the card is later removed/re-inserted:
-
-[   80.181598] mmc1: card aaaa removed
-[   83.836785] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
-[   83.837611] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
-[   83.839263] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
-[   83.839952] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
-[   83.855358] mmc_host mmc1: Bus speed (slot 0) = 375000Hz (slot req 400000Hz, actual 375000HZ div = 0)
-[   84.153827] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
-[   84.154524] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
-[   84.156149] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000
-[   84.156838] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000 done
-[   84.183932] mmc_host mmc1: Bus speed (slot 0) = 150000000Hz (slot req 150000000Hz, actual 150000000HZ div = 0)
-[   84.202888] dwmmc_rockchip fe2b0000.mmc: Successfully tuned phase to 257
-[   84.203574] mmc1: new ultra high speed SDR104 SDXC card at address aaaa
-[   84.205537] mmcblk1: mmc1:aaaa SD64G 59.5 GiB
-[   84.211434]  mmcblk1: p1
-
-sd-uhs-ddr50 should also work based on my testing.
-
-Regards,
-Jonas
-
-> +	vmmc-supply = <&vcc3v3_sys>;
-> +	vqmmc-supply = <&vccio_sd>;
-> +	status = "okay";
-> +};
-> +
-
-[snip]
+So unless someone objects, I'll plan on applying this for 6.11 in a few weeks
+(after the 6.10 merge window closes).
 
