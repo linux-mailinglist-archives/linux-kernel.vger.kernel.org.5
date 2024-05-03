@@ -1,155 +1,127 @@
-Return-Path: <linux-kernel+bounces-167717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 716E38BADE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:41:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C8DE8BADF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCD3A1F23462
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:41:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02A491F22437
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FF8153BCD;
-	Fri,  3 May 2024 13:41:30 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCB8153BE4;
+	Fri,  3 May 2024 13:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="cvx0cKi+"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D203E1474BF
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8B5153BC9;
+	Fri,  3 May 2024 13:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714743690; cv=none; b=VPnF9kprQrCMvE6WfNg6Y5Vq7Lq36GZwSHaG0UMsj+FwV20TJPRAu75MbWCIP0UvMcxXl1Hq55cWBWzzcbSs29zxFjjFr0eJAJ/BB5215GwnLIaznPXq6ENu14pAc2JI9MIsMzybdoaXHwLx7YmKnNkuip7P5gf5iVxbnqDWn1E=
+	t=1714743876; cv=none; b=WYPKFgGOOZnPqd1GT9m8T8GsjoOUCYo+bSEdiAL3fCF8V+AED9dGUcY+7DcHspP/ZCZMXweBH2AWimD7rUA2MZJbRFgmT3KQ9y25Itps0Z7KL3bMRGq+XWEJWKnaH3/QSyO9pllPfnrT1+aQIiKRmDBitfI8p2Oj/QF8GV7mkSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714743690; c=relaxed/simple;
-	bh=YzBsIJFXDqLgDA3FCpHuVIFrGfe1FFzjhQ/UF8NhHI0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=a3BGXVYNDMtORysPA42JEaCRD0qWIXtGIIEsB6yiZCW+LXX2RKyaqC729ohMNuc4siODhpmjN2IqJ+CNE9EU4FricVVz826D7nO++GAsvRVYAQIA5As4Q7gvNC1fCluvIVTpH+ZoNvU88xLQ8wrfD0bNnsQsO55JsqD2usuIfiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36c5d1c48d3so26748475ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:41:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714743688; x=1715348488;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pHF73fXV9YBzhlAyLN1LlD3cj+yK8oEXzez72G9MWbY=;
-        b=FpysVhGcGCPaJJDOtfHC/X14rBRTnaJbygKgbKyxYm2waLIiUMbIb1bleLPry2HQie
-         CdIJy3LSpexyL1MQp18gDHyUCmctl4jb+b8OkloJsJ3KkS85u0EjdG+jL/orzNvC+PzF
-         worqeDppe2RBfXye1/t6dmXKfgp56UlvqxmZJ5YNFCewtkgcN/pBvXa4x/xu2SDbiCO5
-         nLk3GPQndluOAVPODEXt8R87lnuw5iZdUxziU2L+OoX9O1XWisAooKeulnKp9v5fP7EX
-         s1QayMMA86YSTZZZjUhcwJOs54RIEKPmT+fhGvt8tAu1mt4Fp9mWWDuOm38oHi7ka1Fu
-         560Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV9SMF5iLJP6WjdeS1Asr8jMgPNfNJd+DuNjyBvD2M7888f9rfYUEnWy127A9Bm6ERCVSZC0Gvyu2LRU59Ul9Z63Amyk1Z5fr/DxVVo
-X-Gm-Message-State: AOJu0YysavJ5sgoNysA9NGpnyp1yJ0swCajxrM6OhmKb2Cd5hTEHvzAp
-	IURof+ZK2c5ekj4p2YO1ZXN0SgxV+8wAv2Bp15vB0Mk+1JSTitSkLbmSbIniZugCMuatmHVqbB+
-	vBuwzymp0tprIHydS4EdBoK7yPaCx9mmsUdhl8AIke6GUpkg9etCGOPM=
-X-Google-Smtp-Source: AGHT+IGNaS7EuIrM/DtrBgMbQOBFKh5oHIf0eww9bEoUDBoVGZqDbHtx1ynsMXbVfoU1F/2kzogv+fEmPyn/TGBu7pAX2+QVf8Lk
+	s=arc-20240116; t=1714743876; c=relaxed/simple;
+	bh=5+w0EO0csO5S2boUJzwf6vkebCqsTwn1sGI9xWIoSyU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YApFiZ8nqcbvrXmt6US9dx/NUh8FQrE56uZRPc0t3ZgJWbt/THe/dFrj9h0dlWo7idzLv0kGTI/IHio9Ry395O4ucyNZVZyZDxIIogL11FlDwY/Bqb9UsqzWxMM1xVc4jno2Qv4o+jqhn+pvaxhTmoXB73eFElRgiKqXIFUaxbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=cvx0cKi+; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1714743868;
+	bh=5+w0EO0csO5S2boUJzwf6vkebCqsTwn1sGI9xWIoSyU=;
+	h=From:Date:Subject:To:Cc:From;
+	b=cvx0cKi+VKcX0P2kD76tfscHjmwGbHpA4KQCUWGGS7kexQOinNr+6YxZaF69PgIxS
+	 +SKjMSczqersGVWZbhPVPlyRkEjADqD3qv2RFtKL9z/9x+oyiLA+/MJ0XvLUe3hiUP
+	 GlovuEA0OKfel9xvFOvBPlQnp9Bt00azA7VEDUWM=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Fri, 03 May 2024 15:44:09 +0200
+Subject: [PATCH] stackleak: don't modify ctl_table argument
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1389:b0:36c:4c3c:e16 with SMTP id
- d9-20020a056e02138900b0036c4c3c0e16mr93724ilo.2.1714743688106; Fri, 03 May
- 2024 06:41:28 -0700 (PDT)
-Date: Fri, 03 May 2024 06:41:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006923bb06178ce04a@google.com>
-Subject: [syzbot] [mm?] [io-uring?] WARNING in hpage_collapse_scan_pmd (2)
-From: syzbot <syzbot+5ea2845f44caa77f5543@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, axboe@kernel.dk, io-uring@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240503-sysctl-const-stackleak-v1-1-603fecb19170@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIACjqNGYC/x3MSwqAMAwA0atI1gbqH7yKuKgxalCqNEUU8e4Wl
+ 28x84CyF1Zokwc8n6Kyu4gsTYAW62ZGGaMhN3lpKlOg3kphQ9qdBtRgad3YrmingutmoLoaDMT
+ 48DzJ9Y+7/n0/87RKS2gAAAA=
+To: Kees Cook <keescook@chromium.org>, 
+ Alexander Popov <alex.popov@linux.com>
+Cc: linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+ Joel Granados <j.granados@samsung.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714743866; l=2040;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=5+w0EO0csO5S2boUJzwf6vkebCqsTwn1sGI9xWIoSyU=;
+ b=fBMwaLymZDWl5ESfaeFhtKSN21HcxU3lGdUMe7amXumuUxJ8R3pU98RUVKAHdADhkqwTzqqOE
+ 6Q4w5KGOAnzAMGUTgSYojEJjABmbZbji4viqFCO8IPS7Tc5/H9auPlR
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Hello,
+Sysctl handlers are not supposed to modify the ctl_table passed to them.
+Adapt the logic to work with a temporary
+variable, similar to how it is done in other parts of the kernel.
 
-syzbot found the following issue on:
+This is also a prerequisite to enforce the immutability of the argument
+through the callbacks prototy.
 
-HEAD commit:    e67572cd2204 Linux 6.9-rc6
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1067d2f8980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3310e643b6ef5d69
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ea2845f44caa77f5543
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10874a40980000
+Fixes: 964c9dff0091 ("stackleak: Allow runtime disabling of kernel stack erasing")
+Cc: stable@vger.kernel.org
+Acked-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+This was split out of my sysctl-const-handler series [0].
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d3c4905a7f32/disk-e67572cd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9e4d1fc8f9c1/vmlinux-e67572cd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4616b77edaee/bzImage-e67572cd.xz
+As that series will take some more time, submit the patch on its own,
+as it is a generic bugfix that is valuable on its own.
+And I can get it out of my books.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ea2845f44caa77f5543@syzkaller.appspotmail.com
+Changelog in contrast to the patch in the series:
+* Reword commit message to remove strong relation to the constification
+* Cc stable
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5288 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-WARNING: CPU: 1 PID: 5288 at arch/x86/include/asm/pgtable.h:403 hpage_collapse_scan_pmd+0xd32/0x14c0 mm/khugepaged.c:1316
-Modules linked in:
-CPU: 1 PID: 5288 Comm: syz-executor.4 Not tainted 6.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-RIP: 0010:hpage_collapse_scan_pmd+0xd32/0x14c0 mm/khugepaged.c:1316
-Code: 90 90 e9 4b f6 ff ff 4c 8b 64 24 48 e8 f7 ee 9e ff 31 ff 4c 89 ee e8 fd e9 9e ff 4d 85 ed 0f 84 b5 01 00 00 e8 df ee 9e ff 90 <0f> 0b 90 41 be 09 00 00 00 0f b6 6c 24 47 48 8b 5c 24 10 e9 fb fa
-RSP: 0018:ffffc90003abf9b0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88807a402000 RCX: ffffffff81eed643
-RDX: ffff888021ddbc00 RSI: ffffffff81eed651 RDI: 0000000000000007
-RBP: 000000006897fc67 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000002 R12: 0000000020800000
-R13: 0000000000000002 R14: 0000000000000400 R15: ffff88801e4dcc00
-FS:  00007fd661dde6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7e57ed9ba1 CR3: 0000000025328000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- madvise_collapse+0x738/0xb10 mm/khugepaged.c:2761
- madvise_vma_behavior+0x202/0x1b20 mm/madvise.c:1074
- madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1248
- do_madvise+0x309/0x640 mm/madvise.c:1428
- __do_sys_madvise mm/madvise.c:1441 [inline]
- __se_sys_madvise mm/madvise.c:1439 [inline]
- __x64_sys_madvise+0xa9/0x110 mm/madvise.c:1439
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd66227dea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd661dde0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 00007fd6623ac050 RCX: 00007fd66227dea9
-RDX: 0000000000000019 RSI: 00000000dfc3efff RDI: 00000000203c1000
-RBP: 00007fd6622ca4a4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fd6623ac050 R15: 00007ffd98c8dfa8
- </TASK>
+[0] https://lore.kernel.org/lkml/20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net/
 
+Cc: Joel Granados <j.granados@samsung.com>
+---
+ kernel/stackleak.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/stackleak.c b/kernel/stackleak.c
+index 34c9d81eea94..b292e5ca0b7d 100644
+--- a/kernel/stackleak.c
++++ b/kernel/stackleak.c
+@@ -27,10 +27,11 @@ static int stack_erasing_sysctl(struct ctl_table *table, int write,
+ 	int ret = 0;
+ 	int state = !static_branch_unlikely(&stack_erasing_bypass);
+ 	int prev_state = state;
++	struct ctl_table tmp = *table;
+ 
+-	table->data = &state;
+-	table->maxlen = sizeof(int);
+-	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
++	tmp.data = &state;
++	tmp.maxlen = sizeof(int);
++	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
+ 	state = !!state;
+ 	if (ret || !write || state == prev_state)
+ 		return ret;
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: f03359bca01bf4372cf2c118cd9a987a5951b1c8
+change-id: 20240503-sysctl-const-stackleak-af3e67bc65b0
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
