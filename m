@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-168064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10C58BB339
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7879F8BB332
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:32:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 650C11F20EE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:32:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0650B1F224A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EF25029A;
-	Fri,  3 May 2024 18:30:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1F31598FE;
+	Fri,  3 May 2024 18:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3N9uVA/r";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="d+bl86la"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hYNnkDu/";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="h4PyCzf+"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78782158D78;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7872E157E6C;
 	Fri,  3 May 2024 18:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714761013; cv=none; b=iaP/Xa1BWk/XHNjKJa1zqhn6GbekcrucVvjnEYhJnHNhrf5e83fdg7L5dIYBAqBvaxtmdoo6sa06qoMzeblsRBF219vPm2pNaPoXN8osxW/aVlRb2c10cUW2O+cQdrJ2tf2AhywoFtrKR/pPctn/Fyn1PlMthck/a1W8h3/qo2Y=
+	t=1714761012; cv=none; b=d0IsmYxi9fYvmyYRZToZ8QfjIcA7io7b0S14t/Nuca2tNjvRwJ5euatH0iyyE1KRFVbIhqZNhqCMBUl+QmrSvExLEMNTjWK8E/ipcTGrT4tdIwN87y/yyzkhdXOyHPrQeh9B+0wuCe53oucPwYHrUZHdCxeHkT0beDjfkhwIp/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714761013; c=relaxed/simple;
-	bh=sk4AU8OgknjRSmTeIM8d2vACmrBkH/YqK9W4PPXihlc=;
+	s=arc-20240116; t=1714761012; c=relaxed/simple;
+	bh=0ek9e1xkSu9ugJNGW/WQGFdfj6oRd6gAc/VlLaOX934=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Yu1BjmxvLeZJcnWa1CZwXOReanZYiwsQQHa7VrHx/FgYkmKISfU8eKWn+m39lNS/Ud5Hra1PI1PVQH8/Y9caX7IEYaRjJddFs1AmB0cTC3OllYOhuyfh/Y8AXGRdWbeHQzma03W625aXesGovXBZR8H5JHKmZ9GH/nBeKDs0uEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3N9uVA/r; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=d+bl86la; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=nLJV/s+adFwKlhYFN3kTZFwE31uarUHA7AquU12R017np2lETM6niw6jAmDhruEA0fquNhLnygCP+q5X3vL0NDt9KdGMXPkcYvNIImA1Z72k7f//sUECey/JQoNVwa8HYwVgA75hRwD/1gmBulQFErN1QV0BXGvinPERHSJl7gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hYNnkDu/; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=h4PyCzf+; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -38,21 +38,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=H7YehgQsfcS62wHoW0lT0hKawzgXS3v0pYsqGden+Fw=;
-	b=3N9uVA/rSGGKnseYOg5jHK7lOkOnRpchV6uLIiU1Fg2aTTU9QiTO1Ov7OWI7xDZOMg9W63
-	hOInMkJK8RY8bUFyQACrzgRLeBXvvDUVvBYEoGl7go6XcTyKxBNSnLwEEjwaxd/MAcRszz
-	o6xoG1SmE21FxRLKK2K983zSNGuP6Nj/YKrGVesu5hP8rPl2T8upS5JZYKVyGLQ0Oy++o/
-	iaJmFrHYQAqXz7LIjrpkutVOSlqyrCH7mg/cdFHZmuB4gOq6JiIirHkCwSCXUcNyJAxqdw
-	VYhSP5JSZBYXzSJfI8IB5zb9JeocJnIUHQ/yWuNPC4vN4plH6jAdmQrTgWNW4Q==
+	bh=W12KgBST4nx2eve2nFTDwC2VpCtYmoeYSIe9gYf7jLU=;
+	b=hYNnkDu/YEIkbMmlcXSrr3zUKVjI0lBbG6xwH8ZICrBAHKq2h9Y0QNnOvxQlhNvhwS7Cph
+	lDweOre4LmCytwQLo0zojT6Bboy9yAl+try72DiqCSsZxTgat7elEodRt7Fp54b+qbaY8l
+	TOWtuyBj5bLqis8pgaK0m4ZF4EXp9p3ra7V5nZOApqeP3V+wM/0/7r7nEN/GX5srHe7E6T
+	u7jyg78ZGy4IOPNiJ5X2mqWZ1sYs57ZJk8cTMKGKymdxVrwt4Lem0YD9EBiznNQ6gREzHP
+	c/6nY0QOXAXeoM4hrNCsQbLAED2yZHKUogV/kTnfguxeDEpqHxm8aByRMv9H+Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1714761008;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=H7YehgQsfcS62wHoW0lT0hKawzgXS3v0pYsqGden+Fw=;
-	b=d+bl86laZw1AIF8zVC0bWXExGb/Id1llWZZysFEGJZ4g6pXGAn9IwUByl+TPwKOWD3+Mrr
-	4vibp7BD7BGdxbCg==
+	bh=W12KgBST4nx2eve2nFTDwC2VpCtYmoeYSIe9gYf7jLU=;
+	b=h4PyCzf+pnGgWSsUNbwR4a3djIi273FCLgVuwKNb1yWnxRnZ4OU0CTPr6DranJvPH9o5cW
+	WV4AeZ+T70BCCwCg==
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -68,17 +68,17 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Waiman Long <longman@redhat.com>,
 	Will Deacon <will@kernel.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Florian Westphal <fw@strlen.de>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Roopa Prabhu <roopa@nvidia.com>,
-	bridge@lists.linux.dev,
-	coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org
-Subject: [PATCH net-next 07/15] netfilter: br_netfilter: Use nested-BH locking for brnf_frag_data_storage.
-Date: Fri,  3 May 2024 20:25:11 +0200
-Message-ID: <20240503182957.1042122-8-bigeasy@linutronix.de>
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH net-next 08/15] net: softnet_data: Make xmit.recursion per task.
+Date: Fri,  3 May 2024 20:25:12 +0200
+Message-ID: <20240503182957.1042122-9-bigeasy@linutronix.de>
 In-Reply-To: <20240503182957.1042122-1-bigeasy@linutronix.de>
 References: <20240503182957.1042122-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -89,70 +89,124 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-brnf_frag_data_storage is a per-CPU variable and relies on disabled BH
-for its locking. Without per-CPU locking in local_bh_disable() on
-PREEMPT_RT this data structure requires explicit locking.
+Softirq is preemptible on PREEMPT_RT. Without a per-CPU lock in
+local_bh_disable() there is no guarantee that only one device is
+transmitting at a time.
+With preemption and multiple senders it is possible that the per-CPU
+recursion counter gets incremented by different threads and exceeds
+XMIT_RECURSION_LIMIT leading to a false positive recursion alert.
 
-Add a local_lock_t to the data structure and use local_lock_nested_bh()
-for locking. This change adds only lockdep coverage and does not alter
-the functional behaviour for !PREEMPT_RT.
+Instead of adding a lock to protect the per-CPU variable it is simpler
+to make the counter per-task. Sending and receiving skbs happens always
+in thread context anyway.
 
-Cc: Florian Westphal <fw@strlen.de>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Roopa Prabhu <roopa@nvidia.com>
-Cc: bridge@lists.linux.dev
-Cc: coreteam@netfilter.org
-Cc: netfilter-devel@vger.kernel.org
+Having a lock to protected the per-CPU counter would block/ serialize two
+sending threads needlessly. It would also require a recursive lock to
+ensure that the owner can increment the counter further.
+
+Make the recursion counter a task_struct member on PREEMPT_RT.
+
+Cc: Ben Segall <bsegall@google.com>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- net/bridge/br_netfilter_hooks.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ include/linux/netdevice.h | 11 +++++++++++
+ include/linux/sched.h     |  4 +++-
+ net/core/dev.h            | 20 ++++++++++++++++++++
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hook=
-s.c
-index 7948a9e7542c4..baacd80716046 100644
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -137,6 +137,7 @@ static inline bool is_pppoe_ipv6(const struct sk_buff *=
-skb,
- #define NF_BRIDGE_MAX_MAC_HEADER_LENGTH (PPPOE_SES_HLEN + ETH_HLEN)
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 41853424b41d7..c551ec235f9af 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3222,7 +3222,9 @@ struct softnet_data {
+ #endif
+ 	/* written and read only by owning cpu: */
+ 	struct {
++#ifndef CONFIG_PREEMPT_RT
+ 		u16 recursion;
++#endif
+ 		u8  more;
+ #ifdef CONFIG_NET_EGRESS
+ 		u8  skip_txqueue;
+@@ -3255,10 +3257,19 @@ struct softnet_data {
 =20
- struct brnf_frag_data {
-+	local_lock_t bh_lock;
- 	char mac[NF_BRIDGE_MAX_MAC_HEADER_LENGTH];
- 	u8 encap_size;
- 	u8 size;
-@@ -144,7 +145,9 @@ struct brnf_frag_data {
- 	__be16 vlan_proto;
- };
+ DECLARE_PER_CPU_ALIGNED(struct softnet_data, softnet_data);
 =20
--static DEFINE_PER_CPU(struct brnf_frag_data, brnf_frag_data_storage);
-+static DEFINE_PER_CPU(struct brnf_frag_data, brnf_frag_data_storage) =3D {
-+	.bh_lock =3D INIT_LOCAL_LOCK(bh_lock),
-+};
-=20
- static void nf_bridge_info_free(struct sk_buff *skb)
++#ifdef CONFIG_PREEMPT_RT
++static inline int dev_recursion_level(void)
++{
++	return current->net_xmit_recursion;
++}
++
++#else
++
+ static inline int dev_recursion_level(void)
  {
-@@ -882,6 +885,7 @@ static int br_nf_dev_queue_xmit(struct net *net, struct=
- sock *sk, struct sk_buff
+ 	return this_cpu_read(softnet_data.xmit.recursion);
+ }
++#endif
 =20
- 		IPCB(skb)->frag_max_size =3D nf_bridge->frag_max_size;
+ void __netif_schedule(struct Qdisc *q);
+ void netif_schedule_queue(struct netdev_queue *txq);
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 3c2abbc587b49..6779d3b8f2578 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -969,7 +969,9 @@ struct task_struct {
+ 	/* delay due to memory thrashing */
+ 	unsigned                        in_thrashing:1;
+ #endif
+-
++#ifdef CONFIG_PREEMPT_RT
++	u8				net_xmit_recursion;
++#endif
+ 	unsigned long			atomic_flags; /* Flags requiring atomic access. */
 =20
-+		guard(local_lock_nested_bh)(&brnf_frag_data_storage.bh_lock);
- 		data =3D this_cpu_ptr(&brnf_frag_data_storage);
+ 	struct restart_block		restart_block;
+diff --git a/net/core/dev.h b/net/core/dev.h
+index b7b518bc2be55..2f96d63053ad0 100644
+--- a/net/core/dev.h
++++ b/net/core/dev.h
+@@ -150,6 +150,25 @@ struct napi_struct *napi_by_id(unsigned int napi_id);
+ void kick_defer_list_purge(struct softnet_data *sd, unsigned int cpu);
 =20
- 		if (skb_vlan_tag_present(skb)) {
-@@ -909,6 +913,7 @@ static int br_nf_dev_queue_xmit(struct net *net, struct=
- sock *sk, struct sk_buff
+ #define XMIT_RECURSION_LIMIT	8
++
++#ifdef CONFIG_PREEMPT_RT
++static inline bool dev_xmit_recursion(void)
++{
++	return unlikely(current->net_xmit_recursion > XMIT_RECURSION_LIMIT);
++}
++
++static inline void dev_xmit_recursion_inc(void)
++{
++	current->net_xmit_recursion++;
++}
++
++static inline void dev_xmit_recursion_dec(void)
++{
++	current->net_xmit_recursion--;
++}
++
++#else
++
+ static inline bool dev_xmit_recursion(void)
+ {
+ 	return unlikely(__this_cpu_read(softnet_data.xmit.recursion) >
+@@ -165,5 +184,6 @@ static inline void dev_xmit_recursion_dec(void)
+ {
+ 	__this_cpu_dec(softnet_data.xmit.recursion);
+ }
++#endif
 =20
- 		IP6CB(skb)->frag_max_size =3D nf_bridge->frag_max_size;
-=20
-+		guard(local_lock_nested_bh)(&brnf_frag_data_storage.bh_lock);
- 		data =3D this_cpu_ptr(&brnf_frag_data_storage);
- 		data->encap_size =3D nf_bridge_encap_header_len(skb);
- 		data->size =3D ETH_HLEN + data->encap_size;
+ #endif
 --=20
 2.43.0
 
