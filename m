@@ -1,196 +1,238 @@
-Return-Path: <linux-kernel+bounces-168327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1FF28BB6CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:00:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0E28BB6D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5151C23AE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:00:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 630AE1F239A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D02658AC3;
-	Fri,  3 May 2024 22:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF44058AA7;
+	Fri,  3 May 2024 22:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RWlyIXHI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OG79JLAq"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2074.outbound.protection.outlook.com [40.107.244.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13629537E9
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714773619; cv=none; b=CoGw8LJd2W7KR64dPV8PDn5q+5lG1TjGhWeCHPdK5Ph1BrDeMBhRJUPSwmsmlcaMVNFgU8/HS7od6u+HS8PYzYwTd/3PgHzX2Ro+yQf/zyXtXe+W3DT3kMCB4T/nXwLnhg2WMJEl9E+ojo7bGLli/yM/PVz/O6R+1iqlcBLOXH0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714773619; c=relaxed/simple;
-	bh=XQiU0er//ycreNecj07YnExhQLfQPkzMxtFyfmDgfLs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=PWMfpV4p0qhGlO5YN95G2T501CN+MQZOcuBa6llOgz3Vf4SJsqFro+1MHYXTn3BjcGQJWrR/QrQ5Nsvvq3oKJl/0yEYck3JjlzY54mU8r9FUtUjGA94lbyVIibd2UZ4LPyDXpE8yACcpfFK6I0pRbOgCevZ63zvUMCZvzGV70CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RWlyIXHI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714773617;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qkMTmfCnwe1TLRVSdXDuN09++cK3MORgect0bHY89+U=;
-	b=RWlyIXHIQrssGdyGc/NCLeCyr02EOWsrPfX5ynzv25YDpt2wr5DeWNx8b5CyM2oS4PNHhl
-	9Du/i/TJCweS4s8WDqFXaixD8Nqnt4VAvWEPvs8JjHDDjE14Q2N7HEzc9zV9CWAsieKRqQ
-	oQ4DsU4sNovMv6QurkE0ISeRn/EusB4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-96-T3diWYVFMf25n9P-27uv2w-1; Fri, 03 May 2024 18:00:15 -0400
-X-MC-Unique: T3diWYVFMf25n9P-27uv2w-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-43478c4884bso1739511cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 15:00:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714773615; x=1715378415;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qkMTmfCnwe1TLRVSdXDuN09++cK3MORgect0bHY89+U=;
-        b=mcIqqrUcLGnTXMr9n6h7EJskmLViXSOl3rAFNVFfrX0/aexA5kOVcfuV+0ILwUAB61
-         Vuu/B391NP1YH6gc0ByX+W4fL5lFUPxdTwu9iGky4FpfzA+/tir3PuSRhXNAI2HBYriF
-         W+tCWUu+WvE7Fx7TpcBkjBqAmTNarmnhjbsk4O6QY9TKNXGlSEKw3Sw/sj4mS2owtP6D
-         PE40HDHJmtojk0sNvlMSSKkOCzmL6uxygAJaXuxR2jD9bUw94Qzun+PVReSXHkx1OkD8
-         pbq0bHmCqAzSAhVRz/JwdnV9beFyjCXVpbN5jPFCjkHnehqc2V/GzrPXCAATWZ4KLlam
-         cq1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUuAYXAPWoeD2u+FfxFGG08VDvW17KCO4StS4fKK8LFmj+sBtXgZJwccWIa9G0YH9vrPEVsgao7n5H6u2/g7oYWYAgqPVMw7SJvK54p
-X-Gm-Message-State: AOJu0Yz/dTNOrDwn938XgorLEm/T3VsoNAVNKh5GMuNZrGE6pm3nl8gx
-	XnMscsTEE66qEh+8+mRp6LrhriNjeBcvCXkSksyP2bNqkLhIZYhR34ZdP1Um18KO4W8DXqOUeh4
-	Qdb1Kiph0zqq/oWHxSGgaEZQZu5xZTQiOly6ok3GNvbveGibiNc7MFadys7vIFA==
-X-Received: by 2002:a05:622a:64a:b0:43a:c04c:e3d3 with SMTP id a10-20020a05622a064a00b0043ac04ce3d3mr4760618qtb.34.1714773615126;
-        Fri, 03 May 2024 15:00:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGtvMvUlssNS/lZYNWfxREqByMmGZElBz+i7SUORBFfOFK20m+exUSKpKGv8DylZ/jEex73aw==
-X-Received: by 2002:a05:622a:64a:b0:43a:c04c:e3d3 with SMTP id a10-20020a05622a064a00b0043ac04ce3d3mr4760547qtb.34.1714773614409;
-        Fri, 03 May 2024 15:00:14 -0700 (PDT)
-Received: from LeoBras.redhat.com ([2804:1b3:a800:4b0a:b7a4:5eb9:b8a9:508d])
-        by smtp.gmail.com with ESMTPSA id cb6-20020a05622a1f8600b0043c7d293f9fsm1986488qtb.67.2024.05.03.15.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 15:00:11 -0700 (PDT)
-From: Leonardo Bras <leobras@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Date: Fri,  3 May 2024 19:00:01 -0300
-Message-ID: <ZjVeYVQm1iU-y7JF@LeoBras>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <ZjVXVc2e_V8NiMy3@google.com>
-References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com> <ZjUwHvyvkM3lj80Q@LeoBras> <ZjVXVc2e_V8NiMy3@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE4B60BB6;
+	Fri,  3 May 2024 22:01:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714773668; cv=fail; b=CJ9O5I7i0VZpu98CPp4+eZcsj5r7wF/5wsUrd7PwWLCts6E+fCWPT9xf9xC7JZUmkzXGKZWMJXm88O3H8J/YTqnLpICRFflkAKFJ+j3og+g4s/SMzIeXPBWy2ETAo5OAeQveasDg2EMsyiNrlBf/e/4Zml/jytz3fgJHcL4LogA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714773668; c=relaxed/simple;
+	bh=UH6PmjiPmEI0L9zbQ2r4IaUitoM7zMka7Bu03VRggnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=jTJI2LSg+TVV9+JLgmgT7P9vE+fOZMTI69Cc5kLSdX3vwe013dNYHekdYIqiu2P0q84ZmnI8jmUWMaj7EN1O4drcZ6WXWkgqt1H3dTzSgieUCB391JTOT1rA8uzMC4dxv9Xcs/kwNO2uT1QLxqTDRKwLDBLt6BfNGTogWbKsQ3U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OG79JLAq; arc=fail smtp.client-ip=40.107.244.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BU8ULqmI8W+W1oKa3KoZC9o4rxi4qNGl3l/kykFFsPFTzWt7NJG2kO8b/06LvIVW0GuBWtviHReCmL/zr7OuikCtd1E1vO4KiPV8qNh7ZL4xyFFcsvSIfG04csEe20w8yVEwxXeng9PA8L7s4P+PtIUtOzk3r0r8tQJUuPn2vpcFR3r6ye6cQ34axJQ92/GnAaoIOlt3TYpZaAtYEWIC7cbq1L1JhmqNMdAjf+uig+JBVS8pJfMgbFfNN3j4Q7C5Iy4Adn9R05Koa7qNz57LQksYMSG8pW822UC9GKyMbgjh1jjXAI5AvXXCslw3a5I67C9kS32Idjid8MW8xVYKXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2u57zfoJduSdp0Sow1nf2I0kiy7AW2C0Q8aXlIOPWpU=;
+ b=RWPtibLTTWb7ScZ7Zq+s5LPiAKtwHMFgm/cnLgMj/UU5b2xoCiEGnbTIZt+e1202Z5t1tRISFq7ebAXEI2Kt77y3yFjOo6Jn0NmqoDBM/YR7NuJSyYjMj2gskBBp0TkWG/inr6u/mbMWbUu2FvRl7IxvGf2aYvcYmRvJL68l0swDn6or76pTC8T7ENSD69cVZkWe/zSQJusds7Se4AdrpSwNATGLj9t/5zD2VnOdZYElwoV8v3k2YPjn4dxy22Lj5ROsuxVVZW9fjGWVxXP0gbn6WjBjpGxQCD+qUAFQeulakMKcWhhxmuF3mohtSw3caym9qt7IqQ14y+8XMTi/MA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u57zfoJduSdp0Sow1nf2I0kiy7AW2C0Q8aXlIOPWpU=;
+ b=OG79JLAq+tuHesyWj/bDViQAVlpd94Z/XiodoTuFRM0JR5WV4hj+ZjG19leVBKKd97Y4ziPxuZvfJp3oJ5kcopAXDHwyBit9hSMPb8/MgXnx/t2evZYDLgYUzL0CIBj/6+4o1bFj8WG1ykrExy0q86gMrcMdx6Cz2965Nanc2FTUKleXL7h++yRyuf1HCofbfSfMY4ZUEqbij51qk8EFUFRXlYDZi1GMIzKSY19hEg07DaCcxtjZ46ayM77eNVXMxkAGnMdGt0Rc9nx9EzIrtecPk6rBeMSiJ3LsonnRsAXYJkMCXQqzrwXnGUt1yOg92/O/Ga7aci5QMF/qYcnmMg==
+Received: from CH0PR03CA0029.namprd03.prod.outlook.com (2603:10b6:610:b0::34)
+ by CH3PR12MB8283.namprd12.prod.outlook.com (2603:10b6:610:12a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Fri, 3 May
+ 2024 22:00:45 +0000
+Received: from CH3PEPF00000012.namprd21.prod.outlook.com
+ (2603:10b6:610:b0:cafe::5) by CH0PR03CA0029.outlook.office365.com
+ (2603:10b6:610:b0::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
+ Transport; Fri, 3 May 2024 22:00:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CH3PEPF00000012.mail.protection.outlook.com (10.167.244.117) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7519.0 via Frontend Transport; Fri, 3 May 2024 22:00:45 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 3 May 2024
+ 15:00:21 -0700
+Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 3 May 2024
+ 15:00:20 -0700
+Message-ID: <63750681-92b1-4c21-8d58-6a22709822fb@nvidia.com>
+Date: Fri, 3 May 2024 15:00:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/resctrl: fix clang build warnings related to
+ abs(), labs() calls
+To: Reinette Chatre <reinette.chatre@intel.com>,
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC: Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+	"Nick Desaulniers" <ndesaulniers@google.com>, Bill Wendling
+	<morbo@google.com>, Justin Stitt <justinstitt@google.com>, Fenghua Yu
+	<fenghua.yu@intel.com>, Valentin Obst <kernel@valentinobst.de>,
+	<linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	<llvm@lists.linux.dev>
+References: <20240503023209.80787-1-jhubbard@nvidia.com>
+ <793bd068-c3b4-6330-41a4-bea597b1d820@linux.intel.com>
+ <f908ba74-86c0-409c-854d-9da5f3917b05@nvidia.com>
+ <26f3effc-6ea1-4670-a301-76df3a710fa9@intel.com>
+ <b88e73ea-d3f6-42d0-b9e0-f97665546178@nvidia.com>
+ <46a6019c-b029-4764-8c66-ad61f4191716@intel.com>
+Content-Language: en-US
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <46a6019c-b029-4764-8c66-ad61f4191716@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PEPF00000012:EE_|CH3PR12MB8283:EE_
+X-MS-Office365-Filtering-Correlation-Id: 10703489-1755-4b03-3b2c-08dc6bbc7bb6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|1800799015|36860700004;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?dlFFT21sZktYMStIa2dMY2xuL2plVEtNN1dqbExheWtKUVBjbGVQVjVZd2JK?=
+ =?utf-8?B?UWF1cDF0K042R0F0RCt1d0VuTlJUaDMyZktMYXk1aXVLdzVPRGFZakpPbXZH?=
+ =?utf-8?B?VDd6Z3Y4aFpXTDZEaUVyWnVsY0pJZTQ0N2hua0tsSkZUZFVNUWxhS0RFdnhU?=
+ =?utf-8?B?dEhYRkNNa0ZmMitJSWRMdlVueEdBeFdzb1FadTlsRmx0KzJTc1VXcXZIZ09J?=
+ =?utf-8?B?ZjdNWG5Id2hqczBjeUZzVmRyRk4zQ1MrQ2c1aEJPL1FRSGZFdUkvWGhybWpx?=
+ =?utf-8?B?RHVzTmVHbWFsNCtIWmNEdTZvNTJ1eTBNbUJpelYxa2NkL25pRGF0MWM4RXBM?=
+ =?utf-8?B?Q3lXdStvUlpiQWdtYUZFVy81bjh2MDMvWTNnUy9pTzRQRFNaYnZGUFhLaHd4?=
+ =?utf-8?B?OFhjWUJ1SkJoc05tTDI2dHcvc2tiMW5PUHlac2RxekNLR253bWxYYlcwYmVG?=
+ =?utf-8?B?NmNHR1p6U3I4bksvMG05TDJTQytxcmJaeHQvZEN0aENybkVHZHlybnhHS0RL?=
+ =?utf-8?B?NGwzaUkxdlVFQmdBQjNxK3hUbVZjeDlRMGlIbWNlamVJM2JvMEdxaUV0NEFj?=
+ =?utf-8?B?UytYekRuazBiWlI2ZUsrcVcwMUZVcUFsMlE3ZWNpQVJmeXVWcHJZYlJEa09n?=
+ =?utf-8?B?VDVpR2g1eVkxUkEwQXdwQVpzVzNidS9QbjZhTXg0RDVIVXNGZlZaVS8wUEph?=
+ =?utf-8?B?Z3NKVnE0dFB4TkxIeEl5VHpsL1RHdVdJRndJRDdUcjhrczB6dTRFMUl6ejl5?=
+ =?utf-8?B?YlZTWitOMWdoaElJbDNtN2FqaGpMVkMxRzZVeXZKVjNQTmNzV3JCN1NGeEtE?=
+ =?utf-8?B?cUZuajUwNXYyUkRNZVB2Qk1zdnVEWVZZWTc2dVJCZ3lYNExmTFR0K2RQaDVn?=
+ =?utf-8?B?Mm4zKzFqbGJJRkNqakFWbTV6VDl6TWVXS0trYk9tNkZ5S2IwNk55alBlQ3pI?=
+ =?utf-8?B?MDFwclNCeHNzeU00emlpS05aa08zdElJMjJDYVZvaDZGcjJhLzFzTndxemFK?=
+ =?utf-8?B?Yk5qT3dscFBFUlF2aitoREVMSGFmN21hOG1XK3BseUhaM2x5d2EyZk5iV0FI?=
+ =?utf-8?B?K1ZMekNYRFZjcjJiSnk1VWNFYzU5b2t3RG11RE54WDd5ZXpTQ3lCbldCUDg3?=
+ =?utf-8?B?RmVRL2ltR1F6NHNjNVM1V0E0eDNIMCtpOHNMTmV0RU11Zy8xYlZ4Z3dyWDBm?=
+ =?utf-8?B?WkNrcEQrY1Y5a1p1VEJTK0l4NVlUdUtoQVZhWTR5eTlpTkhGU2JDd1NucWx3?=
+ =?utf-8?B?TFVkeVpvd3h6TTdIZ1JpZnc5WGtlOGsxdVNrakJkVEdnM0x3NjVFZmlOMFZr?=
+ =?utf-8?B?NEpZS09BQlJJakZscjBLbC9BWDliZDhFUkJZdmI4YWRBVFRGRWRRN3RUeVh3?=
+ =?utf-8?B?cWc2TkZXYW1GUytxUWVhY1NycDNHd3A3bU9MbW9IcmljRGdDTDJ4Y0t0YzV3?=
+ =?utf-8?B?WUZQTVJuY2JHdXR0MlNickQrSllQSlR2VEp1K2pBS2ViUXVBMXBJVUxYM3JC?=
+ =?utf-8?B?RTRGWlArQU16QndVQno3bXowamd6bGpmeVB1VW9Lem1yMVM5bFZIWnovSlBr?=
+ =?utf-8?B?bHhqU3JnNUFad2xBWFA5S01FY0g3R3Q4SThmZDAwcGRjNGRZZ1R0YStuKysw?=
+ =?utf-8?B?ZWlNN0FGbEQ0Tm1ZeFhqejJQVWs0MnoxOFdXbzJDVUVxeWMrZTJrak5ycVRC?=
+ =?utf-8?B?YlIyR1VoY3kxenJVYWV1aE5sYjRkaUFoS2FWSkFEOEo1aXE0aFVBOVptbGpx?=
+ =?utf-8?B?VWVXTU4yWVI1aW1lVDBZb1pVNUFTVGtPQzIweURjUk1mM2ZwV0RNZW9MbTlT?=
+ =?utf-8?B?a0xuRzJpSXFET3J2d0l6dDd1cUFNcjluU0pUbS8vOTllMUxKWTV6b0I5b1dF?=
+ =?utf-8?Q?2obHMmfvQks9K?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 22:00:45.1769
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10703489-1755-4b03-3b2c-08dc6bbc7bb6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH3PEPF00000012.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8283
 
-On Fri, May 03, 2024 at 02:29:57PM -0700, Sean Christopherson wrote:
-> On Fri, May 03, 2024, Leonardo Bras wrote:
-> > > KVM can provide that information with much better precision, e.g. KVM
-> > > knows when when it's in the core vCPU run loop.
-> > 
-> > That would not be enough.
-> > I need to present the application/problem to make a point:
-> > 
-> > - There is multiple  isolated physical CPU (nohz_full) on which we want to 
-> >   run KVM_RT vcpus, which will be running a real-time (low latency) task.
-> > - This task should not miss deadlines (RT), so we test the VM to make sure 
-> >   the maximum latency on a long run does not exceed the latency requirement
-> > - This vcpu will run on SCHED_FIFO, but has to run on lower priority than
-> >   rcuc, so we can avoid stalling other cpus.
-> > - There may be some scenarios where the vcpu will go back to userspace
-> >   (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
-> >   this to run other stuff (like rcuc).
-> >
-> > Now, I understand it will cover most of our issues if we have a context 
-> > tracking around the vcpu_run loop, since we can use that to decide not to 
-> > run rcuc on the cpu if the interruption hapenned inside the loop.
-> > 
-> > But IIUC we can have a thread that "just got out of the loop" getting 
-> > interrupted by the timer, and asked to run rcu_core which will be bad for 
-> > latency.
-> > 
-> > I understand that the chance may be statistically low, but happening once 
-> > may be enough to crush the latency numbers.
-> > 
-> > Now, I can't think on a place to put this context trackers in kvm code that 
-> > would avoid the chance of rcuc running improperly, that's why the suggested 
-> > timeout, even though its ugly.
-> > 
-> > About the false-positive, IIUC we could reduce it if we reset the per-cpu 
-> > last_guest_exit on kvm_put.
+On 5/3/24 1:46 PM, Reinette Chatre wrote:
+> Hi John,
+> On 5/3/2024 12:12 PM, John Hubbard wrote:
+>> On 5/3/24 11:37 AM, Reinette Chatre wrote:
+>>> On 5/3/2024 9:52 AM, John Hubbard wrote:
+>>>> On 5/3/24 1:00 AM, Ilpo Järvinen wrote:
+>>>>> On Thu, 2 May 2024, John Hubbard wrote:
+>>>> ...
+..
+>> I assumed that this code did not expect to handle negative numbers,
+>> because it is using unsigned math throughout.
+>>
+>> If you do expect it to handle cases where, for example, this happens:
+>>
+>>     avg_bw_imc > avg_bw_resc
 > 
-> Which then opens up the window that you're trying to avoid (IRQ arriving just
-> after the vCPU is put, before the CPU exits to userspace).
+> The existing code seems to handle this ok. A sample program with this
+> scenario comparing existing computation with your first proposal is
+> below:
 > 
-> If you want the "entry to guest is imminent" status to be preserved across an exit
-> to userspace, then it seems liek the flag really should be a property of the task,
-> not a property of the physical CPU.  Similar to how rcu_is_cpu_rrupt_from_idle()
-> detects that an idle task was interrupted, that goal is to detect if a vCPU task
-> was interrupted.
+> #include <stdio.h>
+> #include <stdlib.h>
 > 
-> PF_VCPU is already "taken" for similar tracking, but if we want to track "this
-> task will soon enter an extended quiescent state", I don't see any reason to make
-> it specific to vCPU tasks.  Unless the kernel/KVM dynamically manages the flag,
-> which as above will create windows for false negatives, the kernel needs to
-> trust userspace to a certaine extent no matter what.  E.g. even if KVM sets a
-> PF_xxx flag on the first KVM_RUN, nothing would prevent userspace from calling
-> into KVM to get KVM to set the flag, and then doing something else entirely with
-> the task.
+> void main(void) {
+> 	unsigned long avg_bw_resc = 20000;
+> 	unsigned long avg_bw_imc = 40000;
+> 	float avg_diff;
 > 
-> So if we're comfortable relying on the 1 second timeout to guard against a
-> misbehaving userspace, IMO we might as well fully rely on that guardrail.  I.e.
-> add a generic PF_xxx flag (or whatever flag location is most appropriate) to let
-> userspace communicate to the kernel that it's a real-time task that spends the
-> overwhelming majority of its time in userspace or guest context, i.e. should be
-> given extra leniency with respect to rcuc if the task happens to be interrupted
-> while it's in kernel context.
+> 	/* Existing code */
+> 	avg_diff = (float)labs(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+> 	printf("Existing code: avg_diff = %f\n", avg_diff);
+> 
+> 	/* Original proposed fix */
+> 	avg_diff = (float)(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
+> 	printf("Original proposed fix: avg_diff = %f\n", avg_diff);
+> }
+> 
+> output:
+> Existing code: avg_diff = 0.500000
+> Original proposed fix: avg_diff = 461168590192640.000000
+
+That seems "a little bit" wrong. haha :)
+
+> 
+>>
+>> ...then a proper solution is easy, and looks like this:
+>>
+>> diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
+>> index c873793d016d..b87f91a41494 100644
+>> --- a/tools/testing/selftests/resctrl/mbm_test.c
+>> +++ b/tools/testing/selftests/resctrl/mbm_test.c
+>> @@ -17,8 +17,8 @@
+>>   static int
+>>   show_bw_info(unsigned long *bw_imc, unsigned long *bw_resc, size_t span)
+>>   {
+>> -       unsigned long avg_bw_imc = 0, avg_bw_resc = 0;
+>> -       unsigned long sum_bw_imc = 0, sum_bw_resc = 0;
+>> +       long avg_bw_imc = 0, avg_bw_resc = 0;
+>> +       long sum_bw_imc = 0, sum_bw_resc = 0;
+>>          int runs, ret, avg_diff_per;
+>>          float avg_diff = 0;
+>>
+>> Should I resend the patch with that approach?
+> 
+> ok. That indeed makes the computations easier to understand. I assume
+> you intend to fix the snippet in mba_test.c also?
 > 
 
+Yes, will do that. Thanks for spotting the bug in the original "fix"!
 
-I think I understand what you propose here.
-
-But I am not sure what would happen in this case:
-
-- RT guest task calls short HLT
-- Host schedule another kernel thread (other task)
-- Timer interruption, rcu_pending will() check the task which is not set 
-  with above flag.
-- rcuc runs, introducing latency
-- Goes back to previous kernel thread, finishes running with rcuc latency
-- Goes back to vcpu thread
-
-Isn't there any chance that, on an short guest HLT, the latency previously 
-introduced by rcuc preempting another kernel thread gets to introduce a 
-latency to the RT task running in the vcpu?
-
-Thanks!
-Leo
-
-
-
-- 
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
 
