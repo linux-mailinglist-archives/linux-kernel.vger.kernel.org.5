@@ -1,144 +1,186 @@
-Return-Path: <linux-kernel+bounces-167510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B838BAA9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:18:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9558BAAA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB9BB1C20DBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:18:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFD241F21C1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CEF15099A;
-	Fri,  3 May 2024 10:18:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE1A152176;
+	Fri,  3 May 2024 10:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Y3Y95iir"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j+h7jgG7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393B415098C
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 10:18:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054401509B2;
+	Fri,  3 May 2024 10:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714731525; cv=none; b=gi86c/15WJtT6APfEyvBduGc7ZyMgc6Xkto6sbC5T3JwLF8fmcPh/984kBz7Ctgjz0nWkIuMRxATGo816wI840yhDS28XDbGNVNjft5IkuKibnkArKqLSz1HOnTS+3y25JWV8Xw2gW9trF/o5XNC5YYFn0zlWURH1CP5S10JE6w=
+	t=1714731529; cv=none; b=Js7zEZUxijuzQuW6quXfOhfmAX/D8gPFHWDc1Ky1+N/2hPE75Y01exUbeqPGqGvNlggpPFFW+ggl0jCg+9rxlyCiRnPXtuFkiuHZ9Wnx/Nzo1nzpOP6rg2pwi/F1FVm3t1aoC1aD5beCwSvmSNecGAKoOwqDE3lC6aUHb8/T5Ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714731525; c=relaxed/simple;
-	bh=DElX5LUe3OoaRwas6ikDj3cSBM05kNwuPrdkFmiH1nw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TisPrSXbSw7cgapoSwPOGpC+mHaXoiL3VutTIIxeB4O0of/x4JMC4fbDKgKSZHgEsHakYf8t991ZnjHrzbcIj4MJkLrNylz25YzeXmjJ/CDLwQ1s3V/BgC7RAr655iueycnESy5iFuYASqTR2WKOB/vEkw1IEqySztocg0/F+oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=Y3Y95iir; arc=none smtp.client-ip=185.125.188.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EA74D3FE52
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 10:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714731513;
-	bh=jjRe6xajUkbmK1YsugK7qDg3PV7FRVVruktd97oIQNA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=Y3Y95iird4mjhwwpd6dJCrSz1ynbt+14JG2SadbnpAcSxz8V5yIf0Nj9Zn6ZJIr9B
-	 CJDpz8iiyqFXBFFPkEYhT8I9Of3ePNrnm3VgMvg4JHCsenv2TmaUoRxXDF+Rom1cpX
-	 Xm1ltxis1GU9q95RWQM4lCHc0JKOGeVxnOAkjVcA582+P+AYMPJ6a2whYYGGfPSdIH
-	 mC8lRS/uflp8pdKlzyQteDTu4+CY9ywdOeHKv32SFzaPNXOLYjqFBesz8C9NY5eV5r
-	 LYZGWlg6I7rIWYzM9QGV1ksB9LPCGxsy4DxzMUwyAI2OAC6c1e4ElDyK8SZLYjInnX
-	 5pXj/ioWONETw==
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5ca5b61c841so9191125a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 03:18:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714731510; x=1715336310;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jjRe6xajUkbmK1YsugK7qDg3PV7FRVVruktd97oIQNA=;
-        b=eaIzqNX5PK/5E4KDANOAG1c3d/Erc/4vVJIkXN2Nky4OlVlhfaxhMFV/8Az0IM9zjJ
-         BkWTPPNIWrbpfHGy5PcK/Ysbt9afAKt4u/w4tbMJVexzVhHh4d88Zx0cUGGxw1fcytoT
-         +1pXfutQ/3Nc6dw469fWshZ+uQsevP6g7TWSA0t/A0y8TbZKULTsOS5fw12fHSyD3DVt
-         gPNYtx8qKFGT5ROybd5JDjOH30omUsd7+F4P9Arti5E2u17w1aCJhLW2gIenfSqAoMB5
-         8QC1R3mNeQ5aGeZC41Dvc3t5iAcOY5PaG4NMoBJ6ZZb1vjMU/03gXkz9uYuohzQCa/2V
-         j1OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXH4pfrinw55ddKhY67uIV7nCkONN0fex9i99SM54MlS02zPd9J2obmjMmdeBt5CBDOoFFvfkAzpv/kBVyWoJWwHGMuCslNkHW4LZ1s
-X-Gm-Message-State: AOJu0YwonWkoM7gty24+XFLp2kq89PTH3sDACA0HCC8jdPfTdxE9HYWo
-	LUJCOyR/eT4Zr2/jLailelt5HtncE0NaWtvVRtPDmzPgGVUAVD0bK1st1YFQIev4h0gO5QbZmLb
-	TowVs0SHrSpH0+96J4DXOa5JZZJZjCs7cs3VxdkGg8/dwLDUKDPRqcb5Gi2EYQw1btKYvN3B43x
-	/bOw==
-X-Received: by 2002:a05:6a21:33a6:b0:1ac:4272:5f88 with SMTP id yy38-20020a056a2133a600b001ac42725f88mr2589341pzb.17.1714731510167;
-        Fri, 03 May 2024 03:18:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGJIBpRvU4F9VMM0s2VJG699R/KuRERA+E2lxptDmXVTDVYDFnjQPQXw+wlQEB0fPnDSPcQrA==
-X-Received: by 2002:a05:6a21:33a6:b0:1ac:4272:5f88 with SMTP id yy38-20020a056a2133a600b001ac42725f88mr2589323pzb.17.1714731509849;
-        Fri, 03 May 2024 03:18:29 -0700 (PDT)
-Received: from rickywu0421-ThinkPad-X1-Carbon-Gen-11.. (2001-b400-e23f-5745-953d-200f-4ef8-798c.emome-ip6.hinet.net. [2001:b400:e23f:5745:953d:200f:4ef8:798c])
-        by smtp.gmail.com with ESMTPSA id p23-20020a1709027ed700b001ec379d8167sm2926259plb.115.2024.05.03.03.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 03:18:29 -0700 (PDT)
-From: Ricky Wu <en-wei.wu@canonical.com>
-To: jesse.brandeburg@intel.com
-Cc: anthony.l.nguyen@intel.com,
-	intel-wired-lan@lists.osuosl.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rickywu0421@gmail.com,
-	en-wei.wu@canonical.com
-Subject: [PATCH v2 1/2] e1000e: let the sleep codes run every time
-Date: Fri,  3 May 2024 18:18:24 +0800
-Message-Id: <20240503101824.32717-1-en-wei.wu@canonical.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1714731529; c=relaxed/simple;
+	bh=10Jfz7g2I63T6OjaKjymVfcINKOaZ2J6fHxtq+P/NAM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=aB/syVDSAdxKtU+re2BQnHCv6I7kVTL3C0quAtq74Mz/hSTTWWcHwzHEoP1uZiucAZ8Hw/7z8WQyjJYO7RhcvvMcy9xynSaWhRLJfxc19J/U+QdAWZJZstP+WotI0F7jdWs0Z9Cl+9WFXKNdAQRgZEGxfFwCgzmuaT02KRCg0ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j+h7jgG7; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714731526; x=1746267526;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=10Jfz7g2I63T6OjaKjymVfcINKOaZ2J6fHxtq+P/NAM=;
+  b=j+h7jgG7i6HgGQNI2Jpz3aiJCo/SDy67Xx2R+VJBeX6/sHeH6e6PPB4r
+   bAL3ZtDeRljDnk2V141NaugnaIjl6JhtoVTXryXJeJv/fJ8dH2zi+Lasw
+   4vRflK+FsD7j6IAvfLpxo4e1QnTBNUQMtcnt5QPu+jcUvQ8tw3wQzS8ZE
+   r/fQHuQzqOxFLqXu9OkkxC1JCw1qre9jK0OAOTJZH/sRwXLkS1uj43Xbg
+   yDWtqCItYmX/RyY6wWpE4Yl1D5tD3308qpQl3m1sy1YUrffJRxIpbUfId
+   fhL04jDY8Catj2hT68EFwDkVd2pwV6IvZT2SiI510ijgU804jOf5AAKzR
+   w==;
+X-CSE-ConnectionGUID: VQzpT/yNTMGzlMFEADN4VA==
+X-CSE-MsgGUID: zjD8uXNySJukRrLe5exepw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10386639"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="10386639"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 03:18:45 -0700
+X-CSE-ConnectionGUID: fg5BmVqpSRyyi5slzLMDnA==
+X-CSE-MsgGUID: IEo6vwxzSGqiLHBTgxJ77A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="32215585"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.56])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 03:18:42 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 3 May 2024 13:18:35 +0300 (EEST)
+To: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+cc: Alex Deucher <alexander.deucher@amd.com>, amd-gfx@lists.freedesktop.org, 
+    Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+    Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+    dri-devel@lists.freedesktop.org, Jason Gunthorpe <jgg@ziepe.ca>, 
+    Leon Romanovsky <leon@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+    linux-rdma@vger.kernel.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>, 
+    =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>, 
+    Lukas Wunner <lukas@wunner.de>, 
+    Dean Luick <dean.luick@cornelisnetworks.com>
+Subject: Re: [PATCH 3/3] RDMA/hfi1: Use RMW accessors for changing LNKCTL2
+In-Reply-To: <20240215133155.9198-4-ilpo.jarvinen@linux.intel.com>
+Message-ID: <26be3948-e687-f510-0612-abcac5d919af@linux.intel.com>
+References: <20240215133155.9198-1-ilpo.jarvinen@linux.intel.com> <20240215133155.9198-4-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323328-818284186-1714731515=:1852"
 
-Originally, the sleep codes being moved forward only
-ran if we met some conditions (e.g. BMSR_LSTATUS bit
-not set in phy_status). Moving these sleep codes forward
-makes the usec_interval take effect every time.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Ricky Wu <en-wei.wu@canonical.com>
----
+--8323328-818284186-1714731515=:1852
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-In v2:
-* Split the sleep codes into this patch
+On Thu, 15 Feb 2024, Ilpo J=C3=A4rvinen wrote:
 
- drivers/net/ethernet/intel/e1000e/phy.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> Convert open coded RMW accesses for LNKCTL2 to use
+> pcie_capability_clear_and_set_word() which makes its easier to
+> understand what the code tries to do.
+>=20
+> LNKCTL2 is not really owned by any driver because it is a collection of
+> control bits that PCI core might need to touch. RMW accessors already
+> have support for proper locking for a selected set of registers
+> (LNKCTL2 is not yet among them but likely will be in the future) to
+> avoid losing concurrent updates.
+>=20
+> Suggested-by: Lukas Wunner <lukas@wunner.de>
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 
-diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
-index 93544f1cc2a5..4a58d56679c9 100644
---- a/drivers/net/ethernet/intel/e1000e/phy.c
-+++ b/drivers/net/ethernet/intel/e1000e/phy.c
-@@ -1777,6 +1777,11 @@ s32 e1000e_phy_has_link_generic(struct e1000_hw *hw, u32 iterations,
- 
- 	*success = false;
- 	for (i = 0; i < iterations; i++) {
-+		if (usec_interval >= 1000)
-+			msleep(usec_interval / 1000);
-+		else
-+			udelay(usec_interval);
-+
- 		/* Some PHYs require the MII_BMSR register to be read
- 		 * twice due to the link bit being sticky.  No harm doing
- 		 * it across the board.
-@@ -1799,10 +1804,6 @@ s32 e1000e_phy_has_link_generic(struct e1000_hw *hw, u32 iterations,
- 			*success = true;
- 			break;
- 		}
--		if (usec_interval >= 1000)
--			msleep(usec_interval / 1000);
--		else
--			udelay(usec_interval);
- 	}
- 
- 	return ret_val;
--- 
-2.40.1
+I found out from Linux RDMA and InfiniBand patchwork that this patch had=20
+been silently closed as "Not Applicable". Is there some reason for that?
 
+I was sending this change independently out (among 2 similar ones that=20
+already got applied) so I wouldn't need to keep carrying it within my PCIe=
+=20
+bandwidth controller series. It seemed useful enough as cleanups to stand=
+=20
+on its own legs w/o requiring it to be part of PCIe bw controller series.
+
+Should I resend the patch or do RDMA/IB maintainers prefer it to remain=20
+as a part of PCIe BW controller series?
+
+--=20
+ i.
+
+> ---
+>  drivers/infiniband/hw/hfi1/pcie.c | 30 ++++++++----------------------
+>  1 file changed, 8 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hf=
+i1/pcie.c
+> index 119ec2f1382b..7133964749f8 100644
+> --- a/drivers/infiniband/hw/hfi1/pcie.c
+> +++ b/drivers/infiniband/hw/hfi1/pcie.c
+> @@ -1207,14 +1207,11 @@ int do_pcie_gen3_transition(struct hfi1_devdata *=
+dd)
+>  =09=09    (u32)lnkctl2);
+>  =09/* only write to parent if target is not as high as ours */
+>  =09if ((lnkctl2 & PCI_EXP_LNKCTL2_TLS) < target_vector) {
+> -=09=09lnkctl2 &=3D ~PCI_EXP_LNKCTL2_TLS;
+> -=09=09lnkctl2 |=3D target_vector;
+> -=09=09dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+> -=09=09=09    (u32)lnkctl2);
+> -=09=09ret =3D pcie_capability_write_word(parent,
+> -=09=09=09=09=09=09 PCI_EXP_LNKCTL2, lnkctl2);
+> +=09=09ret =3D pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL2=
+,
+> +=09=09=09=09=09=09=09 PCI_EXP_LNKCTL2_TLS,
+> +=09=09=09=09=09=09=09 target_vector);
+>  =09=09if (ret) {
+> -=09=09=09dd_dev_err(dd, "Unable to write to PCI config\n");
+> +=09=09=09dd_dev_err(dd, "Unable to change parent PCI target speed\n");
+>  =09=09=09return_error =3D 1;
+>  =09=09=09goto done;
+>  =09=09}
+> @@ -1223,22 +1220,11 @@ int do_pcie_gen3_transition(struct hfi1_devdata *=
+dd)
+>  =09}
+> =20
+>  =09dd_dev_info(dd, "%s: setting target link speed\n", __func__);
+> -=09ret =3D pcie_capability_read_word(dd->pcidev, PCI_EXP_LNKCTL2, &lnkct=
+l2);
+> +=09ret =3D pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL=
+2,
+> +=09=09=09=09=09=09 PCI_EXP_LNKCTL2_TLS,
+> +=09=09=09=09=09=09 target_vector);
+>  =09if (ret) {
+> -=09=09dd_dev_err(dd, "Unable to read from PCI config\n");
+> -=09=09return_error =3D 1;
+> -=09=09goto done;
+> -=09}
+> -
+> -=09dd_dev_info(dd, "%s: ..old link control2: 0x%x\n", __func__,
+> -=09=09    (u32)lnkctl2);
+> -=09lnkctl2 &=3D ~PCI_EXP_LNKCTL2_TLS;
+> -=09lnkctl2 |=3D target_vector;
+> -=09dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+> -=09=09    (u32)lnkctl2);
+> -=09ret =3D pcie_capability_write_word(dd->pcidev, PCI_EXP_LNKCTL2, lnkct=
+l2);
+> -=09if (ret) {
+> -=09=09dd_dev_err(dd, "Unable to write to PCI config\n");
+> +=09=09dd_dev_err(dd, "Unable to change device PCI target speed\n");
+>  =09=09return_error =3D 1;
+>  =09=09goto done;
+>  =09}
+>=20
+--8323328-818284186-1714731515=:1852--
 
