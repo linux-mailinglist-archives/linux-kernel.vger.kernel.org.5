@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-168299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7A778BB63D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:44:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA3A8BB63E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:44:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4031C20AA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:44:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1384F1F21898
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992A4134CF7;
-	Fri,  3 May 2024 21:37:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2F913541F;
+	Fri,  3 May 2024 21:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WmeVzNH8"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PvV2Hg4S"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAA2134CDC
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632891353E1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772266; cv=none; b=h/ZXcjY4nnnZ1TkPPQUqSoymMchthO9LrEU3Lz6cCmi7jnWPLF9AkTtZelUjfEaUw1xNUTBaHhq0f9RxW3ohq6zm+bGLgAUGGb4HRh2Qse8zw4+lkV8BZoxld6+KiLsgTk5w/CmBzMzdqgywdiBMyrg4mSI78KJEszsiRyy7t4g=
+	t=1714772268; cv=none; b=f+FTyWl2sqhm1FrMwqAkv9sC3V9EXfuJukhVb/2GQ8WqbR4xg8iUDBa0+i6wl778789l2/SUqREWUQDjN/aemE7M+eW2Bm83OKDVzd5ODVNcEIDYgxi/Ua282LuBBP3kOBMOAl7cjFETSrL4Gh4p1DbNd/oGJILWGnq++zonixM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772266; c=relaxed/simple;
-	bh=0C7Ml53z9t79QGcTfL88T3+BhLGG1chLfgvfo7p+NnY=;
+	s=arc-20240116; t=1714772268; c=relaxed/simple;
+	bh=0c2PVXNgA4nlOkkqlvM45fh6+dC0inZ9PV3m/UHMawM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ouph/0bKk72b536YZHQISCSmcJYGHFSBW4ThlclihxiIBm2Pmw+CwtpN9amQKHjUDbfJjstKwU8kI/A8MR6GpOzAMcOWcbfk0Sf0FOM4NKHz6HVZVxEC4rR3WvAho3Zp+ZuSPZPB2+Fwg1Ze9gRVZHI4IIJ0m1z0tuZ3ec2osYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WmeVzNH8; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=BTVa/euLU4eAAT7lHlsSbTUN1QWAu3OfhO90PSZIuKzvOfKi2n7X+m05069LHpmzRxvX5dWVeh3FPX9GZsseiviCqBsqZizedOGQ3ERP9YNmEmxk+h5kp74MlbVGFn13KjJxuVx3Iaa4g7jrVs6VKFGp2rnF8sCNqHKuTkX58w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PvV2Hg4S; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1eab16c8d83so861345ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:37:45 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ec69e3dbe5so1228245ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:37:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714772265; x=1715377065; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714772267; x=1715377067; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wZDXX5+LO4KCYTMyL9bFp7mWqxckeafU4NqU6b6Zl+A=;
-        b=WmeVzNH8Qw1O7QZA00O3UJ7+L4wV/q02V8OYkwGFWcpTtFWNw1xrOwAYuY7F6L0fGI
-         KinINz/AmRsMP48a+Gjc3qkgWndttBkfWXPoCkgGY7UV8b9UMQazenpm1TW9sEmDYygg
-         ov5gVMO9L4JxoAqkcZrtp02lKO/qADcliGjYE=
+        bh=JIn+sWO9dEDf1DvG5c+RzmcIdDo8LI3xPQg/VI7zljA=;
+        b=PvV2Hg4Sc1J3CW1rGaUx9E/Nhq4Z0rzwuQ42f0fAPwMFQgkzXSVTOB6DZaE3GXhowA
+         Ujkg33H0T5XZmUWaYQ4Axf63V28uIPCDgZKXENIRoioZk8nwITInCiPiurIc9gb03C1q
+         9+jiFb5kv3L8CCQeeDprMyRZdK2GvByvIM/nc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772265; x=1715377065;
+        d=1e100.net; s=20230601; t=1714772267; x=1715377067;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wZDXX5+LO4KCYTMyL9bFp7mWqxckeafU4NqU6b6Zl+A=;
-        b=Tozqtf50xZLomiJ89NvvHelvELuGz4Y36GzibePznPnYeH+pW7+vYvBBGbPafklLIx
-         dCM11e9NG+CBuevzkjoe1rr/xK3vW2WlZoDI5e+KL8jvI9zZ5T57Ij8sk41iU3XKoBjk
-         1LCBUwtcdrXTvbU8P43lsAgAUJpyArcwrlm/+lUW12ER6Re0zix0qige3+6innsU9X4n
-         H7KAQ8k3FJzecuW1Ubh2aXVHoOlLbQfT4ApjnG9CKTXTBpyE0lsejFmPf5m+pulfephI
-         tDFpdHM4r3/GD62u/pfizZE2nJrA8++vc+C+mqF9pIDctYgKKxHgB+j7fThChJtehQS8
-         C+pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWH8SU7qs3clNHV8/vP9UX4aYpyNYu67MO3W7KSN/YLoDh4ma9cpzcVyWS8nZ1UUpsDozFIzxsbMuilVW/8HnNwf5CvF3YfW0gRueUr
-X-Gm-Message-State: AOJu0YzLUfq1TwFrZjoKS9sZ0zc7VNu+2/1SnC3ovwwwGisjRW8/O/km
-	m6zxzxkcHeK96crgOthJZ5ggenHuLcYo2qPetBxFy9WVMmOIbag2O4y6c2/gdg==
-X-Google-Smtp-Source: AGHT+IEM/QZtMkwvjlLIFbPnkF0+gcBny1uUrL28BGWnqjNaJ9gJCfvZsyvZC8Acyq8l9IiCgiHpFQ==
-X-Received: by 2002:a17:903:41d1:b0:1ec:22ca:b290 with SMTP id u17-20020a17090341d100b001ec22cab290mr5158303ple.21.1714772264830;
-        Fri, 03 May 2024 14:37:44 -0700 (PDT)
+        bh=JIn+sWO9dEDf1DvG5c+RzmcIdDo8LI3xPQg/VI7zljA=;
+        b=YRBWWMg2W5m8h2GEX+Zgo54WhVyns/q0KdAtQ3UrUHHapY2A/nQmIzMgVAilWWTqUP
+         d5SvfRYP14dgXU58Yz3uSDWwYHfJDiH6aK/LQw9FH2axqg5h7I2EevRV2syoLdPr04DN
+         xfXZSHcCMUofBOpiz+luwEhP0knHuJ1zGN6vaRtVDz3nGFzPvch4Hsu0mAXH2bE5mDy9
+         V8TBloYCn/qaXooe5+6j0+nGKl3aV70OEvFo5YdTzVc7Wz9unMbDLokJJQzExZdWpDc0
+         UbV7Nrn8Uoz69sL7yEd6jvaItkLVU1/p3Pp4AvMYp4O3ZGyYU6EgXpzoyohumFOTgJGL
+         GdOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUDn9NS1H9gP1judrqQs/DF0sAvn6BsJjGq9qsfy0ui6e8k93tAOEl7s7aIYBcQ/qTSbMf6AW0joVgogRq/u2+7Otd/ZdGNnPIAH8rq
+X-Gm-Message-State: AOJu0YzgvRDqaFtXUR1MAqrlLL0MjP70l2Gm7fVXNdLWrefJVYICqkdf
+	12PNfRxRjrwGlvTa8Ivf/WAdrzF+/sFPH+pj95g7HWiUuQMRihoKeQ2YnB6AnQ==
+X-Google-Smtp-Source: AGHT+IFgOtsvmnCpgD9YCuirDNOd6sEAldzPJUUEeKJ2LJEqLasuF33MZxCdPNTGTti/0Ofhqu2Ztw==
+X-Received: by 2002:a17:902:f54c:b0:1eb:5b59:fab9 with SMTP id h12-20020a170902f54c00b001eb5b59fab9mr5096772plf.53.1714772266832;
+        Fri, 03 May 2024 14:37:46 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.37.43
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.37.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:37:44 -0700 (PDT)
+        Fri, 03 May 2024 14:37:46 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org,
 	Maxime Ripard <mripard@kernel.org>
@@ -79,9 +79,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
 	linux-kernel@vger.kernel.org
-Subject: [RFT PATCH v2 34/48] drm/panel: panasonic-vvx10f034n00: Stop tracking prepared/enabled
-Date: Fri,  3 May 2024 14:33:15 -0700
-Message-ID: <20240503143327.RFT.v2.34.I7278e956ffd1cf686e737834578d4bb3ea527c7f@changeid>
+Subject: [RFT PATCH v2 35/48] drm/panel: panasonic-vvx10f034n00: Don't call disable at shutdown/remove
+Date: Fri,  3 May 2024 14:33:16 -0700
+Message-ID: <20240503143327.RFT.v2.35.I1562c864ee35a9c166765488c95104b7e4e562da@changeid>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
 References: <20240503213441.177109-1-dianders@chromium.org>
@@ -93,12 +93,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-prepared/enabled in drm_panel"), we want to remove needless code from
-panel drivers that was storing and double-checking the
-prepared/enabled state. Even if someone was relying on the
-double-check before, that double-check is now in the core and not
-needed in individual drivers.
+It's the responsibility of a correctly written DRM modeset driver to
+call drm_atomic_helper_shutdown() at shutdown time and that should be
+disabling / unpreparing the panel if needed. Panel drivers shouldn't
+be calling these functions themselves.
+
+A recent effort was made to fix as many DRM modeset drivers as
+possible [1] [2] [3] and most drivers are fixed now.
+
+Unfortunately, grepping mainline for this panel's compatible string
+shows no hits, so we can't be 100% sure if the DRM modeset driver used
+with this panel has been fixed. If it is found that the DRM modeset
+driver hasn't been fixed then this patch could be temporarily reverted
+until it is.
+
+[1] https://lore.kernel.org/r/20230901234015.566018-1-dianders@chromium.org
+[2] https://lore.kernel.org/r/20230901234202.566951-1-dianders@chromium.org
+[3] https://lore.kernel.org/r/20230921192749.1542462-1-dianders@chromium.org
 
 Cc: Werner Johansson <werner.johansson@sonymobile.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
@@ -108,98 +119,45 @@ Changes in v2:
 - Only handle 1 panel per patch.
 - Split removal of prepared/enabled from handling of remove/shutdown.
 
- .../drm/panel/panel-panasonic-vvx10f034n00.c  | 35 +------------------
- 1 file changed, 1 insertion(+), 34 deletions(-)
+ drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c b/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c
-index 8ba6d8287938..822ca2f971eb 100644
+index 822ca2f971eb..d1c5c9bc3c56 100644
 --- a/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c
 +++ b/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c
-@@ -32,9 +32,6 @@ struct wuxga_nt_panel {
- 
- 	struct regulator *supply;
- 
--	bool prepared;
--	bool enabled;
--
- 	ktime_t earliest_wake;
- 
- 	const struct drm_display_mode *mode;
-@@ -53,28 +50,16 @@ static int wuxga_nt_panel_on(struct wuxga_nt_panel *wuxga_nt)
- static int wuxga_nt_panel_disable(struct drm_panel *panel)
- {
- 	struct wuxga_nt_panel *wuxga_nt = to_wuxga_nt_panel(panel);
--	int mipi_ret, bl_ret = 0;
--
--	if (!wuxga_nt->enabled)
--		return 0;
--
--	mipi_ret = mipi_dsi_shutdown_peripheral(wuxga_nt->dsi);
--
--	wuxga_nt->enabled = false;
- 
--	return mipi_ret ? mipi_ret : bl_ret;
-+	return mipi_dsi_shutdown_peripheral(wuxga_nt->dsi);
- }
- 
- static int wuxga_nt_panel_unprepare(struct drm_panel *panel)
- {
- 	struct wuxga_nt_panel *wuxga_nt = to_wuxga_nt_panel(panel);
- 
--	if (!wuxga_nt->prepared)
--		return 0;
--
- 	regulator_disable(wuxga_nt->supply);
- 	wuxga_nt->earliest_wake = ktime_add_ms(ktime_get_real(), MIN_POFF_MS);
--	wuxga_nt->prepared = false;
- 
- 	return 0;
- }
-@@ -85,9 +70,6 @@ static int wuxga_nt_panel_prepare(struct drm_panel *panel)
+@@ -222,10 +222,6 @@ static void wuxga_nt_panel_remove(struct mipi_dsi_device *dsi)
+ 	struct wuxga_nt_panel *wuxga_nt = mipi_dsi_get_drvdata(dsi);
  	int ret;
- 	s64 enablewait;
  
--	if (wuxga_nt->prepared)
--		return 0;
+-	ret = drm_panel_disable(&wuxga_nt->base);
+-	if (ret < 0)
+-		dev_err(&dsi->dev, "failed to disable panel: %d\n", ret);
 -
- 	/*
- 	 * If the user re-enabled the panel before the required off-time then
- 	 * we need to wait the remaining period before re-enabling regulator
-@@ -117,8 +99,6 @@ static int wuxga_nt_panel_prepare(struct drm_panel *panel)
- 		goto poweroff;
- 	}
- 
--	wuxga_nt->prepared = true;
--
- 	return 0;
- 
- poweroff:
-@@ -127,18 +107,6 @@ static int wuxga_nt_panel_prepare(struct drm_panel *panel)
- 	return ret;
+ 	ret = mipi_dsi_detach(dsi);
+ 	if (ret < 0)
+ 		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n", ret);
+@@ -233,13 +229,6 @@ static void wuxga_nt_panel_remove(struct mipi_dsi_device *dsi)
+ 	wuxga_nt_panel_del(wuxga_nt);
  }
  
--static int wuxga_nt_panel_enable(struct drm_panel *panel)
+-static void wuxga_nt_panel_shutdown(struct mipi_dsi_device *dsi)
 -{
--	struct wuxga_nt_panel *wuxga_nt = to_wuxga_nt_panel(panel);
+-	struct wuxga_nt_panel *wuxga_nt = mipi_dsi_get_drvdata(dsi);
 -
--	if (wuxga_nt->enabled)
--		return 0;
--
--	wuxga_nt->enabled = true;
--
--	return 0;
+-	drm_panel_disable(&wuxga_nt->base);
 -}
 -
- static const struct drm_display_mode default_mode = {
- 	.clock = 164402,
- 	.hdisplay = 1920,
-@@ -178,7 +146,6 @@ static const struct drm_panel_funcs wuxga_nt_panel_funcs = {
- 	.disable = wuxga_nt_panel_disable,
- 	.unprepare = wuxga_nt_panel_unprepare,
- 	.prepare = wuxga_nt_panel_prepare,
--	.enable = wuxga_nt_panel_enable,
- 	.get_modes = wuxga_nt_panel_get_modes,
+ static struct mipi_dsi_driver wuxga_nt_panel_driver = {
+ 	.driver = {
+ 		.name = "panel-panasonic-vvx10f034n00",
+@@ -247,7 +236,6 @@ static struct mipi_dsi_driver wuxga_nt_panel_driver = {
+ 	},
+ 	.probe = wuxga_nt_panel_probe,
+ 	.remove = wuxga_nt_panel_remove,
+-	.shutdown = wuxga_nt_panel_shutdown,
  };
+ module_mipi_dsi_driver(wuxga_nt_panel_driver);
  
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
