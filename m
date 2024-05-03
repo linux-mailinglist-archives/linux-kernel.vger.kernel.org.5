@@ -1,113 +1,172 @@
-Return-Path: <linux-kernel+bounces-167099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351638BA489
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:24:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30E08BA487
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:23:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E03F21F23FE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:24:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A85D7B2402A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B596363CF;
-	Fri,  3 May 2024 00:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="kwM8XMwo"
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC8244A1A;
+	Fri,  3 May 2024 00:23:37 +0000 (UTC)
+Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5391613D
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 00:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6E4360;
+	Fri,  3 May 2024 00:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.229.23.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714695822; cv=none; b=U5c2vWTNZPTWyjnTp2JptxjvqElqpxPwmnqgefgirFqwc0ptRNWBrEh+W1aRg7RuWEFyXoaml4VPNnQXSkE0R7121tf5Fc8rWQNGCfG3KF1TKW7cTLE4PtruNxRdBsM8zKjcYfqBG9zy7oqzBE9Yv3g2fYfpxY/SnJbj5gJMPCQ=
+	t=1714695817; cv=none; b=nx8Pv0en90vJz6ruNNSqPjun4k4S82bLCxN3fIX/bLk/SQruCrLL7WND5xo1CvnXP/ULUUqxiOnvq0mr9DQP4pO9Av/JEdyDr+TRdEEg+njg7G7FjMrdXcHHOJ/8Let8Q61GIM1k+U3qkphCo7b0kDdKcNvPU5KEfPJrKFzOkNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714695822; c=relaxed/simple;
-	bh=cx7iAJmqJSiS6NJCpKGiGYKfhknQNbrNzE2LXtC9+8M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KDBOnepy2vQxDPOLpBe0BZBrFM8C6NpAYL2QpyMwe+kc0yH3dVw5CH6VGK5LpaI7eM2FT/9EN5ohwIRFME5sS/DDWw7ttSPHScr5zFamH0wGBX7TzY2QucComDX4z7AkCtw6jThfkmopl/GEouN2DaSfbgxD+pIQQs3P5d75ZJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=kwM8XMwo; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
-	:Subject; bh=TwhhGJYX8S5isC/qXpdo6M+smqQWbmRemXXOvuWIYPs=; b=kwM8XMwoqP4IbG0+
-	0zfWn62s1OSNbxh4YF4B8RdGoTlVfokrYBsIV2RqrmUN9Sxo34stiEMPB4DFCFIV+ZmlRlf0KNQhl
-	lj3Be/du6TDKhzddcj1tNl1hiRt8WI8dERlvyTkp52z6LqGqgLjD7o9csEVud+9bFnKBDqTc1+ztR
-	jRZnWO4G+gjhzNbBrL0b8uTODfv9ebsHmiEGrNuU8mNtvUDZFrpDoqVkhO4DI6GVjv8F0hShx2Ipc
-	3X4i31UON2ywDuyE0V95GDhhZlUh59ILEJW8WZtAWCM8QkOKhZlTv13DwfjkdGf+SF7kumemGuLAA
-	V/HAXJSTJKPcnJfAqg==;
-Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
-	by mx.treblig.org with esmtp (Exim 4.96)
-	(envelope-from <linux@treblig.org>)
-	id 1s2ghx-004Mi8-1m;
-	Fri, 03 May 2024 00:23:25 +0000
-From: linux@treblig.org
-To: mpe@ellerman.id.au,
-	npiggin@gmail.com
-Cc: linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	"Dr. David Alan Gilbert" <linux@treblig.org>
-Subject: [PATCH] power: Remove arch specific module bug stuff
-Date: Fri,  3 May 2024 01:23:17 +0100
-Message-ID: <20240503002317.183500-1-linux@treblig.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714695817; c=relaxed/simple;
+	bh=zXsI9Vt8xojfZb8+rMlItNS5EVhzZ+FhYOA1HEqzzu4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JMaUrENzdSruJ0S5WJAym5QSzwNRfGFkoNs5F+G7890rjlR3Dyf6VEduGNA1b+c5hBcPitNyu4sktiF9h9OzAGr8emQjgy/9URkeZr0l+h4NU838xYrJd+9SiT1ax0zzhfTbuVi35yV/KdoQsTLWEyz/6oSVqxBLNhIY/jJ1nDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk; spf=pass smtp.mailfrom=dudau.co.uk; arc=none smtp.client-ip=80.229.23.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dudau.co.uk
+Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
+	by smtp.dudau.co.uk (Postfix) with SMTP id 2D79141D12F0;
+	Fri, 03 May 2024 01:23:31 +0100 (BST)
+Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Fri, 03 May 2024 01:23:31 +0100
+Date: Fri, 3 May 2024 01:23:30 +0100
+From: Liviu Dudau <liviu@dudau.co.uk>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 00/16] mm: jit/text allocator
+Message-ID: <ZjQuggSFcO8FXSd2@bart.dudau.co.uk>
+References: <20240429121620.1186447-1-rppt@kernel.org>
+ <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
+ <ZjQYvOYgURx9/+d0@bart.dudau.co.uk>
+ <ZjQcmcA0sNH7jfD7@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZjQcmcA0sNH7jfD7@bombadil.infradead.org>
 
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
+On Thu, May 02, 2024 at 04:07:05PM -0700, Luis Chamberlain wrote:
+> On Thu, May 02, 2024 at 11:50:36PM +0100, Liviu Dudau wrote:
+> > On Mon, Apr 29, 2024 at 09:29:20AM -0700, Luis Chamberlain wrote:
+> > > On Mon, Apr 29, 2024 at 03:16:04PM +0300, Mike Rapoport wrote:
+> > > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > The patches are also available in git:
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v7
+> > > > 
+> > > > v7 changes:
+> > > > * define MODULE_{VADDR,END} for riscv32 to fix the build and avoid
+> > > >   #ifdefs in a function body
+> > > > * add Acks, thanks everybody
+> > > 
+> > > Thanks, I've pushed this to modules-next for further exposure / testing.
+> > > Given the status of testing so far with prior revisions, in that only a
+> > > few issues were found and that those were fixed, and the status of
+> > > reviews, this just might be ripe for v6.10.
+> > 
+> > Looks like there is still some work needed. I've picked up next-20240501
+> > and on arch/mips with CONFIG_MODULE_COMPRESS_XZ=y and CONFIG_MODULE_DECOMPRESS=y
+> > I fail to load any module:
+> > 
+> > # modprobe rfkill
+> > [11746.539090] Invalid ELF header magic: != ELF
+> > [11746.587149] execmem: unable to allocate memory
+> > modprobe: can't load module rfkill (kernel/net/rfkill/rfkill.ko.xz): Out of memory
+> > 
+> > The (hopefully) relevant parts of my .config:
+> 
+> Thanks for the report! Any chance we can get you to try a bisection? I
+> think it should take 2-3 test boots. To help reduce scope you try modules-next:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=modules-next
+> 
+> Then can you check by resetting your tree to commmit 3fbe6c2f820a76 (mm:
+> introduce execmem_alloc() and execmem_free()"). I suspect that should
+> boot, so your bad commit would be the tip 3c2c250cb3a5fbb ("bpf: remove
+> CONFIG_BPF_JIT dependency on CONFIG_MODULES of").
+> 
+> That gives us only a few commits to bisect:
+> 
+> git log --oneline 3fbe6c2f820a76bc36d5546bda85832f57c8fce2..
+> 3c2c250cb3a5 (HEAD -> modules-next, korg/modules-next) bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of
+> 11e8e65cce5c kprobes: remove dependency on CONFIG_MODULES
+> e10cbc38697b powerpc: use CONFIG_EXECMEM instead of CONFIG_MODULES where appropriate
+> 4da3d38f24c5 x86/ftrace: enable dynamic ftrace without CONFIG_MODULES
+> 13ae3d74ee70 arch: make execmem setup available regardless of CONFIG_MODULES
+> 460bbbc70a47 powerpc: extend execmem_params for kprobes allocations
+> e1a14069b5b4 arm64: extend execmem_info for generated code allocations
+> 971e181c6585 riscv: extend execmem_params for generated code allocations
+> 0fa276f26721 mm/execmem, arch: convert remaining overrides of module_alloc to execmem
+> 022cef244287 mm/execmem, arch: convert simple overrides of module_alloc to execmem
+> 
+> With 2-3 boots we should be to tell which is the bad commit.
 
-The last function to reference module_bug_list went in 2008's
-  commit b9754568ef17 ("powerpc: Remove dead module_find_bug code")
-but I don't think that was called since 2006's
-  commit 73c9ceab40b1 ("[POWERPC] Generic BUG for powerpc")
+Looks like 0fa276f26721 is the first bad commit.
 
-Now that the list has gone, I think we can also clean up the bug
-entries in mod_arch_specific.
+$ git bisect log
+# bad: [3c2c250cb3a5fbbccc4a4ff4c9354c54af91f02c] bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of
+# good: [3fbe6c2f820a76bc36d5546bda85832f57c8fce2] mm: introduce execmem_alloc() and execmem_free()
+git bisect start '3c2c250cb3a5' '3fbe6c2f820a76'
+# bad: [460bbbc70a47e929b1936ca68979f3b79f168fc6] powerpc: extend execmem_params for kprobes allocations
+git bisect bad 460bbbc70a47e929b1936ca68979f3b79f168fc6
+# bad: [0fa276f26721e0ffc2ae9c7cf67dcc005b43c67e] mm/execmem, arch: convert remaining overrides of module_alloc to execmem
+git bisect bad 0fa276f26721e0ffc2ae9c7cf67dcc005b43c67e
+# good: [022cef2442870db738a366d3b7a636040c081859] mm/execmem, arch: convert simple overrides of module_alloc to execmem
+git bisect good 022cef2442870db738a366d3b7a636040c081859
+# first bad commit: [0fa276f26721e0ffc2ae9c7cf67dcc005b43c67e] mm/execmem, arch: convert remaining overrides of module_alloc to execmem
 
-Lightly boot tested.
+Maybe MIPS also needs a ARCH_WANTS_EXECMEM_LATE?
 
-Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
----
- arch/powerpc/include/asm/module.h | 5 -----
- arch/powerpc/kernel/module.c      | 2 --
- 2 files changed, 7 deletions(-)
+Best regards,
+Liviu
 
-diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
-index a8e2e8339fb7f..300c777cc3075 100644
---- a/arch/powerpc/include/asm/module.h
-+++ b/arch/powerpc/include/asm/module.h
-@@ -48,11 +48,6 @@ struct mod_arch_specific {
- 	unsigned long tramp;
- 	unsigned long tramp_regs;
- #endif
--
--	/* List of BUG addresses, source line numbers and filenames */
--	struct list_head bug_list;
--	struct bug_entry *bug_table;
--	unsigned int num_bugs;
- };
- 
- /*
-diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
-index f6d6ae0a16923..8989e069e3aae 100644
---- a/arch/powerpc/kernel/module.c
-+++ b/arch/powerpc/kernel/module.c
-@@ -17,8 +17,6 @@
- #include <asm/setup.h>
- #include <asm/sections.h>
- 
--static LIST_HEAD(module_bug_list);
--
- static const Elf_Shdr *find_section(const Elf_Ehdr *hdr,
- 				    const Elf_Shdr *sechdrs,
- 				    const char *name)
+> 
+>   Luis
+> 
+
 -- 
-2.44.0
-
+Everyone who uses computers frequently has had, from time to time,
+a mad desire to attack the precocious abacus with an axe.
+       	   	      	     	  -- John D. Clark, Ignition!
 
