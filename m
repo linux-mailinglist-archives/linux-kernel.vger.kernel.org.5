@@ -1,222 +1,137 @@
-Return-Path: <linux-kernel+bounces-167898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283CF8BB0D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:22:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF128BB0D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 913D91F23C81
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:22:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 461091F204E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F8B15664E;
-	Fri,  3 May 2024 16:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DC3155343;
+	Fri,  3 May 2024 16:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PleDJKNh"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrW1Rvth"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9731115539B
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FF8155342
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714753350; cv=none; b=uAYkh6gWsumhy3NuuPdhdkvm0mEvR3fnrpBx2/dUSJ6rU0AJJP+kYEOh8HSzlNRcUWrXIZem7BgcxbVPtL5cHq+LsT3DcWh7kAaxGg0ANt5P97cNTE0IHaRUJf3JBWdcCFBa8EHNmARQ9h8iZiBWNy8TWOcRLAgTpHLGdmAUqsw=
+	t=1714753405; cv=none; b=jcdLXB4e2nCsOP0738SDYt3HhlbCxJEsKzHBZ19NdUdyeuKLKwkKIJSvOJuIX2WzdlREkzYSOnsPkqHGpUMTP4c3KvfdZs7xlcHviKe7Hg2TiSoEvFkMUEFy1dDPqPb41T9XhoWoilih1GKmtHoFedE1CYW68d8b8mM8gPVPnU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714753350; c=relaxed/simple;
-	bh=sxWk1kyzJe459ZF807IGaoNEXtJYOMA0WnR1dYVPGd8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=erSfFbIbGzG8VPuo7m33EwnGTsATl5Hx2tT55eE49I7oJ4DHopXsBwIPYruBJ+fTkpGmL8CHK1RU5OJgIm3hWZTaKKQ5omT73rn/4DBoV8xZhHSfP9CXOvP5Xp4qHvue3bfic33C/49hNY9eqXDVWyhMILlOxTnKYMJJ9pALNQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PleDJKNh; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714753347;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CpdUrrfvqPyGvsIJRAWt/WzCNSwYYm+TR0RUAGPWFiU=;
-	b=PleDJKNh3NgsRKu4C1QCkkI8sbW0Tw4lxhT8YQGxlEK2tijEYkETKFq6lLa/w95KZJoXs+
-	q6xg7mp7J7Wzzr+mzDv5HzNvUsDkPb8HlPFO+ky3QWTDTgfG4Mg99QMB+A6haBaP+ZShkO
-	ZdksKWvWI8a8ztZDw9b5u3rS3mQJeO0=
-From: Sean Anderson <sean.anderson@linux.dev>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Michal Simek <michal.simek@amd.com>,
-	linux-gpio@vger.kernel.org
-Cc: Krishna Potthuri <sai.krishna.potthuri@amd.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH 2/2] pinctrl: zynqmp: Support muxing individual pins
-Date: Fri,  3 May 2024 12:22:17 -0400
-Message-Id: <20240503162217.1999467-3-sean.anderson@linux.dev>
-In-Reply-To: <20240503162217.1999467-1-sean.anderson@linux.dev>
-References: <20240503162217.1999467-1-sean.anderson@linux.dev>
+	s=arc-20240116; t=1714753405; c=relaxed/simple;
+	bh=2TK0WfyT+uobla4qoKzP2gAKcDWPP/VYNZP4PYQFP0I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gcZ3iTEBjfkrDu9MhVUWV0pn6z+MHn1Ct92vxjRQhf9xBrh1VB9SeN9nNh41YL5zR6weuo6zxNfvY2Svk0DZrvyv1HQ68fI52JJqh2+kOJgcc9iatbu5/Nf38EYGuY9zs/VRyRkpQ3ClURE8rW2xMCTAX46c/OaJB/lNZkGi+O4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrW1Rvth; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso8508364b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714753403; x=1715358203; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mwKDafe28MIieMSNGIPW3eOTsHHrwRXu1m7RhuwOcZc=;
+        b=mrW1RvthgHzIVZ4kN045WXM/fhPCmMc/Rm+6Xv+rkewGVy1kS4uiPcgpFLWjMBmZw5
+         ne6uHunDYyK1Lmr2UBJ81uI8ODy8VMmWN6hIKADn26n1Gjqi3WqjT3KNJByLbml9BNrI
+         tG2+4YjZ1FEh18bPj2ErjQcssAOGQEi+4oMogWAWuaqfkkGS/0vRCCIn8YU7uXyO6XRC
+         Xm4cFt7Ud6SUuJ8f10M2nCOAEHtqMavBhLSxrTd3pfDxAKD9E/eeBnioPzZ7lbIHbMbr
+         x8S1DnSd25Wgc9U40kSKbFZyFwVssFeyzxx4d00OXedlCuGBhGfbUFO4XwqjSxSkHLSq
+         mMRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714753403; x=1715358203;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mwKDafe28MIieMSNGIPW3eOTsHHrwRXu1m7RhuwOcZc=;
+        b=lVX/jlav6nmSA78V0/R+FXxRc2v2GCl6jhNwZGnd508Jm8KYUMsAOdH97eRWWs3jlF
+         HdQHk1YxE2VJ7nVBCcvG7K9cb2/TE+OAaUFxTyv8jgIf+d/MuBn7+eqPZRca50ddw4Gi
+         RIvLVjamR/TD5VQMNEq8bQaW/Z4NpIkCR6B/5mZ6p/jIFmZCjWR4Gotun0H9SZLh2yfF
+         TlLIL8MZEPh4AGNOC9V892aJ5R+dyUBagBr8ugBMLQjOWstIeCzEfQeUUgpWgy+sZ30L
+         rXC4ASL4QZUI0/lbH4EJ+8GqmB31EvDe2daof0Cd3ksmhcfBD3k+XTWiWn2eajFx1E0U
+         /8kA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2hiDM94VflGmxrnzwC/qtTCtsRGN6V+JQ9T60ttaFi1Vpzhn+jbA0+qtuk1Ru/nz4cdIJHfWk4KgFdNvqdrVBJwRcSWNO62Sh2UPC
+X-Gm-Message-State: AOJu0Yyf21s2N2kaS2WKbMIsmT++/YXoruzDzmN6erfbbVUjC0hu+RLU
+	YpfIEQIuMumwjtlCADnOkqwYaKs31vHkFe/RV+wPHRfNeydDPYdE
+X-Google-Smtp-Source: AGHT+IGuqVde44+OlfespuDSTAfHKUhnMDH3dyay8UhKf4umdgctT17gfataxz2qw5xl3u+0CdUBww==
+X-Received: by 2002:a05:6a00:130a:b0:6f3:e6e0:d9fb with SMTP id j10-20020a056a00130a00b006f3e6e0d9fbmr3124846pfu.11.1714753403334;
+        Fri, 03 May 2024 09:23:23 -0700 (PDT)
+Received: from ?IPV6:2402:e280:214c:86:b096:5d6e:50c3:70e5? ([2402:e280:214c:86:b096:5d6e:50c3:70e5])
+        by smtp.gmail.com with ESMTPSA id w17-20020a639351000000b0061cf79eab38sm1612625pgm.37.2024.05.03.09.23.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 09:23:23 -0700 (PDT)
+Message-ID: <f87bfbb1-b80f-46a5-be85-058a406de99d@gmail.com>
+Date: Fri, 3 May 2024 21:53:19 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next] gpu:ipu-v3:pre: replace of_node_put() with
+ __free
+To: p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ skhan@linuxfoundation.org, javier.carrasco.cruz@gmail.com,
+ Julia Lawall <julia.lawall@inria.fr>
+References: <20240427045024.7083-1-prosunofficial@gmail.com>
+Content-Language: en-US
+From: R Sundar <prosunofficial@gmail.com>
+In-Reply-To: <20240427045024.7083-1-prosunofficial@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-While muxing groups of pins at once can be convenient for large
-interfaces, it can also be rigid. This is because the group is set to
-all pins which support a particular function, even though not all pins
-may be used. For example, the sdhci0 function may be used with a 8-bit
-eMMC, 4-bit SD card, or even a 1-bit SD card. In these cases, the extra
-pins may be repurposed for other uses, but this is not currently
-allowed.
+On 27/04/24 10:20, R Sundar wrote:
+> use the new cleanup magic to replace of_node_put() with
+> __free(device_node) marking to auto release when they get out of scope.
+> 
+> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: R Sundar <prosunofficial@gmail.com>
+> ---
+>   drivers/gpu/ipu-v3/ipu-pre.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/ipu-v3/ipu-pre.c b/drivers/gpu/ipu-v3/ipu-pre.c
+> index aef984a43190..95830cf8fa3e 100644
+> --- a/drivers/gpu/ipu-v3/ipu-pre.c
+> +++ b/drivers/gpu/ipu-v3/ipu-pre.c
+> @@ -113,8 +113,8 @@ int ipu_pre_get_available_count(void)
+>   struct ipu_pre *
+>   ipu_pre_lookup_by_phandle(struct device *dev, const char *name, int index)
+>   {
+> -	struct device_node *pre_node = of_parse_phandle(dev->of_node,
+> -							name, index);
+> +	struct device_node *pre_node __free(device_node) =
+> +		of_parse_phandle(dev->of_node, name, index);
+>   	struct ipu_pre *pre;
+>   
+>   	mutex_lock(&ipu_pre_list_mutex);
+> @@ -123,14 +123,11 @@ ipu_pre_lookup_by_phandle(struct device *dev, const char *name, int index)
+>   			mutex_unlock(&ipu_pre_list_mutex);
+>   			device_link_add(dev, pre->dev,
+>   					DL_FLAG_AUTOREMOVE_CONSUMER);
+> -			of_node_put(pre_node);
+>   			return pre;
+>   		}
+>   	}
+>   	mutex_unlock(&ipu_pre_list_mutex);
+>   
+> -	of_node_put(pre_node);
+> -
+>   	return NULL;
+>   }
+>   
+Hi,
 
-Add a new group for each pin which can be muxed. These groups are part
-of each function the pin can be muxed to. We treat group selectors
-beyond the number of groups as "pin" groups. To set this up, we
-initialize groups before functions, and then create a bitmap of used
-pins for each function. These used pins are appended to the function's
-list of groups.
+Any feedback on this patch.
 
-Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
----
-
- drivers/pinctrl/pinctrl-zynqmp.c | 61 ++++++++++++++++++++++----------
- 1 file changed, 43 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/pinctrl/pinctrl-zynqmp.c b/drivers/pinctrl/pinctrl-zynqmp.c
-index 5c46b7d7ebcb..4829150ab069 100644
---- a/drivers/pinctrl/pinctrl-zynqmp.c
-+++ b/drivers/pinctrl/pinctrl-zynqmp.c
-@@ -10,6 +10,7 @@
- 
- #include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
- 
-+#include <linux/bitmap.h>
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-@@ -97,7 +98,7 @@ static int zynqmp_pctrl_get_groups_count(struct pinctrl_dev *pctldev)
- {
- 	struct zynqmp_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
- 
--	return pctrl->ngroups;
-+	return pctrl->ngroups + zynqmp_desc.npins;
- }
- 
- static const char *zynqmp_pctrl_get_group_name(struct pinctrl_dev *pctldev,
-@@ -105,7 +106,10 @@ static const char *zynqmp_pctrl_get_group_name(struct pinctrl_dev *pctldev,
- {
- 	struct zynqmp_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
- 
--	return pctrl->groups[selector].name;
-+	if (selector < pctrl->ngroups)
-+		return pctrl->groups[selector].name;
-+
-+	return zynqmp_desc.pins[selector - pctrl->ngroups].name;
- }
- 
- static int zynqmp_pctrl_get_group_pins(struct pinctrl_dev *pctldev,
-@@ -115,8 +119,13 @@ static int zynqmp_pctrl_get_group_pins(struct pinctrl_dev *pctldev,
- {
- 	struct zynqmp_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
- 
--	*pins = pctrl->groups[selector].pins;
--	*npins = pctrl->groups[selector].npins;
-+	if (selector < pctrl->ngroups) {
-+		*pins = pctrl->groups[selector].pins;
-+		*npins = pctrl->groups[selector].npins;
-+	} else {
-+		*pins = &zynqmp_desc.pins[selector - pctrl->ngroups].number;
-+		*npins = 1;
-+	}
- 
- 	return 0;
- }
-@@ -560,10 +569,12 @@ static int zynqmp_pinctrl_prepare_func_groups(struct device *dev, u32 fid,
- {
- 	u16 resp[NUM_GROUPS_PER_RESP] = {0};
- 	const char **fgroups;
--	int ret, index, i;
-+	int ret, index, i, pin;
-+	unsigned int npins;
-+	unsigned long *used_pins __free(bitmap) =
-+		bitmap_zalloc(zynqmp_desc.npins, GFP_KERNEL);
- 
--	fgroups = devm_kcalloc(dev, func->ngroups, sizeof(*fgroups), GFP_KERNEL);
--	if (!fgroups)
-+	if (!used_pins)
- 		return -ENOMEM;
- 
- 	for (index = 0; index < func->ngroups; index += NUM_GROUPS_PER_RESP) {
-@@ -578,23 +589,37 @@ static int zynqmp_pinctrl_prepare_func_groups(struct device *dev, u32 fid,
- 			if (resp[i] == RESERVED_GROUP)
- 				continue;
- 
--			fgroups[index + i] = devm_kasprintf(dev, GFP_KERNEL,
--							    "%s_%d_grp",
--							    func->name,
--							    index + i);
--			if (!fgroups[index + i])
--				return -ENOMEM;
--
- 			groups[resp[i]].name = devm_kasprintf(dev, GFP_KERNEL,
- 							      "%s_%d_grp",
- 							      func->name,
- 							      index + i);
- 			if (!groups[resp[i]].name)
- 				return -ENOMEM;
-+
-+			for (pin = 0; pin < groups[resp[i]].npins; pin++)
-+				set_bit(groups[resp[i]].pins[pin], used_pins);
- 		}
- 	}
- done:
-+	npins = bitmap_weight(used_pins, zynqmp_desc.npins);
-+	fgroups = devm_kcalloc(dev, func->ngroups + npins, sizeof(*fgroups),
-+			       GFP_KERNEL);
-+	if (!fgroups)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < func->ngroups; i++) {
-+		fgroups[i] = devm_kasprintf(dev, GFP_KERNEL, "%s_%d_grp",
-+					    func->name, i);
-+		if (!fgroups[i])
-+			return -ENOMEM;
-+	}
-+
-+	pin = 0;
-+	for_each_set_bit(pin, used_pins, zynqmp_desc.npins)
-+		fgroups[i++] = zynqmp_desc.pins[pin].name;
-+
- 	func->groups = fgroups;
-+	func->ngroups += npins;
- 
- 	return 0;
- }
-@@ -772,6 +797,10 @@ static int zynqmp_pinctrl_prepare_function_info(struct device *dev,
- 	if (!groups)
- 		return -ENOMEM;
- 
-+	ret = zynqmp_pinctrl_prepare_group_pins(dev, groups, pctrl->ngroups);
-+	if (ret)
-+		return ret;
-+
- 	for (i = 0; i < pctrl->nfuncs; i++) {
- 		ret = zynqmp_pinctrl_prepare_func_groups(dev, i, &funcs[i],
- 							 groups);
-@@ -779,10 +808,6 @@ static int zynqmp_pinctrl_prepare_function_info(struct device *dev,
- 			return ret;
- 	}
- 
--	ret = zynqmp_pinctrl_prepare_group_pins(dev, groups, pctrl->ngroups);
--	if (ret)
--		return ret;
--
- 	pctrl->funcs = funcs;
- 	pctrl->groups = groups;
- 
--- 
-2.35.1.1320.gc452695387.dirty
-
+Thanks,
+Sundar
 
