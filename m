@@ -1,73 +1,62 @@
-Return-Path: <linux-kernel+bounces-168084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 998538BB374
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:49:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B0558BB376
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394A31F24207
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:49:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C503B1F24292
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C09D153803;
-	Fri,  3 May 2024 18:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE51C57C8A;
+	Fri,  3 May 2024 18:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Q+sjMUO8"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pEVFslJO"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A280112F38E
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925C42E646
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714762156; cv=none; b=EzRVvZtXwDTY1GsayaqisE+dK94BTGZMhy1RmnVXlij/a0Da4e1XuSdzMTEA7C22mDomB6ma/UQQANQSCUYNGKpVsSAUlGTNBL8Gx7qyO0dnOfy7OyqGyoke6RdGJBbnqGkGv+0XqnZNqfDsv2gn4dCDLFkAFH0pH1OCq0GZvNo=
+	t=1714762193; cv=none; b=Y70Wq6McKflVMwHAg2XaL0KnncXKwxva/nYesfamcmWZv742+UAXNOSbNept6RA44nTJrLSZWaX/LRqWFZW8QCkEbXcFy+ie6mKN70M+tM0c/AraHEIPN6IZpnvu7tW19j9BAHTWKVcHVOrK0MCrbdYy7n1jrfQT6lq0vPwVZa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714762156; c=relaxed/simple;
-	bh=lgWvD3PbcoJjHAvCMG758qd7evw4OjG5rRe4FiYHJto=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PPRQ1CF3h+GLfKN3mqSYQ6eNHq3IhGHZaMKDxH2vTrAYy9ypvKiqORgSSdhp6DPZsq1qU8XCKKlNdVSeTipKhYtafzxmgZYrJ0gEH0WkqLP2crfCoTad/fXHbY+Rfi/g5IHGFh+pTmox85sD509OCFQEZSWCkB488BPrPFj7+W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Q+sjMUO8; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2b360096cc4so11716a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1714762154; x=1715366954; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R6sVd1TZfxbwE7hyL107cZLQAt+SkbJAdkmwm2tiV/I=;
-        b=Q+sjMUO8PZGIDVJ0sjVlnFmWGpW5R5dlmERHPvlPSEgdnsq3kfGv5jMIh8dKmX0s98
-         55l/T8RNk4BIBcXN1q6pKWw6uuYeXpBNbpujDJo0vAGYt5to/QPaEvJY+Pv7CqXPEvSk
-         H5aAdeV+RLRdkTgbzC/57IY46AMqXAIBqIdiYxjm+wgCAkpkOnbuJKGhbJO7MpX/ZqwA
-         KGET9W94fI79Ft8sVoxncNhFUB9S2Fpd+n9iiwwkviVamygQOE2wH34UjJiR/ffuxdQ7
-         lnxJaxwKdS6TrJYHcUk2OFbYTeSKff9lDRGexXPAofquyNDp/z7CHN3IrRXcTC0ybJC+
-         8jEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714762154; x=1715366954;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R6sVd1TZfxbwE7hyL107cZLQAt+SkbJAdkmwm2tiV/I=;
-        b=jvTfeTG/b7JV+kWiLEgi+lN6YPymhJANxDQ3iu/alx7quR16gD/VWjiHYdK+HEzekV
-         ZM0D6CgETrbZGrwXbCxoWMGABuyMsAHv5l4ZV7QC+uTvBcvNSxMlWB0vuDSkAY2RvLbE
-         8Yi6lr9nrUKIhuGAvmxXLiCmVWWO12Nh+d5Ymtd8D0FY7pIi25/C9jFrQ+0QYNoYu6yG
-         Q5YH4oBqUii0PFg18k/Bs/ZGlknu//5q+RmPcFT0hUT1Mk8+Ih2uELYWYJRyqm72l1nn
-         002ybwQqusQ8Kv80P7YRye65zgeUtQDcLUoZJhFxEAJDTvJ/QUwsCHZj2HBDjbXiuMKG
-         ceCg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2tTtp1AG0jBPgiTYRXgpTxR+Vqou4l/sNamRdbFeeoZApZq1SHbCsFH6tO0Rl8nGkgTYf5EIFxwnDOkrx1Cg2XxgEBuCB0OA9830v
-X-Gm-Message-State: AOJu0YzjHcMhXxqYTJW7Ln+M7ATPOjcfw3TfuaIftp0HgBryCRMoZWiE
-	ScNjGFSJBZ3IY+bu0tziXymiJ2a0I62J5+ueVLrco/ppHz8/qKcWtPo7se2hopA=
-X-Google-Smtp-Source: AGHT+IG3+qjTWapc+Q+wN/PJnBYud4dggeONIpdmMvZWXIbQyfbY8nF72QViuq38TDN9fCmFOCrwSg==
-X-Received: by 2002:aa7:8617:0:b0:6ea:6f18:887a with SMTP id p23-20020aa78617000000b006ea6f18887amr3538580pfn.1.1714762153806;
-        Fri, 03 May 2024 11:49:13 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id b8-20020a056a000cc800b006f0ba75b6b7sm3374417pfv.208.2024.05.03.11.49.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 11:49:13 -0700 (PDT)
-Message-ID: <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
-Date: Fri, 3 May 2024 12:49:11 -0600
+	s=arc-20240116; t=1714762193; c=relaxed/simple;
+	bh=yGw40/sPrzRGZYXQ4KjFa8YDK/5S6JDFw6lfLNvowjY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fDZtGp00tpv7r62VMu1mqlAcmddPbkc2bviWCery1MCsUlXIHbHDhhSMjhoJGxlqvgh/dYyEvoT2ge6UQAwvOhy1twCs0ypCSIxvkCmbvjkLY3IKXxu4pbwq9Yx52xgozfUNutfTWJFaLjoqDheRwODrtqqHQ7dvjS6SZzoYzB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pEVFslJO; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443Hj0Yp014003;
+	Fri, 3 May 2024 18:49:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=77hzGIyr9qM/bmZ3o2LLjXkvCbHgrrzMWUibQcn58ic=; b=pE
+	VFslJOGHpZ/L09Q5397B+RLy7ZXdX2CbKtrxxLr+dYBSQVL7iF8DxCAvuulu76po
+	hQaZhSRKYyH5ZJkDrzL0ijjkFPuGh1tYyqc6fuxHDL3ti+PpbAAytxoVLKVO24Q9
+	smPpKrlZAwuWDo5Y3srOr6hqgOUD98h+ne10DvW9uqd4ryTzrtdlwFZsXZZTC/0+
+	NYhGKyBRYJNd7rRYRYwgpnD71XaX2cqY3qCpMgkOk/leUqTm7t0p1h1P197c/7N6
+	nT1gZJoYJo47d4VG8t6JxgC7Lp9NPHNlxe1/opG8FCGQgwqjRWzMsvKjSEccTii3
+	nuLQK9xGPBiu91xV3rag==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xw2nc8d2y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 18:49:39 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443InRNW019967
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 3 May 2024 18:49:27 GMT
+Received: from [10.110.94.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 11:49:26 -0700
+Message-ID: <3a0edfd7-fa22-434a-902d-a3a0df1c9d0f@quicinc.com>
+Date: Fri, 3 May 2024 11:49:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,67 +64,104 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?] [io-uring?]
- general protection fault in __ep_remove)
-To: Kees Cook <keescook@chromium.org>,
- Bui Quang Minh <minhquangbui99@gmail.com>, Al Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-Cc: syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
- io-uring@vger.kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
-References: <0000000000002d631f0615918f1e@google.com>
- <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
- <202405031110.6F47982593@keescook>
+Subject: Re: [PATCH v1 1/1] mtd: cfi: Get rid of redundant 'else'
 Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <202405031110.6F47982593@keescook>
-Content-Type: text/plain; charset=UTF-8
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+References: <20240503184230.2927283-1-andriy.shevchenko@linux.intel.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240503184230.2927283-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Sxuo-uLUCjxAOsviM6ODP59QscNBSQ_G
+X-Proofpoint-GUID: Sxuo-uLUCjxAOsviM6ODP59QscNBSQ_G
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-03_13,2024-05-03_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ impostorscore=0 mlxscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ clxscore=1011 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2405030133
 
-On 5/3/24 12:26 PM, Kees Cook wrote:
-> Thanks for doing this analysis! I suspect at least a start of a fix
-> would be this:
+On 5/3/2024 11:42 AM, Andy Shevchenko wrote:
+> In the snippets like the following
 > 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 8fe5aa67b167..15e8f74ee0f2 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -267,9 +267,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+> 	if (...)
+> 		return / goto / break / continue ...;
+> 	else
+> 		...
+> 
+> the 'else' is redundant. Get rid of it.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+
+> ---
+>  include/linux/mtd/cfi.h | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+> index 947410faf9e2..35ca19ae21ae 100644
+> --- a/include/linux/mtd/cfi.h
+> +++ b/include/linux/mtd/cfi.h
+> @@ -308,32 +308,32 @@ static inline uint8_t cfi_read_query(struct map_info *map, uint32_t addr)
+>  {
+>  	map_word val = map_read(map, addr);
 >  
->  		if (events & EPOLLOUT) {
->  			/* Paired with fput in dma_buf_poll_cb */
-> -			get_file(dmabuf->file);
-> -
-> -			if (!dma_buf_poll_add_cb(resv, true, dcb))
-> +			if (!atomic_long_inc_not_zero(&dmabuf->file) &&
-> +			    !dma_buf_poll_add_cb(resv, true, dcb))
->  				/* No callback queued, wake up any other waiters */
-
-Don't think this is sane at all. I'm assuming you meant:
-
-	atomic_long_inc_not_zero(&dmabuf->file->f_count);
-
-but won't fly as you're not under RCU in the first place. And what
-protects it from being long gone before you attempt this anyway? This is
-sane way to attempt to fix it, it's completely opposite of what sane ref
-handling should look like.
-
-Not sure what the best fix is here, seems like dma-buf should hold an
-actual reference to the file upfront rather than just stash a pointer
-and then later _hope_ that it can just grab a reference. That seems
-pretty horrible, and the real source of the issue.
-
-> Due to this issue I've proposed fixing get_file() to detect pathological states:
-> https://lore.kernel.org/lkml/20240502222252.work.690-kees@kernel.org/
-
-I don't think this would catch this case, as the memory could just be
-garbage at this point.
-
--- 
-Jens Axboe
+> -	if (map_bankwidth_is_1(map)) {
+> +	if (map_bankwidth_is_1(map))
+>  		return val.x[0];
+> -	} else if (map_bankwidth_is_2(map)) {
+> +	if (map_bankwidth_is_2(map))
+>  		return cfi16_to_cpu(map, val.x[0]);
+> -	} else {
+> -		/* No point in a 64-bit byteswap since that would just be
+> -		   swapping the responses from different chips, and we are
+> -		   only interested in one chip (a representative sample) */
+> -		return cfi32_to_cpu(map, val.x[0]);
+> -	}
+> +	/*
+> +	 * No point in a 64-bit byteswap since that would just be
+> +	 * swapping the responses from different chips, and we are
+> +	 * only interested in one chip (a representative sample)
+> +	 */
+> +	return cfi32_to_cpu(map, val.x[0]);
+>  }
+>  
+>  static inline uint16_t cfi_read_query16(struct map_info *map, uint32_t addr)
+>  {
+>  	map_word val = map_read(map, addr);
+>  
+> -	if (map_bankwidth_is_1(map)) {
+> +	if (map_bankwidth_is_1(map))
+>  		return val.x[0] & 0xff;
+> -	} else if (map_bankwidth_is_2(map)) {
+> +	if (map_bankwidth_is_2(map))
+>  		return cfi16_to_cpu(map, val.x[0]);
+> -	} else {
+> -		/* No point in a 64-bit byteswap since that would just be
+> -		   swapping the responses from different chips, and we are
+> -		   only interested in one chip (a representative sample) */
+> -		return cfi32_to_cpu(map, val.x[0]);
+> -	}
+> +	/*
+> +	 * No point in a 64-bit byteswap since that would just be
+> +	 * swapping the responses from different chips, and we are
+> +	 * only interested in one chip (a representative sample)
+> +	 */
+> +	return cfi32_to_cpu(map, val.x[0]);
+>  }
+>  
+>  void cfi_udelay(int us);
 
 
