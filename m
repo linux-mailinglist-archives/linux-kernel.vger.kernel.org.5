@@ -1,238 +1,141 @@
-Return-Path: <linux-kernel+bounces-167688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EB048BAD71
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:18:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B26448BAD76
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBCE91F22A33
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:18:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C811B1C220C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF07153BCA;
-	Fri,  3 May 2024 13:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141D3154420;
+	Fri,  3 May 2024 13:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vyuk05+e"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mbnuzj+F"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9569515357D
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAA1153826
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:15:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742118; cv=none; b=peS+AggWg+jL/WU1AaWGpR9uRR2KxJu7VkNxawz6yBhN4DrtJvUCk9u7WLD141bRUz9m9WS//c0WtXIGIsbwfyh3rWSlEi5P4IIW1vsxqp+nVqWAykYxze6w6IM7mX+0xiG59CInQgsLttVm++emsfQ+SAk2ZtKahOqhPJujc7w=
+	t=1714742128; cv=none; b=SoiQUl/djjMVfIcRPvmnMNVDT8SdRBp2ASnjHb71JkEzXBfWiKDY73Lz0hsh0cjjcE5gOakTRxsp8GgFXeBf+2+6tOgiP1+AsuKHPsUMAUdlmoUFch7Urd7wEsDf/VEaqZ944syYnL+qolKyceT9siYgy+tmpozPxWi+njosx1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742118; c=relaxed/simple;
-	bh=HzAUgRyvVHqHcP8yFm/mihYEIdANCSWUcftDdROCFAE=;
+	s=arc-20240116; t=1714742128; c=relaxed/simple;
+	bh=xrqzZwgdph5DRS4i3SCKXCa1JY0Gomt5Ypf74Pq1OsY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YJxDxqRPYZJVSUeia1BV/wUci1J7TcjTw2IPvquTRhDRqDxr9tvdhVjKRcr8Jepq4AzJc/UDGp+LxN6KW6XtiJ9amQzlt7q5tk+VWKIU2ME+tvNYtEviE2AikPPBuuun2VSB5JyohDqqltgHoNpS+dZkObqXmbJerDpt88Mw8DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Vyuk05+e; arc=none smtp.client-ip=209.85.219.179
+	 To:Cc:Content-Type; b=W6hK8IsduxLYsMlnpH2ms8Kk/DUydHYs59UkXcG4LzBFCYLWMcdRQbglPD1+JGLzUiPxloE9v5qgerzbLggDOAzPz4vI/DtjK66ISw21s3Uf1FPLBeEEdseEWTyXHmHALJlo+v4Wa7W1yEoEcPtBMoNW7+DbCzF1OXUE4zscUX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mbnuzj+F; arc=none smtp.client-ip=209.85.219.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-de45dba15feso10644309276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:15:16 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso2650709276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:15:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714742115; x=1715346915; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714742126; x=1715346926; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yVNII6J9Gm42hbYviigMrcoeuivG18QFbOOCKlRMXeQ=;
-        b=Vyuk05+enFU2uos24b99xANyP3PO1Z8oRuhox8FTQGeIJQozkEekmCBuG9wYXEm94i
-         DCqcfgNV9UPMlgNW3DJgvhVkKQ9RpYAeDLtWaTnuOEpaAipv8BZUb85+z1e+bLzdtdUT
-         /CS0BfPEsqF9tm8HbStWfniR8ILAH7TlMWwkBe+D/XWyRbofNCFMgch74k/wmkEVBJKn
-         ObJGTtjOXhZTxOhgviXk5JgOVjDDbibewEX0Kr2Xg1leeS9ISIj58m4kfof5M6mVSstu
-         pghcSTzl6RBALGAjIJl71st9+3JFSAQ52aMaptEQJUGRn+KR+YH9x7tNoCwKqIzxXJkw
-         QAwQ==
+        bh=yRI9l6TRFX4cl/D/dHvxIPz5B9asZPit4lxB7Ww5SAs=;
+        b=Mbnuzj+F1O2ftcNQQa2gjKwnUIEzNWptcRetBceho0Y5Aa8AJhE/TqlCMOjfFt/M06
+         LZ4McigjWo0z4CA2xJGkMjOGRNpBJ2+h53A2VJAJpsKsqyC6Ktn0LzTOYk/SXmEsBmgs
+         v0XPoc+nMYnPxKy1KT77c5XS9JwIITbHaby7NRXwSdubet8A+jjQ8tiEb8BNkSwTVgpd
+         +CiquOg/lyTUnwkHHDdwj8lqAJCZ8DL/exZO3hqVIN1Zc6yablOs35WHNXnU1ZJmTyo1
+         xQ4iVz4vjrfdD3HXBMZTrdF2Tc3RHFv93D3EkvxgxMW2EPHkzYVy+tKgfgSmHMbk7pCe
+         vHqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714742115; x=1715346915;
+        d=1e100.net; s=20230601; t=1714742126; x=1715346926;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yVNII6J9Gm42hbYviigMrcoeuivG18QFbOOCKlRMXeQ=;
-        b=qKQHTjt6tFBd3kJIlqLfYr+k4Vp5fsFfQoGnNCVuZQTRg9ImCbPLqnqEp7BCpZNOw4
-         WUN6GR5tyjh/pP9ctzGziLSGuRTcyoMrG6pjtuT7W0XxN9h241cCVpXi8LdS703m+AJj
-         FCaAROWSWw5APnq1sY+Ivv4n2jLvyzqXPzT9U/D0XxtMmkNmXEEnvem0CCEN3fHdjoG8
-         5FV7EHHgFHUDtpvctu9uBZe4AjJMQbF1e3IiKfOM1Ta1ZLKVOBvoDkPvNBeAs4mUiKy2
-         BFuwJ8e99P+tnChmHxlRWZZVAYe8XdqHtxJS/XzPB2OHoNCyLehwwoDecA6CKDc/FblT
-         29GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbN7CYwuF4ZnvjpHOIoyS7cehqGjgiOjMiOMAt6JEG9pvmFkKGzWiFN6L+9c0QJinRSdUYv8ku4+fRUK8nDrOPitFNrMx9zUdoaTSc
-X-Gm-Message-State: AOJu0YwC53Asy6ayKPkN21c5FLQhvGnrnhUdN8u2CVPGvZHQrC4OOm23
-	VMJLm2EOwAAn/KerN241ivmojJvISruAL+a+1zYug3aqaMWqFzW4mjVgjIYaJZLXTfu2ORyW5H0
-	6ZE74Z1nJqbx+k8y7uFylDks2FLzyOKCV0Kzpyg==
-X-Google-Smtp-Source: AGHT+IGXOR/gKN18wXYTQWIdp+V6ndvJLe8y8kJOGpPu1SyN43J40pizn8v3Qat2M6rWGFBsSuM6y83EGAGTutUjxo8=
-X-Received: by 2002:a05:6902:2213:b0:de5:d1cd:b580 with SMTP id
- dm19-20020a056902221300b00de5d1cdb580mr3447075ybb.36.1714742115606; Fri, 03
- May 2024 06:15:15 -0700 (PDT)
+        bh=yRI9l6TRFX4cl/D/dHvxIPz5B9asZPit4lxB7Ww5SAs=;
+        b=m8fW6lWg23iOFMQS/yAB3cst1BpjRkQ71+uKnkpx7I0BOZwzOhBkXA3odVRQ+LE/IE
+         n/rQmH7x89sZM/J9JtVZD0U4BeHX3OI6Hngde2sDi1u3BL8jTCfNMJUbMA4kRSR3uqGK
+         HqV40GMvwoKt9fHAuiPQhACtNvKqADstGpF2TxFOAE7Y2AjPi/Ie++7THPgJd4pvcip4
+         kdKH1yPJeu30PRZonraH4xT8kpIF+DjBItqfKekVi7tFDs+FH26Hkrc/irpLS1+JVwHC
+         /gcHwBEz5JRytfevrEdnN6bpQbF954wcTh9dM/2CDVbVb2JJE7GqtvUwyFteqFl2V03s
+         O6bw==
+X-Forwarded-Encrypted: i=1; AJvYcCXBNShrFB+V6b4sedfAzKTuk58rxxfZBfu78+REvbjrxZymsaSne9kdK52/1xVx1zsFhu09lAnBQaxU0ZNwH1EwOU/2N6uGq7luF8RX
+X-Gm-Message-State: AOJu0YwkLdyAc9kKMxw4T1OGItoK3oSpfLzLhkyhcQsY/PqOkfiXbxG2
+	VmhK0kQhnH3cHdfCW7ms/1crAA0oTrJm0OxbGPEFwFHXBvUmbLNrB9Ms18XkMepLDejwSl88s9W
+	PNgvRptsnkKkRSv6xmp8OoD3EPnBcgdZ5WkzsOg==
+X-Google-Smtp-Source: AGHT+IHAuATqJlUN1KaAG6j30rTHBUQbuirlBENRxW4a0MCgvAe9RQrcnJ1n9j7vzbMqMlM2SL8OuwZJN888gEQV8HM=
+X-Received: by 2002:a25:aacb:0:b0:de8:a500:ffdb with SMTP id
+ t69-20020a25aacb000000b00de8a500ffdbmr1856096ybi.26.1714742125931; Fri, 03
+ May 2024 06:15:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425133034.79599-1-ulf.hansson@linaro.org> <581352225de29859544b88f95ae5de89@manjaro.org>
-In-Reply-To: <581352225de29859544b88f95ae5de89@manjaro.org>
+References: <20240430093724.2692232-1-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240430093724.2692232-1-claudiu.beznea.uj@bp.renesas.com>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 3 May 2024 15:14:40 +0200
-Message-ID: <CAPDyKFranVGG+fPY2RfKARL1nr2AAuR=XAPyZgqaSLN5bBALUQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Convert to use __mmc_poll_for_busy()
- SD_APP_OP_COND too
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: linux-mmc@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>, 
-	Avri Altman <avri.altman@wdc.com>, Felix Qin <xiaokeqinhealth@126.com>, 
-	linux-kernel@vger.kernel.org
+Date: Fri, 3 May 2024 15:14:50 +0200
+Message-ID: <CAPDyKFrPZ5XF93MD+g03UQP1d4WSPoop=VyAhzwLu9KV436KkA@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: renesas_sdhi: Set the SDBUF after reset
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: wsa+renesas@sang-engineering.com, linux-mmc@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Hien Huynh <hien.huynh.px@renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 30 Apr 2024 at 03:17, Dragan Simic <dsimic@manjaro.org> wrote:
+On Tue, 30 Apr 2024 at 11:37, Claudiu <claudiu.beznea@tuxon.dev> wrote:
 >
-> Hello Ulf,
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >
-> Please see my comment below.
+> For development purpose, renesas_sdhi_probe() could be called w/
+> dma_ops = NULL to force the usage of PIO mode. In this case the
+> renesas_sdhi_enable_dma() will not be called before transferring data.
 >
-> On 2024-04-25 15:30, Ulf Hansson wrote:
-> > Similar to what has already been changed for eMMC and the
-> > MMC_SEND_OP_COND
-> > (CMD1), let's convert the SD_APP_OP_COND (ACMD41) for SD cards to use
-> > the
-> > common __mmc_poll_for_busy() too.
-> >
-> > This change means the initial delay period, that starts as 10ms will
-> > now
-> > increase for every loop when being busy. The total accepted timeout for
-> > being busy is 1s, which is according to the SD spec.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >  drivers/mmc/core/sd_ops.c | 77 +++++++++++++++++++++++++--------------
-> >  1 file changed, 50 insertions(+), 27 deletions(-)
-> >
-> > diff --git a/drivers/mmc/core/sd_ops.c b/drivers/mmc/core/sd_ops.c
-> > index a59cd592f06e..3ce1ff336826 100644
-> > --- a/drivers/mmc/core/sd_ops.c
-> > +++ b/drivers/mmc/core/sd_ops.c
-> > @@ -19,6 +19,15 @@
-> >  #include "sd_ops.h"
-> >  #include "mmc_ops.h"
-> >
-> > +#define SD_APP_OP_COND_PERIOD_US     (10 * 1000) /* 10ms */
-> > +#define SD_APP_OP_COND_TIMEOUT_MS    1000 /* 1s */
-> > +
-> > +struct sd_app_op_cond_busy_data {
-> > +     struct mmc_host *host;
-> > +     u32 ocr;
-> > +     struct mmc_command *cmd;
-> > +};
-> > +
-> >  int mmc_app_cmd(struct mmc_host *host, struct mmc_card *card)
-> >  {
-> >       int err;
-> > @@ -115,10 +124,44 @@ int mmc_app_set_bus_width(struct mmc_card *card,
-> > int width)
-> >       return mmc_wait_for_app_cmd(card->host, card, &cmd);
-> >  }
-> >
-> > +static int sd_app_op_cond_cb(void *cb_data, bool *busy)
-> > +{
-> > +     struct sd_app_op_cond_busy_data *data = cb_data;
-> > +     struct mmc_host *host = data->host;
-> > +     struct mmc_command *cmd = data->cmd;
-> > +     u32 ocr = data->ocr;
-> > +     int err;
+> If renesas_sdhi_enable_dma() is not called, renesas_sdhi_clk_enable()
+> call from renesas_sdhi_probe() will configure SDBUF by calling the
+> renesas_sdhi_sdbuf_width() function, but then SDBUF will be reset in
+> tmio_mmc_host_probe() when calling tmio_mmc_reset() though host->reset().
+> If SDBUF is zero the data transfer will not work in PIO mode for RZ/G3S.
 >
-> Minor nitpick...  An empty line should be added here, to
-> separate the variable definitions from the subsequent code.
+> To fix this call again the renesas_sdhi_sdbuf_width(host, 16) in
+> renesas_sdhi_reset(). The call of renesas_sdhi_sdbuf_width() was not
+> removed from renesas_sdhi_clk_enable() as the host->reset() is optional.
+>
+> Co-developed-by: Hien Huynh <hien.huynh.px@renesas.com>
+> Signed-off-by: Hien Huynh <hien.huynh.px@renesas.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Thanks for noticing, I have fixed it when applying!
-
->
-> Otherwise, the patch is looking to me, so please include my
->
-> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
-
-Thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
+> ---
 >
-> > +     *busy = false;
-> > +
-> > +     err = mmc_wait_for_app_cmd(host, NULL, cmd);
-> > +     if (err)
-> > +             return err;
-> > +
-> > +     /* If we're just probing, do a single pass. */
-> > +     if (ocr == 0)
-> > +             return 0;
-> > +
-> > +     /* Wait until reset completes. */
-> > +     if (mmc_host_is_spi(host)) {
-> > +             if (!(cmd->resp[0] & R1_SPI_IDLE))
-> > +                     return 0;
-> > +     } else if (cmd->resp[0] & MMC_CARD_BUSY) {
-> > +             return 0;
-> > +     }
-> > +
-> > +     *busy = true;
-> > +     return 0;
-> > +}
-> > +
-> >  int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
-> >  {
-> >       struct mmc_command cmd = {};
-> > -     int i, err = 0;
-> > +     struct sd_app_op_cond_busy_data cb_data = {
-> > +             .host = host,
-> > +             .ocr = ocr,
-> > +             .cmd = &cmd
-> > +     };
-> > +     int err;
-> >
-> >       cmd.opcode = SD_APP_OP_COND;
-> >       if (mmc_host_is_spi(host))
-> > @@ -127,36 +170,16 @@ int mmc_send_app_op_cond(struct mmc_host *host,
-> > u32 ocr, u32 *rocr)
-> >               cmd.arg = ocr;
-> >       cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R3 | MMC_CMD_BCR;
-> >
-> > -     for (i = 100; i; i--) {
-> > -             err = mmc_wait_for_app_cmd(host, NULL, &cmd);
-> > -             if (err)
-> > -                     break;
-> > -
-> > -             /* if we're just probing, do a single pass */
-> > -             if (ocr == 0)
-> > -                     break;
-> > -
-> > -             /* otherwise wait until reset completes */
-> > -             if (mmc_host_is_spi(host)) {
-> > -                     if (!(cmd.resp[0] & R1_SPI_IDLE))
-> > -                             break;
-> > -             } else {
-> > -                     if (cmd.resp[0] & MMC_CARD_BUSY)
-> > -                             break;
-> > -             }
-> > -
-> > -             err = -ETIMEDOUT;
-> > -
-> > -             mmc_delay(10);
-> > -     }
-> > -
-> > -     if (!i)
-> > -             pr_err("%s: card never left busy state\n", mmc_hostname(host));
-> > +     err = __mmc_poll_for_busy(host, SD_APP_OP_COND_PERIOD_US,
-> > +                               SD_APP_OP_COND_TIMEOUT_MS, &sd_app_op_cond_cb,
-> > +                               &cb_data);
-> > +     if (err)
-> > +             return err;
-> >
-> >       if (rocr && !mmc_host_is_spi(host))
-> >               *rocr = cmd.resp[0];
-> >
-> > -     return err;
-> > +     return 0;
-> >  }
-> >
-> >  static int __mmc_send_if_cond(struct mmc_host *host, u32 ocr, u8
-> > pcie_bits,
+> Changes in v3:
+> - shortened the comment introduced in renesas_sdhi_reset()
+>
+> Changes in v2:
+> - fixed typos in commit description
+> - limit the comment lines to 80 chars
+>
+>  drivers/mmc/host/renesas_sdhi_core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
+> index f84f60139bcf..d9503f9f6e96 100644
+> --- a/drivers/mmc/host/renesas_sdhi_core.c
+> +++ b/drivers/mmc/host/renesas_sdhi_core.c
+> @@ -589,6 +589,9 @@ static void renesas_sdhi_reset(struct tmio_mmc_host *host, bool preserve)
+>                         sd_ctrl_write16(host, CTL_RESET_SD, 0x0001);
+>                         priv->needs_adjust_hs400 = false;
+>                         renesas_sdhi_set_clock(host, host->clk_cache);
+> +
+> +                       /* Ensure default value for this driver. */
+> +                       renesas_sdhi_sdbuf_width(host, 16);
+>                 } else if (priv->scc_ctl) {
+>                         renesas_sdhi_scc_reset(host, priv);
+>                 }
+> --
+> 2.39.2
+>
 
