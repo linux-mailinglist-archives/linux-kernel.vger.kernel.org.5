@@ -1,128 +1,189 @@
-Return-Path: <linux-kernel+bounces-167978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302D48BB1D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:28:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A368BB1D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:32:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEABB282503
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:28:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93A53288030
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D052E157E94;
-	Fri,  3 May 2024 17:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mHMQO7jY"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C830157E86;
+	Fri,  3 May 2024 17:32:42 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965541EA87
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3F6157E87
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714757276; cv=none; b=HrOTPlt/j6rEyds7KU02bJJpIgoUbMUatqKQ0fzS/GgvRHQbPkD6m2vwf5pao6NcEvr90lRIipXF3GqmVYM5MJ/gov7QvR4tvO2Q4d0BoPBSp2S9Id2IxXFI4q5vsHrjYLAWaY5DscrZrHz5cdtv9txt9OLTCa1MhczBuNLsjdY=
+	t=1714757561; cv=none; b=Ypv7aXk9BGeQ+zfsN1TJHRDCYTO8XYIbVd21DaciiP4P7M78NZDAbrl/0kQPRSN6BQcbgYFcDsy6b3KnHOR3s40jV+WM+GNN9qhS98Dlge+k18cqhBZmxTD+Ko6FcwKYXmYjtCl3+fzuZ2U3SF5iD5vfv+unNn4R/tndNJ1LAMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714757276; c=relaxed/simple;
-	bh=MzVRkJJP4OxlhoqjyGDk0Zxm3Rguu8M4TsLwAGKFTqk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OqsXcXaVeuRtmkpA4GZ440WpXrqHFmACCtPZ+aOpmUexqCuZPJ0BPYECWoT0YPnOS0KNnaQAFTC7FzGS/FwNASWeDICnsRa7SXnB1onyG2Q+gAOgZjvNrKntAlqU3Qsdp5zOKn35x7GX1qTM9R+oEPK6FLLugw39nU+JQPXY4Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mHMQO7jY; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 3 May 2024 10:27:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714757272;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lkfu3aF+7HSJzFb8vZvf6vy1XzKC3Kd7KishD/IFflc=;
-	b=mHMQO7jYaWPMY18NmrUK8fAqCVXI7qF4CkWacUl9C0Or8849Sy9zAPd3M1EMMYQaI1Y5Wd
-	SeKkHoPnEit66IrkLwSh5a9vSFVOr1k16rIsw93G2F/JFeJ9FQ2A/WDr9XEEMS+gaIUfw1
-	dXM/tFBCitSpWg2X06mM2ERTLPNLGs8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Sebastian Ott <sebott@redhat.com>, linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 4/6] KVM: arm64: add emulation for CTR_EL0 register
-Message-ID: <ZjUekqVOwCWMAKdE@linux.dev>
-References: <20240426104950.7382-1-sebott@redhat.com>
- <20240426104950.7382-5-sebott@redhat.com>
- <ZjH6DcedmJsAb6vw@linux.dev>
- <861q6irj2t.wl-maz@kernel.org>
+	s=arc-20240116; t=1714757561; c=relaxed/simple;
+	bh=dVYEm0hHRWJuQDzyhrR26MDHhJDdDLnZW8nfjNm8Fzc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rhMgyIiuf5vnEjtGqYckM/aMUx8D0upX9I5nWzfZB8rZyRhHnkMgupxiXhVjNk+1I6bP97Nonkmv53lkCU+HzvPyXD6NjobXieZyyYx1CzODkaHOphnHPICNcy0IaDKEybJKJI2oyeX0FSrDuJUVyy+ri6b31BQBOBVelvT+OCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7dee81b7e97so344791939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 10:32:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714757559; x=1715362359;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PaBujB/M/JeYRrKl4YGWAOx8sWeverl2PICTy/te8Ew=;
+        b=osy1+XdGcxocTmgONaFhvmccO/CfeRaLd1eS03wf3sVp4YTIarmRRzi6r64q9a9n6c
+         j41wYWutwmwczG5HRvUT7IPmZeHGm2R8s/YRAgMbgQz/w9TqCmP9Voxyx+ZQ+tKgIAyr
+         oKqQCV7DEQ/z+VVj0DtD1xiFsOjWckfC8VUWipK1eYXANxoM8raGkNfeKnqD0lgTQZi7
+         FLdW0ifzEuXFaQMe5q+Co/1xt1teyOdQqhLPMXZ9bfcx2+HiA4ovSRIUpXZNk9cVfFpa
+         QEzRYfk1bK9BTkOZLRkCc6gwWOUAh9q+HNe6dEUjTkmsGqL0Rbn9zXFnnVuy4PJe9n66
+         CyVg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTrYQMCzCblBv8ky0y8+wyC4OITzM6cxhAC4874eRFiZNwj2JeaRY1XM/9WwiaUYsabdre6x/H5AjTpGA4GXiKjHltRi3W1gWGOee2
+X-Gm-Message-State: AOJu0YzhS7YpWgifxtdZFSrh0dJgIaZ1vA+Nn1w83vaEaKpSnaona2Un
+	kc4Wv/RUVcbtqXkrZGjuw/kKYw49KcD9FdBj6XRLxzKgQFKfm1Hpk5N2mACv2uSeghlzMFszZq6
+	SlEQklQmy88dU9F8un8FoKHt3ClhEoNfFYumq/vRA7gtIK/67xrsnTWI=
+X-Google-Smtp-Source: AGHT+IGEagBeVl/Vf/uyy1rm/tGpmJdGFKGs+H0Qm2oWn5GNEedHW27t6/dgtynox9mqvH84JW3/5edHV2wbH6sytTEZL3QgjWKx
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <861q6irj2t.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6638:4387:b0:487:591e:6df3 with SMTP id
+ bo7-20020a056638438700b00487591e6df3mr116262jab.2.1714757559544; Fri, 03 May
+ 2024 10:32:39 -0700 (PDT)
+Date: Fri, 03 May 2024 10:32:39 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000367c770617901bba@google.com>
+Subject: [syzbot] [bcachefs?] INFO: task hung in __closure_sync
+From: syzbot <syzbot+7bf808f7fe4a6549f36e@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, May 03, 2024 at 04:50:02PM +0100, Marc Zyngier wrote:
-> > Marc, I know this goes against what you had suggested earlier, is there
-> > something in particular that you think warrants the consistency
-> > checks?
-> 
-> The problem is that we have a dependency chain: individual cache
-> levels are validated against CLIDR/CCSIDR, which are themselves
-> validated against CTR_EL0.
-> 
-> Change one, and everything becomes inconsistent. I absolutely don't
-> trust userspace to do a good job on that
+Hello,
 
-Violent agreement on this point, heh. 
+syzbot found the following issue on:
 
-> and not validating this will result in extremely hard to debug issues
-> in the guest. Which is why CTR_EL0 was an invariant the first place,
-> and everything derived from it.
+HEAD commit:    f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.kern..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1298e660980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
+dashboard link: https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a7c31f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16109450980000
 
-Sure, but userspace can completely hose the guest in tons of spectacular
-ways, I don't see why feature ID registers require thorough
-cross-checking of relationships between CPU features.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e3ee5200440e/disk-f03359bc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c651e70b4ae3/vmlinux-f03359bc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/196f43b316ad/bzImage-f03359bc.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/883314a64ffe/mount_0.gz
 
-We already fail at this. Just looking at ID_AA64ISAR0_EL1, we do not
-enforce any of the "FEAT_X implies FEAT_Y" relationships between all of
-the crypto extensions. Userspace can also setup ID_AA64MMFR0_EL1 to
-advertise that no translation granule is supported by the MMU.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7bf808f7fe4a6549f36e@syzkaller.appspotmail.com
 
-I agree that KVM needs to sanitize feature ID registers against the
-capabilities of hardware + KVM itself. Beyond that cross-checking
-userspace against itself is difficult to get right, and I'm worried
-about what the tangled mess will look like when we finish up the
-plumbing for the whole feature ID space.
+INFO: task syz-executor334:5078 blocked for more than 143 seconds.
+      Not tainted 6.9.0-rc6-syzkaller-00131-gf03359bca01b #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor334 state:D stack:15856 pid:5078  tgid:5078  ppid:5075   flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5409 [inline]
+ __schedule+0x1796/0x4a00 kernel/sched/core.c:6746
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6838
+ __closure_sync+0x259/0x2f0 lib/closure.c:135
+ closure_sync include/linux/closure.h:194 [inline]
+ __bch2_write+0x5458/0x5bd0 fs/bcachefs/io_write.c:1486
+ bch2_write+0x947/0x1590 fs/bcachefs/io_write.c:1610
+ closure_queue include/linux/closure.h:257 [inline]
+ closure_call include/linux/closure.h:390 [inline]
+ bch2_dio_write_loop fs/bcachefs/fs-io-direct.c:531 [inline]
+ bch2_direct_write+0x1a52/0x3050 fs/bcachefs/fs-io-direct.c:652
+ bch2_write_iter+0x206/0x2840 fs/bcachefs/fs-io-buffered.c:1143
+ call_write_iter include/linux/fs.h:2110 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa84/0xcb0 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f42713dfdf9
+RSP: 002b:00007ffdf34d9c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f42713dfdf9
+RDX: 00000000175d9003 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 0000555500000000 R09: 0000555500000000
+R10: 0000555500000000 R11: 0000000000000246 R12: 00000000000f4240
+R13: 00007ffdf34d9ec8 R14: 0000000000000001 R15: 00007ffdf34d9c90
+ </TASK>
 
-> Take for example CLIDR_EL1.Lo{UU,UIS,C}. Their values depend on
-> CTR_EL0.{IDC,DIC}. SW is free to check one or the other. If you don't
-> have this dependency, you're in for some serious trouble.
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8e334da0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e334da0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #0: ffffffff8e334da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+1 lock held by kworker/u8:3/50:
+ #0: ffff8880b953e658 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+2 locks held by getty/4827:
+ #0: ffff88802aba90a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
+2 locks held by syz-executor334/5078:
+ #0: ffff8880730de420 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2855 [inline]
+ #0: ffff8880730de420 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x233/0xcb0 fs/read_write.c:586
+ #1: ffff8880779f88b8 (&sb->s_type->i_mutex_key#16){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:795 [inline]
+ #1: ffff8880779f88b8 (&sb->s_type->i_mutex_key#16){+.+.}-{3:3}, at: bch2_direct_write+0x243/0x3050 fs/bcachefs/fs-io-direct.c:598
 
-Right, we absolutely need to sanitize these against *hardware*, and
-using CTR_EL0 definitely the way to go. Userspace cannot promise a
-stricter cache coherency model than what's offered in hardware.
+=============================================
 
-Making sure userspace's values for CLIDR_EL1 and CTR_EL0 agree with each
-other shouldn't matter if we've determined hardware coherency is at least
-as strict as the model described through these registers.
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.9.0-rc6-syzkaller-00131-gf03359bca01b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xfde/0x1020 kernel/hung_task.c:380
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt+0x21/0x30 drivers/acpi/processor_idle.c:112
 
-Without the cross-check, it would be possible for userspace to setup the
-vCPU as:
 
- - CTR_EL0.{IDC,DIC} = {1, 1}
- - CLIDR_EL1.Lo{UU,UIS,C} = {1, 1, 1}
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-But we would only allow this if hardware was {IDC,DIC} = {1,1}. So while
-the values presented to the guest aren't consistent with one another, it
-seems in the worst case the guest will do I$ maintenance where it isn't
-actually necessary.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-Thanks,
-Oliver
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
