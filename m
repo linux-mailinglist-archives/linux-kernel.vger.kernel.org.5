@@ -1,44 +1,46 @@
-Return-Path: <linux-kernel+bounces-168122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 139508BB403
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:29:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A945E8BB402
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:29:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35C63B23F8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:29:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 444421F257C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A71158A3F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EB8158D64;
 	Fri,  3 May 2024 19:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MQhgFrjp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ox4P8tfi"
 Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4429163CF
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CF215884C
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714764574; cv=none; b=iyWBHMiGk7pbARm5mHGbnPHz5jXJKruZpe7OBsov+FE750Ot0AH38GL3uH4cErFRvCIxLkTAXN/XEFlrDJ9ujeKn3KTQJTpP6lJJUqiT/LpKf/ffMpQRwukvJnFGm820aDOFAeUvl0UIcTz5+7FJbneMWIb/dVY+9NXI+Ut5XKY=
+	t=1714764574; cv=none; b=gBucXxAqzk9sSLxSyv6UAIjj0jyRgiu2e0U3qx1JVNdi3cuaZIRmIWThtR3ut+8OIuNnv+7uSoxUMFDIlTBNV9x7G+jODdap0WkIH4kDRiYq3TftbEG6T/Koo7Sz6fyKkeAadjI6LX6DrgOcbiIi2ge/bLyNVNQUtTqyPi+2Zsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714764574; c=relaxed/simple;
-	bh=Uewv3sKY6afzrItZD7bE6VQgKvSwhlejog6zAPeUt/4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VSstPQ7wdA4AM6iFcBt8JhKx/g+bumKIx8YhqZk1qrf0jsoJQi0LZBUavbEpu93TrWgoTdYKybAYRPhwEkR+15jtzQLLGXQgOftgOLMrbDQq+AHsdcuDnsQv30WQ3Nws1LeH1FSFQwltJs1KZNdQrp4Susno3U1wHpcvZECxOXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MQhgFrjp; arc=none smtp.client-ip=95.215.58.187
+	bh=sCcuwPgsubwyvq5INWC3rtyH9ttsfwPVllVxyHV7pHo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tr+QmDzKtsNa6morONkfaESXWFPmAQuD3ploG2tL7UPmezggPMQ2LbBf4xsbrll5EdeE/hBatojxhJSSe2RY5RLajamd+ZknH4wpF6vmKuOFWClohAdOq4oubXTtV7bzRQJfHmZqS9mIeqds3/3fdtmz5aXOO5Q6jkt5Ge7zj9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ox4P8tfi; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714764569;
+	t=1714764571;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=iUCfelyDQR7NwCOZaWX8ASl/1Ini/iPPBj8R9Vt6ybs=;
-	b=MQhgFrjpk+EZ3O9deS9HezRuXkIATCAD7VU0drh/fheHoLEiEFrtdpTedu7h68oIDZiVOL
-	ius4U2eUybf7aUGKtdcm/FOqMk1nIbEUaFQKUD5I18d/NNB5aj+I9euYQm5bBLlUCnzccT
-	mvXqG2C9wZraGXfRKEzGFjfSk1o3azg=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cQ2e8hgiGDZBXEW1L5MiD7LSuS/VPNYQnMQFa72oN6c=;
+	b=ox4P8tfisHwN1tQ6Q/03B6cky9MCK1VFIh6qZjp1uggchco53uKdIr3RxIB4GnJSRDjen8
+	g+NgWLVuHX2kgEegdW8767YapfzGdPLJbJV/b48B+NhhlcUVLRpM4t/vcVPIX4OYCVRNSX
+	tQ5z+2V8oBStQHHd7l0vbnPFsyaVpTc=
 From: Sean Anderson <sean.anderson@linux.dev>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -52,9 +54,11 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
 	Michal Simek <michal.simek@amd.com>,
 	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH v5 00/10] drm: zynqmp_dp: IRQ cleanups and debugfs support
-Date: Fri,  3 May 2024 15:29:12 -0400
-Message-Id: <20240503192922.2172314-1-sean.anderson@linux.dev>
+Subject: [PATCH v5 01/10] drm: zynqmp_kms: Fix AUX bus not getting unregistered
+Date: Fri,  3 May 2024 15:29:13 -0400
+Message-Id: <20240503192922.2172314-2-sean.anderson@linux.dev>
+In-Reply-To: <20240503192922.2172314-1-sean.anderson@linux.dev>
+References: <20240503192922.2172314-1-sean.anderson@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,66 +68,73 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This series cleans up the zyqnmp_dp IRQ and locking situation. Once
-that's done, it adds debugfs support. The intent is to enable compliance
-testing or to help debug signal-integrity issues.
+drm_encoder_cleanup is responsible for calling drm_bridge_detach for
+each bridge attached to the encoder. zynqmp_dp_bridge_detach is in turn
+responsible for unregistering the AUX bus. However, we never ended up
+calling drm_encoder_cleanup in the remove or error paths, so the AUX bus
+would stick around after the rest of the driver had been removed.
 
-Last time I discussed converting the HPD work(s) to a threaded IRQ. I
-did not end up doing that for this series since the steps would be
+I don't really understand why drm_mode_config_cleanup doesn't call
+drm_encoder_cleanup for us. It will call destroy (which for
+simple_encoder is drm_encoder_cleanup) on encoders in the mode_config's
+encoder_list.
 
-- Add locking
-- Move link retraining to a work function
-- Harden the IRQ
-- Merge the works into a threaded IRQ (omitted)
+Should drm_encoder_cleanup get called before or after
+drm_atomic_helper_shutdown?
 
-Which with the exception of the final step is the same as leaving those
-works as-is. Conversion to a threaded IRQ can be done as a follow-up.
+Fixes: 2dfd045c8435 ("drm: xlnx: zynqmp_dpsub: Register AUX bus at bridge attach time")
+Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+---
 
 Changes in v5:
-- Fix AUX bus not getting unregistered
-- Rebase onto drm-misc/drm-misc-next
+- New
 
-Changes in v4:
-- Rebase onto drm/drm-next
+ drivers/gpu/drm/xlnx/zynqmp_kms.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Changes in v3:
-- Don't delay work
-- Convert to a hard IRQ
-- Use AUX IRQs instead of polling
-- Take dp->lock in zynqmp_dp_hpd_work_func
-
-Changes in v2:
-- Rearrange zynqmp_dp for better padding
-- Split off the HPD IRQ work into another commit
-- Expand the commit message
-- Document hpd_irq_work
-- Document debugfs files
-- Add ignore_aux_errors and ignore_hpd debugfs files to replace earlier
-  implicit functionality
-- Attempt to fix unreproducable, spurious build warning
-- Drop "Optionally ignore DPCD errors" in favor of a debugfs file
-  directly affecting zynqmp_dp_aux_transfer.
-
-Sean Anderson (10):
-  drm: zynqmp_kms: Fix AUX bus not getting unregistered
-  drm: zynqmp_dp: Rearrange zynqmp_dp for better padding
-  drm: zynqmp_dp: Don't delay work
-  drm: zynqmp_dp: Add locking
-  drm: zynqmp_dp: Don't retrain the link in our IRQ
-  drm: zynqmp_dp: Convert to a hard IRQ
-  drm: zynqmp_dp: Use AUX IRQs instead of polling
-  drm: zynqmp_dp: Split off several helper functions
-  drm: zynqmp_dp: Take dp->lock in zynqmp_dp_hpd_work_func
-  drm: zynqmp_dp: Add debugfs interface for compliance testing
-
- Documentation/gpu/drivers.rst     |   1 +
- Documentation/gpu/zynqmp.rst      | 149 +++++
- MAINTAINERS                       |   1 +
- drivers/gpu/drm/xlnx/zynqmp_dp.c  | 883 +++++++++++++++++++++++++++---
- drivers/gpu/drm/xlnx/zynqmp_kms.c |  12 +-
- 5 files changed, 977 insertions(+), 69 deletions(-)
- create mode 100644 Documentation/gpu/zynqmp.rst
-
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
+index 43bf416b33d5..f25583ce92e6 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
+@@ -433,23 +433,28 @@ static int zynqmp_dpsub_kms_init(struct zynqmp_dpsub *dpsub)
+ 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 	if (ret) {
+ 		dev_err(dpsub->dev, "failed to attach bridge to encoder\n");
+-		return ret;
++		goto err_encoder;
+ 	}
+ 
+ 	/* Create the connector for the chain of bridges. */
+ 	connector = drm_bridge_connector_init(&dpsub->drm->dev, encoder);
+ 	if (IS_ERR(connector)) {
+ 		dev_err(dpsub->dev, "failed to created connector\n");
+-		return PTR_ERR(connector);
++		ret = PTR_ERR(connector);
++		goto err_encoder;
+ 	}
+ 
+ 	ret = drm_connector_attach_encoder(connector, encoder);
+ 	if (ret < 0) {
+ 		dev_err(dpsub->dev, "failed to attach connector to encoder\n");
+-		return ret;
++		goto err_encoder;
+ 	}
+ 
+ 	return 0;
++
++err_encoder:
++	drm_encoder_cleanup(encoder);
++	return ret;
+ }
+ 
+ static void zynqmp_dpsub_drm_release(struct drm_device *drm, void *res)
+@@ -529,5 +534,6 @@ void zynqmp_dpsub_drm_cleanup(struct zynqmp_dpsub *dpsub)
+ 
+ 	drm_dev_unregister(drm);
+ 	drm_atomic_helper_shutdown(drm);
++	drm_encoder_cleanup(&dpsub->drm->encoder);
+ 	drm_kms_helper_poll_fini(drm);
+ }
 -- 
 2.35.1.1320.gc452695387.dirty
 
