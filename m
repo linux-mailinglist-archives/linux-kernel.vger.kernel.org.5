@@ -1,185 +1,168 @@
-Return-Path: <linux-kernel+bounces-167827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80AA18BAFEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:33:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C57658BAFED
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94EB81C2214C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:33:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5245C1F2323D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:33:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF94F154432;
-	Fri,  3 May 2024 15:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BD715216C;
+	Fri,  3 May 2024 15:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="j7GX9NRd"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867074AED7;
-	Fri,  3 May 2024 15:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nYRa2Eql"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8956715357A;
+	Fri,  3 May 2024 15:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714750393; cv=none; b=ckLQ6gdoltVjZ54e/yzi/6ggGPpyOdR4VWlwGeJcn+ATKzcAJPGaKSbmXI7S0r6vk9ipD9fUqhDNyAeeTKtK7VueQuN8M48Zwe0CKqAN8GOhrHy+tnoihjrBt8gW+BlujIPOZU77irsmxs0uaPVbCOuRFsBFIHqbsTo3GzcQKtA=
+	t=1714750427; cv=none; b=bYiAUqUoJ/+mFTUySJbJy81VrcQAcosUT1uvGVa2uCjgUrHLWwnd3jEQnl53IaZHokG4tJYDNSNA1TOZuTf5KYx3jpUKb8UpZIoGbwX7hdWsbgNRZAV8mxOfxVj4X1KiDm06Ec3I5ZP4tKC8aFuUy977pDyjSR/VsdBJrMOZnlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714750393; c=relaxed/simple;
-	bh=5vVoaQnaeX4ZEWoRos3DDBrLSSzPUHQmGGInmUp8OPI=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=jx8uAn4VDsO0rkhUUcebsV2C2cnw25WFeOT/j4KgJwbH1HMgNL1JfziveeXXMCe5YcfC5Xb0JmPCWlIuAJtxAVPfAWLNa5pVaPKDGtK/7aRes7DfcXxCmg6ab30D4RkeUaork3Ihlppx8YypaTFeHeFnLiydkWcqb0d6Z0Tfvsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=j7GX9NRd; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from smtpclient.apple (d66-183-91-182.bchsia.telus.net [66.183.91.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 6B6D420B2C80;
-	Fri,  3 May 2024 08:33:05 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6B6D420B2C80
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1714750385;
-	bh=u83roOV6ApUdhHCZFPvPha+Yc7iFIOLJNXHoxhkiXF4=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-	b=j7GX9NRdjJ0f1JXprYqP4mU6AOIdq5ljmyVYLDipoLA2YOir4KFl5vXntDGJZySEO
-	 +i6qqAmEEQ6LcXBnrtvruAXjmxQTA5e8JAMjqBOUmB46Z27e18e+wlNX8l+AN1Plu1
-	 xMs1Pj7h/O/y+V8LcuGoEpVLUmg98XLoU24jOVMg=
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1714750427; c=relaxed/simple;
+	bh=JXQcDcKWqzjhdoLVmcGoX/pJLAV7051JyL1j7rqs0Jo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R3n2yBsq6YoFb2Q2IF77tuaY+VuwFRKx+t3kv4s9gHQ1ip8PWmfs9mH3BppX7yK7rX6ej5InZr2ZyMq7x+IQ+yKJ7J0vg3SX747Yfu8sDVwNPEMciVOKRz6pVIov6u17sT26Cj+RMCrciUb/cukydOx/zeFTMi1sxwRaywvwE/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nYRa2Eql; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714750426; x=1746286426;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JXQcDcKWqzjhdoLVmcGoX/pJLAV7051JyL1j7rqs0Jo=;
+  b=nYRa2EqljJr8J6rVpiBF3eZWhS5Y30rkmnjwqiHmCCIyhawMVNLWwe1U
+   62fzBkwKTBDeJddyahyWkyUW15NjO1cYGbZwhBNOe/3ePeM5Q/Ek9Xa5x
+   g6rZZZJ5DfHQ5wt8CP779NO7A0b3MHg+SdUryigX31KwP6f84XlmcuXvL
+   tB0Q1DxUKHYm16wjaEeSISXVXJq6RiYjI7kaxtIHxh64iABGtsiAf3Jpe
+   OWrI9qwGzV6EXvOcwIAwxZubnJKmzym6yNlyBnWjRLsqbEgWF+EXj8aV6
+   jS0NPRsFGdVZAZh9HhZbGaO3pkDTKY478fYT/sxYbJQ5ttp32YUXPPuhp
+   g==;
+X-CSE-ConnectionGUID: FLhLzZYYRKaUk3O8ueYiRA==
+X-CSE-MsgGUID: xHl3SvzuQtOlIz3FO5Zbow==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="21246756"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="21246756"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:33:38 -0700
+X-CSE-ConnectionGUID: NnLN++MEQZeMqitbiHkXBQ==
+X-CSE-MsgGUID: E5c4JURLQzmMoyl+EcK2qA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="27565553"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:33:36 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2uui-00000003goA-3q75;
+	Fri, 03 May 2024 18:33:32 +0300
+Date: Fri, 3 May 2024 18:33:32 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Parker Newman <parker@finest.io>
+Cc: Parker Newman <pnewman@connecttech.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 00/13] serial: 8250_exar: Clean up the driver
+Message-ID: <ZjUDzB2aRjBa9dII@smile.fi.intel.com>
+References: <20240502144626.2716994-1-andriy.shevchenko@linux.intel.com>
+ <20240502114645.4445b3da@SWDEV2.connecttech.local>
+ <ZjO4vYEBzxU3fpzC@smile.fi.intel.com>
+ <20240502120840.02c65f30@SWDEV2.connecttech.local>
+ <ZjPL5z7ah-Qkct6l@smile.fi.intel.com>
+ <20240502134949.5e780635@SWDEV2.connecttech.local>
+ <ZjPVEr7D0lEf86kQ@smile.fi.intel.com>
+ <20240503083638.0f8d9afb@SWDEV2.connecttech.local>
+ <20240503104730.3e0f55d0@SWDEV2.connecttech.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] [RFC] scsi: Convert from tasklet to BH workqueue
-From: Allen Pais <apais@linux.microsoft.com>
-In-Reply-To: <87ikzv3b4n.fsf@mail.lhotse>
-Date: Fri, 3 May 2024 08:32:54 -0700
-Cc: linux-scsi@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linuxppc-dev@lists.ozlabs.org,
- target-devel@vger.kernel.org,
- megaraidlinux.pdl@broadcom.com,
- jejb@linux.ibm.com,
- hare@suse.com,
- martin.petersen@oracle.com,
- linuxdrivers@attotech.com,
- tyreld@linux.ibm.com,
- npiggin@gmail.com,
- christophe.leroy@csgroup.eu,
- aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com,
- artur.paszkiewicz@intel.co,
- kashyap.desai@broadcom.com,
- sumit.saxena@broadcom.com,
- shivasharan.srikanteshwara@broadcom.com,
- chandrakanth.patil@broadcom.com,
- jinpu.wang@cloud.ionos.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BA5F645E-7DC6-4737-BCB2-6CD8E2C4471A@linux.microsoft.com>
-References: <20240502203433.15811-1-apais@linux.microsoft.com>
- <20240502203433.15811-2-apais@linux.microsoft.com>
- <87ikzv3b4n.fsf@mail.lhotse>
-To: Michael Ellerman <mpe@ellerman.id.au>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240503104730.3e0f55d0@SWDEV2.connecttech.local>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
+On Fri, May 03, 2024 at 10:47:30AM -0400, Parker Newman wrote:
+> On Fri, 3 May 2024 08:36:38 -0400
+> Parker Newman <parker@finest.io> wrote:
+> 
+> > On Thu, 2 May 2024 21:01:54 +0300
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > > On Thu, May 02, 2024 at 01:49:49PM -0400, Parker Newman wrote:
+> > > > On Thu, 2 May 2024 20:22:47 +0300
+> > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Thu, May 02, 2024 at 12:08:40PM -0400, Parker Newman wrote:
+> > > > > > On Thu, 2 May 2024 19:01:01 +0300
+> > > > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > > On Thu, May 02, 2024 at 11:46:45AM -0400, Parker Newman wrote:
+> > > > > > > > On Thu,  2 May 2024 17:43:54 +0300
+> > > > > > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > > >
+> > > > > > > > > After a rework for CONNTECH was done, the driver may need a bit of
+> > > > > > > > > love in order to become less verbose (in terms of indentation and
+> > > > > > > > > code duplication) and hence easier to read.
+> > > > > > > > >
+> > > > > > > > > This clean up series fixes a couple of (not so critical) issues and
+> > > > > > > > > cleans up the recently added code. No functional change indented by
+> > > > > > > > > the cleaning up part.
+> > > > > > > >
+> > > > > > > > Just an FYI I submitted a patch series that fixed several of these issues but I
+> > > > > > > > think it fell through the cracks (I know everyone is very busy!).
+> > > > > > > >
+> > > > > > > > Link: https://lore.kernel.org/linux-serial/cover.1713533298.git.pnewman@connecttech.com/
+> > > > > > > >
+> > > > > > > > I believe my previous patch series is no longer required. This one fixes
+> > > > > > > > everything.
+> > > > > > >
+> > > > > > > I haven't noticed that, if it contains duplicated patches, I may replace mine
+> > > > > > > with yours if you insist.
+> > > > > > >
+> > > > > > > In any case it's better to reply there that you prefer this series to be
+> > > > > > > applied, so Greg will not pick it up.
+> > > > > > >
+> > > > > >
+> > > > > > I do not have a preference. I am fine with using yours if it is easier on
+> > > > > > the maintainers.
+> > > > >
+> > > > > Up to you, there is no issue to take your patches in case they are the same
+> > > > > (or quite similar) as mine. I can pick them up, just tell me if you want this
+> > > > > to happen with a list of the patches (as mail Message-Id).
+> > > >
+> > > > Just use yours.
+> > >
+> > > Okay, thanks!
+> > >
+> > > If you are going to test, better to pay attention to the BIT() conversion patch
+> > > as Ilpo noted an issue. I believe it's easy to drop (via local git-rebase run)
+> > > or move and test separately.
+> > >
+> >
+> > I am working on testing now but patches 7 and 12 did not apply with git am.
+> > Both failed around lines 1095/1096.
+> > I can apply them manually but I may be using the wrong branch (tty-next).
+> > Which branch/commit did you create your patches from? I don't see it in the
+> > patch submission.
+> 
+> I figured it out. git am was applying the typo fix patch out of order.
+> Sorry, I didn't notice that. Patches should be fine.
+> 
+> I can do a final test once you decide what to do with the BIT() conversion patch.
 
+Can you revert it and test the rest? So we will know that they are okay.
+Or does the above implies that you already performed such a test?
 
-> On May 2, 2024, at 7:03=E2=80=AFPM, Michael Ellerman =
-<mpe@ellerman.id.au> wrote:
->=20
-> Allen Pais <apais@linux.microsoft.com> writes:
->> The only generic interface to execute asynchronously in the BH =
-context is
->> tasklet; however, it's marked deprecated and has some design flaws. =
-To
->> replace tasklets, BH workqueue support was recently added. A BH =
-workqueue
->> behaves similarly to regular workqueues except that the queued work =
-items
->> are executed in the BH context.
->>=20
->> This patch converts drivers/scsi/* from tasklet to BH workqueue.
->>=20
->> Based on the work done by Tejun Heo <tj@kernel.org>
->> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git =
-for-6.10
->>=20
->> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
->> ---
->> drivers/scsi/aic7xxx/aic7xxx_osm.c          |  2 +-
->> drivers/scsi/aic94xx/aic94xx_hwi.c          | 14 ++--
->> drivers/scsi/aic94xx/aic94xx_hwi.h          |  5 +-
->> drivers/scsi/aic94xx/aic94xx_scb.c          | 36 +++++-----
->> drivers/scsi/aic94xx/aic94xx_task.c         | 14 ++--
->> drivers/scsi/aic94xx/aic94xx_tmf.c          | 34 ++++-----
->> drivers/scsi/esas2r/esas2r.h                | 12 ++--
->> drivers/scsi/esas2r/esas2r_init.c           | 14 ++--
->> drivers/scsi/esas2r/esas2r_int.c            | 18 ++---
->> drivers/scsi/esas2r/esas2r_io.c             |  2 +-
->> drivers/scsi/esas2r/esas2r_main.c           | 16 ++---
->> drivers/scsi/ibmvscsi/ibmvfc.c              | 16 ++---
->> drivers/scsi/ibmvscsi/ibmvfc.h              |  3 +-
->> drivers/scsi/ibmvscsi/ibmvscsi.c            | 16 ++---
->> drivers/scsi/ibmvscsi/ibmvscsi.h            |  3 +-
->> drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c    | 15 ++--
->> drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.h    |  3 +-
->=20
-> Something there is giving me a build failure =
-(ppc64le_guest_defconfig):
->=20
->  + make -s 'CC=3Dccache powerpc64le-linux-gnu-gcc' -j 4
->  /linux/drivers/scsi/ibmvscsi/ibmvscsi.c: In function =
-'ibmvscsi_init_crq_queue':
->  Error: /linux/drivers/scsi/ibmvscsi/ibmvscsi.c:370:331: error: =
-'ibmvscsi_work' undeclared (first use in this function)
->  /linux/drivers/scsi/ibmvscsi/ibmvscsi.c:370:331: note: each =
-undeclared identifier is reported only once for each function it appears =
-in
->  /linux/scripts/Makefile.build:244: recipe for target =
-'drivers/scsi/ibmvscsi/ibmvscsi.o' failed
->  /linux/scripts/Makefile.build:485: recipe for target =
-'drivers/scsi/ibmvscsi' failed
->  /linux/scripts/Makefile.build:485: recipe for target 'drivers/scsi' =
-failed
->  /linux/scripts/Makefile.build:485: recipe for target 'drivers' failed
->  /linux/drivers/scsi/ibmvscsi/ibmvscsi.c: In function =
-'ibmvscsi_probe':
->  Error: /linux/drivers/scsi/ibmvscsi/ibmvscsi.c:2255:78: error: =
-passing argument 1 of 'kthread_create_on_node' from incompatible pointer =
-type [-Werror=3Dincompatible-pointer-types]
->  In file included from /linux/drivers/scsi/ibmvscsi/ibmvscsi.c:56:0:
->  /linux/include/linux/kthread.h:11:21: note: expected 'int (*)(void =
-*)' but argument is of type 'int (*)(struct work_struct *)'
->   struct task_struct *kthread_create_on_node(int (*threadfn)(void =
-*data),
->                       ^
->  /linux/drivers/scsi/ibmvscsi/ibmvscsi.c: At top level:
->  Warning: /linux/drivers/scsi/ibmvscsi/ibmvscsi.c:212:13: warning: =
-'ibmvscsi_task' defined but not used [-Wunused-function]
->   static void ibmvscsi_task(void *data)
->               ^
->  Warning: cc1: warning: unrecognized command line option =
-'-Wno-shift-negative-value'
->  Warning: cc1: warning: unrecognized command line option =
-'-Wno-stringop-overflow'
->  cc1: some warnings being treated as errors
->  make[6]: *** [drivers/scsi/ibmvscsi/ibmvscsi.o] Error 1
->  make[5]: *** [drivers/scsi/ibmvscsi] Error 2
->  make[4]: *** [drivers/scsi] Error 2
->  make[3]: *** [drivers] Error 2
->  make[3]: *** Waiting for unfinished jobs....
->=20
-> Full log here: =
-https://github.com/linuxppc/linux-snowpatch/actions/runs/8930174372/job/24=
-529645923
+-- 
+With Best Regards,
+Andy Shevchenko
 
- Thank you for testing it out. Unfortunately, I did not cross-compile =
-it.
-Will fix this in v2.
-
-- Allen
-
->=20
-> Cross compile instructions if you're keen: =
-https://github.com/linuxppc/wiki/wiki/Building-powerpc-kernels
->=20
-> cheers
 
 
