@@ -1,133 +1,137 @@
-Return-Path: <linux-kernel+bounces-168072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68D48BB34E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:35:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 455B78BB35C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:41:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A4B1C21B23
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 758BE1C20A08
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7294F158D9D;
-	Fri,  3 May 2024 18:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8572E157E6C;
+	Fri,  3 May 2024 18:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="M/Z9Mozo"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VfGqyzUM"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D198F2E646;
-	Fri,  3 May 2024 18:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F96C2AC17
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714761207; cv=none; b=nODRKnBUDeffKTrZLQuxMlLGdMStBtQ9ozv5o/553TIKE+iIXiD9ucNUkhtNqr/SD8FgRBIzJ7LDzliqjluene/YgRsS7cTpbCoaG8xgPPXVT41sh9XofxRLtB+XrtSeXxtAUDbyoJ03fo2XVbCJDcQmavbKYp5jDulcxlyMWDM=
+	t=1714761333; cv=none; b=CseLqoFHYlNAH5Bp0jRDsTMmoprkgTomPD/Q8DkCbQyT5ly3qMwz6+IKYLHZPb3IX1ioWmQbO4VbtA/MEjs+jfc5cvlE8QByf/lgFJ/3iO0gbu4I6orwM1HBGsPZhXcVDbngLVnb+E+mU0l1+3QqeKYupob3YJ+zjtLyWYQrjtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714761207; c=relaxed/simple;
-	bh=22XhEY7vXhT21sOWfVvwQyhmCuaRe5IA2N+3Oas/3Uw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X4vbEyyEBsrZE9ZXdVNjXcJUrzXVIdTJDFVEbHY9AJMBcQZA7RjLA22d5hM75JvQvoum0yOhzklx0M37Y/ghpofPXLTcQmzRKToDaWzNBG4zwrhOhDkPDrt9aRwUlwypWwq3fHiyex77/bs+Q9SNzgVkLpCy8+31TwUc0jVFs2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=M/Z9Mozo; arc=none smtp.client-ip=74.208.4.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1714761185; x=1715365985; i=parker@finest.io;
-	bh=v7kJzyUvZiR5tE18FRC14zJTkTgmWaOraudEp3nzKek=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=M/Z9MozosaYDT++n7HDh8bNpKhJDF4kwBth1ZoRvKfaD8LkIEj86DwPl0kET8uU4
-	 Y/VTiOnBfZ+yxMQCVAvS0eSZ8p6Xfvf/nNL69mToV3oARFasn9mNH0UWV1lwagJog
-	 VCIlGyYip7ToVubwuzKOWQ2d+gQliKuHoHZfvP7ofgxYNKUYLPGmUDYS7hbNkqHe0
-	 cc0rCmvqBZE+ptHdGO+IluDmEHqkdlu5BjLEM3f1hBKxWEQydG5uTRodsoGjpeCZ3
-	 qTdLkQP9trMpAv7M0+h7jkuo1IN/nJVcOYTE7IQ7QHjqOmziTL7TDcQwse9ekbF/O
-	 rOEGDjIuiUdQttv3RQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
- mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0M6SuT-1ss36g0mwF-00rxd0; Fri, 03 May 2024 20:33:05 +0200
-Date: Fri, 3 May 2024 14:33:03 -0400
-From: Parker Newman <parker@finest.io>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Parker Newman <pnewman@connecttech.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v2 00/13] serial: 8250_exar: Clean up the driver
-Message-ID: <20240503143303.15bf82bc@SWDEV2.connecttech.local>
-In-Reply-To: <20240503171917.2921250-1-andriy.shevchenko@linux.intel.com>
-References: <20240503171917.2921250-1-andriy.shevchenko@linux.intel.com>
-Organization: Connect Tech Inc.
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714761333; c=relaxed/simple;
+	bh=lctBDKKbaQ0GP8xmsQpbPsTnN5YakI/d7YGn9gn3TMU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=OZILFjt73CM+qi6gdIhz6mWc9Weu5R25M1hp04UXM5+7BWZdG7sMtDgFW5qgFc5VmqscywdlRmlw5b9DFZ+T5CeWD9X9WoHcTkJcEYCW4gtSJanrBLshz0uU5Pu9+mLxofdFq2qrH5LAXxO7CDHN5yntjiW0aiFcSktx/goUMLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VfGqyzUM; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1ecf2ca6069so18552175ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714761332; x=1715366132; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=iVQp8VZ+GT1btk34Ge4A/qMobcmdU0dr1U1FJvarTM0=;
+        b=VfGqyzUMv1VAc3hkSHpaH/ikIlB0hkd/EIFgCqQ1Gt5XaferUqyHXtknzcvfuKuOAo
+         HRBfJimS1ICbb0DDspqqJMpDMg7BZFLnW8I/0IDR3q+8DLcINoqGUKpQCP2ddbwaT/V6
+         hvp8n2JxNLO9zcGXj/+fOwm/y9dYWUCkHzZI/ImNqshZ59nyKFf5ntEC/+Ia3j3cJdBd
+         q0lV/NK3NQuwjaVo6N0v+48qMjSmNQh1tRIjRRifixFzTEuVviZpl2ivVjYAmwdwdFn4
+         jN499+kFGtUKtSNdZq23mZL+i2g+hsVp+/68lM7WiMk2eVlfTxcJb/6htawaVBZdV8ez
+         Q69A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714761332; x=1715366132;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iVQp8VZ+GT1btk34Ge4A/qMobcmdU0dr1U1FJvarTM0=;
+        b=sBoJhtm7l+CA5gkyw4qq7XrgUUtEIAHzzuUwc3KG1yFVAVju7SIk3c/pfOFT9d8du+
+         IJ0FEXq4S2a1TvsCw4dMKhIMeD8Jn3W6V01ezbvfvfm4Jzv5KPWQ7FOqlXTtudk/BFad
+         ePO5nMTnukMPGVWFNBemcHVWs9IsY8LIfjA/53E85CVNC/g008xJ7rLVPaXrpu+A16wN
+         ERG/wTeQz6IlWkJaUyCRlfR6Cpys6z9gXGh1ahYAiZQoqvE84EY4+Qu+bnElbEhcS387
+         oEps8ZxlSKGQ3d/dKPJzG2hjfxCG929JWaezFdRWNlVKD23uLP6x7bC+LBcTWhi7b3Z3
+         nfeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVXbN0WbKeHViwnmTOAW+iwGNyk/4Btjvbg1fgiKldXa/RGy04G1bqbHe5tkc7OAdcXgsy6Kkwq3YXz+RxGIbuUde+sIB44JKxjZ9FR
+X-Gm-Message-State: AOJu0Yw45gS7ukGPErn1RuxWavhoF4NivQk6tnfX74Urwv43vvPEEg0W
+	RQz3EqaPlYXl7Pfp3uVGTb5RIt9V9fNE/YKQFxhuJTU/VugbSugBXAnUkLlII6OHUfRL7NHqxC8
+	0kXo8KZFMUezQ3w==
+X-Google-Smtp-Source: AGHT+IH43Mgk2bJwNZrlwDJzmhbx9udVERtQckuEWb3sCigBB6T1dsjzWtnv29QEOO5n0WToIxr27/3AIGcP6sU=
+X-Received: from tj-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5683])
+ (user=tjmercier job=sendgmr) by 2002:a17:902:f94b:b0:1e8:a7fb:c1fc with SMTP
+ id kx11-20020a170902f94b00b001e8a7fbc1fcmr7948plb.5.1714761331746; Fri, 03
+ May 2024 11:35:31 -0700 (PDT)
+Date: Fri,  3 May 2024 18:35:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:F1IeiN1k56yuKR+6PWmO0mM4xoZZm3//U46G+/nOhE+QBjJcUMR
- dDFUZPQ2RwW0++HvTVp9vFIhjKz2ac0IQAg5wPMxaFvrGzGwE+BZRtneE++B+69+DXXUQcX
- RzGk8ZA4Ci3r5PGBM5mf2jgIbsltIm3k6vYpfQDcLQlRVJ1nmjR/6MtnWZn5duCUMOg46tg
- a5T/QpiqDJQnmwLvRNlew==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:z6tPXeVmnlA=;EnWuVFXag5b+89g7vcHid7uBS0j
- cJzBLP0zciG67QYq4nXDKis0mdiLlNZaUC3/vTuH7zqpaw5RWOT/7igoO5UYHavWrzDc1Jfkk
- Ql5I4PDsBM29DCFWNyQKQ2RbHfiLWMoo9p4yMr6xtjJAcOc0X99xO2NKZgEUeIp3HrAuy3zk/
- c+QSzzPN8wnMwlgOaFfYww7qU6QhmYBFAPB+rFzqbAPF/cNKwlPGUERqdjXlr2lJvr5WRm+Y7
- lTLFYFTOI2edV+d71/pg+7YBoNQggs3dxZd/VLD3jzu9+EWW99zUQcIR6l87lwoxLKo/Ecw1r
- oKCSuwVCNu6l9LNlcCH/JsgZfCbAeOTa8j++AzlqwhAj+0XmcIfHrUss3MeyykzLxQV7Rda27
- GrUArWkw4jcDjUfe5B3oCbuI2rIZRTXBXFIz8uCuQZFbm4KYwmp/Hg+2e+Sanr5rq1s721rmK
- rvkaZcVdeX0ShaIFwLQRm2COkO6pUBaik0fKNxtDl8d2w6XaZvsMTVI41aZphFkQJ7qMopCQP
- JLEImCKbYDh6wRc4RU1HVKtEE9q7u9QdqHPbOXtV0SnOnRcAr7N88rEZ9VHlyLg5He8R+dq79
- bDjOJW6YXKslrUOKNdYgItuyL7qcWr/N7br+Vzty+FFSLg0GiHb7GGRM1hVwQGodnMenE2fYS
- PG8rWuidwUpAzW2RvfBZLCMB6Zb0xt/dt8bytnmKcYXWYPd5+TrwI9y3sYDxrQPOiDmMTSoCF
- qIPOubzqyi+7UL+AkouqQodqKoXjvuRw4ivsr+0koqQimsZM66Vm5M=
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+Message-ID: <20240503183527.1548119-1-tjmercier@google.com>
+Subject: [PATCH] swiotlb: iommu/dma: Clarify swiotlb options apply only to dma-direct
+From: "T.J. Mercier" <tjmercier@google.com>
+To: tjmercier@google.com, Jonathan Corbet <corbet@lwn.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: hch@infradead.org, robin.murphy@arm.com, joro@8bytes.org, will@kernel.org, 
+	akpm@linux-foundation.org, isaacmanjarres@google.com, iommu@lists.linux.dev, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri,  3 May 2024 20:15:52 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+IOMMU implementations now sometimes bounce memory through SWIOTLB to
+achieve cacheline alignment [1], or prevent DMA attacks by untrusted
+devices [2]. These uses of SWIOTLB differ conceptually from historical
+use which was a solution to the problem of device addressing
+limitations that prevent DMA to some portion of system memory
+(typically beyond 4 GiB). IOMMUs also solve the problem of device
+addressing limitations and therefore eliminate the need for SWIOTLB for
+that purpose. However as mentioned, IOMMUs can use SWIOTLB for other
+purposes.
 
-> After a rework for CONNTECH was done, the driver may need a bit of
-> love in order to become less verbose (in terms of indentation and
-> code duplication) and hence easier to read.
->
-> This clean up series fixes a couple of (not so critical) issues and
-> cleans up the recently added code. No functional change indented by
-> the cleaning up part.
->
-> Parker, please test this and give your formal Tested-by tag
-> (you may do it by replying to this message if all patches are
->  successfully tested; more details about tags are available in
->  the Submitting Patches documentation).
->
+The swiotlb kernel command line parameter does not impact IOMMU related
+use of SWIOTLB, and that is intentional. IOMMUs cannot be forced to use
+SWIOTLB for all buffers. Update the documentation for the swiotlb
+parameter to clarify that SWIOTLB use can only be forced in scenarios
+where an IOMMU is not involved.
 
-I was able to test the Connect Tech related code and everything is
-work as expected. I can't test the non-CTI related changes but they
-are pretty minor.
+[1] https://lore.kernel.org/all/20230612153201.554742-16-catalin.marinas@arm.com
+[2] https://lore.kernel.org/all/20190906061452.30791-1-baolu.lu@linux.intel.com/
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 1 +
+ Documentation/arch/x86/x86_64/boot-options.rst  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-Tested-by: Parker Newman <pnewman@connecttech.com>
-
-> In v2:
-> - fixed the EEPROM reading data loop (Ilpo, Parker)
->
-> Andy Shevchenko (13):
->   serial: 8250_exar: Don't return positive values as error codes
->   serial: 8250_exar: Describe all parameters in kernel doc
->   serial: 8250_exar: Kill CTI_PCI_DEVICE()
->   serial: 8250_exar: Use PCI_SUBVENDOR_ID_IBM for subvendor ID
->   serial: 8250_exar: Trivia typo fixes
->   serial: 8250_exar: Extract cti_board_init_osc_freq() helper
->   serial: 8250_exar: Kill unneeded ->board_init()
->   serial: 8250_exar: Decrease indentation level
->   serial: 8250_exar: Return directly from switch-cases
->   serial: 8250_exar: Switch to use dev_err_probe()
->   serial: 8250_exar: Use BIT() in exar_ee_read()
->   serial: 8250_exar: Make type of bit the same in exar_ee_*_bit()
->   serial: 8250_exar: Keep the includes sorted
->
->  drivers/tty/serial/8250/8250_exar.c | 459 ++++++++++++----------------
->  1 file changed, 203 insertions(+), 256 deletions(-)
->
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 213d0719e2b7..84c582ac246c 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6486,6 +6486,7 @@
+ 				 to a power of 2.
+ 			force -- force using of bounce buffers even if they
+ 			         wouldn't be automatically used by the kernel
++			         where a hardware IOMMU is not involved
+ 			noforce -- Never use bounce buffers (for debugging)
+ 
+ 	switches=	[HW,M68k,EARLY]
+diff --git a/Documentation/arch/x86/x86_64/boot-options.rst b/Documentation/arch/x86/x86_64/boot-options.rst
+index 137432d34109..066b4bc81583 100644
+--- a/Documentation/arch/x86/x86_64/boot-options.rst
++++ b/Documentation/arch/x86/x86_64/boot-options.rst
+@@ -285,7 +285,7 @@ iommu options only relevant to the AMD GART hardware IOMMU:
+       Always panic when IOMMU overflows.
+ 
+ iommu options only relevant to the software bounce buffering (SWIOTLB) IOMMU
+-implementation:
++implementation where a hardware IOMMU is not involved:
+ 
+     swiotlb=<slots>[,force,noforce]
+       <slots>
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
 
 
