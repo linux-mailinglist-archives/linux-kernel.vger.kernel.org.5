@@ -1,217 +1,203 @@
-Return-Path: <linux-kernel+bounces-167169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FEEA8BA52D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:09:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC4178BA52F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:09:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DAAF1C21D40
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:09:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AB101C21C93
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B963915EA6;
-	Fri,  3 May 2024 02:09:22 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A684013FF9;
+	Fri,  3 May 2024 02:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VaoXL8/I"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3D134A9;
-	Fri,  3 May 2024 02:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9016F134AC
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 02:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714702162; cv=none; b=U7TkN2Pfi3FfZHsQvsCq7CNgk9DAm/Ql41qElNOPO26rB51X18ylcKgzSdrFo6kRgBMwVmR7EBb4SAtO34pUgGKgFBibbp4QqSf/jpo/LDKf1LthZUd+Klih6KYTvUwIQkGr1+f4MrojO1AxkxOqdhtVkZEa6vOlapsTr8A6Nzo=
+	t=1714702185; cv=none; b=mf4UqF9C/OnROtKxTL7bX3hYdmp4rag1JYsR7Vq04qKfKOxTLzLUBRJswtZqm6CmiGppY5gEu7tVaLjr/xQ22UD1iznJ5Xq6WZfkUWySRL+2ZolamJ/zYIF3qLibXt+MxYzLZpkBNkzynHPvd6gCWUa4VWJXJdJUp5BhQL9CmoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714702162; c=relaxed/simple;
-	bh=npw/t6DUs7VRxXxX33ZJq9vhUD6Uee9GtuDDHixl3kY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ssMQLKaDaCfkex8mZqvu4UGFsCfRuzLHSNHKVnkDAqq/rIMsKBaGlY3e6OL1g8TiNvw70AjNKYDTkCN2mkIrv+LNT0hvL6ssA076VRnqorjxe3siFjWq0qDZCei0k0isKuQ8XIro70rEMu6ONXNiLg62mHTAYIKpYf9IKjJOcuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VVvPB3y0lz4f3jd0;
-	Fri,  3 May 2024 10:09:02 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 87D521A0175;
-	Fri,  3 May 2024 10:09:10 +0800 (CST)
-Received: from [10.174.177.174] (unknown [10.174.177.174])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxBDRzRmnSNtLg--.12952S3;
-	Fri, 03 May 2024 10:09:10 +0800 (CST)
-Message-ID: <afc46ac9-e3a2-b07f-c902-a9586c420824@huaweicloud.com>
-Date: Fri, 3 May 2024 10:09:07 +0800
+	s=arc-20240116; t=1714702185; c=relaxed/simple;
+	bh=72l7FcdnMU0yqbmlOscAZ663pKztg2XZDlvV+3fdybE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Sqs2rxMhOs6d6DIVXsvCoWseq7gTrhlM/eKafSP0h6FLPEjN9Of5S9ybNelFz9Z7Kp/7IKbtqy+52I6c45CjpJSQAAvrWYDwVpNiHCnP3pc0Y4Cvwe9KD9I7Ml7vicfhntPGK0CyiMGRXGYVvsw31VXsODrBrHRDSyl3L6cKOHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VaoXL8/I; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6f42924ca64so1928708b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 19:09:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714702184; x=1715306984; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MhL5IMfR/PIPcId0PwjBlUn/OiNG0ZYahayTjuFweeU=;
+        b=VaoXL8/IB68c8WLMF9bJDEYB4fjb7SoCsZ+8+mVmZ0joNLeHVEttXtFpZDUd2reGjQ
+         Ll6Rz/uXMPL4B4t7T9ZNCXVbUi30ZOzcnVyZZaOXbzdCUCgcERN6uu2mB+Gey9NegCZ5
+         yZZ8Oe87ceEGxD3c5lH0JEbUJPmmOfBZpgzcHqxJjpnvz2OSJC/FUZGp6Q8CZOBcNNyv
+         aKyz1srHzEbQFnlbZgVQKyug5SSz3giuMEAxyV3e5GF6VHc71ag8jTzwz9EphRFO06LD
+         gGQYUw/bnPF7XEqZtBW3OEf8I45kh6SXLWVnxGLrn53k1/4YEY0xAlz4yAmhYijLs9Kb
+         oYlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714702184; x=1715306984;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MhL5IMfR/PIPcId0PwjBlUn/OiNG0ZYahayTjuFweeU=;
+        b=T9rwU+nWQs1tji67o2AYMQh0h7NQHSGdhSQ+DGs2DUZs6aRdhfwamj8xsf3YDg0F5g
+         Mw961lOrNVI4NtF1CrX1JwaBS65ak8QIKhjTEK0lrO3Lu2DLzdHrCY2sVK7bbAqde5gy
+         wDtkB2Qrd3lnrBPQyP86kju6HTn/7Xz/KUvZfuArFu4AvNCL7ttem2+VOJLB17CUtkjO
+         uOS0F5rEoT7UEGPUM5yDzwBi+p76rSXpKIxTu1ON23UsKrNbaDXysDXOzcjaqg7kpBpL
+         zEHbMY0G7a3fot3McpQUnhmS0VOS15EXTG36TTtpxmtgrSx/BK2wb4ZHDAQTpCXvAU/c
+         NLDA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8tK/mra+4upSY2U3mrzPuO9WPKX6nYyIydwTLZXflZbcaEmASZVXhfkMszNCIQXf15wdniW5uYQ5nndlpwYZnT4a61FXkNmnltASq
+X-Gm-Message-State: AOJu0YxDz74glENwh1iOPLg6RRCbFJC5BMjEfM3rLFCRwGZOXjWKXkvA
+	l2/raHO2/HKQ6EWAX//N2g/BCQc6OslXNHsD4WYcu5iDJ2dvBDKO
+X-Google-Smtp-Source: AGHT+IGFfHVy5fUogSlRJyYhQr2KateAeFxl34nAMUxN7ZvfwM5gWink+XTgnMZ4VmD4Jc0as7TrVA==
+X-Received: by 2002:a05:6a00:464e:b0:6f3:ebb3:6bc3 with SMTP id kp14-20020a056a00464e00b006f3ebb36bc3mr1600958pfb.3.1714702183461;
+        Thu, 02 May 2024 19:09:43 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
+        by smtp.gmail.com with ESMTPSA id p8-20020a056a000a0800b006ecc6c1c67asm1956160pfh.215.2024.05.02.19.09.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 19:09:43 -0700 (PDT)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	linux-mm@kvack.org,
+	ryan.roberts@arm.com
+Cc: hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	david@redhat.com,
+	v-songbaohua@oppo.com,
+	vbabka@suse.cz,
+	willy@infradead.org
+Subject: [PATCH v2] mm/vmstat: sum up all possible CPUs instead of using vm_events_fold_cpu
+Date: Fri,  3 May 2024 14:09:24 +1200
+Message-Id: <20240503020924.208431-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] ext4: fix uninitialized ratelimit_state->lock access in
- __ext4_fill_super()
-Content-Language: en-US
-To: linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc: adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
- linux-kernel@vger.kernel.org, yangerkun@huawei.com,
- Baokun Li <libaokun1@huawei.com>
-References: <20240102133730.1098120-1-libaokun1@huawei.com>
- <a1874551-7e02-aa0d-9ef7-4322e920c661@huaweicloud.com>
-From: Baokun Li <libaokun@huaweicloud.com>
-In-Reply-To: <a1874551-7e02-aa0d-9ef7-4322e920c661@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxBDRzRmnSNtLg--.12952S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtr1ruFy5Jr4rtFykZFy5urg_yoW7tFW5pr
-	n7JFyxJryUu34kJw4UJF1UJFyUJw1UG3WDJr18XF1UJrWUXr12qr4UXF10gF1UCr48Ar1U
-	Jr1UJrnrZw1UJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
 
-Hi Ted,
+From: Barry Song <v-songbaohua@oppo.com>
 
-Would you consider merging in this patch in the current merge
-window? This patch has been merged in our internal branch for
-a while now and so far it is safe.
+When unplugging a CPU, the current code merges its vm_events
+with an online CPU. Because, during summation, it only considers
+online CPUs, which is a crude workaround. By transitioning to
+summing up all possible CPUs, we can eliminate the need for
+vm_events_fold_cpu.
 
-Regards,
-Baokun
+Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+---
+ originally suggested by Ryan while he reviewed mTHP counters
+ patchset[1]; I am also applying this suggestion to vm_events
 
-On 2024/4/23 9:41, Baokun Li wrote:
-> Gently ping again.
->
-> On 2024/1/2 21:37, Baokun Li wrote:
->> In the following concurrency we will access the uninitialized rs->lock:
->>
->> ext4_fill_super
->>    ext4_register_sysfs
->>     // sysfs registered msg_ratelimit_interval_ms
->>                               // Other processes modify rs->interval to
->>                               // non-zero via msg_ratelimit_interval_ms
->>    ext4_orphan_cleanup
->>      ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
->>        __ext4_msg
->> ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
->>            if (!rs->interval)  // do nothing if interval is 0
->>              return 1;
->>            raw_spin_trylock_irqsave(&rs->lock, flags)
->>              raw_spin_trylock(lock)
->>                _raw_spin_trylock
->>                  __raw_spin_trylock
->>                    spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
->>                      lock_acquire
->>                        __lock_acquire
->>                          register_lock_class
->>                            assign_lock_key
->>                              dump_stack();
->>    ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
->>      raw_spin_lock_init(&rs->lock);
->>      // init rs->lock here
->>
->> and get the following dump_stack:
->>
->> =========================================================
->> INFO: trying to register non-static key.
->> The code is fine but needs lockdep annotation, or maybe
->> you didn't initialize this object before use?
->> turning off the locking correctness validator.
->> CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
->> [...]
->> Call Trace:
->>   dump_stack_lvl+0xc5/0x170
->>   dump_stack+0x18/0x30
->>   register_lock_class+0x740/0x7c0
->>   __lock_acquire+0x69/0x13a0
->>   lock_acquire+0x120/0x450
->>   _raw_spin_trylock+0x98/0xd0
->>   ___ratelimit+0xf6/0x220
->>   __ext4_msg+0x7f/0x160 [ext4]
->>   ext4_orphan_cleanup+0x665/0x740 [ext4]
->>   __ext4_fill_super+0x21ea/0x2b10 [ext4]
->>   ext4_fill_super+0x14d/0x360 [ext4]
->> [...]
->> =========================================================
->>
->> Normally interval is 0 until s_msg_ratelimit_state is initialized, so
->> ___ratelimit() does nothing. But registering sysfs precedes initializing
->> rs->lock, so it is possible to change rs->interval to a non-zero value
->> via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
->> uninitialized, and then a call to ext4_msg triggers the problem by
->> accessing an uninitialized rs->lock. Therefore register sysfs after all
->> initializations are complete to avoid such problems.
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   fs/ext4/super.c | 22 ++++++++++------------
->>   1 file changed, 10 insertions(+), 12 deletions(-)
->>
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index 0980845c8b8f..1db23b0e8a4f 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -5564,19 +5564,15 @@ static int __ext4_fill_super(struct 
->> fs_context *fc, struct super_block *sb)
->>       if (err)
->>           goto failed_mount6;
->>   -    err = ext4_register_sysfs(sb);
->> -    if (err)
->> -        goto failed_mount7;
->> -
->>       err = ext4_init_orphan_info(sb);
->>       if (err)
->> -        goto failed_mount8;
->> +        goto failed_mount7;
->>   #ifdef CONFIG_QUOTA
->>       /* Enable quota usage during mount. */
->>       if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
->>           err = ext4_enable_quotas(sb);
->>           if (err)
->> -            goto failed_mount9;
->> +            goto failed_mount8;
->>       }
->>   #endif  /* CONFIG_QUOTA */
->>   @@ -5602,7 +5598,7 @@ static int __ext4_fill_super(struct 
->> fs_context *fc, struct super_block *sb)
->>           ext4_msg(sb, KERN_INFO, "recovery complete");
->>           err = ext4_mark_recovery_complete(sb, es);
->>           if (err)
->> -            goto failed_mount10;
->> +            goto failed_mount9;
->>       }
->>         if (test_opt(sb, DISCARD) && 
->> !bdev_max_discard_sectors(sb->s_bdev))
->> @@ -5619,15 +5615,17 @@ static int __ext4_fill_super(struct 
->> fs_context *fc, struct super_block *sb)
->>       atomic_set(&sbi->s_warning_count, 0);
->>       atomic_set(&sbi->s_msg_count, 0);
->>   +    /* Register sysfs after all initializations are complete. */
->> +    err = ext4_register_sysfs(sb);
->> +    if (err)
->> +        goto failed_mount9;
->> +
->>       return 0;
->>   -failed_mount10:
->> +failed_mount9:
->>       ext4_quotas_off(sb, EXT4_MAXQUOTAS);
->> -failed_mount9: __maybe_unused
->> +failed_mount8: __maybe_unused
->>       ext4_release_orphan_info(sb);
->> -failed_mount8:
->> -    ext4_unregister_sysfs(sb);
->> -    kobject_put(&sbi->s_kobj);
->>   failed_mount7:
->>       ext4_unregister_li_request(sb);
->>   failed_mount6:
->
+ -v2:
+ also drop cpus_read_lock() as we don't care about cpu hotplug any more;
+ -v1:
+ https://lore.kernel.org/linux-mm/20240412123039.442743-1-21cnbao@gmail.com/
+
+ [1] https://lore.kernel.org/linux-mm/ca73cbf1-8304-4790-a721-3c3a42f9d293@arm.com/
+
+ include/linux/vmstat.h |  5 -----
+ mm/page_alloc.c        |  8 --------
+ mm/vmstat.c            | 21 +--------------------
+ 3 files changed, 1 insertion(+), 33 deletions(-)
+
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 735eae6e272c..f7eaeb8bfa47 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -83,8 +83,6 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
+ 
+ extern void all_vm_events(unsigned long *);
+ 
+-extern void vm_events_fold_cpu(int cpu);
+-
+ #else
+ 
+ /* Disable counters */
+@@ -103,9 +101,6 @@ static inline void __count_vm_events(enum vm_event_item item, long delta)
+ static inline void all_vm_events(unsigned long *ret)
+ {
+ }
+-static inline void vm_events_fold_cpu(int cpu)
+-{
+-}
+ 
+ #endif /* CONFIG_VM_EVENT_COUNTERS */
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index cd584aace6bf..8b56d785d587 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5826,14 +5826,6 @@ static int page_alloc_cpu_dead(unsigned int cpu)
+ 	mlock_drain_remote(cpu);
+ 	drain_pages(cpu);
+ 
+-	/*
+-	 * Spill the event counters of the dead processor
+-	 * into the current processors event counters.
+-	 * This artificially elevates the count of the current
+-	 * processor.
+-	 */
+-	vm_events_fold_cpu(cpu);
+-
+ 	/*
+ 	 * Zero the differential counters of the dead processor
+ 	 * so that the vm statistics are consistent.
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index db79935e4a54..aaa32418652e 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -114,7 +114,7 @@ static void sum_vm_events(unsigned long *ret)
+ 
+ 	memset(ret, 0, NR_VM_EVENT_ITEMS * sizeof(unsigned long));
+ 
+-	for_each_online_cpu(cpu) {
++	for_each_possible_cpu(cpu) {
+ 		struct vm_event_state *this = &per_cpu(vm_event_states, cpu);
+ 
+ 		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+@@ -129,29 +129,10 @@ static void sum_vm_events(unsigned long *ret)
+ */
+ void all_vm_events(unsigned long *ret)
+ {
+-	cpus_read_lock();
+ 	sum_vm_events(ret);
+-	cpus_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(all_vm_events);
+ 
+-/*
+- * Fold the foreign cpu events into our own.
+- *
+- * This is adding to the events on one processor
+- * but keeps the global counts constant.
+- */
+-void vm_events_fold_cpu(int cpu)
+-{
+-	struct vm_event_state *fold_state = &per_cpu(vm_event_states, cpu);
+-	int i;
+-
+-	for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+-		count_vm_events(i, fold_state->event[i]);
+-		fold_state->event[i] = 0;
+-	}
+-}
+-
+ #endif /* CONFIG_VM_EVENT_COUNTERS */
+ 
+ /*
+-- 
+2.34.1
 
 
