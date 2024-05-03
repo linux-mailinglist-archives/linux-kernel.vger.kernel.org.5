@@ -1,172 +1,345 @@
-Return-Path: <linux-kernel+bounces-167275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588488BA6E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:07:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A884A8BA6DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:06:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5D21C21FF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:07:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35D6F1F2297A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3E013AD07;
-	Fri,  3 May 2024 06:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4437F139D07;
+	Fri,  3 May 2024 06:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="BHgA5/Nd"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062.outbound.protection.outlook.com [40.107.220.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OL6b+I2x"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173A213A899;
-	Fri,  3 May 2024 06:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714716373; cv=fail; b=PXSvtyS/vDItwViJDVJyInxI1hh0vksakpaMsuwY8zxNIJMyb8Q8wuNdhti6IDybwgf+1M0fZrqj+OFHQqMNqL+ctenadObAiWtIwUQLkuiMk9tIRcvE+sLmK5mBA/8OGSrdKubK4+paSNrdzHyWHwvxafm8uege6icjc4jt9vg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714716373; c=relaxed/simple;
-	bh=EPPtClz1yWTjgc0nBZnz4chGEFTibrGR91gO/XnAsb4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fmnXFqdQARZkn2OKb2r4naoXNwBjowOe7I5m8TQ5otbys4ASVT1Fac8AeD/e5orBgguDDTLfMw6urnf2Ckp2VzWTBlYacw4gx6CAbMVj2UX35c5+HscPHB+OgWQO+S4k0WA4O0d280NGA2jSp1EM5oSKob6LSMd3XDD2w4J1GDQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=BHgA5/Nd; arc=fail smtp.client-ip=40.107.220.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kTPWYxOdaG4/WxobSkIFLUo+5ivrLiJN48dOIAF+F7+1/ax4/nMpNZ+pNYpvl6ttpNnejLmbT+MInfeL/7023hYiyQo2M/er+Y5hVrqhrZJbwuNmUFqUp6QpIDlGDGzXGtnSxmp4eoOn+gV/YbunMUb6LZdKJMMZPNSZ+UEyVFmwoBYVJY/4EdU3zCH1iXG0vPFkh1mgatIpSha5d/rIeDVtWd+5aDNF15bUUk7oU45yZGRd3srgf1wCN/tlcaAfaUPZBWr6hhaDJzsVeVzdD/lqsMeNCKWwwEqrluA8X6bRQuKMdUfEoB2Wj2//gorh3CMoJ2TcuXOckhv+HmCfyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KlUEZrg+1RAu3uwa2B7oJ2UP61PK9Ey3V+7H2WbGrus=;
- b=XoUcbQIx2IX4RV5XwI+UyJYC6OPHhV3/pem1Aq+mwwpl4TXXDraKJ+Px9Jwx800W7n7ueHLoDHlo6E3CaRaMKqKhxuf4QL60AFxVw4AfVMfodcygFKeaB5iP+DbMfx/90/kGus63jRe0DRFDaF/DuHNOzvSCQfLyft9xz53hJsskgDlXCq/xjCV/a/x+sUGxwtry9T2JaazAjUgwQiQxuhPDhsN7aA9rNzhkEIQlJ9UFzgV/sCNphmXYwv179RCV0t2hGb2CDuTji2S+DNq+EPCW6Y2joT9TTs+NAwlLK0gx9FVDKn4Zljw2/DS5pxt3mud5Pwa/oTVVSgkWRMD/Iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=pengutronix.de smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KlUEZrg+1RAu3uwa2B7oJ2UP61PK9Ey3V+7H2WbGrus=;
- b=BHgA5/NdCOW52/qOvB/qFpskhehnGe8PyeZBI9pSsWFVSH+s2VMglToTCYDt+LJkm5tPuBigDT03NK1GUy9rki8nMz9Ut6q8sY9ebiHJIE4b+67zvKNjDyYjhHRQcn15s+EcxPFF9tmu+1jdS2F0sNaBJye6otxl6ZKVW22UKgY=
-Received: from MN2PR19CA0063.namprd19.prod.outlook.com (2603:10b6:208:19b::40)
- by MN0PR12MB6367.namprd12.prod.outlook.com (2603:10b6:208:3d3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30; Fri, 3 May
- 2024 06:06:08 +0000
-Received: from BL02EPF0001A108.namprd05.prod.outlook.com
- (2603:10b6:208:19b:cafe::92) by MN2PR19CA0063.outlook.office365.com
- (2603:10b6:208:19b::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30 via Frontend
- Transport; Fri, 3 May 2024 06:06:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0001A108.mail.protection.outlook.com (10.167.241.138) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Fri, 3 May 2024 06:06:08 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 3 May
- 2024 01:06:07 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 3 May
- 2024 01:06:07 -0500
-Received: from xhdharinik40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Fri, 3 May 2024 01:06:03 -0500
-From: Harini T <harini.t@amd.com>
-To: <mkl@pengutronix.de>, <mailhol.vincent@wanadoo.fr>, <davem@davemloft.ne>,
-	<edumazet@google.com>, <pabeni@redhat.com>, <michal.simek@amd.com>,
-	<appana.durga.rao@xilinx.com>, <kuba@kernel.org>
-CC: <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<srinivas.goud@amd.com>, Harini T <harini.t@amd.com>
-Subject: [PATCH 2/2] can: xilinx_can: Document driver description to list all supported IPs
-Date: Fri, 3 May 2024 11:35:53 +0530
-Message-ID: <20240503060553.8520-3-harini.t@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240503060553.8520-1-harini.t@amd.com>
-References: <20240503060553.8520-1-harini.t@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D21E1C6BD;
+	Fri,  3 May 2024 06:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714716354; cv=none; b=L3Us9d+vLrBF7G0jvJM313O14C0Rp/WMyLD2l7o305/xGN4LPUKJ2fxPHvySJJfcbKAKxlvT51qb1GigTM6lM/rtSnyEF5VHb8wOT1BiQ5e/D0TPwnsujkp0A3bxTxfI2uL7R7l9J1FnOowlbJSUAe/i4Qp5z4PtWn4X8KOD4Bg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714716354; c=relaxed/simple;
+	bh=IED0Mb4+EQ6v9Aq9vamv4bae3ZiGogC6cVMeVsbizCw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ikMqBu+3xbBYHTl2n9/LLOONZsq01AdaIWmrbtzftjf40jUoqT2r5fjktayZ7p08CFQmMx+7bfdSUc3U5Ds3jZfiMOfj2DgAdqKXZbLYDDVr9nhD+ochRKw5xMbvyBrxS40AHyAaL2HZPbCSWlfYLoJVNWrImRNk9rh+GiZkdPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OL6b+I2x; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so10817502e87.1;
+        Thu, 02 May 2024 23:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714716350; x=1715321150; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IED0Mb4+EQ6v9Aq9vamv4bae3ZiGogC6cVMeVsbizCw=;
+        b=OL6b+I2xT70fTDCzw0i3NThG/KT7tokIPnjyta9UxrA2tthAbSfULZFlLHPwjaP/1P
+         6rtMTVdjwK0e+qWZ3n2qNjIxrfwZlrLeTDouK36Q3XUEQIn+aICzP3A99Kt72/pdP5gT
+         vA6+o8e6wy64njNTOCr7tVjlrzWvswqfIlyWsEgUFRWfQSZstg9Tn750U20FdRkSf7Ka
+         UaZH4b/TSZMPHvgRAwGwbaOu+l2FE8qY4zoU7floDExBmooVk0gpPaYTgpldA0FNPmnS
+         +rvEM+NK+tjHsrplzJ1/+1inaZud02MdxRgn3qU6SCPfObSpKmUxgT1VhNmYDRe0N/kb
+         bEOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714716350; x=1715321150;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IED0Mb4+EQ6v9Aq9vamv4bae3ZiGogC6cVMeVsbizCw=;
+        b=lTuk1nYQeqP9bQde4aPOfDaYlRY3u/9kR2t76dfg03WZjHuGteIW1f/ITa1ajmFCho
+         Zli7S5smNzvqwpYV61DofkHyYXwVL5v+k+w2aIppFjCX8BpVgLFgs4dt9WF9MuNMSu5y
+         8R4aQhYoCnU7XtxokKEM59MO6Rw2N8T7ZG81o2GfLBGGlh+D84zg2TAzz6qGCQypiBOO
+         3Qs4m1InkrZaxWsQvsJ7aSNfSeOMZBoUxQYJZG0qMVkAwHcgd+SugNooEMiW2TInVl2E
+         KhkD+WwAP7Kd3xJka8nOG7cq0aTySphDNWD6qFDHAAqT66yC0t5FX5xiBPgfHZGH3Y4Z
+         L+XA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqeGIQA4jSML3TMTF/3y48FxwaNswcGLBXH2F1fV4mgPcV/5aeUR2bjAOrkUxoPzvdUPr6CA2bWAb6qo7H09LWccx0+lEfHcAzHy16zGznBi5D4s8YRqO6gzsbl4ylfTGoPFylQHokn29249hB1FGhjRFQY31baWk3C/Lc9RXCPXCBWHfoz5I8DWcONd4xk4KMVNm/V+/RS+tAXQEy+w==
+X-Gm-Message-State: AOJu0Yyd+z2xh8nrC+UrJEBtiaCvQaGjDDGfcBSGMS3t6OWjBeBkcgv5
+	jtgvwMRP6l+3jOx1WGkVRRanfgVynipSqWow564EQZ1hGAB0Rfjo
+X-Google-Smtp-Source: AGHT+IFGWUGbdgJBUGuCHPkwxmdfd90qIxlR6Q7hcnO+AXxWFVafsV0BRCA3Ok7qBxY4X2kDGeheDA==
+X-Received: by 2002:a05:6512:715:b0:51f:315c:75e0 with SMTP id b21-20020a056512071500b0051f315c75e0mr894419lfs.44.1714716350101;
+        Thu, 02 May 2024 23:05:50 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1c:c500:ee59:d953:f148:40ba? (p200300f6ef1cc500ee59d953f14840ba.dip0.t-ipconnect.de. [2003:f6:ef1c:c500:ee59:d953:f148:40ba])
+        by smtp.gmail.com with ESMTPSA id p22-20020a1709060e9600b00a5887833da8sm1328554ejf.81.2024.05.02.23.05.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 23:05:49 -0700 (PDT)
+Message-ID: <0df8386e74cbdfaaaf35a4bc59326151b863ae4c.camel@gmail.com>
+Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7 families
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: "Gradinariu, Ramona" <Ramona.Gradinariu@analog.com>, Ramona Gradinariu
+	 <ramona.bolboaca13@gmail.com>, "linux-kernel@vger.kernel.org"
+	 <linux-kernel@vger.kernel.org>, "linux-iio@vger.kernel.org"
+	 <linux-iio@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	 <linux-doc@vger.kernel.org>, "devicetree@vger.kernel.org"
+	 <devicetree@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, 
+ "conor+dt@kernel.org"
+	 <conor+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
+	 <krzysztof.kozlowski+dt@linaro.org>, "robh@kernel.org" <robh@kernel.org>, 
+ "Sa, Nuno" <Nuno.Sa@analog.com>
+Date: Fri, 03 May 2024 08:09:29 +0200
+In-Reply-To: <20240502201408.216575e4@jic23-huawei>
+References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
+	 <20240423084210.191987-5-ramona.gradinariu@analog.com>
+	 <20240428162555.3ddf31ea@jic23-huawei>
+	 <e62f8df4b06abc371b1e9fe3232cb593e468d54c.camel@gmail.com>
+	 <BL1PR03MB5992DEBF82C0DB7BDC5EA0FF971B2@BL1PR03MB5992.namprd03.prod.outlook.com>
+	 <20240429204027.3e47074a@jic23-huawei>
+	 <0e13f8b643bb7afcc7c4f0d62741cf9fda66c1e0.camel@gmail.com>
+	 <20240502201408.216575e4@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB05.amd.com: harini.t@amd.com does not designate
- permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A108:EE_|MN0PR12MB6367:EE_
-X-MS-Office365-Filtering-Correlation-Id: d32858aa-e640-48f1-d0f6-08dc6b371fda
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|376005|1800799015|36860700004|7416005;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?QNaVA7QkCEZVYzOxMo0oCPokqBCDhErj5zQRMLD+2sIgSe8aHTHpFDnr+Iv4?=
- =?us-ascii?Q?gt1mmcME6ofMn8m0MPd3ot9zZbO+masfEZLjpAx7EzQnTobvgWOviVH72fnW?=
- =?us-ascii?Q?hqbJG+CxAw2H/zFE8snEFRqWZJfgQRZarwgz0nGuWKewM6tQxw2bJG8Mxytx?=
- =?us-ascii?Q?zu7w+RHlNq1RKa4y32urfSSXwmElzOTzdt9twWNCFy44qxEcAV9KY1i39vOC?=
- =?us-ascii?Q?cgsz+qsMQJ/j+f/2IPDgOJ4YH1M/iXF99leqy4rE+NisIc+Z53s7a1mfLe6t?=
- =?us-ascii?Q?dTK3fSxW8cKFO/RAZeBlIooEw484kHOMQbAdxTmTE+acwVOHZKK+krTsK5q/?=
- =?us-ascii?Q?3LIaH+xwjRvo07PnIJm1drK3caZ731qBzlJ7D3U8i5SNH81IAt1+hWnPam4P?=
- =?us-ascii?Q?PpD6nrLKlKkajYGbh9qiteWThtHgFWGVyF8kH8zqmlDBWgGNQPy/6kWh073o?=
- =?us-ascii?Q?w5MDoR3Zmq7NwlVH+i9HYP+OgR/LHk7XVMGQmXIA1WFatD52+Ah+kbnLewqo?=
- =?us-ascii?Q?W8hsSFrV8pGU5V1trO5Llu3qQO4GnSfZ/gK8wP6KhcmlybDNmIJ3QFou350a?=
- =?us-ascii?Q?zUKeaOO3Dg+OKv1du7jCWwMLcXv+hwL5m2axWC3KB3HTrv4nsZl6U9doTzpy?=
- =?us-ascii?Q?XyXDqycT7iru0DdzG8n5MuS9rG2waXKDcKYmiAzYfFLuVLpFzdxJn7qxZnF3?=
- =?us-ascii?Q?0//Hnao4VBws8Psp3M1yBDTzpQ4JMKkgdKoVj768rlpVxOLEV+F40GqDr7lz?=
- =?us-ascii?Q?tVKaJqQykUpvnj8jqSPF5aiHnU4GQn1jYcLe9eVTFoc7eJuhG571X2Wp9hQK?=
- =?us-ascii?Q?BBIGAKADNs+0u5wcRbJQhhQHkEhivXyBqBXigkGlBeRsJ4bYhAyRtFXdux4v?=
- =?us-ascii?Q?RaMqJntAEnZpucjfu2X6EBYxbmJ/S0U+DN6TqqVbMkmOay8OY9GzaewJZPRw?=
- =?us-ascii?Q?I/1q6CI6D2kJUzzLMZgSp+KSJFWu3gXMI6/4FYQMkAIm66kHgC16ZHNSlbLO?=
- =?us-ascii?Q?fDycoSqxyLY6ypS4GVBS1JbEZWSxxqOiLRniwyDBi8bnO6QoDAxXQb4sgdSO?=
- =?us-ascii?Q?sF1qf6PB0L3BCLdczUAl3EwCQgKLXOdMjL0qbwn2AZiF7xIEiFNnohZezxuT?=
- =?us-ascii?Q?mIk8IP+OJ4YqbyKw3Y9liIgvDNjuPU4Bo9LX6dmad6jCX8dt0SzXeyYNjY7K?=
- =?us-ascii?Q?rFZoMkLXGGpLWNlQ7UiPyZuryPnIOwYCnmI+/BnLhFzPVgr4KFc73ILsYyCN?=
- =?us-ascii?Q?Yo2elUsBmySrOrQtYo7iGGscOzXK9V466oYNbwPAbJVRTrvNQCXRQmeuGYX1?=
- =?us-ascii?Q?0I8CZSswXsupGzSR9xbm8yjVkDMqYIxUaRNMwkZOgDnGC1cmDYLZAjXz10qr?=
- =?us-ascii?Q?XwtqQng=3D?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(36860700004)(7416005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 06:06:08.1106
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d32858aa-e640-48f1-d0f6-08dc6b371fda
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0001A108.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6367
 
-Xilinx CAN driver supports AXI CAN, AXI CANFD, CANPS and CANFD PS IPs.
-Document all supported IPs in comment description.
+On Thu, 2024-05-02 at 20:14 +0100, Jonathan Cameron wrote:
+> On Thu, 02 May 2024 13:31:55 +0200
+> Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+>=20
+> > On Mon, 2024-04-29 at 20:40 +0100, Jonathan Cameron wrote:
+> > > On Mon, 29 Apr 2024 13:17:42 +0000
+> > > "Gradinariu, Ramona" <Ramona.Gradinariu@analog.com> wrote:
+> > > =C2=A0=20
+> > > > > -----Original Message-----
+> > > > > From: Nuno S=C3=A1 <noname.nuno@gmail.com>
+> > > > > Sent: Monday, April 29, 2024 10:59 AM
+> > > > > To: Jonathan Cameron <jic23@kernel.org>; Ramona Gradinariu
+> > > > > <ramona.bolboaca13@gmail.com>
+> > > > > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org; linu=
+x-
+> > > > > doc@vger.kernel.org; devicetree@vger.kernel.org; corbet@lwn.net;
+> > > > > conor+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
+> > > > > robh@kernel.org;
+> > > > > Gradinariu, Ramona <Ramona.Gradinariu@analog.com>; Sa, Nuno
+> > > > > <Nuno.Sa@analog.com>
+> > > > > Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis1654=
+5/7
+> > > > > families
+> > > > >=20
+> > > > > [External]
+> > > > >=20
+> > > > > On Sun, 2024-04-28 at 16:25 +0100, Jonathan Cameron wrote:=C2=A0=
+=C2=A0=C2=A0=20
+> > > > > > On Tue, 23 Apr 2024 11:42:09 +0300
+> > > > > > Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
+> > > > > > =C2=A0=C2=A0=20
+> > > > > > > The ADIS16545 and ADIS16547 are a complete inertial system th=
+at
+> > > > > > > includes a triaxis gyroscope and a triaxis accelerometer.
+> > > > > > > The serial peripheral interface (SPI) and register structure
+> > > > > > > provide a
+> > > > > > > simple interface for data collection and configuration contro=
+l.
+> > > > > > >=20
+> > > > > > > These devices are similar to the ones already supported in th=
+e
+> > > > > > > driver,
+> > > > > > > with changes in the scales, timings and the max spi speed in =
+burst
+> > > > > > > mode.
+> > > > > > > Also, they support delta angle and delta velocity readings in
+> > > > > > > burst
+> > > > > > > mode, for which support was added in the trigger handler.
+> > > > > > >=20
+> > > > > > > Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>=C2=A0=C2=A0=
+=C2=A0=20
+> > > > > >=20
+> > > > > > What is Nuno's relationship to this patch?=C2=A0 You are author=
+ and the
+> > > > > > sender
+> > > > > > which is fine, but in that case you need to make Nuno's involve=
+ment
+> > > > > > explicit.
+> > > > > > Perhaps a Co-developed-by or similar is appropriate?
+> > > > > > =C2=A0=C2=A0=20
+> > > > > > > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.co=
+m>=C2=A0=C2=A0=C2=A0
+> > > > > > A few comments inline.=C2=A0 Biggest one is I'd like a clear st=
+atement of
+> > > > > > why you
+> > > > > > can't do a burst of one type, then a burst of other.=C2=A0 My g=
+uess is
+> > > > > > that the
+> > > > > > transition is very time consuming?=C2=A0 If so, that is fine, b=
+ut you
+> > > > > > should be
+> > > > > > able
+> > > > > > to let available_scan_masks handle the disjoint channel sets.=
+=C2=A0=C2=A0=C2=A0=20
+> > > > >=20
+> > > > > Yeah, the burst message is a special spi transfer that brings you=
+ all
+> > > > > of the
+> > > > > channels data at once but for the accel/gyro you need to explicit=
+ly
+> > > > > configure
+> > > > > the chip to either give you the "normal vs "delta" readings. Re-
+> > > > > configuring the
+> > > > > chip and then do another burst would destroy performance I think.=
+ We
+> > > > > could
+> > > > > do
+> > > > > the manual readings as we do in adis16475 for chips not supportin=
+g
+> > > > > burst32.
+> > > > > But
+> > > > > in the burst32 case those manual readings should be minimal while=
+ in
+> > > > > here we
+> > > > > could have to do 6 of them which could also be very time consumin=
+g...
+> > > > >=20
+> > > > > Now, why we don't use available_scan_masks is something I can't r=
+eally
+> > > > > remember
+> > > > > but this implementation goes in line with what we have in the
+> > > > > adis16475
+> > > > > driver.
+> > > > >=20
+> > > > > - Nuno S=C3=A1
+> > > > > =C2=A0=C2=A0=C2=A0=20
+> > > >=20
+> > > > Thank you Nuno for all the additional explanations.
+> > > > Regarding the use of available_scan_masks, the idea is to have any
+> > > > possible
+> > > > combination for accel, gyro, temp and timestamp channels or delta a=
+ngle,
+> > > > delta=20
+> > > > velocity, temp and=C2=A0 timestamp channels. There are a lot of com=
+binations
+> > > > for=20
+> > > > this and it does not seem like a good idea to write them all manual=
+ly.
+> > > > That is=20
+> > > > why adis16480_update_scan_mode is used for checking the correct cha=
+nnels
+> > > > selection.=C2=A0=20
+> > >=20
+> > > If you are using bursts, the data is getting read anyway - which is t=
+he
+> > > main
+> > > cost here. The real question becomes what are you actually saving by
+> > > supporting all
+> > > the combinations of the the two subsets of channels in the pollfunc?
+> > > Currently you have to pick the channels out and repack them, if pushi=
+ng
+> > > them all
+> > > looks to me like a mempcy and a single value being set (unconditional=
+ly).=C2=A0
+> >=20
+> > > Then it's a question of what the overhead of the channel demux in the=
+ core
+> > > is.
+> > > What you pass out of the driver via iio_push_to_buffers*()
+> > > is not what ends up in the buffer if you allow the IIO core to do dat=
+a
+> > > demuxing
+> > > for you - that is enabled by providing available_scan_masks.=C2=A0 At=
+ buffer
+> > > start up the demux code computes a fairly optimal set of copies to re=
+pack
+> > > the incoming data to match with what channels the consumer (here prob=
+ably
+> > > the kfifo on the way to userspace) is expecting.
+> > >=20
+> > > That demux adds a small overhead but it should be small as long
+> > > as the channels wanted aren't pathological (i.e. every other one).
+> > >=20
+> > > Advantage is the driver ends up simpler and in the common case of tur=
+n
+> > > on all the channels (why else did you buy a device with those measure=
+ments
+> > > if you didn't want them!) the demux is zerocopy so effectively free w=
+hich
+> > > is not going to be the case for the bitmap walk and element copy in t=
+he
+> > > driver.
+> > > =C2=A0=20
+> >=20
+> > Maybe my younger me was smarter but reading again the validation of the=
+ scan
+> > mask
+> > code (when available_scan_masks is available), I'm not sure why we're n=
+ot
+> > using them.
+> > I think that having one mask with delta values + temperature and anothe=
+r one
+> > with
+> > normal + temperature would be enough for what we want in here. The code=
+ in
+> > adis16480_update_scan_mode() could then be simpler I think.
+> >=20
+> > Now, what I'm still not following is the straight memcpy(). I may be mi=
+ssing
+> > something but the demux code only appears to kick in when we have compo=
+und
+> > masks
+> > resulting of multiple buffers being enabled. So I'm not seeing how we c=
+an
+> > get away
+> > without picking the channels and place them correctly in the buffer pas=
+sed
+> > to IIO?
+>=20
+> It runs whenever the enabled mask requested (the channels that are enable=
+d) is
+> different from the active_scan_mask. It only sends channels in one
+> direction if there is only one user but it only sends the ones enabled by=
+ that
+> consumer.
+> It's called unconditionally from iio_enable_buffers()
+>=20
+> That iterates over all enabled buffers (often there is only 1)
+>=20
+> and then checks if the active scan mask is the same as the one for this
+> buffer.
+> https://elixir.bootlin.com/linux/v6.9-rc6/source/drivers/iio/industrialio=
+-buffer.c#L1006
+>=20
+> The setup for whether to find a superset from available_scan_masks is her=
+e
+> https://elixir.bootlin.com/linux/v6.9-rc6/source/drivers/iio/industrialio=
+-buffer.c#L928
+>=20
+> Key is that if it happens to match, then we don't actually do anything in=
+ the
+> demux.
+> It just gets passed straight on through.=C2=A0 That does the fast path yo=
+u mention
+> below.
 
-Signed-off-by: Harini T <harini.t@amd.com>
----
- drivers/net/can/xilinx_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ahh got it... May failure was not realizing that iio_scan_mask_match() retu=
+rns
+the available masks so I was assuming that the bitmap_equal() check would o=
+nly
+differ when multiple buffers are enabled.
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index fae0120473f8..d944911d7f05 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -6,7 +6,7 @@
-  * Copyright (C) 2017 - 2018 Sandvik Mining and Construction Oy
-  *
-  * Description:
-- * This driver is developed for Axi CAN IP and for Zynq CANPS Controller.
-+ * This driver is developed for AXI CAN IP, AXI CANFD IP, CANPS and CANFD PS Controller.
-  */
- 
- #include <linux/bitfield.h>
--- 
-2.17.1
+Oh well, I think then this should work... I'm not sure it will be more
+performant for the case where we don't enable all the channels because the =
+demux
+is a linked list which is far from being a performance friend (maybe we can=
+ do
+some trials with something like xarray...). Still, for this to work the buf=
+fer
+we pass into IIO has to be bigger than it needs to be (so bigger memset())
+because, AFAIU, we will have to pass on all the scan elements and, as I sai=
+d,
+the burst data will either have delta or normal measurements (not both). I =
+guess
+the code will still look simpler so if there's no visible difference in
+performance I'm fine with the change. I guess Ramona can give it a try to s=
+ee
+how it looks like.
+
+- Nuno S=C3=A1
+>=20
 
 
