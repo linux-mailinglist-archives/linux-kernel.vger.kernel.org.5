@@ -1,252 +1,170 @@
-Return-Path: <linux-kernel+bounces-167612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 817E28BABF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DBB8BABFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53371C21E2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ADC21C21E9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616EA1534E0;
-	Fri,  3 May 2024 11:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qyB1ISae"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1FB152DFF;
+	Fri,  3 May 2024 11:58:26 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8AC152179
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 11:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120F4152DF5
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 11:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714737430; cv=none; b=GHp4x0c0n3JqF3e/1FmNf5YU12S4m7kfFzcuRmm24RHtlqvpOeFHw+hi/LWHUmfLxKpf+lQBZulfGyXVEL35WbWVyjvqY5qATGKHjBYd/UsYCPXmaAXitNmd8DS2xJ53korojVus5I7JtnDPnEnycPtWV/g4a2buXNTvOF4nFYE=
+	t=1714737505; cv=none; b=jF473aXrJTLWgh59moJMr9z1NHF4SgQF2v7MCvNErA9XfTqRaVgW2yzqcEsq1EX7fzF5v7VsIOsgG5FDgXNhipFZ7sIDNA0swg1jzY+07hTmL7ggT1ppG7a2JcCYNarny3BK652TYItP/PnvhKkwxaO7UT0ARbvmuVmqJG93b8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714737430; c=relaxed/simple;
-	bh=N1UR76ibJXT6KSmjP9DwgMJEalcANwTRYffmZX8HUPM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=illM0FUO26oEuE5ZoA3O+YLZ1P27E8rWI8o8/aXroOElIjh+T7ZA1liMVBE5jcJCEGMBfrQDg1DcwpjwPshUXBJ99pnLjW3EUPxFuseCrNfeN1b45qs3JmE36s1Y95Y+mcNwVjT2MeIWbhQiE6huObBZy42M4iups2BMGJ4ujp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qyB1ISae; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dcbd4df7-328e-4d28-8098-dca3e8c4f004@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714737425;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QBEy7QkEaMvis9qjHZ5cOY4POeQ4rKqY2XsSXuPCu4U=;
-	b=qyB1ISae7I/P6hByROK73LSERbiL7NzoQZuWyVzVYXd5DEKcWqZ+01n4/u2G94uRlwKdZg
-	pgnNepE8R4vEhrgw3+TI+jbCs12NmD0KobYhO09ypdlc17huPvRqS1WfGm3a/IDhhV2Unp
-	wPw01DbGYiFsnIgrK1nDyTpIy9Rx9YU=
-Date: Fri, 3 May 2024 13:57:00 +0200
+	s=arc-20240116; t=1714737505; c=relaxed/simple;
+	bh=YaifA61orL93F1z51xxGDPNVb/aBwr7JGokIH5e29SY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=n4s6wzpNF1k9WpEklTRRhQDO15KtcUfSxYh2AMb3dcv9YYApwmtEB6Y4DjfzEq398dTOfDwCx4I1Y7OpaKxBbrwkEZlpI+VBd9RakjL6F8EDcGuA8ovDcqj1s0i2U/j0mVb6ge69o0mJUR1zr0KoyrQwbPh4C+IhSRwcD1TO5sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7da7d4ccb67so951290439f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 04:58:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714737503; x=1715342303;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AOhPRJgVEitnomUm+1knlzOavziwEOygxrwj9usYCWU=;
+        b=mRPS7ZOc4t6utHxwTpnvOjzkfQdvxvKnJnmfJ5qyYfGe8xX8zK8kkHEJZk5o/UJp3g
+         NOphaxdF7Aq1R4x3khXJN8LTpgjQXYwstNrN96kvuFlVA6h+8uwViFhPGKyBBq11ozyi
+         tlxgGZ37N1tXZk+q1jhyKkR8aXztTg29NqX3fIqsuuvxjoZQ/qIs5PeuPgmhSMIp/WPM
+         Ef93fZwbICQ/Udt9qit3BS9HiYM0XFvEGJ376VLX1tori4n+hSE8wApp0aXMyEuf6RS3
+         /e2l/muKxRPFyTV97HS8zJmtBlfjAgPOIx+BzAY/fkTMQWMUC3VJpG1I8DwtMQFbG1u/
+         on5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/AXeln+r6RLfQpPBxyrxtoYRKFZhieDGgEJ3b8LxBvkos95zVLM4wRI5xa5n0KSM6nPEQpCP9NwgWglpy52S926m9e2TOTbir5Csy
+X-Gm-Message-State: AOJu0Yx8644vL+Tf+7ct8Gjg4qlmpjyCu9org5H4wju7zug5NGp8Qf5b
+	sIdsX4+ex3PvISRLqzAVqSGd3lPsgEVvli+LCMGu9kQJgYCAyV2+Jr90Rf7ON1KXNa46s69jza5
+	Kk9RjG2m4qZ1PAkzhY4KBf7lLSXz47Guq67w3SL0sSXTAWxDJjhMohdU=
+X-Google-Smtp-Source: AGHT+IHMxlg4LR0Y29EJqqi3eoweYexP6RgQEfebTgHVsVzOhdGsRLogeDIf/2LIdRIUaNyfpSp79eneZEQi7HCh5IBZ5muqC19g
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-To: "Zeng, Oak" <oak.zeng@intel.com>, "leon@kernel.org" <leon@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Chaitanya Kulkarni <chaitanyak@nvidia.com>,
- "Brost, Matthew" <matthew.brost@intel.com>,
- "Hellstrom, Thomas" <thomas.hellstrom@intel.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
- Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
- Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- "Tian, Kevin" <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Bart Van Assche <bvanassche@acm.org>,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- Amir Goldstein <amir73il@gmail.com>,
- "josef@toxicpanda.com" <josef@toxicpanda.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "Williams, Dan J" <dan.j.williams@intel.com>, "jack@suse.com"
- <jack@suse.com>, Leon Romanovsky <leonro@nvidia.com>
-References: <cover.1709635535.git.leon@kernel.org>
- <SA1PR11MB6991CB2B1398948F4241E51992182@SA1PR11MB6991.namprd11.prod.outlook.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <SA1PR11MB6991CB2B1398948F4241E51992182@SA1PR11MB6991.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6602:2c03:b0:7da:19cb:1c7f with SMTP id
+ w3-20020a0566022c0300b007da19cb1c7fmr108039iov.0.1714737503279; Fri, 03 May
+ 2024 04:58:23 -0700 (PDT)
+Date: Fri, 03 May 2024 04:58:23 -0700
+In-Reply-To: <0000000000009d99ed06178b29b5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c4312c06178b6f62@google.com>
+Subject: Re: [syzbot] [bcachefs?] BUG: unable to handle kernel paging request
+ in bch2_fs_btree_key_cache_exit
+From: syzbot <syzbot+a35cdb62ec34d44fb062@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    6a71d2909427 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=157bb450980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fca646cf17cc616b
+dashboard link: https://syzkaller.appspot.com/bug?extid=a35cdb62ec34d44fb062
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124d68a7180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c77d21fa1405/disk-6a71d290.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/429fcd369816/vmlinux-6a71d290.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d3d8a4b85112/Image-6a71d290.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/5eb4d59a9b9e/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a35cdb62ec34d44fb062@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 32768
+workqueue: Failed to create a rescuer kthread for wq "bcachefs": -EINTR
+bcachefs (1e246536-b1b3-4f86-83c2-3dfcc2979a4c): shutdown complete
+Unable to handle kernel paging request at virtual address ffff7000249ff210
+KASAN: probably wild-memory-access in range [0xffff800124ff9080-0xffff800124ff9087]
+Mem abort info:
+  ESR = 0x0000000096000006
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x06: level 2 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000001ad5bd000
+[ffff7000249ff210] pgd=0000000000000000, p4d=000000023e882003, pud=000000023e880003, pmd=0000000000000000
+Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 1 PID: 6351 Comm: syz-executor.0 Not tainted 6.9.0-rc4-syzkaller-g6a71d2909427 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+pstate: 80401005 (Nzcv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+pc : bch2_fs_btree_key_cache_exit+0x7ec/0xfcc fs/bcachefs/btree_key_cache.c:974
+lr : bch2_fs_btree_key_cache_exit+0x78c/0xfcc fs/bcachefs/btree_key_cache.c:970
+sp : ffff8000a19f6e80
+x29: ffff8000a19f6f50 x28: 1fffe0001df60010
+ x27: ffff0000efb044b0
+x26: 1ffff0001433ede0 x25: dfff800000000000 x24: 1ffff0001168e5d4
+x23: 0000000000000000 x22: ffff800124ff9080 x21: ffff8000a19f6f00
+x20: ffff80008ee81218
+ x19: dfff800000000000 x18: ffff8000a19f6960
+x17: 0000000000017999 x16: ffff8000802896e4 x15: 0000000000000001
+x14: 1fffe0001df60898 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff60001df60899 x10: 0000000000ff0100 x9 : 0000000000000003
+x8 : 1ffff000249ff210 x7 : ffff80008275d4e8 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008275d4f8
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000008
+Call trace:
+ bch2_fs_btree_key_cache_exit+0x7ec/0xfcc fs/bcachefs/btree_key_cache.c:974
+ __bch2_fs_free fs/bcachefs/super.c:562 [inline]
+ bch2_fs_release+0x1e0/0x564 fs/bcachefs/super.c:609
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x2a8/0x41c lib/kobject.c:737
+ bch2_fs_free+0x288/0x2f0 fs/bcachefs/super.c:674
+ bch2_fs_alloc+0xe4c/0x1c60 fs/bcachefs/super.c:965
+ bch2_fs_open+0x740/0xb64 fs/bcachefs/super.c:2080
+ bch2_mount+0x558/0xe10 fs/bcachefs/fs.c:1900
+ legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
+ vfs_get_tree+0x90/0x288 fs/super.c:1779
+ do_new_mount+0x278/0x900 fs/namespace.c:3352
+ path_mount+0x590/0xe04 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3875
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+Code: f90027e8 d343fec8 11000d29 f9002be8 (38f36908) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	f90027e8 	str	x8, [sp, #72]
+   4:	d343fec8 	lsr	x8, x22, #3
+   8:	11000d29 	add	w9, w9, #0x3
+   c:	f9002be8 	str	x8, [sp, #80]
+* 10:	38f36908 	ldrsb	w8, [x8, x19] <-- trapping instruction
 
 
-On 03.05.24 01:32, Zeng, Oak wrote:
-> Hi Leon, Jason
->
->> -----Original Message-----
->> From: Leon Romanovsky <leon@kernel.org>
->> Sent: Tuesday, March 5, 2024 6:19 AM
->> To: Christoph Hellwig <hch@lst.de>; Robin Murphy
->> <robin.murphy@arm.com>; Marek Szyprowski
->> <m.szyprowski@samsung.com>; Joerg Roedel <joro@8bytes.org>; Will
->> Deacon <will@kernel.org>; Jason Gunthorpe <jgg@ziepe.ca>; Chaitanya
->> Kulkarni <chaitanyak@nvidia.com>
->> Cc: Jonathan Corbet <corbet@lwn.net>; Jens Axboe <axboe@kernel.dk>;
->> Keith Busch <kbusch@kernel.org>; Sagi Grimberg <sagi@grimberg.me>;
->> Yishai Hadas <yishaih@nvidia.com>; Shameer Kolothum
->> <shameerali.kolothum.thodi@huawei.com>; Kevin Tian
->> <kevin.tian@intel.com>; Alex Williamson <alex.williamson@redhat.com>;
->> Jérôme Glisse <jglisse@redhat.com>; Andrew Morton <akpm@linux-
->> foundation.org>; linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org;
->> linux-block@vger.kernel.org; linux-rdma@vger.kernel.org;
->> iommu@lists.linux.dev; linux-nvme@lists.infradead.org;
->> kvm@vger.kernel.org; linux-mm@kvack.org; Bart Van Assche
->> <bvanassche@acm.org>; Damien Le Moal
->> <damien.lemoal@opensource.wdc.com>; Amir Goldstein
->> <amir73il@gmail.com>; josef@toxicpanda.com; Martin K. Petersen
->> <martin.petersen@oracle.com>; daniel@iogearbox.net; Dan Williams
->> <dan.j.williams@intel.com>; jack@suse.com; Leon Romanovsky
->> <leonro@nvidia.com>; Zhu Yanjun <zyjzyj2000@gmail.com>
->> Subject: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
->> steps
->>
->> This is complimentary part to the proposed LSF/MM topic.
->> https://lore.kernel.org/linux-rdma/22df55f8-cf64-4aa8-8c0b-
->> b556c867b926@linux.dev/T/#m85672c860539fdbbc8fe0f5ccabdc05b40269057
->>
->> This is posted as RFC to get a feedback on proposed split, but RDMA, VFIO
->> and
->> DMA patches are ready for review and inclusion, the NVMe patches are still
->> in
->> progress as they require agreement on API first.
->>
->> Thanks
->>
->> -------------------------------------------------------------------------------
->> The DMA mapping operation performs two steps at one same time: allocates
->> IOVA space and actually maps DMA pages to that space. This one shot
->> operation works perfectly for non-complex scenarios, where callers use
->> that DMA API in control path when they setup hardware.
->>
->> However in more complex scenarios, when DMA mapping is needed in data
->> path and especially when some sort of specific datatype is involved,
->> such one shot approach has its drawbacks.
->>
->> That approach pushes developers to introduce new DMA APIs for specific
->> datatype. For example existing scatter-gather mapping functions, or
->> latest Chuck's RFC series to add biovec related DMA mapping [1] and
->> probably struct folio will need it too.
->>
->> These advanced DMA mapping APIs are needed to calculate IOVA size to
->> allocate it as one chunk and some sort of offset calculations to know
->> which part of IOVA to map.
->>
->> Instead of teaching DMA to know these specific datatypes, let's separate
->> existing DMA mapping routine to two steps and give an option to advanced
->> callers (subsystems) perform all calculations internally in advance and
->> map pages later when it is needed.
-> I looked into how this scheme can be applied to DRM subsystem and GPU drivers.
->
-> I figured RDMA can apply this scheme because RDMA can calculate the iova size. Per my limited knowledge of rdma, user can register a memory region (the reg_user_mr vfunc) and memory region's sized is used to pre-allocate iova space. And in the RDMA use case, it seems the user registered region can be very big, e.g., 512MiB or even GiB
->
-> In GPU driver, we have a few use cases where we need dma-mapping. Just name two:
->
-> 1) userptr: it is user malloc'ed/mmap'ed memory and registers to gpu (in Intel's driver it is through a vm_bind api, similar to mmap). A userptr can be of any random size, depending on user malloc size. Today we use dma-map-sg for this use case. The down side of our approach is, during userptr invalidation, even if user only munmap partially of an userptr, we invalidate the whole userptr from gpu page table, because there is no way for us to partially dma-unmap the whole sg list. I think we can try your new API in this case. The main benefit of the new approach is the partial munmap case.
->
-> We will have to pre-allocate iova for each userptr, and we have many userptrs of random size... So we might be not as efficient as RDMA case where I assume user register a few big memory regions.
->
-> 2) system allocator: it is malloc'ed/mmap'ed memory be used for GPU program directly, without any other extra driver API call. We call this use case system allocator.
->
-> For system allocator, driver have no knowledge of which virtual address range is valid in advance. So when GPU access a malloc'ed/mmap'ed address, we have a page fault. We then look up a CPU vma which contains the fault address. I guess we can use the CPU vma size to allocate the iova space of the same size?
->
-> But there will be a true difficulty to apply your scheme to this use case. It is related to the STICKY flag. As I understand it, the sticky flag is designed for driver to mark "this page/pfn has been populated, no need to re-populate again", roughly...Unlike userptr and RDMA use cases where the backing store of a buffer is always in system memory, in the system allocator use case, the backing store can be changing b/t system memory and GPU's device private memory. Even worse, we have to assume the data migration b/t system and GPU is dynamic. When data is migrated to GPU, we don't need dma-map. And when migration happens to a pfn with STICKY flag, we still need to repopulate this pfn. So you can see, it is not easy to apply this scheme to this use case. At least I can't see an obvious way.
-
-Not sure if GPU peer to peer dma mapping GPU memory for use can use this 
-scheme or not. If I remember it correctly, Intel Gaudi GPU supports peer 
-2 peer dma mapping in GPU Direct RDMA. Not sure if this scheme can be 
-applied in that place or not.
-
-Just my 2 cent suggestions.
-
-Zhu Yanjun
-
->
->
-> Oak
->
->
->> In this series, three users are converted and each of such conversion
->> presents different positive gain:
->> 1. RDMA simplifies and speeds up its pagefault handling for
->>     on-demand-paging (ODP) mode.
->> 2. VFIO PCI live migration code saves huge chunk of memory.
->> 3. NVMe PCI avoids intermediate SG table manipulation and operates
->>     directly on BIOs.
->>
->> Thanks
->>
->> [1]
->> https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@
->> klimt.1015granger.net
->>
->> Chaitanya Kulkarni (2):
->>    block: add dma_link_range() based API
->>    nvme-pci: use blk_rq_dma_map() for NVMe SGL
->>
->> Leon Romanovsky (14):
->>    mm/hmm: let users to tag specific PFNs
->>    dma-mapping: provide an interface to allocate IOVA
->>    dma-mapping: provide callbacks to link/unlink pages to specific IOVA
->>    iommu/dma: Provide an interface to allow preallocate IOVA
->>    iommu/dma: Prepare map/unmap page functions to receive IOVA
->>    iommu/dma: Implement link/unlink page callbacks
->>    RDMA/umem: Preallocate and cache IOVA for UMEM ODP
->>    RDMA/umem: Store ODP access mask information in PFN
->>    RDMA/core: Separate DMA mapping to caching IOVA and page linkage
->>    RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
->>    vfio/mlx5: Explicitly use number of pages instead of allocated length
->>    vfio/mlx5: Rewrite create mkey flow to allow better code reuse
->>    vfio/mlx5: Explicitly store page list
->>    vfio/mlx5: Convert vfio to use DMA link API
->>
->>   Documentation/core-api/dma-attributes.rst |   7 +
->>   block/blk-merge.c                         | 156 ++++++++++++++
->>   drivers/infiniband/core/umem_odp.c        | 219 +++++++------------
->>   drivers/infiniband/hw/mlx5/mlx5_ib.h      |   1 +
->>   drivers/infiniband/hw/mlx5/odp.c          |  59 +++--
->>   drivers/iommu/dma-iommu.c                 | 129 ++++++++---
->>   drivers/nvme/host/pci.c                   | 220 +++++--------------
->>   drivers/vfio/pci/mlx5/cmd.c               | 252 ++++++++++++----------
->>   drivers/vfio/pci/mlx5/cmd.h               |  22 +-
->>   drivers/vfio/pci/mlx5/main.c              | 136 +++++-------
->>   include/linux/blk-mq.h                    |   9 +
->>   include/linux/dma-map-ops.h               |  13 ++
->>   include/linux/dma-mapping.h               |  39 ++++
->>   include/linux/hmm.h                       |   3 +
->>   include/rdma/ib_umem_odp.h                |  22 +-
->>   include/rdma/ib_verbs.h                   |  54 +++++
->>   kernel/dma/debug.h                        |   2 +
->>   kernel/dma/direct.h                       |   7 +-
->>   kernel/dma/mapping.c                      |  91 ++++++++
->>   mm/hmm.c                                  |  34 +--
->>   20 files changed, 870 insertions(+), 605 deletions(-)
->>
->> --
->> 2.44.0
-
--- 
-Best Regards,
-Yanjun.Zhu
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
