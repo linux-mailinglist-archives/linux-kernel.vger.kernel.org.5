@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-167919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424A38BB117
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:42:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A45348BB118
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C84A7282588
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:42:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43E501F227B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D688156F2A;
-	Fri,  3 May 2024 16:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D808C156F30;
+	Fri,  3 May 2024 16:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kR4prRwM"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tqJVhjtv"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116BE156C73
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C02E156F44
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714754505; cv=none; b=Rc+Xwbl4BvmEb+q2/kqGqn5eiK2xF6qBsycJpdezoe1kXjOzwfresllrqfCJ+ikkSIPefEISF88WMNSoeprDHPFdidOHAYFXVdEyuqgKcWI4WldYjXRktpLV1bF8AsxrkU3c0NtpXdHyEoudLHOzHC9D10CwhzutKLJlLAIwt0U=
+	t=1714754510; cv=none; b=n94qDcrwVp8nGL+YcTnvhnZdX3BRAsCtI7e8bEe7yiMmHQdBw0RwtgM1NSzYCblY7hIFGPfzAhMnjkBFHR80dIfPXf0BGQG3MaHhYOa9lsuoFSdTwvf3kFu4ZQbYbStHoLVhor7Q3rngQbdL2s9H1JGGBeMvWSptw85K/svJLj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714754505; c=relaxed/simple;
-	bh=738etampJ9m37JMTtzzW2+WYdjJ/ZGAALPaqCLoaW6k=;
+	s=arc-20240116; t=1714754510; c=relaxed/simple;
+	bh=3MgDWKoELIKcGTOqxE99fqgTb2mq9wYz9cuuNrsxIgg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dk2TpWsuXqfsuaHAnILROWcO7MIa64ngQv+/CvzhOIRsn+tebz+ZCwaV3Wcnhz0bThCETGd6kNI3lx3pFKjdUB8l9p5ghj23pUiIUm5mUoqmetorZ/wDo84dSIRasw2AZpOdTVyN612vQGk2HkUuXXpngTJ6FglrVsz1/ayBCqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kR4prRwM; arc=none smtp.client-ip=95.215.58.174
+	 MIME-Version; b=Q7yD3Del2R6Nk3CPfG4YnP6zK+n0X8doxIj1LzDu5txMsBu741VutH7qCERfdwK0ONJ1YsXyo4JayQL9ANU/g6T/zZCzxu5hJ8IY+d3FQub/YTHTCW1kFHdYhxWoeFTvOa4MgBcxXYS02TCk7lwPII6KEPH7WCgKdH9lEUOv804=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tqJVhjtv; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714754502;
+	t=1714754506;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PB1TUtuAuL++SWCo4tYuatJMpIlybQp31QpILaCl8YA=;
-	b=kR4prRwMmpHQXCSr8gv/7Yz6tg6VXOJNY1k/nESj4xHi/P/SX6BWWQ3C2zKcmEAZOl4fjA
-	3ZPaVhGJHRIV8RRyuxYLqXxV1pT1IbOtU5k0w5MAcuqPQ4Wl+7WKCTQSt6clsStAcFPxb+
-	3C5HxHqBOs0Omx4kf1Lx8YU9RWgLilA=
+	bh=JqKrHtcvPbMTS7w/5GNDGOIaEii78vZ2tLUZybKcI8w=;
+	b=tqJVhjtvMyG9Xlts1eJPYCZTkYZxnav9EaU2pFlS1VVKxNOXHpU2ubV+E2aNMEtGRVEwXw
+	HBT/57wRNdovsdEcZ9AbbV/Q83I6bv35zB2EosJ3iUkJ9wlLAyJrvo1dIhHkEFghjIVN8g
+	rFBBtthHm3EELK33Vg/KX5lAKu7acMA=
 From: Sui Jingfeng <sui.jingfeng@linux.dev>
 To: Andrzej Hajda <andrzej.hajda@intel.com>
 Cc: Neil Armstrong <neil.armstrong@linaro.org>,
@@ -55,9 +55,9 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Sui Jingfeng <sui.jingfeng@linux.dev>
-Subject: [PATCH v5 05/10] drm/bridge: sii902x: Switch to use fwnode APIs to acquire device properties
-Date: Sat,  4 May 2024 00:41:01 +0800
-Message-Id: <20240503164106.1172650-6-sui.jingfeng@linux.dev>
+Subject: [PATCH v5 06/10] drm-bridge: it66121: Use fwnode APIs to acquire device properties
+Date: Sat,  4 May 2024 00:41:02 +0800
+Message-Id: <20240503164106.1172650-7-sui.jingfeng@linux.dev>
 In-Reply-To: <20240503164106.1172650-1-sui.jingfeng@linux.dev>
 References: <20240503164106.1172650-1-sui.jingfeng@linux.dev>
 Precedence: bulk
@@ -69,110 +69,124 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Make this driver less DT-dependent by calling the freshly created helpers,
+Make this driver less DT-dependent by calling the newly created helpers,
 also switch to use fwnode APIs to acquire additional device properties.
-One side benifit is that boilerplates get reduced, no functional changes
+A side benifit is that boilerplates get reduced, no functional changes
 for DT-based systems.
 
 Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 ---
- drivers/gpu/drm/bridge/sii902x.c | 45 ++++++++++++--------------------
- 1 file changed, 16 insertions(+), 29 deletions(-)
+ drivers/gpu/drm/bridge/ite-it66121.c | 57 +++++++++++++++++-----------
+ 1 file changed, 35 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
-index 8f84e98249c7..bc906b71c793 100644
---- a/drivers/gpu/drm/bridge/sii902x.c
-+++ b/drivers/gpu/drm/bridge/sii902x.c
-@@ -827,20 +827,17 @@ static int sii902x_audio_codec_init(struct sii902x *sii902x,
- 		.spdif = 0,
- 		.max_i2s_channels = 0,
- 	};
-+	struct fwnode_handle *fwnode = dev_fwnode(dev);
- 	u8 lanes[4];
- 	int num_lanes, i;
+diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+index 925e42f46cd8..688dc1830654 100644
+--- a/drivers/gpu/drm/bridge/ite-it66121.c
++++ b/drivers/gpu/drm/bridge/ite-it66121.c
+@@ -15,7 +15,6 @@
+ #include <linux/bitfield.h>
+ #include <linux/property.h>
+ #include <linux/regmap.h>
+-#include <linux/of_graph.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/regulator/consumer.h>
+@@ -1480,7 +1479,7 @@ static int it66121_audio_codec_init(struct it66121_ctx *ctx, struct device *dev)
+ 
+ 	dev_dbg(dev, "%s\n", __func__);
  
 -	if (!of_property_read_bool(dev->of_node, "#sound-dai-cells")) {
-+	if (!fwnode_property_present(fwnode, "#sound-dai-cells")) {
- 		dev_dbg(dev, "%s: No \"#sound-dai-cells\", no audio\n",
- 			__func__);
++	if (!fwnode_property_present(dev_fwnode(dev), "#sound-dai-cells")) {
+ 		dev_info(dev, "No \"#sound-dai-cells\", no audio\n");
  		return 0;
  	}
+@@ -1503,13 +1502,36 @@ static const char * const it66121_supplies[] = {
+ 	"vcn33", "vcn18", "vrf12"
+ };
  
--	num_lanes = of_property_read_variable_u8_array(dev->of_node,
--						       "sil,i2s-data-lanes",
--						       lanes, 1,
--						       ARRAY_SIZE(lanes));
--
-+	num_lanes = fwnode_property_count_u8(fwnode, "sil,i2s-data-lanes");
- 	if (num_lanes == -EINVAL) {
- 		dev_dbg(dev,
- 			"%s: No \"sil,i2s-data-lanes\", use default <0>\n",
-@@ -852,7 +849,11 @@ static int sii902x_audio_codec_init(struct sii902x *sii902x,
- 			"%s: Error gettin \"sil,i2s-data-lanes\": %d\n",
- 			__func__, num_lanes);
- 		return num_lanes;
-+	} else {
-+		fwnode_property_read_u8_array(fwnode, "sil,i2s-data-lanes",
-+					      lanes, num_lanes);
- 	}
++static int it66121_read_bus_width(struct fwnode_handle *fwnode, u32 *bus_width)
++{
++	struct fwnode_handle *endpoint;
++	u32 val;
++	int ret;
 +
- 	codec_data.max_i2s_channels = 2 * num_lanes;
- 
- 	for (i = 0; i < num_lanes; i++)
-@@ -1096,8 +1097,8 @@ static int sii902x_init(struct sii902x *sii902x)
- 	if (ret)
- 		goto err_unreg_audio;
- 
-+	drm_bridge_set_node(&sii902x->bridge, dev_fwnode(dev));
- 	sii902x->bridge.funcs = &sii902x_bridge_funcs;
--	sii902x->bridge.of_node = dev->of_node;
- 	sii902x->bridge.timings = &default_sii902x_timings;
- 	sii902x->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID;
- 
-@@ -1118,7 +1119,6 @@ static int sii902x_init(struct sii902x *sii902x)
- static int sii902x_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
--	struct device_node *endpoint;
- 	struct sii902x *sii902x;
- 	static const char * const supplies[] = {"iovcc", "cvcc12"};
- 	int ret;
-@@ -1147,27 +1147,14 @@ static int sii902x_probe(struct i2c_client *client)
- 		return PTR_ERR(sii902x->reset_gpio);
- 	}
- 
--	endpoint = of_graph_get_endpoint_by_regs(dev->of_node, 1, -1);
--	if (endpoint) {
--		struct device_node *remote = of_graph_get_remote_port_parent(endpoint);
--
--		of_node_put(endpoint);
--		if (!remote) {
--			dev_err(dev, "Endpoint in port@1 unconnected\n");
--			return -ENODEV;
--		}
--
--		if (!of_device_is_available(remote)) {
--			dev_err(dev, "port@1 remote device is disabled\n");
--			of_node_put(remote);
--			return -ENODEV;
--		}
--
--		sii902x->next_bridge = of_drm_find_bridge(remote);
--		of_node_put(remote);
--		if (!sii902x->next_bridge)
--			return dev_err_probe(dev, -EPROBE_DEFER,
--					     "Failed to find remote bridge\n");
-+	sii902x->next_bridge = drm_bridge_find_next_bridge_by_fwnode(dev_fwnode(dev), 1);
-+	if (!sii902x->next_bridge) {
-+		return dev_err_probe(dev, -EPROBE_DEFER,
-+				     "Failed to find the next bridge\n");
-+	} else if (IS_ERR(sii902x->next_bridge)) {
-+		ret = PTR_ERR(sii902x->next_bridge);
-+		dev_err(dev, "Error on find the next bridge: %d\n", ret);
++	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
++	if (!endpoint)
++		return -EINVAL;
++
++	ret = fwnode_property_read_u32(endpoint, "bus-width", &val);
++	fwnode_handle_put(endpoint);
++	if (ret)
 +		return ret;
++
++	if (val != 12 && val != 24)
++		return -EINVAL;
++
++	*bus_width = val;
++
++	return 0;
++}
++
+ static int it66121_probe(struct i2c_client *client)
+ {
+ 	u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
+-	struct device_node *ep;
+ 	int ret;
+ 	struct it66121_ctx *ctx;
+ 	struct device *dev = &client->dev;
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
+ 
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+ 		dev_err(dev, "I2C check functionality failed.\n");
+@@ -1520,29 +1542,20 @@ static int it66121_probe(struct i2c_client *client)
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
+-	ep = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
+-	if (!ep)
+-		return -EINVAL;
+-
+ 	ctx->dev = dev;
+ 	ctx->client = client;
+ 	ctx->info = i2c_get_match_data(client);
+ 
+-	of_property_read_u32(ep, "bus-width", &ctx->bus_width);
+-	of_node_put(ep);
+-
+-	if (ctx->bus_width != 12 && ctx->bus_width != 24)
+-		return -EINVAL;
+-
+-	ep = of_graph_get_remote_node(dev->of_node, 1, -1);
+-	if (!ep) {
+-		dev_err(ctx->dev, "The endpoint is unconnected\n");
+-		return -EINVAL;
+-	}
++	ret = it66121_read_bus_width(fwnode, &ctx->bus_width);
++	if (ret)
++		return ret;
+ 
+-	ctx->next_bridge = of_drm_find_bridge(ep);
+-	of_node_put(ep);
+-	if (!ctx->next_bridge) {
++	ctx->next_bridge = drm_bridge_find_next_bridge_by_fwnode(fwnode, 1);
++	if (IS_ERR(ctx->next_bridge)) {
++		ret = PTR_ERR(ctx->next_bridge);
++		dev_err(dev, "Error in founding the next bridge: %d\n", ret);
++		return ret;
++	} else if (!ctx->next_bridge) {
+ 		dev_dbg(ctx->dev, "Next bridge not found, deferring probe\n");
+ 		return -EPROBE_DEFER;
+ 	}
+@@ -1577,8 +1590,8 @@ static int it66121_probe(struct i2c_client *client)
+ 		return -ENODEV;
  	}
  
- 	mutex_init(&sii902x->mutex);
++	drm_bridge_set_node(&ctx->bridge, fwnode);
+ 	ctx->bridge.funcs = &it66121_bridge_funcs;
+-	ctx->bridge.of_node = dev->of_node;
+ 	ctx->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+ 	ctx->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID;
+ 	if (client->irq > 0) {
 -- 
 2.34.1
 
