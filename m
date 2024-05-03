@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-168266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F02A8BB5FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:37:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2F78BB606
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:37:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B21331C23F8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:37:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46C81282A24
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEED58AA5;
-	Fri,  3 May 2024 21:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F864CDE0;
+	Fri,  3 May 2024 21:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iul2cwdk"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="l54dGb3M"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1EE4CDE0
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E671858ABC
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772193; cv=none; b=USU+nUGyWBwU+/VX80Vu/34Aq4r43RcLVexkJGRl9rY87Jdr4BfTcRk42C3WatUw3iSJnfoymwU+eFvZZFZNzgkGpzxUySbOKhKo3rOWle7AYhiHExPUQZKPz6ppf/N1/oTwX3dUpNZJ21BTNB4yVMbQIfl4kuj0TH9MiABMvpg=
+	t=1714772196; cv=none; b=YkfYMPpy+ovVWAkddbdPTxZWKhUy1BszBad/tufxNtwDkxX6J6YAl75JbYW+gvOv7CqjC9BVAgy+CvBM7GZNQvc+aIDB1AZw8C0YkselWZNA+rSnadLfeSiXvR6DoGTKXsDT68xsJmQO2CkZWTTS4rtCeyB5lNe6rTh1+PFSO8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772193; c=relaxed/simple;
-	bh=Q15hSl0ME/9Le3lQp5qt508gFauIS2SVi1eec97Q8Dc=;
+	s=arc-20240116; t=1714772196; c=relaxed/simple;
+	bh=hj+CoHiWh664elW2n6ckmx7SmywRTNBnurnsX4qarF4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gQnWgifxO0AzEiL4ccM7MzHc1Sh5cSpPcrte7WePg4WvUEjMVlggTyGjp9AkZY9cIvsOURoPMKwFEjZnqhjrFO/VzdFwbZKpRVydwXMfPFK6ZvVf+ESFaEBYtQiu+b2vSmekUh+wE6eUHm5s5aIxPtnEC6tulNrR+THrYCxbdJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iul2cwdk; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=PJRNGFTdFMBEur5O0p0Bcjq75LMmUtwZpzF/PZ5vYDUBvIn8fuIiO3GyoGPnjOTYg/WQCn05FfhuijjmrkKFZqMglXi38iUmvZ+cZbuNm46wNuUAHnERoED/ymmLlhegxtVvlsoE5GnROhU0coBTGNSsNhVXVNY1X1U0ijwq9NQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=l54dGb3M; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ecd9a81966so16285035ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:36:31 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e5c7d087e1so1043295ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714772191; x=1715376991; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714772194; x=1715376994; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ivwzpk8LV8o9VOgpaEI0wSikxdx7Ris0rIA4UDrHOxM=;
-        b=iul2cwdk5cKHvoCx0SxDgSHT1w/ZgAsGpy/V6uL4ePriVeseLMuXrjyLvKbEJeBZ6y
-         8qwOXzi8NeHpf7brGwzGn3JS+84yh90ko1PIHbEgg7SdPm7JK0R4BU1urH+OHFfLDHDB
-         +mZ+UIrNccLZ86hfOejHAJl/Z1ZAWuKLR5vx0=
+        bh=oJSS1xLEfY3Y1Nc4TX+Fmok5eKTdIJMR9yqmN0qgIiI=;
+        b=l54dGb3Milw8mz0rLL6hSc97wxza/ORGLCu51w11xuvkKqv3sF9My90wKnAMDZ74b7
+         xwqkbRleSHUMl8zbq3mdV4GI1clI3vhMlbVret0G3zLXFl2ep6Qn+lWgywA4VIO7c7gy
+         IYu6TYynN9LXaAPHPf/t4HPRtO7KcHbDhw5kY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772191; x=1715376991;
+        d=1e100.net; s=20230601; t=1714772194; x=1715376994;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ivwzpk8LV8o9VOgpaEI0wSikxdx7Ris0rIA4UDrHOxM=;
-        b=SRwzMDxqqjBJ3Mcn/66E/6Hnf78QBlm94F46ZinXxv5cAprNFVk7upVpBb8FdzEn/Y
-         dox0RyZbs+cWhQ4yjkGUszPTRIUpMCcDz806X9MOBt7p4Q9swnsYGjmWmrJHnw9W5XJO
-         y4RJw8OkjOJmJOZDnHS9nYn1obsfiZ+UIg8lesl7w4LD+BBqohJspiahYRS172Mu859t
-         pN8JDXzN8Gl6zLB6+YcbNLjVc0ms4/Gu+U0/tQjPmpJW0otvS5ORmoC7uWU+FPjzck49
-         UzZKUvlSFQmhqBW8uMIuOGNQ4C9eZGNBImjfAvQgBcQPb/jF4VpKV9GocRfxh6elWFda
-         JrLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXaVsqUN7IsCtlCM0bKlC5lokB6+TWCK+YcycxW+NO58wyymfip8Of1x997Q0zM6pNDIQEAY4SK+aot96V14me2crYp5n9DaI4qMwbm
-X-Gm-Message-State: AOJu0YxjjuE1BBBKxKVCaiCRBmOjfnzjhmzn6mequqlvqRLksYCSAp6a
-	fFwJtymcUWIL/xyyuZkArZHyVgD08uwafYKxXueh5dir/eJKBj9Otl3FyGoyYA==
-X-Google-Smtp-Source: AGHT+IEhtQwHX90SwQBe2NnOXhamncltrhxwpD6fYsYZstR87YJRnxBbL7AN6shwzv3NIn/AynD71A==
-X-Received: by 2002:a17:902:d093:b0:1e0:a2cf:62e8 with SMTP id v19-20020a170902d09300b001e0a2cf62e8mr6761839plv.10.1714772190912;
-        Fri, 03 May 2024 14:36:30 -0700 (PDT)
+        bh=oJSS1xLEfY3Y1Nc4TX+Fmok5eKTdIJMR9yqmN0qgIiI=;
+        b=mtyekhMlkZqXd5Ukb5/os4103DcAoKajx/UV2EcebSA+N1BVnqZ9ziP5dfHtqXo7vE
+         02vzPZA4LGbQyCB9T56tKDamUf0Qp89cE4RJXZ4+CG/jNLoc1kRK/iFAZ91X7nV6rFHt
+         TX5GmLE8L5ZN+srGqRe9hBkLAxLcGm7WETF819Nwjxkq44W94nu3LsYmhqxNwMLlQNey
+         +tIAdq9lkevV32QEYg3J66bL8FYW34rkdKLG26Hdye3kdlFC6t82iuFC5EUg6s3jNc1t
+         AoYhPHbq6NUgomrWekxzPOO0NUfuyP4EOvUfT1wK+7twg+Omdd/LX1j6E/QvvJtOGo3Y
+         ZgCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVLwwVE8sZEBkxzajCk7Qc0oFmeH7vo68dcv5DL3+M+oWXucEAB+N6ssje2b/YjS5hiZBgiagd2dEoyJ2sjsIsolw3+CNiwv819tf00
+X-Gm-Message-State: AOJu0YwqHHotBXQRs2Kh6AiQ5NeVs252cge/p3C8WnqySsEIKlkwAn6D
+	2HRDQdq/v/nMHPNJMM71lmCnk2UpIaErd9FFz4izcLugi66eRZfrDDhN8jO3Dw==
+X-Google-Smtp-Source: AGHT+IF/xaXv/X0Wte4aZNJO+64pdFolxJxdcSTQcUQ0uEZBKmCrVQEqCkWitBuj2PfiwIvx+UWLZQ==
+X-Received: by 2002:a17:903:41d1:b0:1ec:22ca:b290 with SMTP id u17-20020a17090341d100b001ec22cab290mr5154916ple.21.1714772194313;
+        Fri, 03 May 2024 14:36:34 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.36.28
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.36.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:36:30 -0700 (PDT)
+        Fri, 03 May 2024 14:36:32 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org,
 	Maxime Ripard <mripard@kernel.org>
@@ -71,13 +71,11 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Yuran Pereira <yuran.pereira@hotmail.com>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	Douglas Anderson <dianders@chromium.org>,
-	Jerry Han <jerry.han.hq@gmail.com>,
 	Jitao Shi <jitao.shi@mediatek.com>,
-	Rock Wang <rock_wang@himax.com.cn>,
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	David Airlie <airlied@gmail.com>,
-	Jerry Han <hanxu5@huaqin.corp-partner.google.com>,
 	Jessica Zhang <quic_jesszhan@quicinc.com>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
@@ -86,9 +84,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-mediatek@lists.infradead.org
-Subject: [RFT PATCH v2 03/48] drm/panel: boe-himax8279d: Don't call unprepare+disable at shutdown/remove
-Date: Fri,  3 May 2024 14:32:44 -0700
-Message-ID: <20240503143327.RFT.v2.3.I19086c524d38f28f746befe85cb39ffda9d2f666@changeid>
+Subject: [RFT PATCH v2 04/48] drm/panel: boe-tv101wum-nl6: Stop tracking prepared
+Date: Fri,  3 May 2024 14:32:45 -0700
+Message-ID: <20240503143327.RFT.v2.4.Ib501f2eceb62016e09cfb17bca29bde0f605a567@changeid>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
 References: <20240503213441.177109-1-dianders@chromium.org>
@@ -100,27 +98,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's the responsibility of a correctly written DRM modeset driver to
-call drm_atomic_helper_shutdown() at shutdown time and that should be
-disabling / unpreparing the panel if needed. Panel drivers shouldn't
-be calling these functions themselves.
+As talked about in commit d2aacaf07395 ("drm/panel: Check for already
+prepared/enabled in drm_panel"), we want to remove needless code from
+panel drivers that was storing and double-checking the
+prepared/enabled state. Even if someone was relying on the
+double-check before, that double-check is now in the core and not
+needed in individual drivers.
 
-A recent effort was made to fix as many DRM modeset drivers as
-possible [1] [2] [3] and most drivers are fixed now.
-
-Unfortunately, grepping mainline for this panel's compatible string
-shows no hits, so we can't be 100% sure if the DRM modeset driver used
-with this panel has been fixed. If it is found that the DRM modeset
-driver hasn't been fixed then this patch could be temporarily reverted
-until it is.
-
-[1] https://lore.kernel.org/r/20230901234015.566018-1-dianders@chromium.org
-[2] https://lore.kernel.org/r/20230901234202.566951-1-dianders@chromium.org
-[3] https://lore.kernel.org/r/20230921192749.1542462-1-dianders@chromium.org
-
-Cc: Jerry Han <jerry.han.hq@gmail.com>
 Cc: Jitao Shi <jitao.shi@mediatek.com>
-Cc: Rock Wang <rock_wang@himax.com.cn>
+Cc: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
@@ -128,51 +114,60 @@ Changes in v2:
 - Only handle 1 panel per patch.
 - Split removal of prepared/enabled from handling of remove/shutdown.
 
- drivers/gpu/drm/panel/panel-boe-himax8279d.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-boe-himax8279d.c b/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-index 12e14615298b..df746baae301 100644
---- a/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-+++ b/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-@@ -894,14 +894,6 @@ static void panel_remove(struct mipi_dsi_device *dsi)
- 	struct panel_info *pinfo = mipi_dsi_get_drvdata(dsi);
- 	int err;
+diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
+index 0ffe8f8c01de..667e1bb4a58b 100644
+--- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
++++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
+@@ -50,8 +50,6 @@ struct boe_panel {
+ 	struct regulator *avee;
+ 	struct regulator *avdd;
+ 	struct gpio_desc *enable_gpio;
+-
+-	bool prepared;
+ };
  
--	err = drm_panel_disable(&pinfo->base);
--	if (err < 0)
--		dev_err(&dsi->dev, "failed to disable panel: %d\n", err);
+ enum dsi_cmd_type {
+@@ -1450,9 +1448,6 @@ static int boe_panel_unprepare(struct drm_panel *panel)
+ {
+ 	struct boe_panel *boe = to_boe_panel(panel);
+ 
+-	if (!boe->prepared)
+-		return 0;
 -
--	err = drm_panel_unprepare(&pinfo->base);
--	if (err < 0)
--		dev_err(&dsi->dev, "failed to unprepare panel: %d\n", err);
+ 	if (boe->desc->discharge_on_disable) {
+ 		regulator_disable(boe->avee);
+ 		regulator_disable(boe->avdd);
+@@ -1471,8 +1466,6 @@ static int boe_panel_unprepare(struct drm_panel *panel)
+ 		regulator_disable(boe->pp3300);
+ 	}
+ 
+-	boe->prepared = false;
 -
- 	err = mipi_dsi_detach(dsi);
- 	if (err < 0)
- 		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n", err);
-@@ -909,14 +901,6 @@ static void panel_remove(struct mipi_dsi_device *dsi)
- 	drm_panel_remove(&pinfo->base);
+ 	return 0;
  }
  
--static void panel_shutdown(struct mipi_dsi_device *dsi)
--{
--	struct panel_info *pinfo = mipi_dsi_get_drvdata(dsi);
--
--	drm_panel_disable(&pinfo->base);
--	drm_panel_unprepare(&pinfo->base);
--}
--
- static struct mipi_dsi_driver panel_driver = {
- 	.driver = {
- 		.name = "panel-boe-himax8279d",
-@@ -924,7 +908,6 @@ static struct mipi_dsi_driver panel_driver = {
- 	},
- 	.probe = panel_probe,
- 	.remove = panel_remove,
--	.shutdown = panel_shutdown,
- };
- module_mipi_dsi_driver(panel_driver);
+@@ -1481,9 +1474,6 @@ static int boe_panel_prepare(struct drm_panel *panel)
+ 	struct boe_panel *boe = to_boe_panel(panel);
+ 	int ret;
  
+-	if (boe->prepared)
+-		return 0;
+-
+ 	gpiod_set_value(boe->enable_gpio, 0);
+ 	usleep_range(1000, 1500);
+ 
+@@ -1523,8 +1513,6 @@ static int boe_panel_prepare(struct drm_panel *panel)
+ 		goto poweroff;
+ 	}
+ 
+-	boe->prepared = true;
+-
+ 	return 0;
+ 
+ poweroff:
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
