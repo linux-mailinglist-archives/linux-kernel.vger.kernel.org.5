@@ -1,105 +1,149 @@
-Return-Path: <linux-kernel+bounces-167455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289D08BA9CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:22:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A2BC8BA9D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:22:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AD711C20B8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:22:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9EF4285D69
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423F6150987;
-	Fri,  3 May 2024 09:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mdvq/YrO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA08014F12F;
+	Fri,  3 May 2024 09:20:02 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E40D14F114;
-	Fri,  3 May 2024 09:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6FB14F12D
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727966; cv=none; b=b1xvWyGGqoZZWjkq+ZU/j0LCSGgJc+2BMDezpDwSzJpL8zKNfhx2fvKfGugL1QvM3hp2AchtiNtGUllAawv27pOWSQIxOLqCHOKgGnp7tEJplJk+dR38mafIv2Njkhd18MRyeOlLJdws6muguDTxUb3hDX1V2LrzCfoZi0UqOXo=
+	t=1714728002; cv=none; b=Opq61deuYXXJ9ddOZwe7uUMcsHeAL7yaL9I/2FBM7rCaodyEWT1yJ2QB/Ab57QOgoxY4N6JXdFnUFCm+8w5wex2hnI/PbhDtaxKJQyELG5zeWLS86qzycVOvOzMQTz/EOEBfEs0ReA7QfaamuJcx0EmMWfh49C3INZ+db0g8/Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727966; c=relaxed/simple;
-	bh=YFoaA2afiGryqt098GWkvq1dcjMWzSgISiyLhoAW5Bk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=moGalLDkMib8OR1lO1M4nTPUWwVRqHEAv9O8E4ptVow/SWUIwTdTQhiNBEZL7EbtVr3GToI1Pc87bpWQzLz/h0uQIYpEV/Xswi/vEp4QmOOqYV1WPUhziw4zAsfwbejKhnUc6l2L9GrHTdJgMyzLwkkO/AC+wQwXD+zjVLtl0XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mdvq/YrO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19A78C116B1;
-	Fri,  3 May 2024 09:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714727966;
-	bh=YFoaA2afiGryqt098GWkvq1dcjMWzSgISiyLhoAW5Bk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Mdvq/YrOIbZmbljuxTHM5LkOTYH582IFf7I5al1Wgo6piaDRc+7pw+2wYV35VAFN5
-	 GWYn2UoxoiaMPQ5Or5wFyPj+Qerbxe86wZzHRz4nI5O6JY0PibJdfbsVo+PXhx5JPP
-	 wfWiQYDEEPZbK9tw2bd7eLctOIiC1U/JWrGIBMnkVqpAL9oIV0qKDEzLdw73Z2y+/O
-	 EetXu3Z82EoBkcwQJPFXvRO1rSdOWUxj0JbCKzXhFBQpQcA3Iw9SyE/HEJfXrX/uZQ
-	 dbsGn8lc++fsGfB8nSgtNUpWluo6WE19aE3uUbaMStyiY0iIj7im92GV++ZvLKVje6
-	 +Q1nH2bp/cR5g==
-From: Lee Jones <lee@kernel.org>
-To: linux-kernel@vger.kernel.org, Bhargav Raviprakash <bhargav.r@ltts.com>
-Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jpanis@baylibre.com, 
- devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org, 
- lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org, 
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com, 
- vigneshr@ti.com, kristo@kernel.org, eblanc@baylibre.com
-In-Reply-To: <0109018f2f24c15e-c50bfc29-5f1d-4368-a4b8-2c9f1d398abb-000000@ap-south-1.amazonses.com>
-References: <0109018f2f24c15e-c50bfc29-5f1d-4368-a4b8-2c9f1d398abb-000000@ap-south-1.amazonses.com>
-Subject: Re: (subset) [PATCH v8 00/10] Add support for TI TPS65224 PMIC
-Message-Id: <171472796178.1311350.4406575677999610125.b4-ty@kernel.org>
-Date: Fri, 03 May 2024 10:19:21 +0100
+	s=arc-20240116; t=1714728002; c=relaxed/simple;
+	bh=+qRjQ1VwaUXuP9zHCouOBys/SL9KMiiI0zyt7a5DN0I=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=X5H1wQqd3Ya+3eslRX2yJmL4tRIvNzT8dd5e2eU/tofBQo89WPOx0AQ0Yo5V+1wYqUjFqtOjWvHZNcpEjoq2mjuidxkHuahu/cfjstGG1EyVEE1A5nKDwyLgqjvSmniHVfWrF0i6tif3KsUqNSUKNrYGJhP7Fx5V4dysGu+2O6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36c6b24fd6eso23908805ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 02:20:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714728000; x=1715332800;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nO3vVscP7MTaHhUfPIEwZUJkMUJ3OZUidwZ8npZ3Hyg=;
+        b=Yu/5E4IlXMAaCmA4eSXT0g5j3m1GF/mBbWmt+zaRCalf0SZiI8Evg05b3DETbPEfHj
+         5a+EswPQI9rDqWy3ojbSxFuN9PH7Axz76rNy1sCob/JcQEPT6YASgYRMJvayQ26XTfaF
+         C+dBWNQcVYC1Q00WtlqrrJA080iSKMO6CGBUuuHNW9+0wdYB7vldLNiQFlnbf6VBU6DE
+         BbiknqNGKpg9b5Dy7z69TuFnKirB5txy93HcG83+ygngyZZrQhsU0r+fnpyGaDTkd6S6
+         RsZZX34FFIxR5oTtD/7Q3fU/8Kvsq2UvvVdaLwi/MxQ6JSbIeHasK1JjFnAuYiMs8I1C
+         Ok2w==
+X-Gm-Message-State: AOJu0YyfTmRnbVyFOOuies6gV3L9RoGp3qdosQpD4BayoHj03WKhuBZI
+	4QRzUKtQgNCJ4EPzmQeRhjoxPFEFll/O29ZVTPsd8En5j2bNtU3OkI+jyeZK/qgt4M+0KOGtUm5
+	RcEdLlu7WJ2+Il8TTFJspc+m+J+UQ1zNDpfp1rIJsv4ngAXzKkKtwtPY=
+X-Google-Smtp-Source: AGHT+IGe7QgKW/D65TckaPss3ArqdFyqYTQJATq/UFErJNBCxHtbNbjXBQSCtgTyKdR7q+1juqG3duuzeiEI6uPNYmH7CbLIVqNE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+X-Received: by 2002:a05:6e02:1c0b:b0:36c:11a2:725f with SMTP id
+ l11-20020a056e021c0b00b0036c11a2725fmr110965ilh.3.1714728000080; Fri, 03 May
+ 2024 02:20:00 -0700 (PDT)
+Date: Fri, 03 May 2024 02:20:00 -0700
+In-Reply-To: <00000000000022a23c061604edb3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000054e74a0617893956@google.com>
+Subject: Re: [syzbot] [PATCH] net/sched: taprio: fix CPU stuck due to the
+ taprio hrtimer
+From: syzbot <syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 30 Apr 2024 13:14:49 +0000, Bhargav Raviprakash wrote:
-> This series modifies the existing TPS6594 drivers to add support for the
-> TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
-> similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
-> PFSM, Regulators and GPIO features overlap between the two devices.
-> 
-> TPS65224 is a Power Management IC (PMIC) which provides regulators and
-> other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
-> Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
-> communicate through the I2C or SPI interfaces. The PMIC TPS65224
-> additionally has a 12-bit ADC.
-> Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
-> 
-> [...]
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Applied, thanks!
+***
 
-[01/10] mfd: tps6594: Add register definitions for TI TPS65224 PMIC
-        commit: 84ccfaee29fe46e305244a69c4471e83629ad5d1
-[02/10] mfd: tps6594: use volatile_table instead of volatile_reg
-        commit: 436250638b6d8e6cf8dceed82cdbbfc90ce3a775
-[03/10] dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
-        commit: 91fbd800649f62bcc6a002ae9e0c0b6b5bb3f0d0
-[04/10] mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
-        commit: f8e5fc60e6666b46ce113b6b6de221ebba88668f
-[05/10] mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
-        commit: 02716864fd5a53e057dcecdb36c807be6494120c
-[06/10] mfd: tps6594-core: Add TI TPS65224 PMIC core
-        commit: 9d855b8144e6016357eecdd9b3fe7cf8c61a1de3
-[07/10] misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
-        commit: 91020aecc8136174429d41a6dae3de7cf39f8000
-[08/10] regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
-        commit: 00c826525fbae0230f6c3e9879e56d50267deb42
-[09/10] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
-        commit: 2088297159178ffc7c695fa34a7a88707371927d
+Subject: [PATCH] net/sched: taprio: fix CPU stuck due to the taprio hrtimer
+Author: luyun@kylinos.cn
 
---
-Lee Jones [李琼斯]
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+
+---
+ net/sched/sch_taprio.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index a0d54b422186..360778f65d9e 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -104,6 +104,7 @@ struct taprio_sched {
+ 	u32 max_sdu[TC_MAX_QUEUE]; /* save info from the user */
+ 	u32 fp[TC_QOPT_MAX_QUEUE]; /* only for dump and offloading */
+ 	u32 txtime_delay;
++	ktime_t offset;
+ };
+ 
+ struct __tc_taprio_qopt_offload {
+@@ -170,6 +171,13 @@ static ktime_t sched_base_time(const struct sched_gate_list *sched)
+ 	return ns_to_ktime(sched->base_time);
+ }
+ 
++static ktime_t taprio_get_offset(enum tk_offsets tk_offset)
++{
++	ktime_t time = ktime_get();
++
++	return ktime_sub_ns(ktime_mono_to_any(time, tk_offset), time);
++}
++
+ static ktime_t taprio_mono_to_any(const struct taprio_sched *q, ktime_t mono)
+ {
+ 	/* This pairs with WRITE_ONCE() in taprio_parse_clockid() */
+@@ -918,6 +926,8 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+ 	int num_tc = netdev_get_num_tc(dev);
+ 	struct sched_entry *entry, *next;
+ 	struct Qdisc *sch = q->root;
++	enum tk_offsets tk_offset = READ_ONCE(q->tk_offset);
++	ktime_t now_offset = taprio_get_offset(tk_offset);
+ 	ktime_t end_time;
+ 	int tc;
+ 
+@@ -957,6 +967,14 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+ 	end_time = ktime_add_ns(entry->end_time, next->interval);
+ 	end_time = min_t(ktime_t, end_time, oper->cycle_end_time);
+ 
++	if (q->offset != now_offset) {
++		ktime_t diff = ktime_sub_ns(now_offset, q->offset);
++
++		end_time = ktime_add_ns(end_time, diff);
++		oper->cycle_end_time = ktime_add_ns(oper->cycle_end_time, diff);
++		q->offset = now_offset;
++	}
++
+ 	for (tc = 0; tc < num_tc; tc++) {
+ 		if (next->gate_duration[tc] == oper->cycle_time)
+ 			next->gate_close_time[tc] = KTIME_MAX;
+@@ -1205,11 +1223,13 @@ static int taprio_get_start_time(struct Qdisc *sch,
+ 				 ktime_t *start)
+ {
+ 	struct taprio_sched *q = qdisc_priv(sch);
++	enum tk_offsets tk_offset = READ_ONCE(q->tk_offset);
+ 	ktime_t now, base, cycle;
+ 	s64 n;
+ 
+ 	base = sched_base_time(sched);
+ 	now = taprio_get_time(q);
++	q->offset = taprio_get_offset(tk_offset);
+ 
+ 	if (ktime_after(base, now)) {
+ 		*start = base;
+-- 
+2.34.1
 
 
