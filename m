@@ -1,190 +1,86 @@
-Return-Path: <linux-kernel+bounces-167545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E53008BAB1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:57:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CBD28BAB1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 139081C21029
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:57:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282731F219EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E6A1514E9;
-	Fri,  3 May 2024 10:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D7E15216F;
+	Fri,  3 May 2024 10:57:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V+QY8v/3"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tacbuA+V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7782A1514E8;
-	Fri,  3 May 2024 10:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528E017758;
+	Fri,  3 May 2024 10:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714733746; cv=none; b=XGCo8BMqQlfTfegTBmXzNb8ovs5kzOo7+6LMzC47pVbvmWjJS+LzN9La8O5FKMoQEMphMwB9Eq650xY5g81j+QVIFwINvolhJqQlWB9itzmh6fk5GIpk0gYV29HNoIPsU6Ynkk4yO7HU28YZ7jLLg3peoG2wIg8NumdlIiEUTMI=
+	t=1714733863; cv=none; b=KiQq8WnzIiElHdgyjdiw0ZNryP67z8tfvk3uMjUQs//nZRj9gbbTHJPe5LusFUaNNHuKRWV5hIeA8VKq7TuxlrrXRY6S69GcGsjkvxRAkK7kmmbhWVKlzpga9rS+OyREwSguPn8cvsTaN65H9biYbwHGpZMNQrVmYLYCUKn4jV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714733746; c=relaxed/simple;
-	bh=L/+/yQ4ynlo4LEdTLUSqn8WtkYkWtH/W+Dpk4/nEhZM=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KusCy4d/+eOCY/6Mw29kjFuvkiz3U0qK9hgIRXmRvLvm7+dD3f0EIOdNLl72x2377UqhTer2pUrApwq0C5JvLbKSOsHevskV4qd/gs/aNqXQ56BYfvwycxI+vw+QfjfNCUEBLR/UndScctmPsj1wBoVZLPfFuw4TO+IaG+6Nrm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V+QY8v/3; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-346359c8785so7184862f8f.0;
-        Fri, 03 May 2024 03:55:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714733743; x=1715338543; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=s2aXQu/7Cvkityv4Fhfmzm5AvZdMa2jnqA7f5CxcgWg=;
-        b=V+QY8v/3B59nbDkTnG6cGaSCvfOw0Grylp2LqTJAH925zOIz7PpdABiXqbkHUbVlPu
-         Y+9DucYEq6FRft9GXFxyJDz89VSFz2lK+g6MU2FJiF3GjgA+4YgO2EHvfMI4dE+yZNR3
-         tU4fffy75Qzn78yeHD4fHUYZdUu8Z98EmJjAx7yXvAC2xlDGG2uH5TjnTjix33/E/iuY
-         kjX46U8D15ctkjYPHCEE38SJt//PN4kSHCKZjalRw/TdTVYWwELLRpoJyQAaA/cv3G0u
-         3Yvo17whXRlHL2dtSvWz6f+gw8FM+y/31RNs4tASko1srnhDSylxL2DhEs7dSwspvHEN
-         vp4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714733743; x=1715338543;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s2aXQu/7Cvkityv4Fhfmzm5AvZdMa2jnqA7f5CxcgWg=;
-        b=VmuRST7nqlb5AYF6vHQzSjqzuClvV1d5mxfLN2+M0mIT4f7sO4xWyt0sZMRsJ+706T
-         xMPcK+U4wqdCuHsyg3kPxB9rFBBgvpxyaHSDMWM84Vxm/JxlRZqk2O9qTyNfLr0Xnq8d
-         CPf4k6i2BWd6MNSNDJ7TUryhOF1EJKvQ23T/NzrPYfgndBtI3eD8tuxmv+XT+NwGLkce
-         n/dVFPSQBulGwloV5hesSfmgx3qtqRu4j0s9smAth/J9IsqPpOKbB6J7knWacV2hP89i
-         r9HrVXKQZpLFKAhTQ1V8uNw58n4CHLkA262TUO/z353qJ92ywIBRmuf0ApZ51gPYaRL1
-         3fYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDG6kDa5GdqZFeC1Xeoe8AiAlbjGVTPs77UZG7GDOm27m9/pNVRSQh9ZmM2mhH66LWeHYVTMRDmdKj7yK5FZABJ+ghSXQqwQ9cyUaI+fU7HDVzB1HJXbPnDQnePCyb5h3VMKwttlZ2Yjo1yzSbrz2y3Z2P9BElXJ6m/TNsVdIEIQ==
-X-Gm-Message-State: AOJu0YzvhuPwdimbQqCVkZ5y7nG72q2UkcCVUgMuKxFDac62QQH/78MI
-	GK00FvYS0env9kCdSucRnYYgbvTALFp30o3gdzdALsVk61FyJQ4bWfvPWner
-X-Google-Smtp-Source: AGHT+IGjPNbPpEnjw1q0DMZYcaZGgSFNA2Geb8LMASoZ+/CeziS1rnqH5lA7zy7mzNdoAEZ2z6YPuw==
-X-Received: by 2002:adf:a29e:0:b0:34d:99ac:dcd0 with SMTP id s30-20020adfa29e000000b0034d99acdcd0mr1528023wra.49.1714733742438;
-        Fri, 03 May 2024 03:55:42 -0700 (PDT)
-Received: from [10.16.124.60] ([212.227.34.98])
-        by smtp.gmail.com with ESMTPSA id dz1-20020a0560000e8100b0034ccb43dbbbsm3455626wrb.38.2024.05.03.03.55.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 03:55:42 -0700 (PDT)
-From: Zhu Yanjun <zyjzyj2000@gmail.com>
-X-Google-Original-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-Message-ID: <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
-Date: Fri, 3 May 2024 12:55:41 +0200
+	s=arc-20240116; t=1714733863; c=relaxed/simple;
+	bh=P5CKWZ2xCu+HyLA9GJYxKRvnqvJqVTPDARsJ0/n8HOk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fJoHN8URsQDZrs5KiHEkbeHUwqZ2kNC2pfbrR7oNH0Rm8hIgGmymvKiaV/5Fhcq/w7Ul3+cpX0hfpVIItrqSqgZKIsU4pPn3G9F/TZmNaXXD6eblBogjJYTaMk0mnm6iX9jml/YEfJPEN5iFMlJigT+AoQkZGtaa7voHobkrsE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tacbuA+V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3443C116B1;
+	Fri,  3 May 2024 10:57:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714733862;
+	bh=P5CKWZ2xCu+HyLA9GJYxKRvnqvJqVTPDARsJ0/n8HOk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tacbuA+VyWNAhuawI+diZSSbU8d/A0IAarPODCRabmX+qWRJNz4ZoV6MkwWZqez73
+	 yoXbOqWyx0/xZxtWpOSyiCe7oNP33ufjaM5oEj1pOatce71qXAyxm5wHRGJ6uWe2II
+	 59oCR3/Cz5KQur9BeWfk9kMk3/7xLTJ+hk8PDcRqMQ93idmy8bMd59YCtQdXTCqC9B
+	 twWS1Q6ZQ/KnL5PBd/guYHPgsNAdNPOXRzKm3qEvmIMeNnv9amxcrOfr4NTXm83ZVM
+	 jM06SnQmSeb9J4eBWm44ykxgNIQ+3VKHVlL5qdfFLU04vgmbF5h/xADy0JRZRFphAt
+	 8bZn+QK8jNIYA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1s2qbo-000000006NE-0kC8;
+	Fri, 03 May 2024 12:57:44 +0200
+Date: Fri, 3 May 2024 12:57:44 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/52] USB: store owner from modules with
+ usb_serial_register_drivers()
+Message-ID: <ZjTDKKiYhU7zC9Sb@hovoldconsulting.com>
+References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
+ <ZhzrPA1wP7bER6Pi@hovoldconsulting.com>
+ <ee4daf22-8979-45f7-8e20-3cafd6c3e8f3@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
-To: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com
-Cc: gal@nvidia.com, nalramli@fastly.com, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-References: <20240503022549.49852-1-jdamato@fastly.com>
-Content-Language: en-US
-In-Reply-To: <20240503022549.49852-1-jdamato@fastly.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ee4daf22-8979-45f7-8e20-3cafd6c3e8f3@linaro.org>
 
-On 03.05.24 04:25, Joe Damato wrote:
-> Hi:
-> 
-> This is only 1 patch, so I know a cover letter isn't necessary, but it
-> seems there are a few things to mention.
-> 
-> This change adds support for the per queue netdev-genl API to mlx5,
-> which seems to output stats:
-> 
-> ./cli.py --spec ../../../Documentation/netlink/specs/netdev.yaml \
->           --dump qstats-get --json '{"scope": "queue"}'
-> 
-> ...snip
->   {'ifindex': 7,
->    'queue-id': 28,
->    'queue-type': 'tx',
->    'tx-bytes': 399462,
->    'tx-packets': 3311},
-> ...snip
+On Fri, May 03, 2024 at 11:49:53AM +0200, Krzysztof Kozlowski wrote:
+> On 15/04/2024 10:54, Johan Hovold wrote:
 
-Ethtool -S ethx can get the above information
-"
-..
-      tx-0.packets: 2094
-      tx-0.bytes: 294141
-      rx-0.packets: 2200
-      rx-0.bytes: 267673
-..
-"
+> > No, sending 51 trivial one-line cleanup patches like this is not
+> > acceptable.
+> > 
+> > This is just one logical change so squash them all into one patch for
+> > the entire subsystem (i.e. this series should contain two patches).
+> 
+> Sure. This is not exactly one logical change, but two, because the first
+> patch might fix some drivers which forgot to set the owner (even if I
+> did not identify them).
 
-> 
-> I've tried to use the tooling suggested to verify that the per queue
-> stats match the rtnl stats by doing this:
-> 
->    NETIF=eth0 tools/testing/selftests/drivers/net/stats.py
-> 
-> And the tool outputs that there is a failure:
-> 
->    # Exception| Exception: Qstats are lower, fetched later
->    not ok 3 stats.pkt_byte_sum
+Sorry if this wasn't clear enough, but I was referring to the last 51
+one-line patches being one logical change (and hence the series should
+contain two patches as I mentioned).
 
-With ethtool, does the above problem still occur?
-
-Zhu Yanjun
-
-> 
-> The other tests all pass (including stats.qstat_by_ifindex).
-> 
-> This appears to mean that the netdev-genl queue stats have lower numbers
-> than the rtnl stats even though the rtnl stats are fetched first. I
-> added some debugging and found that both rx and tx bytes and packets are
-> slightly lower.
-> 
-> The only explanations I can think of for this are:
-> 
-> 1. tx_ptp_opened and rx_ptp_opened are both true, in which case
->     mlx5e_fold_sw_stats64 adds bytes and packets to the rtnl struct and
->     might account for the difference. I skip this case in my
->     implementation, so that could certainly explain it.
-> 2. Maybe I'm just misunderstanding how stats aggregation works in mlx5,
->     and that's why the numbers are slightly off?
-> 
-> It appears that the driver uses a workqueue to queue stats updates which
-> happen periodically.
-> 
->   0. the driver occasionally calls queue_work on the update_stats_work
->      workqueue.
->   1. This eventually calls MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(sw),
->      in drivers/net/ethernet/mellanox/mlx5/core/en_stats.c, which appears
->      to begin by first memsetting the internal stats struct where stats are
->      aggregated to zero. This would mean, I think, the get_base_stats
->      netdev-genl API implementation that I have is correct: simply set
->      everything to 0.... otherwise we'd end up double counting in the
->      netdev-genl RX and TX handlers.
->   2. Next, each of the stats helpers are called to collect stats into the
->      freshly 0'd internal struct (for example:
->      mlx5e_stats_grp_sw_update_stats_rq_stats).
-> 
-> That seems to be how stats are aggregated, which would suggest that if I
-> simply .... do what I'm doing in this change the numbers should line up.
-> 
-> But they don't and its either because of PTP or because I am
-> misunderstanding/doing something wrong.
-> 
-> Maybe the MLNX folks can suggest a hint?
-> 
-> Thanks,
-> Joe
-> 
-> Joe Damato (1):
->    net/mlx5e: Add per queue netdev-genl stats
-> 
->   .../net/ethernet/mellanox/mlx5/core/en_main.c | 68 +++++++++++++++++++
->   1 file changed, 68 insertions(+)
-> 
-
+Johan
 
