@@ -1,121 +1,152 @@
-Return-Path: <linux-kernel+bounces-167163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254C98BA51F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74F138BA523
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557D31C21C43
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:00:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A57971C21CDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C64134A9;
-	Fri,  3 May 2024 02:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9nWNXn5"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA8A1799D;
+	Fri,  3 May 2024 02:03:24 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3759BBA2F
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 02:00:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA96C11CA9;
+	Fri,  3 May 2024 02:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714701613; cv=none; b=tU/bNshCXiexZLt1SlQM4TnyL0TAWPxiZ0aNLTG5o5Ox5qz/kcj+vg2VFysVyBnaSmhjCuR+rmiiEqO3gXjfBdViPur00gILN0A2bi9ipstxVe9MQZUwpAXmItN3jzb1cE/VKKg+eJF29SQIx1Y5uKcUhrbZHFukaI/kTpphlL8=
+	t=1714701803; cv=none; b=nRcDcr2kSYIBxticmrDchQlK7GB5yAjoT2dqrL7DxEuPXEdPyTG4poNKNXfIy7pQ4RLtHEY8k9gVBL13dIKiEMaEqkQP+v4svAXDCKB8XT5vjQPBIzm5tfp+friWAeD0CZgo/SPTYvW2KysB0e4XLnx2LhvzOp7TVqTUVx+a55o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714701613; c=relaxed/simple;
-	bh=IgtySo/J8gV28TExFPrAsMeWYcGz6Ns9BbQF6xqsQ/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cZW/kYoEmcQ18iOSCB07qTBUqagLdD/ttSMJRf+JP+pUh1juBERz2SVdW00l6exswwbGlHPTS3WAW14VYPymIpEees11UddsETDYkhwzNMFA4MShnkq6UdWFOlg6/7qXKkNk/8fDaTt3Pnr6VWfMgo1b/jGbbXzVZqxXFPLdWzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9nWNXn5; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5acdbfb7fe4so235334eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 19:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714701611; x=1715306411; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NWBEjkxGi+L5lBZst5fB6INosDzoSqFnqJ5mwpVEOE=;
-        b=E9nWNXn50mEzzwOd4ZQL5097+hxGWkfeMAGYu7aVQ+ZpF38ZFtjJNWaaOTZYn/6N/m
-         LH+iyzquC9NGVbPaLM2XOo3QXw8ukHslna0bv8RBUYTaBgwrjsoFYrARSltmBVTDCijQ
-         Sb+3HLtkeXWrpeD2IGsIHFTFzXVzXVHj9kDVlsz8Y7yxkqx4paFuWPrxAell7bZTR/7C
-         epQX+x4TjFu2OYgbvZC9A25eTkyKLxzIAJBQDgg2awk6/zOBZ/nUWLFPdMmCzsC4BpEq
-         /UzfjKX9WpH4R7hRnWYI+mrbOeyL+nhrzBnVrB5eSrKHvwNz5Sdfh5uvUIRpTzAT/Ugo
-         3GUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714701611; x=1715306411;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3NWBEjkxGi+L5lBZst5fB6INosDzoSqFnqJ5mwpVEOE=;
-        b=GeqK74XgJELXiDdZ//sWiaPEP5/qc1XJWecniZVFvBu/KitOADD4NY4tTKM2MAP0AH
-         O8slj7rO8ml7lIi0zDF7rf+aG+i8xchLYZJZRcwXcE1nbIquqWc/7tDoL23rfcdL3Rp4
-         poqYzERDvMvx6secZS06xmIrYtsTsk/Khf5MECfhIZcVUU9DlEm9m5mWJOSXUD5FndPD
-         u2eyiKko6jfoyuwB0h7qeaF3F1Jqj7cKrRaeFJwKA+CEugwchr5G42MEbjSzZG/EXwuH
-         GhgsibQd/aDcCP60Vdn+sVGbZy63IiDlwAVbd2bnxkyoxfLuvPun0USePsWZKiXQcnBq
-         za3w==
-X-Gm-Message-State: AOJu0Ywos3P7E7V7lboN+76JLLCDgN8zdwWIu9QrKgQUtKCeTfM3uBBW
-	2detyGLQDoMnGakcsTzPYKOy0lzPv3UMBH18CStPlJmfKoneNgda
-X-Google-Smtp-Source: AGHT+IGwm/RJwWfWnhLonoxtrHKi1Phaf+l4SMyzyodryE27zQfNCftBavtif18LFSyQ6pZade20Ng==
-X-Received: by 2002:a05:6871:5d3:b0:235:3e97:ed24 with SMTP id v19-20020a05687105d300b002353e97ed24mr1868642oan.1.1714701611216;
-        Thu, 02 May 2024 19:00:11 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id n26-20020a63591a000000b005cf450e91d2sm1969878pgb.52.2024.05.02.19.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 19:00:10 -0700 (PDT)
-Date: Fri, 3 May 2024 10:00:07 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] lib: make test_bitops compilable into the kernel
- image
-Message-ID: <ZjRFJ2Kig7l+hieS@visitorckw-System-Product-Name>
-References: <20240502233204.2255158-1-yury.norov@gmail.com>
- <20240502233204.2255158-2-yury.norov@gmail.com>
+	s=arc-20240116; t=1714701803; c=relaxed/simple;
+	bh=NJ4H1pZUAlpuiYEur2CV1Z0R1IDpFmWiWWgG6HEDU98=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IUdkiD4RwsjqCyQnTok1mSxxHonh4BudfudsF7fH3VGGrfflnSfdQiu4SYycjtJbPtvAscnnD9ynyTWp/BsuHsMJFV+KzzltNT8TiSa+E3s7eak4nRuZM5+8gKQFsPMhYTqjTWL6CiSdIJxXZhBEZRQvdPwnY+Ae84zdMgz8ylo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VVvGD6f2Qz4f3n6Q;
+	Fri,  3 May 2024 10:03:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8605C1A1325;
+	Fri,  3 May 2024 10:03:10 +0800 (CST)
+Received: from [10.174.177.174] (unknown [10.174.177.174])
+	by APP1 (Coremail) with SMTP id cCh0CgBHZQ7YRTRmdbxsLg--.54078S3;
+	Fri, 03 May 2024 10:03:08 +0800 (CST)
+Message-ID: <8cf61cfc-8717-ee33-c94f-959212ce9c85@huaweicloud.com>
+Date: Fri, 3 May 2024 10:03:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502233204.2255158-2-yury.norov@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v4 0/9] ext4: avoid sysfs variables overflow causing
+ BUG_ON/SOOB
+Content-Language: en-US
+To: linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc: adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+ ojaswin@linux.ibm.com, adobriyan@gmail.com, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, libaokun@huaweicloud.com
+References: <20240319113325.3110393-1-libaokun1@huawei.com>
+ <985285f6-973b-30d5-4742-29cf5e8c0e27@huaweicloud.com>
+From: Baokun Li <libaokun@huaweicloud.com>
+In-Reply-To: <985285f6-973b-30d5-4742-29cf5e8c0e27@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHZQ7YRTRmdbxsLg--.54078S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF15CFW5WF18ZFyUJrW7CFg_yoW5GFyrpF
+	s3Ka45WrZ8Cws7JrsrGw1DA34Fqws5JasrGF13Xa48AFWjyr129rZ2gr1F9F9rGrZ5CF1I
+	yr17Zrn7uF1avrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
 
-On Thu, May 02, 2024 at 04:32:01PM -0700, Yury Norov wrote:
-> The test is limited to be compiled as a module. There's no technical
-> reason for it. Now that the test bears performance benchmark, it would
-> be reasonable to allow running it at kernel load time, before userspace
-> starts, to reduce possible jitter.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  lib/Kconfig.debug | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index c63a5fbf1f1c..fc8fe1ea5b49 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2436,7 +2436,6 @@ config TEST_LKM
->  
->  config TEST_BITOPS
->  	tristate "Test module for compilation of bitops operations"
-> -	depends on m
+Hi Ted,
 
+Would you consider merging in this patchset in the current merge
+window? I would appreciate it if you could.
 
-Perhaps it would be better to modify the description in the following
-help section at the same time?
+Thanks,
+Baokun
 
-Reviewed-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+On 2024/4/23 9:44, Baokun Li wrote:
+> A gentle ping.
+>
+> On 2024/3/19 19:33, Baokun Li wrote:
+>> Hello everyone,
+>>
+>> This patchset is intended to avoid variables that can be modified via 
+>> sysfs
+>> from overflowing when stored or used and thus causing various problems.
+>>
+>> "kvm-xfstests -c ext4/all -g auto" has been executed with no new 
+>> failures.
+>>
+>> V3->V4:
+>>    Patch 4: Corrects WARN_ON_ONCE added in V3.
+>>
+>> V2->V3:
+>>    Add Reviewed-by tag from Jan Kara.
+>>    Patch 4: Trimming order before the for loop makes the logic easier to
+>>             understand.
+>>
+>> V1->V2:
+>>    Patch 1: Use kstrtouint() as suggested by Alexey and Honza.
+>>    Patch 2: Adapted to patch 1 changes.
+>>    Patch 3: Add Reviewed-by tag.
+>>    Patch 4: Avoid useless loops as suggested by Ojaswin and rename
+>>        attr_group_prealloc to attr_clusters_in_group.
+>>    Patch 5: New patch added to limit mb_best_avail_max_trim_order < 64
+>>        as Honza's suggestion.
+>>    Patch 6: Reordered and updated description.
+>>    Patch 7: Add Reviewed-by tag.
+>>    Patch 8: Keep unrelated variables on different lines as suggested 
+>> by Honza.
+>>    Patch 9: New patch to fix warnings found during compile checking.
+>>
+>> [V1]: 
+>> https://lore.kernel.org/all/20240126085716.1363019-1-libaokun1@huawei.com/
+>> [V2]: 
+>> https://lore.kernel.org/all/20240227091148.178435-1-libaokun1@huawei.com/
+>> [V3]: 
+>> https://lore.kernel.org/all/20240314140906.3064072-1-libaokun1@huawei.com/
+>>
+>> Baokun Li (9):
+>>    ext4: avoid overflow when setting values via sysfs
+>>    ext4: refactor out ext4_generic_attr_store()
+>>    ext4: refactor out ext4_generic_attr_show()
+>>    ext4: fix slab-out-of-bounds in
+>>      ext4_mb_find_good_group_avg_frag_lists()
+>>    ext4: add new attr pointer attr_mb_order
+>>    ext4: add positive int attr pointer to avoid sysfs variables overflow
+>>    ext4: set type of ac_groups_linear_remaining to __u32 to avoid
+>>      overflow
+>>    ext4: set the type of max_zeroout to unsigned int to avoid overflow
+>>    ext4: clean up s_mb_rb_lock to fix build warnings with C=1
+>>
+>>   fs/ext4/extents.c |   3 +-
+>>   fs/ext4/mballoc.c |   5 +-
+>>   fs/ext4/mballoc.h |   2 +-
+>>   fs/ext4/sysfs.c   | 174 ++++++++++++++++++++++++++++------------------
+>>   4 files changed, 112 insertions(+), 72 deletions(-)
+>>
 
->  	help
->  	  This builds the "test_bitops" module that is much like the
->  	  TEST_LKM module except that it does a basic exercise of the
-> -- 
-> 2.40.1
-> 
 
