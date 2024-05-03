@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-168312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 141148BB64E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:46:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4E898BB650
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:47:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 957AF1F213B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:46:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 252561F23FFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50C8137933;
-	Fri,  3 May 2024 21:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1FA137C26;
+	Fri,  3 May 2024 21:38:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gNeb0pjk"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nlNk1Alg"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7AE137903
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A895913793F
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772296; cv=none; b=PwrukfyYLrtLvzZhT03rvyKBfe3kJZ8pOO8H1T9mR4kuCsI8c8Yv6JOdj0iWOozD3RLOsSQFVx30NAs1fDsKi+bcNHModoJnqvEEyNyRo43olGF6MkcUaqCvpzEomOks5QbX2ALXhlcgJjaaYLgXCe2L9PPBipxIKgG1JI3TWi0=
+	t=1714772300; cv=none; b=TBM0GwwGsFpss642XpXQVgkQLexrkwtyQNoI7UAcNryQ0OYhoT+8wae0ldOwUSjDsiHQNgo55xizUmdkWGRrFha6to+mxsOfQKiflC9ZykFagCOd7031is7ZPPysArHN52xwcFaYh/yqOkoeNaw0SehuLVTkRl+GNU9UraV0I9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772296; c=relaxed/simple;
-	bh=bvpX+7DrauxoowAu53h9wDnzFvPQ6Wo3F4LQXvo7Tc4=;
+	s=arc-20240116; t=1714772300; c=relaxed/simple;
+	bh=EaWtWEnAFoVYQQ7NdwPJMqMdWOvHRnxTyipd/TFLpqw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rr+ELV6NhSpHSbEACKGK44dJog87JhpXcjzxfTRHRGFDHIj21lJHTNMwt7UB6tfBAAj3ugSpbhHjWEu0EJJ38abOUQHxInPS77PNNXTKo3ScCPwud2iP80RA1zYc3l7nmDRfP92H/MTNosszINxhZGYrTi9TnWe4BMYZCAozd0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gNeb0pjk; arc=none smtp.client-ip=209.85.214.173
+	 MIME-Version; b=VlUaUhfS2QxvrvxMaw8ES0PsthHizPjQKIHP950OtONxv9mnmCpWRgnDZKmSNovJrTJlmT0yNP6mxUFcjQz3eAY60Hpz9oFFlAPgdxs/zwVD5CHcmA0SmvWyPHsyCZrbxFwUyNKlAB64+DeYURsKA/Bo2Q1IUGl6/E4QxZ/WOUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nlNk1Alg; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4266673bbso1052365ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:38:14 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2b27c660174so132440a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:38:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714772294; x=1715377094; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714772297; x=1715377097; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ekjI+s+uLAWB4kUzVZhMVrRRrlC73fq00flN601bwaM=;
-        b=gNeb0pjkTHcQzHrBJ635ULp2Qlm4aYXdrCoabN60QZTi0IJqhBXLAybQFAMh0+RFX/
-         ASe9hxqF0o+6BiglGhglu9DNM0juSHsQ2rZdB/16PZxMifm1aGiKKjLB7rjNMFzsiAZ8
-         l/Rmk+ro8bTVhWT++hh9A7KlVNlSzSJOwTDSY=
+        bh=gkS+rg5OKiFoHCGrecPUpnEeRZJMeWyJ+snKafgy5vs=;
+        b=nlNk1Alg9L0OtkB8zxq3JA6tAKSLOHp6f15vm5koUH9FP5DyEm6Dg6BXgAdntsrdWi
+         avR5+u0SMT8Tl9+KVjdPN1txM+DeSEUVl1q4siPnjm0p5NGFVgm+Fpm/Zu3UQO6kvwDW
+         1g8heKyPmEo6JvdjTVzP0b5+CbBvPte2wS4lg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772294; x=1715377094;
+        d=1e100.net; s=20230601; t=1714772297; x=1715377097;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ekjI+s+uLAWB4kUzVZhMVrRRrlC73fq00flN601bwaM=;
-        b=O+e13Sm/RrmRze0DhOmEamL0BYMI8gS99C7oLIB6sJ/ByvnAFJHfuVHHYKOqtAXw7K
-         8XJFByWU6T3Rvsbs7we937bqkdp8ky0AvH0Zja/HD2k7etMHA1buMlqD6glcu2qC4+PK
-         Zr+m0OHAxl00jYkqOmT7FTe3NlagxbcMY2X236dKSYnCLAPSkAJTzuRabJSEInw4Wx4e
-         52iSSUU6iqOsiWlwxzO9wzGJCEaAxFveKa46/wzfypLqNuM3qODDELBKeHvvJIoaBvfV
-         FW/3pIJbJshI1ooEx5Tvvv1+axuGiTBiL1fseazLDCnm53Rl86JQSAlxm98wAmmGSI4c
-         1I9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXD4Hh/z34wvwoYJxAfXSxGPkfEJ7SDxmLJ9qIilQKpgRxK+A5cPWDRcXqcXZSoXsjTe8MRGzCFYWVqjWlV4ftaRIfiM3wX8M0lEGrz
-X-Gm-Message-State: AOJu0YwCLmsZKP3hnZ/pHv8KtDowpn47B7jGtEshR7NffvmRwXel6jJi
-	e+cyqyk1d56/we+uGO7KJQSntFMif0OUbOWo++86/DC1rGeuhp6Ok1W/7pNolg==
-X-Google-Smtp-Source: AGHT+IFguT0/xs4KCtngccJNg5AiVarM5W9ebMgGc4GgQxudEnwAFv+ycO9TzXkPPacW4rwdnnJR0g==
-X-Received: by 2002:a17:902:bb17:b0:1e9:470:87e6 with SMTP id im23-20020a170902bb1700b001e9047087e6mr3553894plb.23.1714772294293;
-        Fri, 03 May 2024 14:38:14 -0700 (PDT)
+        bh=gkS+rg5OKiFoHCGrecPUpnEeRZJMeWyJ+snKafgy5vs=;
+        b=FOGW2LQNmWdJx7YAVpfV/GEbiGPxFVmhTe2PcM1iMFg6EszADJ5Slx1MMFXN1etwDl
+         uSXIMnk3DV+UTJhFW9fD/hE5oT/OYg8rLkxDCu30ApL5+iYQTBTvo+eTWjPLRL4JoiWW
+         UDJfnd68dti+aYoiFFSIApA5M14bfXUYu6piLOZfdY2vJ+CT++vbMsSiHgYUZZZr9AKq
+         uNVQXTMDgJ2BPY8bVcmqNtlzz6lyznydCasv3Oj9AlBHUhpcGawKhKFyzqhuCrfCyLpQ
+         AexZwtqUirKO/RLXPtXpVOlWJpiiGgXB1IRDS0RNTHF6S8yUbfDBBfSJpMcYn+Yx9y9p
+         sHcw==
+X-Forwarded-Encrypted: i=1; AJvYcCW4a8Kla4/Z8txnulw6BfuQsqI19fPtT7vkV0ST/Iw9NoM5V8RhF32cMPj0N3+i1/XKXDAZZonBYSggzyqmoOLWUL8SapYtgoBoi8sG
+X-Gm-Message-State: AOJu0YwyrAGcgsEmQONJU8FTOY+JZVPcCeIio2TiDOo7gKSkzmmQiUCT
+	t5J86U7anjB6I1pyXLKDLyvgGkr5iOV8cRJmXvr3cOi7ITGEV92MLcCikfk5HA==
+X-Google-Smtp-Source: AGHT+IHkW28tWyRIV7NmgOtGvUD0tFuJ+wrkeXjluxHwAroLQKxUR2uvyN5Qr5JmQy9q9YdYC6JW1Q==
+X-Received: by 2002:a17:90a:6081:b0:2a2:8ed7:da34 with SMTP id z1-20020a17090a608100b002a28ed7da34mr3992252pji.1.1714772297001;
+        Fri, 03 May 2024 14:38:17 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.38.12
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:38:13 -0700 (PDT)
+        Fri, 03 May 2024 14:38:16 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org,
 	Maxime Ripard <mripard@kernel.org>
@@ -71,18 +71,16 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Yuran Pereira <yuran.pereira@hotmail.com>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	Douglas Anderson <dianders@chromium.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Jonathan Corbet <corbet@lwn.net>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFT PATCH v2 47/48] drm/panel: sony-acx565akm: Don't call disable at remove
-Date: Fri,  3 May 2024 14:33:28 -0700
-Message-ID: <20240503143327.RFT.v2.47.I2513fd6824929a17c1ccd18a797b98a1a1063559@changeid>
+Subject: [RFT PATCH v2 48/48] drm/panel: Update TODO list item for cleaning up prepared/enabled tracking
+Date: Fri,  3 May 2024 14:33:29 -0700
+Message-ID: <20240503143327.RFT.v2.48.I104cdece7324b0c365e552a17f9883414ffaea01@changeid>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
 References: <20240503213441.177109-1-dianders@chromium.org>
@@ -94,48 +92,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's the responsibility of a correctly written DRM modeset driver to
-call drm_atomic_helper_shutdown() at shutdown time and that should be
-disabling / unpreparing the panel if needed. Panel drivers shouldn't
-be calling these functions themselves.
+Now that most panels have been updated not to track/double-check their
+prepared/enabled state update the TODO with next steps.
 
-A recent effort was made to fix as many DRM modeset drivers as
-possible [1] [2] [3] and most drivers are fixed now.
-
-A grep through mainline for compatible strings used by this driver
-indicates that it is used by TI OMAP boards. The TI OMAP driver
-appears to be correctly calling drm_atomic_helper_shutdown() so we can
-remove the calls.
-
-[1] https://lore.kernel.org/r/20230901234015.566018-1-dianders@chromium.org
-[2] https://lore.kernel.org/r/20230901234202.566951-1-dianders@chromium.org
-[3] https://lore.kernel.org/r/20230921192749.1542462-1-dianders@chromium.org
-
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
-Changes in v2:
-- Split removal of prepared/enabled from handling of remove/shutdown.
+(no changes since v1)
 
- drivers/gpu/drm/panel/panel-sony-acx565akm.c | 3 ---
- 1 file changed, 3 deletions(-)
+ Documentation/gpu/todo.rst | 47 +++++++++++++++++++++-----------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-sony-acx565akm.c b/drivers/gpu/drm/panel/panel-sony-acx565akm.c
-index a9a545a56404..73ba93ff00fe 100644
---- a/drivers/gpu/drm/panel/panel-sony-acx565akm.c
-+++ b/drivers/gpu/drm/panel/panel-sony-acx565akm.c
-@@ -652,9 +652,6 @@ static void acx565akm_remove(struct spi_device *spi)
+diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
+index e2a0585915b3..4063bc45bbd3 100644
+--- a/Documentation/gpu/todo.rst
++++ b/Documentation/gpu/todo.rst
+@@ -469,30 +469,35 @@ Contact: Thomas Zimmermann <tzimmermann@suse.de>
  
- 	if (lcd->has_bc)
- 		acx565akm_backlight_cleanup(lcd);
+ Level: Starter
+ 
+-Clean up checks for already prepared/enabled in panels
+-------------------------------------------------------
 -
--	drm_panel_disable(&lcd->panel);
--	drm_panel_unprepare(&lcd->panel);
- }
+-In a whole pile of panel drivers, we have code to make the
+-prepare/unprepare/enable/disable callbacks behave as no-ops if they've already
+-been called. To get some idea of the duplicated code, try::
+-
+-  git grep 'if.*>prepared' -- drivers/gpu/drm/panel
+-  git grep 'if.*>enabled' -- drivers/gpu/drm/panel
+-
+-In the patch ("drm/panel: Check for already prepared/enabled in drm_panel")
+-we've moved this check to the core. Now we can most definitely remove the
+-check from the individual panels and save a pile of code.
+-
+-In adition to removing the check from the individual panels, it is believed
+-that even the core shouldn't need this check and that should be considered
+-an error if other code ever relies on this check. The check in the core
+-currently prints a warning whenever something is relying on this check with
+-dev_warn(). After a little while, we likely want to promote this to a
+-WARN(1) to help encourage folks not to rely on this behavior.
++Remove disable/unprepare in remove/shutdown in panel-simple and panel-edp
++-------------------------------------------------------------------------
++
++As of commit d2aacaf07395 ("drm/panel: Check for already prepared/enabled in
++drm_panel"), we have a check in the drm_panel core to make sure nobody
++double-calls prepare/enable/disable/unprepare. Eventually that should probably
++be turned into a WARN_ON() or somehow made louder, but right now we actually
++expect it to trigger and so we don't want it to be too loud.
++
++Specifically, that warning will trigger for panel-edp and panel-simple at
++shutdown time because those panels hardcode a call to drm_panel_disable()
++and drm_panel_unprepare() at shutdown and remove time that they call regardless
++of panel state. On systems with a properly coded DRM modeset driver that
++calls drm_atomic_helper_shutdown() this is pretty much guaranteed to cause
++the warning to fire.
++
++Unfortunately we can't safely remove the calls in panel-edp and panel-simple
++until we're sure that all DRM modeset drivers that are used with those panels
++properly call drm_atomic_helper_shutdown(). This TODO item is to validate
++that all DRM modeset drivers used with panel-edp and panel-simple properly
++call drm_atomic_helper_shutdown() and then remove the calls to
++disable/unprepare from those panels. Alternatively, this TODO item could be
++removed by convincing stakeholders that those calls are fine and downgrading
++the error message in drm_panel_disable() / drm_panel_unprepare() to a
++debug-level message.
  
- static const struct of_device_id acx565akm_of_match[] = {
+ Contact: Douglas Anderson <dianders@chromium.org>
+ 
+-Level: Starter/Intermediate
++Level: Intermediate
+ 
+ 
+ Core refactorings
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
