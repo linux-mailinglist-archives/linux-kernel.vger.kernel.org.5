@@ -1,52 +1,39 @@
-Return-Path: <linux-kernel+bounces-167775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 090628BAF04
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CC98BAF07
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:31:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DF561F2180A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:30:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32FA71F21A3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F171B4A32;
-	Fri,  3 May 2024 14:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b="XZxK2me0"
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C43B23BE
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.203.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14058836;
+	Fri,  3 May 2024 14:31:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877576FB8;
+	Fri,  3 May 2024 14:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714746636; cv=none; b=sAjD0uLD14lwCnmlMt5GPzCN8RjLGyzB07UAWn3AoyZHohNbQouM7qSYyOapCPilmkmwhj44srnF0lAHkwUi9hTDkVnsA93o45yjmWwinZxDO5JbDXiXuHmGEWES89KDLl27Gv3e7oLyzY+uBmp1p7VaA045epM+Lj59DYz6sCM=
+	t=1714746697; cv=none; b=e/EvlKw0bJ9txgS1So3HcXb8fFn/1TyaHJwhXkzOdK/DDwOEmE5VASNT7zNiJO94SdLl6rPkN+aaHM2r0esjKBodf/ASXRqLkeGbSerqZwfBebXO8mzwcUbVRTt5AILphyMlG5MwiP7fKpjmGspOU5+77NZ5RNHr7cgr+tpVbf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714746636; c=relaxed/simple;
-	bh=cyW8ZcQlQclU0wD95XD65PaDsnIvNe3Z3NQRrr+BYi0=;
+	s=arc-20240116; t=1714746697; c=relaxed/simple;
+	bh=pdlDifNfOWVyf0LbavLtSHKGdmUjQ1u1E01Vx1fRvKQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ozNruMQMA+iRRfyKhEnj2WspdC/ShCddzudfXLCwc6/Qzu8wc5orhFypYQIrA+KcJF0HpScJckdKdhB+aWQrl9G8wkMvK7iECo9WZQLvtqEuUDxbfW8pLRD2Il78epize2X4Cq6/M0HjsmTunPaAUzUB8i9vKr9sARSNc80SxVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk; spf=pass smtp.mailfrom=codethink.co.uk; dkim=pass (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b=XZxK2me0; arc=none smtp.client-ip=188.40.203.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codethink.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=YkLvbvGXUm01nkfrbDy3yckolxec9uJtymjr2A/6X7g=; b=XZxK2me0z2h/ITciGSZaGwelK+
-	mdZyit0sucxhJNoOYx+6W2/dIlKvDbPJ6tDnGtgb197r6IbU9eQEacxfH0myWiWivbVeF/kEXHCNq
-	Y2OjHjC1vrPnC0BSNZCE6xAIGeZOJRB6w3YrImpZvlRWQb0VX2AcVr4uqk8bYMR0SNafcQOxmeqEa
-	mKL5N5qZPdHNdMM4pfj79EpOKZwpFb5KLdXu+hdGow36q4nwyzbcJbuDkxNqBLHKYkvX3f03l2dKr
-	T0YnEsIdcjvo5bsunrh3wY6aym5vFmtzM/hGD7dU+ZO5alsOohnVZ+o4hiw83ALjbWonK1b9saWMZ
-	4gIn/tpA==;
-Received: from [167.98.27.226] (helo=[10.35.6.244])
-	by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-	id 1s2tvR-004QUo-J1; Fri, 03 May 2024 15:30:14 +0100
-Message-ID: <4a04a462-3eab-4382-83b2-ce6ed7104883@codethink.co.uk>
-Date: Fri, 3 May 2024 15:30:12 +0100
+	 In-Reply-To:Content-Type; b=c6WHsHS/t1xFXOBzcHKN2CXPNm4LXoqK55JMQdlt7BGT7hDvSM90+5o3oF43RKLXzx5h/e8OFHuehf9YKD2crnBiY/Io0G9HGIzeAQRIZuKQANMcEdXgrxY93LWJpCMuGk4S05eNu7v36WjAaY5lNGEXXZC+KcqidCMk2Oh2WiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D57313D5;
+	Fri,  3 May 2024 07:32:00 -0700 (PDT)
+Received: from [192.168.1.100] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B0B43F73F;
+	Fri,  3 May 2024 07:31:31 -0700 (PDT)
+Message-ID: <f40bd864-1c3d-49ab-b552-e9cd6ba92b3c@arm.com>
+Date: Fri, 3 May 2024 15:31:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,100 +41,199 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: uaccess: Allow the last potential unrolled copy
-Content-Language: en-GB
-To: Alexandre Ghiti <alex@ghiti.fr>, Xiao Wang <xiao.w.wang@intel.com>,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc: jerry.shih@sifive.com, nick.knight@sifive.com, ajones@ventanamicro.com,
- bjorn@rivosinc.com, andy.chiu@sifive.com, viro@zeniv.linux.org.uk,
- cleger@rivosinc.com, alexghiti@rivosinc.com, haicheng.li@intel.com,
- akira.tsukamoto@gmail.com, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240313103334.4036554-1-xiao.w.wang@intel.com>
- <7ebc5b28-7115-494f-a607-e46c71214cce@ghiti.fr>
- <4bc238eb-410b-46b1-98e1-4aaa35e34404@codethink.co.uk>
- <daa955d9-b554-4e0e-a08e-835c4cd5a366@ghiti.fr>
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-In-Reply-To: <daa955d9-b554-4e0e-a08e-835c4cd5a366@ghiti.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Sender: ben.dooks@codethink.co.uk
+Subject: Re: [PATCH 14/17] coresight: Use per-sink trace ID maps for Perf
+ sessions
+To: Mike Leach <mike.leach@linaro.org>
+Cc: linux-perf-users@vger.kernel.org, gankulkarni@os.amperecomputing.com,
+ scclevenger@os.amperecomputing.com, coresight@lists.linaro.org,
+ suzuki.poulose@arm.com,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, John Garry
+ <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+ Leo Yan <leo.yan@linux.dev>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+References: <20240429152207.479221-1-james.clark@arm.com>
+ <20240429152207.479221-16-james.clark@arm.com>
+ <CAJ9a7VicoyFAh1m+0wcEdKan_whfXP6cb7GBZvBXCukfyugjgg@mail.gmail.com>
+Content-Language: en-US
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <CAJ9a7VicoyFAh1m+0wcEdKan_whfXP6cb7GBZvBXCukfyugjgg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 03/05/2024 14:02, Alexandre Ghiti wrote:
-> Hi Ben,
+
+
+On 03/05/2024 10:43, Mike Leach wrote:
+> Hi James
 > 
-> On 03/05/2024 14:19, Ben Dooks wrote:
->> On 03/05/2024 13:16, Alexandre Ghiti wrote:
->>> Hi Xiao,
->>>
->>> On 13/03/2024 11:33, Xiao Wang wrote:
->>>> When the dst buffer pointer points to the last accessible aligned 
->>>> addr, we
->>>> could still run another iteration of unrolled copy.
->>>>
->>>> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
->>>> ---
->>>>   arch/riscv/lib/uaccess.S | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
->>>> index 2e665f8f8fcc..1399d797d81b 100644
->>>> --- a/arch/riscv/lib/uaccess.S
->>>> +++ b/arch/riscv/lib/uaccess.S
->>>> @@ -103,7 +103,7 @@ SYM_FUNC_START(fallback_scalar_usercopy)
->>>>       fixup REG_S   t4,  7*SZREG(a0), 10f
->>>>       addi    a0, a0, 8*SZREG
->>>>       addi    a1, a1, 8*SZREG
->>>> -    bltu    a0, t0, 2b
->>>> +    bleu    a0, t0, 2b
->>>>       addi    t0, t0, 8*SZREG /* revert to original value */
->>>>       j    .Lbyte_copy_tail
->>>
->>>
->>> I agree it is still safe to continue for another word_copy here.
->>>
->>> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> On Mon, 29 Apr 2024 at 16:25, James Clark <james.clark@arm.com> wrote:
 >>
->> Out of interest, has anyone checked if causing a schedule event during
->> this code breaks like the last time we had issues with the upstream
->> testing?
-> 
-> 
-> I vaguely remember something, do you have a link to that discussion by 
-> chance?
-> 
-> 
+>> This will allow sessions with more than CORESIGHT_TRACE_IDS_MAX ETMs
+>> as long as there are fewer than that many ETMs connected to each sink.
 >>
->> I did propose saving the state of the user-access flag in the task
->> struct
-> 
-> 
-> Makes sense, I just took a quick look and SR_SUM is cleared as soon as 
-> we enter handle_exception() and it does not seem to be restored. Weird 
-> it works, unless I missed something!
-> 
-> 
->> but we mostly solved it by making sleeping functions stay
->> away from the address calculation. This of course may have been done
->> already or need to be done if three's long areas where the user-access
->> flags can be disabled (generally only a few drivers did this, so we
->> may not have come across the problem)
+>> Each sink owns its own trace ID map, and any Perf session connecting to
+>> that sink will allocate from it, even if the sink is currently in use by
+>> other users. This is similar to the existing behavior where the dynamic
+>> trace IDs are constant as long as there is any concurrent Perf session
+>> active. It's not completely optimal because slightly more IDs will be
+>> used than necessary, but the optimal solution involves tracking the PIDs
+>> of each session and allocating ID maps based on the session owner. This
+>> is difficult to do with the combination of per-thread and per-cpu modes
+>> and some scheduling issues. The complexity of this isn't likely to worth
+>> it because even with multiple users they'd just see a difference in the
+>> ordering of ID allocations rather than hitting any limits (unless the
+>> hardware does have too many ETMs connected to one sink).
 >>
-> I don't understand what you mean here, would you mind expanding a bit?
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  drivers/hwtracing/coresight/coresight-core.c     | 10 ++++++++++
+>>  drivers/hwtracing/coresight/coresight-etm-perf.c | 15 ++++++++-------
+>>  include/linux/coresight.h                        |  1 +
+>>  3 files changed, 19 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+>> index 9fc6f6b863e0..d1adff467670 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -902,6 +902,7 @@ static void coresight_device_release(struct device *dev)
+>>         struct coresight_device *csdev = to_coresight_device(dev);
+>>
+>>         fwnode_handle_put(csdev->dev.fwnode);
+>> +       free_percpu(csdev->perf_id_map.cpu_map);
+>>         kfree(csdev);
+>>  }
+>>
+>> @@ -1159,6 +1160,14 @@ struct coresight_device *coresight_register(struct coresight_desc *desc)
+>>         csdev->dev.fwnode = fwnode_handle_get(dev_fwnode(desc->dev));
+>>         dev_set_name(&csdev->dev, "%s", desc->name);
+>>
+>> +       if (csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+>> +           csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) {
+>> +               csdev->perf_id_map.cpu_map = alloc_percpu(atomic_t);
+>> +               if (!csdev->perf_id_map.cpu_map) {
+>> +                       ret = -ENOMEM;
+>> +                       goto err_out;
+>> +               }
+>> +       }
+>>         /*
+>>          * Make sure the device registration and the connection fixup
+>>          * are synchronised, so that we don't see uninitialised devices
+>> @@ -1216,6 +1225,7 @@ struct coresight_device *coresight_register(struct coresight_desc *desc)
+>>  err_out:
+>>         /* Cleanup the connection information */
+>>         coresight_release_platform_data(NULL, desc->dev, desc->pdata);
+>> +       kfree(csdev);
+>>         return ERR_PTR(ret);
+>>  }
+>>  EXPORT_SYMBOL_GPL(coresight_register);
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> index 177cecae38d9..86ca1a9d09a7 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> @@ -229,10 +229,13 @@ static void free_event_data(struct work_struct *work)
+>>                 struct list_head **ppath;
+>>
+>>                 ppath = etm_event_cpu_path_ptr(event_data, cpu);
+>> -               if (!(IS_ERR_OR_NULL(*ppath)))
+>> +               if (!(IS_ERR_OR_NULL(*ppath))) {
+>> +                       struct coresight_device *sink = coresight_get_sink(*ppath);
+>> +
+>> +                       coresight_trace_id_put_cpu_id(cpu, &sink->perf_id_map);
+>>                         coresight_release_path(*ppath);
+>> +               }
+>>                 *ppath = NULL;
+>> -               coresight_trace_id_put_cpu_id(cpu, coresight_trace_id_map_default());
+>>         }
+>>
+>>         /* mark perf event as done for trace id allocator */
+>> @@ -401,8 +404,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>>                 }
+>>
+>>                 /* ensure we can allocate a trace ID for this CPU */
+>> -               trace_id = coresight_trace_id_get_cpu_id(cpu,
+>> -                                                        coresight_trace_id_map_default());
+>> +               trace_id = coresight_trace_id_get_cpu_id(cpu, &sink->perf_id_map);
+>>                 if (!IS_VALID_CS_TRACE_ID(trace_id)) {
+>>                         cpumask_clear_cpu(cpu, mask);
+>>                         coresight_release_path(path);
+>> @@ -497,7 +499,7 @@ static void etm_event_start(struct perf_event *event, int flags)
+>>
+>>         /* Finally enable the tracer */
+>>         if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF,
+>> -                                     coresight_trace_id_map_default()))
+>> +                                     &sink->perf_id_map))
+>>                 goto fail_disable_path;
+>>
+>>         /*
+>> @@ -509,8 +511,7 @@ static void etm_event_start(struct perf_event *event, int flags)
+>>                 hw_id = FIELD_PREP(CS_AUX_HW_ID_VERSION_MASK,
+>>                                    CS_AUX_HW_ID_CURR_VERSION);
+>>                 hw_id |= FIELD_PREP(CS_AUX_HW_ID_TRACE_ID_MASK,
+>> -                                   coresight_trace_id_read_cpu_id(cpu,
+>> -                                               coresight_trace_id_map_default()));
+>> +                                   coresight_trace_id_read_cpu_id(cpu, &sink->perf_id_map));
+>>                 perf_report_aux_output_id(event, hw_id);
+>>         }
+>>
+>> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+>> index 3a678e5425dc..8c4c1860c76b 100644
+>> --- a/include/linux/coresight.h
+>> +++ b/include/linux/coresight.h
+>> @@ -290,6 +290,7 @@ struct coresight_device {
+>>         bool sysfs_sink_activated;
+>>         struct dev_ext_attribute *ea;
+>>         struct coresight_device *def_sink;
+>> +       struct coresight_trace_id_map perf_id_map;
+> 
+> perhaps this should be sink_id_map? At some point sysfs may use is and
+> naming is sink... is more consistent with other sink attributes in the
+> structure.
 > 
 
-I think this was all gone through in the original post where
-we initially suggested saving SR_SUM and then moved as much out
-of the critical SR_SUM area by changing how the macros worked
+When we implement this for sysfs I was thinking sysfs would use its own
+per-sink map. One reason is that the global map might be used if the
+sink is in use by a system source (which allocate their IDs on probe).
+Resulting in something like this:
 
-https://lore.kernel.org/linux-riscv/20210318151010.100966-1-ben.dooks@codethink.co.uk/
+  struct coresight_trace_id_map perf_id_map;
+  struct coresight_trace_id_map sysfs_id_map;
+  struct coresight_trace_id_map *sysfs_id_map_in_use;
 
-https://lore.kernel.org/linux-riscv/20210329095749.998940-1-ben.dooks@codethink.co.uk/
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+syfs_id_map_in_use could either be &sysfs_id_map or
+coresight_trace_id_map_default()
 
-https://www.codethink.co.uk/privacy.html
+If sysfs did share the same map as Perf, the sink would have to have
+some kind of mechanism of saving and restoring the mappings depending on
+who was currently using the sink. At that point just storing two
+versions of the mappings is easier. I believe there are some scenarios
+for concurrent sysfs and Perf sessions that don't fail immediately, but
+that one will get -EBUSY when trying to use the sink, until the other
+session ends, at which point the other mappings need to be ready to use
+immediately.
 
+Also sysfs might either use the per-sink map or the global map depending
+on the ordering of when the IDs were allocated or if a system source is
+used at the same time, which means sysfs needs to use a reference to a map.
+
+We could also change system sources so that they only allocate IDs when
+the ID is read, rather than on probe. That might remove some of the
+above issues, but maybe not all of them because you can always read the
+ID before enabling the sink, at which point you have no choice but to
+use the global map.
+
+>>         /* sysfs links between components */
+>>         int nr_links;
+>>         bool has_conns_grp;
+>> --
+>> 2.34.1
+>>
+> 
+> Mike
+> 
 
