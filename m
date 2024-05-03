@@ -1,319 +1,269 @@
-Return-Path: <linux-kernel+bounces-167714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6011A8BADDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A54B28BADE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:40:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEFAC1F23423
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:40:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 313181F234D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE6515383E;
-	Fri,  3 May 2024 13:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26069153BDF;
+	Fri,  3 May 2024 13:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dustri.org header.i=@dustri.org header.b="mCNUcPGK"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OkOB9RfS"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7FA153BF3
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F04139CF8;
+	Fri,  3 May 2024 13:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714743577; cv=none; b=kw2l0SNL9/HDdjLVslBpWiqJU3bxeEhtm32DlpNyIoC5W8jaN10p9g00QxtBEeN8yT2pH7uXwDFEXaze6B5oOjnbkjC7Cgvoie5bHA740VFKrInVsdx7orq+6qfjJc72SnD2+rN0gG9Rp4EdkafL+YMqX5dIHv35Yg/WN9pXA/c=
+	t=1714743634; cv=none; b=Bg87d/EMC5PSOibmXEFGWtAeM2OUiDIRSbNhr5C7Cfy1w4cDndJ+HEpVBIlBYDNH/TswO6+hS/6aXzfD7XmTrxmJ6Er6p9uT4gMPJYf3R+N9AhoKAp7b4KZEizHoavE9TjmJtN3nwDT8o6B6RvKBIlOipmrDZrbTFJsOwqfPZYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714743577; c=relaxed/simple;
-	bh=o9kuPRNBUsiK7kvOAHTHUDbtqai27CIo7oIJxq7DCjU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EkHGpUsc2PBXX32zTp+CnjTxm+v8MehQDeeRcDEakvtbkWg/lZGbDlCkOOXQRlLyynXwo/2GFL9Vi7pIQCkNBu2nwkkrfrJiCcghzF81B8RXrMtwcX94dtk6g/sc28zqbBGU7ZZqmmM0AyAbRyYhFopPsXebr27s/1P7muA/sto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dustri.org; spf=pass smtp.mailfrom=dustri.org; dkim=pass (2048-bit key) header.d=dustri.org header.i=@dustri.org header.b=mCNUcPGK; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dustri.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dustri.org
-Message-ID: <28478de8-3028-48f2-b887-56149b6e324a@dustri.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dustri.org; s=key1;
-	t=1714743573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=+RwTdEzW/FB2ApzZxuuCNuwAx1O+uSLKzF1SQsO0uE8=;
-	b=mCNUcPGKoh9tQSDW19snBXOgRCBUIw4ATq52+/dYMeqf6z6MwYKeFaBMNQffZiNuqCe9wW
-	ycq754rqQCUB2MdFlAXWflQyB7TmoiUh1rfulR+de//9XAeKQrsVvUIoe+u4Hn0MiBs8PR
-	zn+FC/PsB893kexCoiOSx6/Ihk4/8h92BtuElX7XEp3S4TbtmGRcODawD63986cel8cPuA
-	gjdcYOSLptoz1cNvgqgmt7A6UqjBaL5s+7/1x1y9iiKMXzfFmECDJ2m7WZjHl9Ne4jXUVb
-	bQiQV2JD6Cdy5fYCxbGJFtF7hQsuLv7Za7NLFc7XLXgDHMnxQVTHYiMbMQJKrQ==
-Date: Fri, 3 May 2024 15:39:28 +0200
+	s=arc-20240116; t=1714743634; c=relaxed/simple;
+	bh=izGzRh53kNir17NtrU6uAf2uWt6oz72X9pbN6GcH8g4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aIfy5dLdwoJXbvtQotpq8UtZ6HhKTmeLW+e4cvmXfRs6M5sbyWONaBTj3p7UghJb0v60dmgRS+shrqjFIiAhehBzQtE8z4/1TV7Nc0dIApMyMod8em7JQ2NNZJYzppnRVQV1EcTZenb8ptBnVzsGhlCOzJ2xp0cvsACyCMWDnHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OkOB9RfS; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443CLH05026098;
+	Fri, 3 May 2024 13:40:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=OTB8nHFLPaquXF5F/bBkNoQstl6p52xaF/pLsiIiK+E=; b=Ok
+	OB9RfSaE7dFEwpgN2ng24tTsRGHoRUdPZRLivDNQc4Kt5kpR4600xo8WiRIWzXjJ
+	sZabYLm8mWq8xYidXK8lDUJcMMH1FsPlkh0TngbWtId51nBXMhlkVPvZIU8nbLY3
+	Gi0thrgzD648jWAhKJW7Ke+pEi8oRF3wO9aer31NVSl9HctOKpORMHlLAPRA2gjV
+	UB9tX1NMJxom6EfLvAzi/5wBE8XEVyknmVz4UjXit1TTr0pfZfmGV5hT7jtZ7DXH
+	wvL9+Cqaue8c8sDGaMFH4KFDrL7FebKh4G2nslCXk6TphxdCR2J4/M+FO1dRWt8x
+	Anesn5ZMPjLpX9Xrh4ug==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xv7pxk1jy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 13:40:25 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443DeOCE027742
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 3 May 2024 13:40:24 GMT
+Received: from [10.214.66.164] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 06:40:21 -0700
+Message-ID: <289b9ad6-58a3-aa39-48ae-a244fe108354@quicinc.com>
+Date: Fri, 3 May 2024 19:10:18 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 0/6] slab: Introduce dedicated bucket allocator
-To: Kees Cook <keescook@chromium.org>, Matteo Rizzo <matteorizzo@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>,
- Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, "GONG, Ruiqi"
- <gongruiqi@huaweicloud.com>, Xiu Jianfeng <xiujianfeng@huawei.com>,
- Suren Baghdasaryan <surenb@google.com>,
- Kent Overstreet <kent.overstreet@linux.dev>, Jann Horn <jannh@google.com>,
- Thomas Graf <tgraf@suug.ch>, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-hardening@vger.kernel.org
-References: <20240424213019.make.366-kees@kernel.org>
- <d0a65407-d3ae-46d5-800f-415ce7efcf22@dustri.org>
- <202404280921.A7683D511@keescook>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
+To: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        zhiguojiang
+	<justinjiang@vivo.com>,
+        "T.J. Mercier" <tjmercier@google.com>
+CC: Sumit Semwal <sumit.semwal@linaro.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>,
+        <linux-kernel@vger.kernel.org>, <opensource.kernel@vivo.com>
+References: <20240327022903.776-1-justinjiang@vivo.com>
+ <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
+ <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
+ <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
+ <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
+ <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com>
+ <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
+ <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
+ <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
+ <2ebca2fd-9465-4e64-b3cc-ffb88ef87800@vivo.com>
+ <d4209754-5f26-422d-aca0-45cccbc44ad0@amd.com>
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: jvoisin <julien.voisin@dustri.org>
-Autocrypt: addr=julien.voisin@dustri.org; keydata=
- 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
- 766VTOg4l2PTPCnIdNFy1Os=
-In-Reply-To: <202404280921.A7683D511@keescook>
-Content-Type: text/plain; charset=UTF-8
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <d4209754-5f26-422d-aca0-45cccbc44ad0@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Rg_pKWba3Akm2TNgCyjNcGyIoHI3gh5C
+X-Proofpoint-ORIG-GUID: Rg_pKWba3Akm2TNgCyjNcGyIoHI3gh5C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-03_09,2024-05-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2405030098
 
-On 4/28/24 19:02, Kees Cook wrote:
-> On Sun, Apr 28, 2024 at 01:02:36PM +0200, jvoisin wrote:
->> On 4/24/24 23:40, Kees Cook wrote:
->>> Hi,
->>>
->>> Series change history:
->>>
->>>  v3:
->>>   - clarify rationale and purpose in commit log
->>>   - rebase to -next (CONFIG_CODE_TAGGING)
->>>   - simplify calling styles and split out bucket plumbing more cleanly
->>>   - consolidate kmem_buckets_*() family introduction patches
->>>  v2: https://lore.kernel.org/lkml/20240305100933.it.923-kees@kernel.org/
->>>  v1: https://lore.kernel.org/lkml/20240304184252.work.496-kees@kernel.org/
->>>
->>> For the cover letter, I'm repeating commit log for patch 4 here, which has
->>> additional clarifications and rationale since v2:
->>>
->>>     Dedicated caches are available for fixed size allocations via
->>>     kmem_cache_alloc(), but for dynamically sized allocations there is only
->>>     the global kmalloc API's set of buckets available. This means it isn't
->>>     possible to separate specific sets of dynamically sized allocations into
->>>     a separate collection of caches.
->>>     
->>>     This leads to a use-after-free exploitation weakness in the Linux
->>>     kernel since many heap memory spraying/grooming attacks depend on using
->>>     userspace-controllable dynamically sized allocations to collide with
->>>     fixed size allocations that end up in same cache.
->>>     
->>>     While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
->>>     against these kinds of "type confusion" attacks, including for fixed
->>>     same-size heap objects, we can create a complementary deterministic
->>>     defense for dynamically sized allocations that are directly user
->>>     controlled. Addressing these cases is limited in scope, so isolation these
->>>     kinds of interfaces will not become an unbounded game of whack-a-mole. For
->>>     example, pass through memdup_user(), making isolation there very
->>>     effective.
->>
->> What does "Addressing these cases is limited in scope, so isolation
->> these kinds of interfaces will not become an unbounded game of
->> whack-a-mole." mean exactly?
-> 
-> The number of cases where there is a user/kernel API for size-controlled
-> allocations is limited. They don't get added very often, and most are
-> (correctly) using kmemdup_user() as the basis of their allocations. This
-> means we have a relatively well defined set of criteria for finding
-> places where this is needed, and most newly added interfaces will use
-> the existing (kmemdup_user()) infrastructure that will already be covered.
+Thanks Christian/TJ for the inputs!!
 
-A simple CodeQL query returns 266 of them:
-https://lookerstudio.google.com/reporting/68b02863-4f5c-4d85-b3c1-992af89c855c/page/n92nD?params=%7B%22df3%22:%22include%25EE%2580%25803%25EE%2580%2580T%22%7D
+On 4/18/2024 12:16 PM, Christian König wrote:
+> As far as I can see the EPOLL holds a reference to the files it
+> contains. So it is perfectly valid to add the file descriptor to EPOLL
+> and then close it.
+>
+> In this case the file won't be closed, but be kept alive by it's
+> reference in the EPOLL file descriptor.
 
-Is this number realistic and coherent with your results/own analysis?
+I am not seeing that adding a 'fd' into the epoll monitoring list will
+increase its refcount.  Confirmed by writing a testcase that just do
+open + EPOLL_CTL_ADD and see the /proc/../fdinfo of epoll fd(Added
+file_count() info to the output)
+# cat /proc/136/fdinfo/3
+pos:    0
+flags:  02
+mnt_id: 14
+ino:    1041
+tfd:        4 events:       19 data:                4  pos:0 ino:81 sdev:5
+refcount: 1<-- The fd added to the epoll monitoring is still 1(same as
+open file refcount)
 
-> 
->>>     In order to isolate user-controllable sized allocations from system
->>>     allocations, introduce kmem_buckets_create(), which behaves like
->>>     kmem_cache_create(). Introduce kmem_buckets_alloc(), which behaves like
->>>     kmem_cache_alloc(). Introduce kmem_buckets_alloc_track_caller() for
->>>     where caller tracking is needed. Introduce kmem_buckets_valloc() for
->>>     cases where vmalloc callback is needed.
->>>     
->>>     Allows for confining allocations to a dedicated set of sized caches
->>>     (which have the same layout as the kmalloc caches).
->>>     
->>>     This can also be used in the future to extend codetag allocation
->>>     annotations to implement per-caller allocation cache isolation[1] even
->>>     for dynamic allocations.
->> Having per-caller allocation cache isolation looks like something that
->> has already been done in
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c6152940584290668b35fa0800026f6a1ae05fe
->> albeit in a randomized way. Why not piggy-back on the infra added by
->> this patch, instead of adding a new API?
-> 
-> It's not sufficient because it is a static set of buckets. It cannot be
-> adjusted dynamically (which is not a problem kmem_buckets_create() has).
-> I had asked[1], in an earlier version of CONFIG_RANDOM_KMALLOC_CACHES, for
-> exactly the API that is provided in this series, because that would be
-> much more flexible.
-> 
-> And for systems that use allocation profiling, the next step
-> would be to provide per-call-site isolation (which would supersede
-> CONFIG_RANDOM_KMALLOC_CACHES, which we'd keep for the non-alloc-prof
-> cases).
-> 
->>>     Memory allocation pinning[2] is still needed to plug the Use-After-Free
->>>     cross-allocator weakness, but that is an existing and separate issue
->>>     which is complementary to this improvement. Development continues for
->>>     that feature via the SLAB_VIRTUAL[3] series (which could also provide
->>>     guard pages -- another complementary improvement).
->>>     
->>>     Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [1]
->>>     Link: https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html [2]
->>>     Link: https://lore.kernel.org/lkml/20230915105933.495735-1-matteorizzo@google.com/ [3]
->>
->> To be honest, I think this series is close to useless without allocation
->> pinning. And even with pinning, it's still routinely bypassed in the
->> KernelCTF
->> (https://github.com/google/security-research/tree/master/pocs/linux/kernelctf).
-> 
-> Sure, I can understand why you might think that, but I disagree. This
-> adds the building blocks we need for better allocation isolation
-> control, and stops existing (and similar) attacks toda>
-> But yes, given attackers with sufficient control over the entire system,
-> all mitigations get weaker. We can't fall into the trap of "perfect
-> security"; real-world experience shows that incremental improvements
-> like this can strongly impact the difficulty of mounting attacks. Not
-> all flaws are created equal; not everything is exploitable to the same
-> degree.
+From the code too, I don't see a file added in the epoll monitoring list
+will have an extra refcount but momentarily (where it increases the
+refcount of target file, add it to the rbtree of the epoll context and
+then decreasing the file refcount):
+do_epoll_ctl():
+	f = fdget(epfd);
+	tf = fdget(fd);
+	epoll_mutex_lock(&ep->mtx)
+	EPOLL_CTL_ADD:
+		ep_insert(ep, epds, tf.file, fd, full_check); // Added to the epoll
+monitoring rb tree list as epitem.
+	mutex_unlock(&ep->mtx);
+	fdput(tf);
+	fdput(f);
 
-It's not about "perfect security", but about wisely spending the
-complexity/review/performance/churn/… budgets in my opinion.
 
->> Do you have some particular exploits in mind that would be completely
->> mitigated by your series?
-> 
-> I link to like a dozen in the last two patches. :P
-> 
-> This series immediately closes 3 well used exploit methodologies.
-> Attackers exploiting new flaws that could have used the killed methods
-> must now choose methods that have greater complexity, and this drives
-> them towards cross-allocator attacks. Robust exploits there are more
-> costly to develop as we narrow the scope of methods.
+Not sure If i am completely mistaken what you're saying here.
 
-You linked exploits that were making use of the two structures that you
-isolated; making them use different structures would likely mean a
-couple of hours.
-
-I was more interested in exploits that are effectively killed; as I'm
-still not convinced that elastic structures are rare, and that manually
-isolating them one by one is attainable/sustainable/…
-
-But if you have some proper analysis in this direction, then yes, I
-completely agrees that isolating all of them is a great idea.
-
+> The fs layer which calls dma_buf_poll() should make sure that the file
+> can't go away until the function returns.
 > 
-> Bad analogy: we're locking the doors of a house. Yes, some windows may
-> still be unlocked, but now they'll need a ladder. And it doesn't make
-> sense to lock the windows if we didn't lock the doors first. This is
-> what I mean by complementary defenses, and comes back to what I mentioned
-> earlier: "perfect security" is a myth, but incremental security works.
+> Then inside dma_buf_poll() we add another reference to the file while
+> installing the callback:
 > 
->> Moreover, I'm not aware of any ongoing development of the SLAB_VIRTUAL
->> series: the last sign of life on its thread is from 7 months ago.
+>                         /* Paired with fput in dma_buf_poll_cb */
+>                         get_file(dmabuf->file); No, exactly that can't
+> happen either.
 > 
-> Yeah, I know, but sometimes other things get in the way. Matteo assures
-> me it's still coming.
-> 
-> Since you're interested in seeing SLAB_VIRTUAL land, please join the
-> development efforts. Reach out to Matteo (you, he, and I all work for
-> the same company) and see where you can assist. Surely this can be
-> something you can contribute to while "on the clock"?
 
-I left Google a couple of weeks ago unfortunately, and I won't touch
-anything with email-based development for less than a Google salary :D
+I am not quite comfortable with epoll internals but I think below race
+is possible where "The 'file' passed to dma_buf_poll() is proper but
+->f_count == 0, which is indicating that a parallel freeing is
+happening". So, we should check the file->f_count value before taking
+the refcount.
 
-> 
->>> After the core implementation are 2 patches that cover the most heavily
->>> abused "repeat offenders" used in exploits. Repeating those details here:
->>>
->>>     The msg subsystem is a common target for exploiting[1][2][3][4][5][6]
->>>     use-after-free type confusion flaws in the kernel for both read and
->>>     write primitives. Avoid having a user-controlled size cache share the
->>>     global kmalloc allocator by using a separate set of kmalloc buckets.
->>>     
->>>     Link: https://blog.hacktivesecurity.com/index.php/2022/06/13/linux-kernel-exploit-development-1day-case-study/ [1]
->>>     Link: https://hardenedvault.net/blog/2022-11-13-msg_msg-recon-mitigation-ved/ [2]
->>>     Link: https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html [3]
->>>     Link: https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html [4]
->>>     Link: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html [5]
->>>     Link: https://zplin.me/papers/ELOISE.pdf [6]
->>>     Link: https://syst3mfailure.io/wall-of-perdition/ [7]
->>>
->>>     Both memdup_user() and vmemdup_user() handle allocations that are
->>>     regularly used for exploiting use-after-free type confusion flaws in
->>>     the kernel (e.g. prctl() PR_SET_VMA_ANON_NAME[1] and setxattr[2][3][4]
->>>     respectively).
->>>     
->>>     Since both are designed for contents coming from userspace, it allows
->>>     for userspace-controlled allocation sizes. Use a dedicated set of kmalloc
->>>     buckets so these allocations do not share caches with the global kmalloc
->>>     buckets.
->>>     
->>>     Link: https://starlabs.sg/blog/2023/07-prctl-anon_vma_name-an-amusing-heap-spray/ [1]
->>>     Link: https://duasynt.com/blog/linux-kernel-heap-spray [2]
->>>     Link: https://etenal.me/archives/1336 [3]
->>>     Link: https://github.com/a13xp0p0v/kernel-hack-drill/blob/master/drill_exploit_uaf.c [4]
->>
->> What's the performance impact of this series? Did you run some benchmarks?
-> 
-> I wasn't able to measure any performance impact at all. It does add a
-> small bit of memory overhead, but it's on the order of a dozen pages
-> used for the 2 extra sets of buckets. (E.g. it's well below the overhead
-> introduced by CONFIG_RANDOM_KMALLOC_CACHES, which adds 16 extra sets
-> of buckets.)
+(A 'fd' registered for the epoll monitoring list is maintained as
+'epitem(epi)' in the rbtree of 'eventpoll(ep, called as epoll context).
 
-Nice!
+epoll_wait()				    __fput()(as file->f_count=0)
+------------------------------------------------------------------------
+a) ep_poll_callback():
+     Is the waitqueue function
+   called when signaled on the
+   wait_queue_head_t of the registered
+   poll() function.
+
+   1) It links the 'epi' to the ready list
+      of 'ep':
+       if (!ep_is_linked(epi))
+	 list_add_tail_lockless(&epi->rdllink,
+		&ep->rdllist)
+
+   2) wake_up(&ep->wq);
+	Wake up the process waiting
+	on epoll_wait() that endup
+	in ep_poll.
+
+
+b) ep_poll():
+    1) while (1) {
+	eavail = ep_events_available(ep);
+	(checks ep->rdlist)
+	ep_send_events(ep);
+	(notify the events to user)
+    }
+    (epoll_wait() calling process gets
+     woken up from a.2 and process the
+     events raised added to rdlist in a.1)
+
+   2) ep_send_events():
+	mutex_lock(&ep->mtx);
+	(** The sync lock is taken **)
+	list_for_each_entry_safe(epi, tmp,
+			&txlist, rdllink) {
+	    list_del_init(&epi->rdllink);
+	    revents = ep_item_poll(epi, &pt, 1)
+	    (vfs_poll()-->...f_op->poll(=dma_buf_poll)
+	}
+	mutex_unlock(&ep->mtx)
+	(**release the lock.**)
+
+	(As part of procession of events,
+	 each epitem is removed from rdlist
+         and call the f_op->poll() of a file
+	 which will endup in dma_buf_poll())
+
+   3) dma_buf_poll():
+ 	get_file(dmabuf->file);
+	(** f_count changed from 0->1 **)
+	dma_buf_poll_add_cb(resv, true, dcb):
+	(registers dma_buf_poll_cb() against fence)
+
+
+				c) eventpoll_release_file():
+				   mutex_lock(&ep->mtx);
+				   __ep_remove(ep, epi, true):
+				   mutex_unlock(&ep->mtx);
+				  (__ep_remove() will remove the
+				   'epi' from rbtree and if present
+				   from rdlist as well)
+
+				d) file_free(file), free the 'file'.
+
+e) dma_buf_poll_cb:
+ /* Paired with get_file in dma_buf_poll */
+ fput(dmabuf->file);
+ (f_count changed from 1->0, where
+  we try to free the 'file' again
+  which is UAF/double free).
+
+
+		
+In the above race, If c) gets called first, then the 'epi' is removed
+from both rbtree and 'rdlink' under ep->mtx lock thus b.2 don't end up
+in calling the ->poll() as it don't see this event in the rdlist.
+
+Race only exist If b.2 executes first, where it will call dma_buf_poll
+with __valid 'struct file' under ep->mtx but its refcount is already
+could have been zero__. Later When e) is executed, it turns into double
+free of the 'file' structure.
+
+If you're convinced with the above race, should the fix here will be
+this simple check:
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 8fe5aa67b167..e469dd9288cc
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -240,6 +240,10 @@ static __poll_t dma_buf_poll(struct file *file,
+poll_table *poll)
+ 	struct dma_resv *resv;
+ 	__poll_t events;
+
++	/* Check parallel freeing of file */
++	if (!file_count(file))
++		return 0;
++
+
+Thanks,
+Charan
 
