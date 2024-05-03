@@ -1,185 +1,142 @@
-Return-Path: <linux-kernel+bounces-168258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFFF28BB5D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:34:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6258B8BB64D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CA9A1F21901
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:34:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 856811C20A85
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52CF57580C;
-	Fri,  3 May 2024 21:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FFA137917;
+	Fri,  3 May 2024 21:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pf8HEhBr"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dctPQnKg"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01735821A;
-	Fri,  3 May 2024 21:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07819137766
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772040; cv=none; b=OLnvP4LauiZUPTS5EWNnQlFTmYlvFFwEcHV5ATKt9abDsKxn4kYt2Kg2JduDx8bM1Vyk5YQiCTM1Y74c8PvQEiLfN/NtwJMP+zrjLqneqhPUQD3Ah7TegBReC4wgBYF/sbtD96Bx67Jmegsv+MaibHkNBed/i0D1+IMWvsio8D0=
+	t=1714772294; cv=none; b=rpYhCnkK9tbbnGMK8CQEI16MKMPTsA9v6qZYcJmxfnHOl/UtzwSkAr3IRGVzRVfjVVBzzMs1ITEHaQJE2exUJHHzmKwuEzh0gAbW2TFmtUEmi8RPLkSA5bHVWeA1zivr2bxz4lnEM6L+TLoh+7pdkvz53iBrEZVeEYptkh3klkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772040; c=relaxed/simple;
-	bh=OR8t/7tZT5uQQef3RULK0uCzP116fOOCTBA3svyi1Qw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=oR3zUmOCd4DbZnkRfM1cf3GsxyT6A+wV/ba3yH+LAuHBxKs24FD60iuXnWREELx0diKJPmcTAjiXxTNLJ9vCuvJehPywkw/gpD6ztfBsib/PUzwwLFlmSSNUDUFnBE3vSOHrfmzQQyEmRLLZtXYHsbFJ/KXBLP5Dg3YP5cq/r0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pf8HEhBr; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443LONNw021291;
-	Fri, 3 May 2024 21:33:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=x+VBAQfRCu+s6AQ2CmZe1fqjOOTucJLjWz4SzfIiC0A=; b=pf
-	8HEhBrNafPZBfZZZsGkubm0NmlkGrtOJqQOkKE/q+2bmZxjBDoSImg7zPWYEU+Tq
-	D+h9vHEZ+AGMosXD0xzqcA4Ogp7y4dilNvoi9w1gnzR5NulbhyiyF1UdB7hk+POp
-	Q6LyV+J/NHAjbgTZzKuiY3aZJ4XDU58Pt/BGaL7UIBM2kOcDBJJOoy5cvoWhrEp1
-	Eg/42MF1oMoDqkgK2lkVS5VahIHA8rIhkz5OIBT2Q5sIZRP2NlC2/JhQHdn3jxQ1
-	F502gT51xBP3OiptPTRL7/AGW0nLIyr6L5RQnjq1e1U71KOi5sihxC73qqZx0Uy0
-	OfB0OfWQ5O5GzwgNjwpA==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvwfa9du8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 21:33:32 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443LXUpo015476
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 21:33:30 GMT
-Received: from [10.110.77.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 14:33:27 -0700
-Message-ID: <0f88ec53-6c92-434d-81c8-538b31a2385e@quicinc.com>
-Date: Fri, 3 May 2024 14:33:26 -0700
+	s=arc-20240116; t=1714772294; c=relaxed/simple;
+	bh=wi3nhmfubaEs7FDrXqrqYUjUQwr5WxQmbUhvxgTasvE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=eO4oIf7l4uCV2v964HNkRqT5sDfN7P9ZohabygVLXDswzIQ3EbwtHvBLyhAJdfDfXnljO7QdcUzvEOpVI/Cvm3OermssquDnhfuy23jJlRTBDvefkNJ3P6KZ2DDUUULwWkBpUxZU3q9t9qttCa3iNJdG3ElZrqHnJhU1J64R9o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dctPQnKg; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1ecc23e6c9dso733305ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:38:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714772292; x=1715377092; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X9J+mwbNCcE7m50P9Dlsv1H2Zyb5eg1SoTrNCCSKKxs=;
+        b=dctPQnKgta/9VLmEkKA7V7Bmlord9jpRKM7e1lcSKJqOTSJAvvU8MUPsee4Jf6FnEQ
+         QAHfnPXR7oyyUveBYTozIAO8ztruoqKNHQutO5r7tFU2f0V5yCplDSdBq7TpOYZPEkbV
+         SWV9nnEX6xBfTCLDl94DUekp8h1OYMmM0OijI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714772292; x=1715377092;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X9J+mwbNCcE7m50P9Dlsv1H2Zyb5eg1SoTrNCCSKKxs=;
+        b=F7vNHpxP0InFUidowu47dkfrMYd2LpoWOm7R020h2J8AzriEZDYgra9jH6fCsLm3x4
+         w+DuF8bjZFKORIRZ2mm5q+zRE6YWKORlSNrlaip3l8gCyiIocccQpIaJVzqyX1/YuUUx
+         0FXwZA22aUJVW4c4Qyqa/oElAK3+pFUau2xN4e+e4C2MsaS6kpVOQ36zWpiGY0DGDhS5
+         1Jqn4aHbQaqrGNe1HYz2qjrfL4+AGVDb1OdzSdszp4ueG1Tlgb2INlMHA1SylLCCx2ge
+         ONsyQxQfTJDJpZcA7Q0bde/DMj5CnX5z+qzGzuLtaRWHZIIeLkEmiIYHnhYO32B4Uz26
+         prsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKbfqxy/5TEboS5bOti0NfhIyBn6JsX8QOI+wl2uCUMt2SFbzVHrYZvvfr22GIi1YQHre+fiJN1wyAxRTW5R61PyNa8uMSQv/0bW1k
+X-Gm-Message-State: AOJu0YxciW4yP84QD804r1ElUC0YL58HnKOV6Hq9eUfLLWcZ9gbHwIac
+	e9vDwxv4Vr8f5Y8Qi6mJpgBOkTxK4YmPmWo9xk6vdaujDBQE7Ev0VI3ZrmWvTQ==
+X-Google-Smtp-Source: AGHT+IEhvNbol5zNlkCIgLPtF12l61bvixPmv0EHaY4itQnvJImVMXDJ99WT0lhGIYbPhxxJaaynFw==
+X-Received: by 2002:a17:902:da8c:b0:1e3:cfc5:589e with SMTP id j12-20020a170902da8c00b001e3cfc5589emr4661779plx.64.1714772292404;
+        Fri, 03 May 2024 14:38:12 -0700 (PDT)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.38.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 14:38:11 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org,
+	Maxime Ripard <mripard@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Yuran Pereira <yuran.pereira@hotmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org
+Subject: [RFT PATCH v2 46/48] drm/panel: sony-acx565akm: Don't double-check enabled state in disable
+Date: Fri,  3 May 2024 14:33:27 -0700
+Message-ID: <20240503143327.RFT.v2.46.I6a51b36831a5c7b2b82bccf8c550cf0d076aa541@changeid>
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
+References: <20240503213441.177109-1-dianders@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
- clockid_t timestamp type
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-CC: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Willem
- de Bruijn" <willemdebruijn.kernel@gmail.com>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf
-	<bpf@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
- <20240424222028.1080134-3-quic_abchauha@quicinc.com>
- <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nVdDm5OZ1TpalJYn_PpoYsN-R3ehATxQ
-X-Proofpoint-ORIG-GUID: nVdDm5OZ1TpalJYn_PpoYsN-R3ehATxQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-03_15,2024-05-03_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2405030153
 
+As talked about in commit d2aacaf07395 ("drm/panel: Check for already
+prepared/enabled in drm_panel"), we want to remove needless code from
+panel drivers that was storing and double-checking the
+prepared/enabled state. Even if someone was relying on the
+double-check before, that double-check is now in the core and not
+needed in individual drivers.
 
-> BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
->            u64, tstamp, u32, tstamp_type)
-> {
->     /* ... */
->     case BPF_SKB_CLOCK_TAI:
->         if (!tstamp)
->             return -EINVAL;
->         skb->tstamp = tstamp;
->         skb->tstamp_type = SKB_CLOCK_TAI;
->         break;
->         case BPF_SKB_CLOCK_REALTIME:
->         skb->tstamp = tstamp;
->         skb->tstamp_type = SKB_CLOCK_REALTIME;
->         break;
-> 
->     /* ... */
-> }
-> 
->>               return -EINVAL;
-> 
->> @@ -9388,17 +9394,17 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
->>   {
->>       __u8 value_reg = si->dst_reg;
->>       __u8 skb_reg = si->src_reg;
->> -    /* AX is needed because src_reg and dst_reg could be the same */
->> -    __u8 tmp_reg = BPF_REG_AX;
->> -
->> -    *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
->> -                  SKB_BF_MONO_TC_OFFSET);
->> -    *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->> -                SKB_MONO_DELIVERY_TIME_MASK, 2);
->> -    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
->> -    *insn++ = BPF_JMP_A(1);
->> -    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
->> -
->> +    BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
-> 
-> Add these also:
-> 
->     BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
->     BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
->     BUILD_BUG_ON(SKB_CLOCK_TAI != BPF_SKB_CLOCK_TAI);
-> 
+The acx565akm seems to do some unique stuff with the "enabled"
+state. Specifically:
+1. It seems to detect the enabled state based on how the bootloader
+   left the panel.
+2. It uses the enabled state to prevent certain sysfs files from
+   accessing a disabled panel.
 
-Martin, The above suggestion of adding BUILD_BUG_ON always gives me a warning stating the following. 
+We'll leave the "enabled" state tracking for this. However, we can at
+least get rid of the double-check when trying to disable.
 
-Some systems considers warning as error if compiler flags are enabled. I believe this requires your suggestion before i raise RFC v6 patchset to either keep the 
-BUILD_BUG_ON or remove it completely. 
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-/local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9395:34: warning: comparison between ‘enum skb_tstamp_type’ and ‘enum <anonymous>’ [-Wenum-compare]
- 9395 |  BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
-      |                                  ^~
-/local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:451:9: note: in definition of macro ‘__compiletime_assert’
-  451 |   if (!(condition))     \
-      |         ^~~~~~~~~
-/local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:471:2: note: in expansion of macro ‘_compiletime_assert’
-  471 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |  ^~~~~~~~~~~~~~~~~~~
-/local/mnt/workspace/kernel_master/linux-next/include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-/local/mnt/workspace/kernel_master/linux-next/include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-   50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-      |  ^~~~~~~~~~~~~~~~
-/local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9395:2: note: in expansion of macro ‘BUILD_BUG_ON’
- 9395 |  BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
-      |  ^~~~~~~~~~~~
-/local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9396:35: warning: comparison between ‘enum skb_tstamp_type’ and ‘enum <anonymous>’ [-Wenum-compare]
- 9396 |  BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
-      |                                   ^~
-/local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:451:9: note: in definition of macro ‘__compiletime_assert’
-  451 |   if (!(condition))     \
-      |         ^~~~~~~~~
+Changes in v2:
+- Split removal of prepared/enabled from handling of remove/shutdown.
 
-         |                                      ^~
+ drivers/gpu/drm/panel/panel-sony-acx565akm.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-
+diff --git a/drivers/gpu/drm/panel/panel-sony-acx565akm.c b/drivers/gpu/drm/panel/panel-sony-acx565akm.c
+index 3d6a286056a0..a9a545a56404 100644
+--- a/drivers/gpu/drm/panel/panel-sony-acx565akm.c
++++ b/drivers/gpu/drm/panel/panel-sony-acx565akm.c
+@@ -454,9 +454,6 @@ static int acx565akm_power_on(struct acx565akm_panel *lcd)
+ 
+ static void acx565akm_power_off(struct acx565akm_panel *lcd)
+ {
+-	if (!lcd->enabled)
+-		return;
+-
+ 	acx565akm_set_display_state(lcd, 0);
+ 	acx565akm_set_sleep_mode(lcd, 1);
+ 	lcd->enabled = false;
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
 
 
