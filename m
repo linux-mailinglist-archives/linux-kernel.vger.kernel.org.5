@@ -1,144 +1,102 @@
-Return-Path: <linux-kernel+bounces-167865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 761A78BB07D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:01:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F5558BB082
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:04:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983321C226E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:01:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3749F1F22291
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A082715535A;
-	Fri,  3 May 2024 16:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C2B155332;
+	Fri,  3 May 2024 16:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Aef4gjis"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bs/uce9r"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB1C155397;
-	Fri,  3 May 2024 16:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6E6101F2
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714752109; cv=none; b=lLvPhr80AxlLJGTIScnhDSt3+BT/io0fKsaSlOCyn+XxzzpWbaW6aWymwXBt6CWWLQOCynEAWJDMuqAfqr8Yi0HFAUOGU2koPtbYGmVG+yJ9NVDDdTkg4Vc43Pws0pQbPPjmHImnABrB2JcjyBvzV/yuhX0lc8qFFC/Hsl/hwP0=
+	t=1714752288; cv=none; b=douIdVhFPtDt9pKV0iFq4THuhBhCVYd8qKOmR07m1AiccxYv+W7HD6aA6sQjqaNQH1jzOhLsjMJPC10HnOtlSEP0XRnCkP3+QMstXIvk0K9VEY9RbLevMIYNQaZjH5xFM2FklN1KFMTDljIWjoDHmv2hwHZ7jIUNNTgMFHqxcCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714752109; c=relaxed/simple;
-	bh=toj4JNt/0SGplSZYRBmdaHv21iUmacqFjF9Z0TMqpOA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FZMhHZZ6FdsITVSPlfIMa9zVjsejDeC4VjZGbGQsa9T+Ots5UqpX57LWqCVSr2Dxdl9ESA6GRKkQZm8+d/tAr5vzTK2m0mNGDXLiS3JeibxfZxXVq/5uHFNIM9Sap/2yop8++ZdqOjBiwyOzWhArOJWM76fjQ2gqN17CW32otBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Aef4gjis; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714752106; x=1746288106;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=toj4JNt/0SGplSZYRBmdaHv21iUmacqFjF9Z0TMqpOA=;
-  b=Aef4gjis7rRRV46GE/fA1fJr86OSPAwk/+aiwA+B3Ab9n1BJ9+AHkKKv
-   3Hn7GXpBYwuHgcmjyX5jwl4OEFYCQjCzA4cI1NMmoAqPzdyG038NhriJY
-   6ns7I8Dca0RY6Cch1Sdx58TR+3TpFJuL/1xpGic0dDFX7/kPoun+G8Slx
-   kH236MaDrWgS0TApe+BL4VMsRe6QczlDWNEseQeFNiFlYJO3q2n5RZ00P
-   jUv5MpceaKkntFykJMzmmua04Yqg6AyLJFm7aZcN9St4rRiH6DweCo0nu
-   DkjKtxxHgYFqwHC/Ah97I3A8j9vWQQ3obB7YbUphMo5ziLfDiogAOqWrF
-   g==;
-X-CSE-ConnectionGUID: S9IwbmWQQkyLt3owFLwLJw==
-X-CSE-MsgGUID: z/Nf2RK4RGiM7e8Pn3ejug==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="11098772"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="11098772"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 09:01:34 -0700
-X-CSE-ConnectionGUID: QMbUy9s0QV2EjF4/eXWwKg==
-X-CSE-MsgGUID: 8sTeKWiSRAOZATLgO+dLjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="27891983"
-Received: from zhangche-mobl.amr.corp.intel.com (HELO [10.209.82.31]) ([10.209.82.31])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 09:01:32 -0700
-Message-ID: <b78a383d-27bb-43e3-8e61-f8a6b25b2708@intel.com>
-Date: Fri, 3 May 2024 09:01:31 -0700
+	s=arc-20240116; t=1714752288; c=relaxed/simple;
+	bh=HxBaO96K211UiYQ5afvNa23Ez+3lq/l8p8/2SLvqxGY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LHafIMOFtqM1AKyT2hyLL9i2hcfC5eowutEmxrG06gOfYna/Xba1LMiSsQYqrekUbmx1r2hrtNkVxAnb3y0TAQkHoPn4NuspcHll7nt5Sc8uTMfPgaOoekQw+XOmlkTVZmTbv2DqCKF7NRoBUa/vreU22XdKuntNKs4+TQIOm9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bs/uce9r reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D89B540E0205;
+	Fri,  3 May 2024 16:04:42 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id NSKdZbyqgaiX; Fri,  3 May 2024 16:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714752279; bh=kgK1Sd7njMaUz6Vs0JsFM7PKN9JL8A16q9TsB9gAF+I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bs/uce9rl1p2FswYSj8iEK9JU5VIYnzElPuhETDzrricDQ3pQqqQYLRUGevF4Z8zS
+	 HMcLKq3R2HUhGPrzQejgUqNqEnGkzY5nI2LoO8Cv7HCBJRCMVxZmd7oY3Z786HvE65
+	 Q5upDmSaEEFjqnitdtIbYIpeHNWeS1QEdtwJdYmwx4pAPTw2/bevH5r7GZtV3z9p7b
+	 fi7FhPleZWWI9JAyaj9uvxcQxRAvN5rCR3zyFWi4tQfsq+61+52uwX4pvqNUfZUwz/
+	 khwrjMNNM5niNRo/CloD4K4aBOUML8EnrRKkMtQcZV2o8MXTv4LBOv0xBDEop0Flgo
+	 LbG6PW6YmIyj2QjFC/e9kT9m5d/CwV69sqyra+8r+x1KadkpgxXvR2WD2ymWm7mzen
+	 GK0oNH3djcmOSMJ8Gsuf0vEGY4tDgKjjabdqnQ5e6AwIjAL+IHEqGHqlLX2l63h0vi
+	 k1DY/CFJojQ7wmX6NQhpfkLjipgBlQ6qG8pdkRZYU6MGl1CFXRBTu3UtrEGpZfV59x
+	 Acyj9fs12a02CmaUapVtc0Zif8alECfRpNsRWBJckEBYX3WB36orm6l4+KUn3YlXhR
+	 JRxYRECbxHGkVgI1/R4I5mvvgia0VDtTKppA3lWIT4TbmIJyzYvtLMrJHbqVA8CI5n
+	 YDZL0crKE9IkLhg73GkMq5Vc=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EAB6940E0192;
+	Fri,  3 May 2024 16:04:24 +0000 (UTC)
+Date: Fri, 3 May 2024 18:04:19 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: =?utf-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org,
+	x86@kernel.org, linux-coco@lists.linux.dev,
+	svsm-devel@coconut-svsm.dev, Peter Zijlstra <peterz@infradead.org>,
+	Michael Roth <michael.roth@amd.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [svsm-devel] [PATCH v4 15/15] x86/sev: Allow non-VMPL0 execution
+ when an SVSM is present
+Message-ID: <20240503160419.GAZjULA7HhinTfCWZ6@fat_crate.local>
+References: <cover.1713974291.git.thomas.lendacky@amd.com>
+ <e377d148acac799f6905fc544fbb8bf2ed76e078.1713974291.git.thomas.lendacky@amd.com>
+ <ZjTMcC7KTP9xRAqk@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] x86/virt/tdx: Move TDMR metadata fields map table to
- local variable
-To: Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: x86@kernel.org, kirill.shutemov@linux.intel.com, peterz@infradead.org,
- tglx@linutronix.de, bp@alien8.de, mingo@redhat.com, hpa@zytor.com,
- seanjc@google.com, pbonzini@redhat.com, isaku.yamahata@intel.com,
- jgross@suse.com
-References: <cover.1709288433.git.kai.huang@intel.com>
- <41cd371d8a9caadf183e3ab464c57f9f715184d3.1709288433.git.kai.huang@intel.com>
-Content-Language: en-US
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <41cd371d8a9caadf183e3ab464c57f9f715184d3.1709288433.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZjTMcC7KTP9xRAqk@8bytes.org>
+Content-Transfer-Encoding: quoted-printable
 
-On 3/1/24 03:20, Kai Huang wrote:
-> The kernel reads all TDMR related global metadata fields based on a
-> table which maps the metadata fields to the corresponding members of
-> 'struct tdx_tdmr_sysinfo'.
-> 
-> Currently this table is a static variable.  But this table is only used
-> by the function which reads these metadata fields and becomes useless
-> after reading is done.
+On Fri, May 03, 2024 at 01:37:20PM +0200, J=C3=B6rg R=C3=B6del wrote:
+> Nit: Can this be formated more like "SNP running at VMPL-%u"? That make=
+s
+> it easier to parse for me when looking into dmesg :)
 
-Is this intended to be a problem statement?  _How_ is this a problem?
+Hmm, except that all documentation is without a "-"... The APM talks
+about VMPL%d everywhere...
 
-> Change the table to function local variable.  This also saves the
-> storage of the table from the kernel image.
+--=20
+Regards/Gruss,
+    Boris.
 
-I'm confused how this would happen.  Could you please explain your logic
-a bit here?
+https://people.kernel.org/tglx/notes-about-netiquette
 
