@@ -1,68 +1,69 @@
-Return-Path: <linux-kernel+bounces-168291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FC358BB632
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:42:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D20438BB634
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:42:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 734101C208FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:42:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891A62811DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CA058AA5;
-	Fri,  3 May 2024 21:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECD783A10;
+	Fri,  3 May 2024 21:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="W8TirT8k"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YsZETJWm"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B37132C1B
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7461332A0
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772247; cv=none; b=Usjc8JLTTO5TL8U1mjh1z5XzqyffN9lSXJ+wa5ySMs+0ZViC4g/QTG+BiXE0Z+ZtYwcNxHt1fc4WDoZlCj97WmVZv5hTi830Lz+DQ+V09rSxOZqsyoQFkjdhpIb/FAoaU7ZD42VzREf+ZM4EhFJiHB8P9a1PeBriu3dOr0UM2I0=
+	t=1714772250; cv=none; b=qmGjq6DQixf5iffgJVXjQGrKnISo6a9fvmN8rUFHcl+IX2iNLmYggRuaTUkzKXIkbjUugkWE4tZCihBZ14Njg4OEqAYM2J2RaVuq+ktlsgEyYqmTAnV3f4+w01qKGPJwAix9kBM/3D3ndYB+56OgSwV/UBwSBGjQUozg9gYQXfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772247; c=relaxed/simple;
-	bh=05gtrOeEcREq4hvpJoIjfeQYqWEadvX+bGZawKnk+qI=;
+	s=arc-20240116; t=1714772250; c=relaxed/simple;
+	bh=Z07k6LmvrCqJVYhqJqW7ZsjRIaRSeJkSq0Its1w6ixE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BGEfbmlilgZJPdijVwr359qmMMYDHjPQbe7k8etX6Ef9SSP0h4rjIaBMu2K7auZUbSuRAwmxnEApGjuBugHzhCN3U/L+Ycro5fH+MzfHNyNt0tkiF3iNegFnt4Ji8ZskF8D/vy7eWDekQd1zsJzE6TxpcbeMCZ1/SbUNydiCr14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=W8TirT8k; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=o2THu8exQIAUofC0abhf95jnVK1bTJexC/OFoD6y4U1GKFrelEL2yUrVkBU8OnOmoEN7XowdmkNl7oQWV930A3hxhWFsZbbAvnLVn22PGJ3xmLMOd7PEdKL7l7IvvDE9MDkuUxaH1UJamR4zF7Ox0YUhbL0pJInn8H7QHmU28Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YsZETJWm; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1eab16c8d83so859245ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:37:26 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1ec69e3dbe5so1226655ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:37:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714772246; x=1715377046; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714772248; x=1715377048; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M2B/kTWdyUau2alXgEoUxYv1c4k3su/yovwNR5wduBo=;
-        b=W8TirT8kTmbRwEVOcn5doiFArZL3pXEnpSmXjOWgYJ+j01hdcV0av1VE0SyUVybUaB
-         oSi8SLzyPTKEXcUnlImExNBvkBjeS8mjyNisB1qM9SuJ0YAt9e4Vwx1CVC3HiRvBV31W
-         Tf4smy1Bz0Mox1BU2cg9w3RIiM7ph95dNbZkI=
+        bh=Vm5pMW+JcxQoAhIpk954JqF6buuPfxcd3q3C5XmFPm8=;
+        b=YsZETJWmABhnVgXi/GijDgbwFXw4t7xU4i1Ib8zciuOx40Wdxeglc0dISitIZHOr0k
+         O8iCn5dpqx4NLlZ7rb5J0imkHGCZ0iCArMKbLPFRPPXETZMchqLHIqfK9BVI3DrsFvaN
+         IL45myX+XQZD2kQIoG5YFr/edl/oAozJ8aW4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772246; x=1715377046;
+        d=1e100.net; s=20230601; t=1714772248; x=1715377048;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M2B/kTWdyUau2alXgEoUxYv1c4k3su/yovwNR5wduBo=;
-        b=NJ/tI8zilEYX2yaHqwDCKyZrdeosw1qjfDRR1O83FlPsO+r2G5aspJ0ZkIVPOMj5RZ
-         gMgTR7kRJ5CIL39b0wzkfMxRVI/bc7w7oKMvUdkd12mmXdEzxcIJIZUcGJXTlUiC1CoP
-         ND/OgRO8bR+/OOxsCchi94Fcn4kRgmXxT4XNS6f+/Xmy7WecfplDA9af18VNmurcrTEn
-         WJfeVrAX4QJLoV5D1lx3dykNQJ1yXUIO4gMvRU+II7cSM6RlJunfZalKMxUQjQkmVUdV
-         uvT6iqwi/cv1bqeEiw1DeRm0c3SDoYVhIXW30hXajoutiaHmRy2bvltf0I7J626/Y1Tc
-         ACug==
-X-Forwarded-Encrypted: i=1; AJvYcCUbpuSP3qhoiYtsAq/tDIZYi/Lfdh/nWMBXE+nGWicFNTMDFRvK+GrQVmt3HC3TLx+WHi2hEtV966d+VEPd0pNfWoN/8c3Br4OB4Rlr
-X-Gm-Message-State: AOJu0YwkwHC0skkJxD3z7N5nUGfPQQ1sGtqqq8Wq86PZDnGZRCsHoYoy
-	+CumYXN8YdLYwZt5ZIYsQRcpsg7GgC7VLQLVxE518vhNSIf8OwgeB0eFB27VVg==
-X-Google-Smtp-Source: AGHT+IHeLoFfHMC/OUeeJoDhqoJSJfOwPhDJNHriFCGoke4s3Yn0fXRdNzl+m82UbjoOonNJKwQK5Q==
-X-Received: by 2002:a17:902:d386:b0:1eb:519e:e05f with SMTP id e6-20020a170902d38600b001eb519ee05fmr3748669pld.45.1714772245858;
-        Fri, 03 May 2024 14:37:25 -0700 (PDT)
+        bh=Vm5pMW+JcxQoAhIpk954JqF6buuPfxcd3q3C5XmFPm8=;
+        b=CiUZJ6XfZkb4EnOjqg1/904ZMUkDu1Yl9poi/NOMNn1fx8lKIosbfjVqRHFuP6vV3Y
+         TK5uXmKqJ+c60AUzrGijTBnqglVSNVPhrJedeJXN7Mr4TUNeBkiw1gxDHzR+5HlhmoYA
+         PfYeDAsq/C76J03xrPZ7n7sZiw9u9y580SW3kbcZtC7KWg6fcmdHrmLWkkdUQVWlvx2C
+         1lZervBuJtenQZW4NgRRRPm6QgCrByxUv+OPlgbS9eoKEC+/KNtzuuO353kUS3wqwTdH
+         TSgRf4ITMH5/8E7jgw/Bo40UAjWDYfuG8MMrRpB3zETSmF+/qhItwPANr8Na0cCbxnA8
+         ACKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXUhRh+zG5azmNRf1X9GjVYChu/SSFJzRsFPi58uG2F9sDFPpBJMH1cY6Ykng+JZrLQrN4uM43PJq9UPX5yJBeIYPhr24E/fZphiADw
+X-Gm-Message-State: AOJu0YxsSjVbN9zu0yyw6E+QVGgYofjDbM31BBgSny+wbwkLAPtFEPxs
+	n257td9vA26FQ8KFu7aYpBJziSm2MHWGR1AcfN8T53rj6cINdrgaLQRdNgmS1ww27HVjhneFB6+
+	fqQ==
+X-Google-Smtp-Source: AGHT+IFYxFgWOwV/QXfwpPyO6iPfA33qW7XGRgN/4aov9d0tBWLiBcNJ5IccHks/fAhE+4fNaDTPow==
+X-Received: by 2002:a17:902:e54d:b0:1e6:7731:80 with SMTP id n13-20020a170902e54d00b001e677310080mr5258220plf.11.1714772248114;
+        Fri, 03 May 2024 14:37:28 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.37.23
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.37.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:37:24 -0700 (PDT)
+        Fri, 03 May 2024 14:37:27 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org,
 	Maxime Ripard <mripard@kernel.org>
@@ -78,9 +79,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
 	linux-kernel@vger.kernel.org
-Subject: [RFT PATCH v2 26/48] drm/panel: simple: Stop tracking prepared/enabled
-Date: Fri,  3 May 2024 14:33:07 -0700
-Message-ID: <20240503143327.RFT.v2.26.I865be97dd393d6ae3c3a3cd1358c95fdbca0fe83@changeid>
+Subject: [RFT PATCH v2 27/48] drm/panel: simple: Add a comment about unprepare+disable at shutdown/remove
+Date: Fri,  3 May 2024 14:33:08 -0700
+Message-ID: <20240503143327.RFT.v2.27.I639183ac987e139092491a94e22d46a5d857580c@changeid>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
 References: <20240503213441.177109-1-dianders@chromium.org>
@@ -92,12 +93,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-prepared/enabled in drm_panel"), we want to remove needless code from
-panel drivers that was storing and double-checking the
-prepared/enabled state. Even if someone was relying on the
-double-check before, that double-check is now in the core and not
-needed in individual drivers.
+It's the responsibility of a correctly written DRM modeset driver to
+call drm_atomic_helper_shutdown() at shutdown time and that should be
+disabling / unpreparing the panel if needed. Panel drivers shouldn't
+be calling these functions themselves.
+
+A recent effort was made to fix as many DRM modeset drivers as
+possible [1] [2] [3] and most drivers are fixed now.
+
+Unfortunately, it's very difficult to know exactly which DRM modeset
+drivers are using panel-simple due to the sheer number of panels it
+handles. For now, we'll leave the calls and just add a comment to keep
+people from copying this code.
+
+[1] https://lore.kernel.org/r/20230901234015.566018-1-dianders@chromium.org
+[2] https://lore.kernel.org/r/20230901234202.566951-1-dianders@chromium.org
+[3] https://lore.kernel.org/r/20230921192749.1542462-1-dianders@chromium.org
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
@@ -105,103 +116,65 @@ Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Changes in v2:
 - Only handle 1 panel per patch.
 - Split removal of prepared/enabled from handling of remove/shutdown.
+- panel-edp and panel-simple just get a comment now.
 
- drivers/gpu/drm/panel/panel-simple.c | 27 ---------------------------
- 1 file changed, 27 deletions(-)
+ drivers/gpu/drm/panel/panel-simple.c | 33 +++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index dcb6d0b6ced0..42d902d2bbbe 100644
+index 42d902d2bbbe..f39122ffdead 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -138,9 +138,6 @@ struct panel_desc {
- 
- struct panel_simple {
- 	struct drm_panel base;
--	bool enabled;
--
--	bool prepared;
- 
- 	ktime_t unprepared_time;
- 
-@@ -290,14 +287,9 @@ static int panel_simple_disable(struct drm_panel *panel)
- {
- 	struct panel_simple *p = to_panel_simple(panel);
- 
--	if (!p->enabled)
--		return 0;
--
- 	if (p->desc->delay.disable)
- 		msleep(p->desc->delay.disable);
- 
--	p->enabled = false;
--
- 	return 0;
+@@ -716,26 +716,39 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+ 	return err;
  }
  
-@@ -317,18 +309,12 @@ static int panel_simple_suspend(struct device *dev)
- 
- static int panel_simple_unprepare(struct drm_panel *panel)
+-static void panel_simple_remove(struct device *dev)
++static void panel_simple_shutdown(struct device *dev)
  {
--	struct panel_simple *p = to_panel_simple(panel);
- 	int ret;
+ 	struct panel_simple *panel = dev_get_drvdata(dev);
  
--	/* Unpreparing when already unprepared is a no-op */
--	if (!p->prepared)
--		return 0;
+-	drm_panel_remove(&panel->base);
++	/*
++	 * NOTE: the following two calls don't really belong here. It is the
++	 * responsibility of a correctly written DRM modeset driver to call
++	 * drm_atomic_helper_shutdown() at shutdown time and that should
++	 * cause the panel to be disabled / unprepared if needed. For now,
++	 * however, we'll keep these calls due to the sheer number of
++	 * different DRM modeset drivers used with panel-simple. The fact that
++	 * we're calling these and _also_ the drm_atomic_helper_shutdown()
++	 * will try to disable/unprepare means that we can get a warning about
++	 * trying to disable/unprepare an already disabled/unprepared panel,
++	 * but that's something we'll have to live with until we've confirmed
++	 * that all DRM modeset drivers are properly calling
++	 * drm_atomic_helper_shutdown().
++	 */
+ 	drm_panel_disable(&panel->base);
+ 	drm_panel_unprepare(&panel->base);
 -
- 	pm_runtime_mark_last_busy(panel->dev);
- 	ret = pm_runtime_put_autosuspend(panel->dev);
- 	if (ret < 0)
- 		return ret;
--	p->prepared = false;
- 
- 	return 0;
- }
-@@ -356,21 +342,14 @@ static int panel_simple_resume(struct device *dev)
- 
- static int panel_simple_prepare(struct drm_panel *panel)
- {
--	struct panel_simple *p = to_panel_simple(panel);
- 	int ret;
- 
--	/* Preparing when already prepared is a no-op */
--	if (p->prepared)
--		return 0;
--
- 	ret = pm_runtime_get_sync(panel->dev);
- 	if (ret < 0) {
- 		pm_runtime_put_autosuspend(panel->dev);
- 		return ret;
- 	}
- 
--	p->prepared = true;
--
- 	return 0;
+-	pm_runtime_dont_use_autosuspend(dev);
+-	pm_runtime_disable(dev);
+-	if (panel->ddc)
+-		put_device(&panel->ddc->dev);
  }
  
-@@ -378,14 +357,9 @@ static int panel_simple_enable(struct drm_panel *panel)
+-static void panel_simple_shutdown(struct device *dev)
++static void panel_simple_remove(struct device *dev)
  {
- 	struct panel_simple *p = to_panel_simple(panel);
+ 	struct panel_simple *panel = dev_get_drvdata(dev);
  
--	if (p->enabled)
--		return 0;
--
- 	if (p->desc->delay.enable)
- 		msleep(p->desc->delay.enable);
- 
--	p->enabled = true;
--
- 	return 0;
+-	drm_panel_disable(&panel->base);
+-	drm_panel_unprepare(&panel->base);
++	drm_panel_remove(&panel->base);
++	panel_simple_shutdown(dev);
++
++	pm_runtime_dont_use_autosuspend(dev);
++	pm_runtime_disable(dev);
++	if (panel->ddc)
++		put_device(&panel->ddc->dev);
  }
  
-@@ -609,7 +583,6 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
- 	if (!panel)
- 		return -ENOMEM;
- 
--	panel->enabled = false;
- 	panel->desc = desc;
- 
- 	panel->supply = devm_regulator_get(dev, "power");
+ static const struct drm_display_mode ampire_am_1280800n3tzqw_t00h_mode = {
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
