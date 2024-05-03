@@ -1,772 +1,217 @@
-Return-Path: <linux-kernel+bounces-167682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359408BAD6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:17:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFB38BAD50
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:14:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AD31B208B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62FFB2820DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0E915699F;
-	Fri,  3 May 2024 13:14:17 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55F1153BF6;
+	Fri,  3 May 2024 13:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcauIy26"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A445A153808
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE8215358B;
+	Fri,  3 May 2024 13:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742054; cv=none; b=IjW6XY+m50QV0ynFuQLnBracxquPe5w0wF1L4otyV7jkwo0KOeOJlz4frdgj1s9WYlld83smWks1t4gl+h+WJkeP8Wqv8Y0UP/Thf25YY9zdZvdhlDnSWAfgreqvpN7k5oKY+DoUpAPUhTyJ/r+RtIMGEZy5/yTkZJrLNan4sQ0=
+	t=1714742048; cv=none; b=fiybGIh0WBX0bRyQbxo1cmcVUgNJHxr+k75ANuGHDk7iViQo5jyd9Q6VeK6GWx6FMp/X6iQHEJ29nrS+Rit93+fzbE2maVHDlpq6VCQpn0aRopoj3twk51aNaYw2Ko0a3WblSn8rScpgxO9MGX4pt9OE7oWy+nF+rM0m2zVKjHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742054; c=relaxed/simple;
-	bh=10ylxSO/mJzIRfnId7mBvEvqvoVFQCyMabO+Q7R4XgE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fnpQkvuLtSpzW0yoNIJVFH8dfC1bqLEFCaimP7j8ZWz05e/bh/YX7HdOOYCgyVf86Ik8+cXQE/Ga6o18oA2+wM8Pskuiqi8XqSfBklVTQAIoCJDqZ8B5GC5x9VeorEtMWSDykcVPaCaeppB5MHZfw3OQDvSPt0AzAMMl1t9m5D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1s2sjb-0006EM-6l; Fri, 03 May 2024 15:13:55 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1s2sjZ-00FiKQ-Ts; Fri, 03 May 2024 15:13:53 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1s2sjZ-008GIK-2Z;
-	Fri, 03 May 2024 15:13:53 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew@lunn.ch>,
+	s=arc-20240116; t=1714742048; c=relaxed/simple;
+	bh=emDrdx6WOkQnF2Eso3DR0P187wYGRr+WTfcYUP8aUXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uFXxjxIXve9tB75TqzA1vNN7p1ZU5NDyFqcopoA0UUVfvFh1JS/nMk3ot7qef24ngbQ2n4pmTs+DAMMeRmnMpMzJeVPMb6hApDjw+5Kkz/K+wFS/+9iHnupJ9J3qE+gTXxDy7nljRkmNzUGN9Vz3vgKH6DzhoQSrEPGwoTNjwh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcauIy26; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f44ed6e82fso314106b3a.3;
+        Fri, 03 May 2024 06:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714742046; x=1715346846; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S6Kz22nN7XZpw5/QYn8eU3Vl5d2ZzmTa9J6l4Ufw1zs=;
+        b=gcauIy26MtzJYA8Gns6kXZilBsGTzVoH5HBE70noznhGOD4euDnekA10A01JhJPaLO
+         3g/gVlbyt0HrO4AS2vlEUGm9fP40LfNNZhe05qHmQQDDTXbdlsjL6mGTAhieH0jEnWuf
+         2UXYKRmnjAejy9goG3wES6Ad1+iG+/facnZgyyouKsCRo2hXWbGOu9VtEEfnnefyPTSW
+         7iMwwes0uuOIIV/vYUUhSG5tqOsagJyJGfgu3ygTA3yLrrmBgMDFctfaUxslbfdu6TXe
+         7IgKNvm5WAWO0WLGUO0ftNS79LC27eJf2MhdRHCgpdbxC0N19AnVU+8e/hJVtiOaJ5Cd
+         29Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714742046; x=1715346846;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S6Kz22nN7XZpw5/QYn8eU3Vl5d2ZzmTa9J6l4Ufw1zs=;
+        b=Q5uGiD4D6J/PrQvGzWl+iPWr35x9BFY32I3uffYTmLVU2gJccyoYKYOihx6Fucj+B2
+         gA9t9O9JpEcUdshqKBBY3YCp0zSPaM3r3ggiRYt5d2a9tFWwBJysy/QI1VF2ZIdh/kqB
+         A/9K4Iba1nfp9IQNqChm4DMSW+jJQFBInncsAwtQzpGZfpG4qVrw7aJAnBg9AhKTNzyJ
+         CvJJNDlUZJhFLk8OtF++fxDILWOYY7glkSaunLgvoUQ8H7V/vnzoma6qsa9Oq4WR37v3
+         k1r2JE9Ti1N+wYw4p0cPfi5eCPspBIp8y5CqBJuaZT6vG4MvG9ej9DIo+7PWdwc/GODd
+         6v+w==
+X-Forwarded-Encrypted: i=1; AJvYcCVILL6wtpyjp9AhtO3obmCsPN3ndhJIKkDpP0EPmFncQvyR/Krsp4rbEJ1jlY3jNJys+oXkf0RSHkgUMRCcecEATmVTc8kc/SRJU3HPnjLguE9vdE6uLjh53jSmXZ2MKaq/VnlNFdZ5DIwROEPEe96L/QUYjImbzgkZsUyKoZBxz1NA8JaCYGyjt5tdyIVPi97Oublw5HQ+zpiA9zKv86vL1l68FUcazL/PG2xQp0i4poNkbUioC9mTRE3VcTwJBq9Rl+Vkmzd/fcpEaT8aPn6FSeOm5TShzeECXsf3O3G8vwrzHoicyoBNXwlrmfKz3sWspenNHP1fv5grRcEa7yRbL3HruID7AYjsySZj4ntgyGwixOYBAZQcOjAoqD3lOiCr7HpZSQ3Gsa/+mJjUtR+RiVCqV8kn6cGhYgf9W12xfI0LMH/hkK06p7fNn16Zygg23SlxfvDBE/Qgc1uf1zwru5rc3ua53X6Dyudnn3XWunVjFj1GemFEY89xD+ymFrqlAuUu3w==
+X-Gm-Message-State: AOJu0YxrOPSFGgA0SvXlclJbHO9actMARbcZeqFgnXwjiekXoN7gsQcY
+	eOQa9hGvHl7K5jXKPV9hHKiye5303LSuvCHluvvjR8nW59v/1Zny
+X-Google-Smtp-Source: AGHT+IGAxZcx6M5jku9xJQNGsk1mq4nfDpmBwjTTeZ5TRCe/HqThlL4pFRsVfzRAFzuWYWRs0QPHbQ==
+X-Received: by 2002:a05:6a20:3cac:b0:1ac:c8dc:3e5e with SMTP id b44-20020a056a203cac00b001acc8dc3e5emr3146813pzj.24.1714742046301;
+        Fri, 03 May 2024 06:14:06 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id j1-20020a170902da8100b001e509d4d6ddsm3203863plx.1.2024.05.03.06.14.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 06:14:05 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id C0EA918462B27; Fri, 03 May 2024 20:14:03 +0700 (WIB)
+Date: Fri, 3 May 2024 20:14:03 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
 	Simon Horman <horms@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH net-next v7 12/12] selftests: microchip: add test for QoS support on KSZ9477 switch family
-Date: Fri,  3 May 2024 15:13:51 +0200
-Message-Id: <20240503131351.1969097-13-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240503131351.1969097-1-o.rempel@pengutronix.de>
-References: <20240503131351.1969097-1-o.rempel@pengutronix.de>
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 13/14] net: add devmem TCP documentation
+Message-ID: <ZjTjG_INUM4G1Pf5@archie.me>
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-14-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="p760D9CQLIFGzr8t"
+Content-Disposition: inline
+In-Reply-To: <20240403002053.2376017-14-almasrymina@google.com>
 
-Add tests covering following functionality on KSZ9477 switch family:
-- default port priority
-- global DSCP to Internal Priority Mapping
-- apptrust configuration
 
-This script was tested on KSZ9893R
+--p760D9CQLIFGzr8t
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- .../drivers/net/microchip/ksz9477_qos.sh      | 668 ++++++++++++++++++
- 1 file changed, 668 insertions(+)
- create mode 100755 tools/testing/selftests/drivers/net/microchip/ksz9477_qos.sh
+On Tue, Apr 02, 2024 at 05:20:50PM -0700, Mina Almasry wrote:
+> +ncdevmem has a validation mode as well that expects a repeating pattern =
+of
+> +incoming data and validates it as such::
+> +
+> +	# On server:
+> +	ncdevmem -s <server IP> -c <client IP> -f eth1 -d 3 -n 0000:06:00.0 -l \
+> +		 -p 5201 -v 7
+> +
+> +	# On client:
+> +	yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | \
+> +		tr \\n \\0 | head -c 5G | nc <server IP> 5201 -p 5201
 
-diff --git a/tools/testing/selftests/drivers/net/microchip/ksz9477_qos.sh b/tools/testing/selftests/drivers/net/microchip/ksz9477_qos.sh
-new file mode 100755
-index 0000000000000..82be5d0133301
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/microchip/ksz9477_qos.sh
-@@ -0,0 +1,668 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
-+
-+# The script is adopted to work with the Microchip KSZ switch driver.
-+
-+ETH_FCS_LEN=4
-+
-+WAIT_TIME=1
-+NUM_NETIFS=4
-+REQUIRE_JQ="yes"
-+REQUIRE_MZ="yes"
-+STABLE_MAC_ADDRS=yes
-+NETIF_CREATE=no
-+lib_dir=$(dirname $0)/../../../net/forwarding
-+source $lib_dir/tc_common.sh
-+source $lib_dir/lib.sh
-+
-+require_command dcb
-+
-+h1=${NETIFS[p1]}
-+swp1=${NETIFS[p2]}
-+swp2=${NETIFS[p3]}
-+h2=${NETIFS[p4]}
-+
-+H1_IPV4="192.0.2.1"
-+H2_IPV4="192.0.2.2"
-+H1_IPV6="2001:db8:1::1"
-+H2_IPV6="2001:db8:1::2"
-+
-+# On h1_ and h2_create do not set IP addresses to avoid interaction with the
-+# system, to keep packet counters clean.
-+h1_create()
-+{
-+	simple_if_init $h1
-+	sysctl_set net.ipv6.conf.${h1}.disable_ipv6 1
-+	# Get the MAC address of the interface to use it with mausezahn
-+	h1_mac=$(ip -j link show dev ${h1} | jq -e '.[].address')
-+}
-+
-+h1_destroy()
-+{
-+	sysctl_restore net.ipv6.conf.${h1}.disable_ipv6
-+	simple_if_fini $h1
-+}
-+
-+h2_create()
-+{
-+	simple_if_init $h2
-+	sysctl_set net.ipv6.conf.${h2}.disable_ipv6 1
-+	h2_mac=$(ip -j link show dev ${h2} | jq -e '.[].address')
-+}
-+
-+h2_destroy()
-+{
-+	sysctl_restore net.ipv6.conf.${h2}.disable_ipv6
-+	simple_if_fini $h2
-+}
-+
-+switch_create()
-+{
-+	ip link set ${swp1} up
-+	ip link set ${swp2} up
-+	sysctl_set net.ipv6.conf.${swp1}.disable_ipv6 1
-+	sysctl_set net.ipv6.conf.${swp2}.disable_ipv6 1
-+
-+	# Ports should trust VLAN PCP even with vlan_filtering=0
-+	ip link add br0 type bridge
-+	ip link set ${swp1} master br0
-+	ip link set ${swp2} master br0
-+	ip link set br0 up
-+	sysctl_set net.ipv6.conf.br0.disable_ipv6 1
-+}
-+
-+switch_destroy()
-+{
-+	sysctl_restore net.ipv6.conf.${swp2}.disable_ipv6
-+	sysctl_restore net.ipv6.conf.${swp1}.disable_ipv6
-+
-+	ip link del br0
-+}
-+
-+setup_prepare()
-+{
-+	vrf_prepare
-+
-+	h1_create
-+	h2_create
-+	switch_create
-+}
-+
-+cleanup()
-+{
-+	pre_cleanup
-+
-+	h2_destroy
-+	h1_destroy
-+	switch_destroy
-+
-+	vrf_cleanup
-+}
-+
-+set_apptrust_order()
-+{
-+	local if_name=$1
-+	local order=$2
-+
-+	dcb apptrust set dev ${if_name} order ${order}
-+}
-+
-+# Function to extract a specified field from a given JSON stats string
-+extract_network_stat() {
-+	local stats_json=$1
-+	local field_name=$2
-+
-+	echo $(echo "$stats_json" | jq -r "$field_name")
-+}
-+
-+run_test()
-+{
-+	local test_name=$1;
-+	local apptrust_order=$2;
-+	local port_prio=$3;
-+	local dscp_ipv=$4;
-+	local dscp=$5;
-+	local have_vlan=$6;
-+	local pcp_ipv=$7;
-+	local vlan_pcp=$8;
-+	local ip_v6=$9
-+
-+	local rx_ipv
-+	local tx_ipv
-+
-+	RET=0
-+
-+	# Send some packet to populate the switch MAC table
-+	$MZ ${h2} -a ${h2_mac} -b ${h1_mac} -p 64 -t icmp echores -c 1
-+
-+	# Based on the apptrust order, set the expected Internal Priority values
-+	# for the RX and TX paths.
-+	if [ "${apptrust_order}" == "" ]; then
-+		echo "Apptrust order not set."
-+		rx_ipv=${port_prio}
-+		tx_ipv=${port_prio}
-+	elif [ "${apptrust_order}" == "dscp" ]; then
-+		echo "Apptrust order is DSCP."
-+		rx_ipv=${dscp_ipv}
-+		tx_ipv=${dscp_ipv}
-+	elif [ "${apptrust_order}" == "pcp" ]; then
-+		echo "Apptrust order is PCP."
-+		rx_ipv=${pcp_ipv}
-+		tx_ipv=${pcp_ipv}
-+	elif [ "${apptrust_order}" == "pcp dscp" ]; then
-+		echo "Apptrust order is PCP DSCP."
-+		if [ ${have_vlan} -eq 1 ]; then
-+			rx_ipv=$((dscp_ipv > pcp_ipv ? dscp_ipv : pcp_ipv))
-+			tx_ipv=${pcp_ipv}
-+		else
-+			rx_ipv=${dscp_ipv}
-+			tx_ipv=${dscp_ipv}
-+		fi
-+	else
-+		RET=1
-+		echo "Error: Unknown apptrust order ${apptrust_order}"
-+		log_test "${test_name}"
-+		return
-+	fi
-+
-+	# Most/all? of the KSZ switches do not provide per-TC counters. There
-+	# are only tx_hi and rx_hi counters, which are used to count packets
-+	# which are considered as high priority and most likely not assigned
-+	# to the queue 0.
-+	# On the ingress path, packets seem to get high priority status
-+	# independently of the DSCP or PCP global mapping. On the egress path,
-+	# the high priority status is assigned based on the DSCP or PCP global
-+	# map configuration.
-+	# The thresholds for the high priority status are not documented, but
-+	# it seems that the switch considers packets as high priority on the
-+	# ingress path if detected Internal Priority is greater than 0. On the
-+	# egress path, the switch considers packets as high priority if
-+	# detected Internal Priority is greater than 1.
-+	if [ ${rx_ipv} -ge 1 ]; then
-+		local expect_rx_high_prio=1
-+	else
-+		local expect_rx_high_prio=0
-+	fi
-+
-+	if [ ${tx_ipv} -ge 2 ]; then
-+		local expect_tx_high_prio=1
-+	else
-+		local expect_tx_high_prio=0
-+	fi
-+
-+	# Use ip tool to get the current switch packet counters. ethool stats
-+	# need to be recalculated to get the correct values.
-+	local swp1_stats=$(ip -s -j link show dev ${swp1})
-+	local swp2_stats=$(ip -s -j link show dev ${swp2})
-+	local swp1_rx_packets_before=$(extract_network_stat "$swp1_stats" \
-+				       '.[0].stats64.rx.packets')
-+	local swp1_rx_bytes_before=$(extract_network_stat "$swp1_stats" \
-+				     '.[0].stats64.rx.bytes')
-+	local swp2_tx_packets_before=$(extract_network_stat "$swp2_stats" \
-+				       '.[0].stats64.tx.packets')
-+	local swp2_tx_bytes_before=$(extract_network_stat "$swp2_stats" \
-+				     '.[0].stats64.tx.bytes')
-+	local swp1_rx_hi_before=$(ethtool_stats_get ${swp1} "rx_hi")
-+	local swp2_tx_hi_before=$(ethtool_stats_get ${swp2} "tx_hi")
-+
-+	# Assamble the mausezahn command based on the test parameters
-+	# For the testis with ipv4 or ipv6, use icmp response packets,
-+	# to avoid interaction with the system, to keep packet counters
-+	# clean.
-+	if [ ${ip_v6} -eq 0 ]; then
-+		local ip="-a ${h1_mac} -b ${h2_mac} -A ${H1_IPV4} \
-+			  -B ${H2_IPV4} -t icmp unreach,code=1,dscp=${dscp}"
-+	else
-+		local ip="-6 -a ${h1_mac} -b ${h2_mac} -A ${H1_IPV6} \
-+			  -B ${H2_IPV6} -t icmp6 type=1,code=0,dscp=${dscp}"
-+	fi
-+
-+	if [ ${have_vlan} -eq 1 ]; then
-+		local vlan_pcp_opt="-Q ${vlan_pcp}:0"
-+	else
-+		local vlan_pcp_opt=""
-+	fi
-+	$MZ ${h1} ${ip} -c ${PING_COUNT} -d 10msec ${vlan_pcp_opt}
-+
-+	# Wait until the switch packet counters are updated
-+	sleep 6
-+
-+	local swp1_stats=$(ip -s -j link show dev ${swp1})
-+	local swp2_stats=$(ip -s -j link show dev ${swp2})
-+
-+	local swp1_rx_packets_after=$(extract_network_stat "$swp1_stats" \
-+				      '.[0].stats64.rx.packets')
-+	local swp1_rx_bytes_after=$(extract_network_stat "$swp1_stats" \
-+				    '.[0].stats64.rx.bytes')
-+	local swp2_tx_packets_after=$(extract_network_stat "$swp2_stats" \
-+				      '.[0].stats64.tx.packets')
-+	local swp2_tx_bytes_after=$(extract_network_stat "$swp2_stats" \
-+				    '.[0].stats64.tx.bytes')
-+
-+	local swp1_rx_packets_diff=$((${swp1_rx_packets_after} - \
-+				      ${swp1_rx_packets_before}))
-+	local swp2_tx_packets_diff=$((${swp2_tx_packets_after} - \
-+				      ${swp2_tx_packets_before}))
-+
-+	local swp1_rx_hi_after=$(ethtool_stats_get ${swp1} "rx_hi")
-+	local swp2_tx_hi_after=$(ethtool_stats_get ${swp2} "tx_hi")
-+
-+	# Test if any packets were received on swp1, we will rx before and after
-+	if [ ${swp1_rx_packets_diff} -lt ${PING_COUNT} ]; then
-+		echo "Not expected amount of received packets on ${swp1}"
-+		echo "before ${swp1_rx_packets_before} after ${swp1_rx_packets_after}"
-+		RET=1
-+	fi
-+
-+	# Test if any packets were transmitted on swp2, we will tx before and after
-+	if [ ${swp2_tx_packets_diff} -lt ${PING_COUNT} ]; then
-+		echo "Not expected amount of transmitted packets on ${swp2}"
-+		echo "before ${swp2_tx_packets_before} after ${swp2_tx_packets_after}"
-+		RET=1
-+	fi
-+
-+	# tx/rx_hi counted in bytes. So, we need to compare the difference in bytes
-+	local swp1_rx_bytes_diff=$(($swp1_rx_bytes_after - $swp1_rx_bytes_before))
-+	local swp2_tx_bytes_diff=$(($swp2_tx_bytes_after - $swp2_tx_bytes_before))
-+	local swp1_rx_hi_diff=$(($swp1_rx_hi_after - $swp1_rx_hi_before))
-+	local swp2_tx_hi_diff=$(($swp2_tx_hi_after - $swp2_tx_hi_before))
-+
-+	if [ ${expect_rx_high_prio} -eq 1 ]; then
-+		swp1_rx_hi_diff=$((${swp1_rx_hi_diff} - \
-+				   ${swp1_rx_packets_diff} * ${ETH_FCS_LEN}))
-+		if [ ${swp1_rx_hi_diff} -ne ${swp1_rx_bytes_diff} ]; then
-+			echo "Not expected amount of high priority packets received on ${swp1}"
-+			echo "RX hi diff: ${swp1_rx_hi_diff}, expected RX bytes diff: ${swp1_rx_bytes_diff}"
-+			RET=1
-+		fi
-+	else
-+		if [ ${swp1_rx_hi_diff} -ne 0 ]; then
-+			echo "Unexpected amount of high priority packets received on ${swp1}"
-+			echo "RX hi diff: ${swp1_rx_hi_diff}, expected 0"
-+			RET=1
-+		fi
-+	fi
-+
-+	if [ ${expect_tx_high_prio} -eq 1 ]; then
-+		swp2_tx_hi_diff=$((${swp2_tx_hi_diff} - \
-+				   ${swp2_tx_packets_diff} * ${ETH_FCS_LEN}))
-+		if [ ${swp2_tx_hi_diff} -ne ${swp2_tx_bytes_diff} ]; then
-+			echo "Not expected amount of high priority packets transmitted on ${swp2}"
-+			echo "TX hi diff: ${swp2_tx_hi_diff}, expected TX bytes diff: ${swp2_tx_bytes_diff}"
-+			RET=1
-+		fi
-+	else
-+		if [ ${swp2_tx_hi_diff} -ne 0 ]; then
-+			echo "Unexpected amount of high priority packets transmitted on ${swp2}"
-+			echo "TX hi diff: ${swp2_tx_hi_diff}, expected 0"
-+			RET=1
-+		fi
-+	fi
-+
-+	log_test "${test_name}"
-+}
-+
-+run_test_dscp()
-+{
-+	# IPv4 test
-+	run_test "$1" "$2" "$3" "$4" "$5" 0 0 0 0
-+	# IPv6 test
-+	run_test "$1" "$2" "$3" "$4" "$5" 0 0 0 1
-+}
-+
-+run_test_dscp_pcp()
-+{
-+	# IPv4 test
-+	run_test "$1" "$2" "$3" "$4" "$5" 1 "$6" "$7" 0
-+	# IPv6 test
-+	run_test "$1" "$2" "$3" "$4" "$5" 1 "$6" "$7" 1
-+}
-+
-+port_default_prio_get()
-+{
-+	local if_name=$1
-+	local prio
-+
-+	prio="$(dcb -j app show dev ${if_name} default-prio | \
-+		jq '.default_prio[]')"
-+	if [ -z "${prio}" ]; then
-+		prio=0
-+	fi
-+
-+	echo ${prio}
-+}
-+
-+test_port_default()
-+{
-+	local orig_apptrust=$(port_get_default_apptrust ${swp1})
-+	local orig_prio=$(port_default_prio_get ${swp1})
-+	local apptrust_order=""
-+
-+	RET=0
-+
-+	# Make sure no other priority sources will interfere with the test
-+	set_apptrust_order ${swp1} "${apptrust_order}"
-+
-+	for val in $(seq 0 7); do
-+		dcb app replace dev ${swp1} default-prio ${val}
-+		if [ $val -ne $(port_default_prio_get ${swp1}) ]; then
-+			RET=1
-+			break
-+		fi
-+
-+		run_test_dscp "Port-default QoS classification, prio: ${val}" \
-+			"${apptrust_order}" ${val} 0 0
-+	done
-+
-+	set_apptrust_order ${swp1} "${orig_apptrust}"
-+	if [[ "$orig_apptrust" != "$(port_get_default_apptrust ${swp1})" ]]; then
-+		RET=1
-+	fi
-+
-+	dcb app replace dev ${swp1} default-prio ${orig_prio}
-+	if [ $orig_prio -ne $(port_default_prio_get ${swp1}) ]; then
-+		RET=1
-+	fi
-+
-+	log_test "Port-default QoS classification"
-+}
-+
-+port_get_default_apptrust()
-+{
-+	local if_name=$1
-+
-+	dcb -j apptrust show dev ${if_name} | jq -r '.order[]' | \
-+		tr '\n' ' ' | xargs
-+}
-+
-+test_port_apptrust()
-+{
-+	local original_dscp_prios_swp1=$(get_dscp_prios ${swp1})
-+	local orig_apptrust=$(port_get_default_apptrust ${swp1})
-+	local orig_port_prio=$(port_default_prio_get ${swp1})
-+	local order_variants=("pcp dscp" "dscp" "pcp")
-+	local apptrust_order
-+	local port_prio
-+	local dscp_prio
-+	local pcp_prio
-+	local dscp
-+	local pcp
-+
-+	RET=0
-+
-+	# First, test if apptrust configuration as taken by the kernel
-+	for order in "${order_variants[@]}"; do
-+		set_apptrust_order ${swp1} "${order}"
-+		if [[ "$order" != "$(port_get_default_apptrust ${swp1})" ]]; then
-+			RET=1
-+			break
-+		fi
-+	done
-+
-+	log_test "Apptrust, supported variants"
-+
-+	# To test if the apptrust configuration is working as expected, we need
-+	# to set DSCP priorities for the switch port.
-+	init_dscp_prios "${swp1}" "${original_dscp_prios_swp1}"
-+
-+	# Start with a simple test where all apptrust sources are disabled
-+	# default port priority is 0, DSCP priority is mapped to 7.
-+	# No high priority packets should be received or transmitted.
-+	port_prio=0
-+	dscp_prio=7
-+	dscp=4
-+
-+	dcb app replace dev ${swp1} default-prio ${port_prio}
-+	dcb app replace dev ${swp1} dscp-prio ${dscp}:${dscp_prio}
-+
-+	apptrust_order=""
-+	set_apptrust_order ${swp1} "${apptrust_order}"
-+	# Test with apptrust sources disabled, Packets should get port default
-+	# priority which is 0
-+	run_test_dscp "Apptrust, all disabled. DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp}
-+
-+	apptrust_order="pcp"
-+	set_apptrust_order ${swp1} "${apptrust_order}"
-+	# If PCP is enabled, packets should get PCP priority, which is not
-+	# set in this test (no VLAN tags are present in the packet). No high
-+	# priority packets should be received or transmitted.
-+	run_test_dscp "Apptrust, PCP enabled. DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp}
-+
-+	apptrust_order="dscp"
-+	set_apptrust_order ${swp1} "${apptrust_order}"
-+	# If DSCP is enabled, packets should get DSCP priority which is set to 7
-+	# in this test. High priority packets should be received and transmitted.
-+	run_test_dscp "Apptrust, DSCP enabled. DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp}
-+
-+	apptrust_order="pcp dscp"
-+	set_apptrust_order ${swp1} "${apptrust_order}"
-+	# If PCP and DSCP are enabled, PCP would have higher apptrust priority
-+	# so packets should get PCP priority. But in this test VLAN PCP is not
-+	# set, so it should get DSCP priority which is set to 7. High priority
-+	# packets should be received and transmitted.
-+	run_test_dscp "Apptrust, PCP and DSCP are enabled. DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp}
-+
-+	# If VLAN PCP is set, it should have higher apptrust priority than DSCP
-+	# so packets should get VLAN PCP priority. Send packets with VLAN PCP
-+	# set to 0, DSCP set to 7. Packets should get VLAN PCP priority.
-+	# No high priority packets should be transmitted. Due to nature of the
-+	# switch, high priority packets will be received.
-+	pcp_prio=0
-+	pcp=0
-+	run_test_dscp_pcp "Apptrust, PCP and DSCP are enabled. PCP ${pcp_prio}, DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp} ${pcp_prio} ${pcp}
-+
-+	# If VLAN PCP is set to 7, it should have higher apptrust priority than
-+	# DSCP so packets should get VLAN PCP priority. Send packets with VLAN
-+	# PCP set to 7, DSCP set to 7. Packets should get VLAN PCP priority.
-+	# High priority packets should be received and transmitted.
-+	pcp_prio=7
-+	pcp=7
-+	run_test_dscp_pcp "Apptrust, PCP and DSCP are enabled. PCP ${pcp_prio}, DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp} ${pcp_prio} ${pcp}
-+	# Now make sure that the switch is able to handle the case where DSCP
-+	# priority is set to 0 and PCP priority is set to 7. Packets should get
-+	# PCP priority. High priority packets should be received and transmitted.
-+	dscp_prio=0
-+	dcb app replace dev ${swp1} dscp-prio ${dscp}:${dscp_prio}
-+	run_test_dscp_pcp "Apptrust, PCP and DSCP are enabled. PCP ${pcp_prio}, DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp} ${pcp_prio} ${pcp}
-+	# If both VLAN PCP and DSCP are set to 0, packets should get 0 priority.
-+	# No high priority packets should be received or transmitted.
-+	pcp_prio=0
-+	pcp=0
-+	run_test_dscp_pcp "Apptrust, PCP and DSCP are enabled. PCP ${pcp_prio}, DSCP-prio ${dscp}:${dscp_prio}" \
-+		"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp} ${pcp_prio} ${pcp}
-+
-+	# Restore original priorities
-+	if ! restore_priorities "${swp1}" "${original_dscp_prios_swp1}"; then
-+		RET=1
-+	fi
-+
-+	set_apptrust_order ${swp1} "${orig_apptrust}"
-+	if [ "$orig_apptrust" != "$(port_get_default_apptrust ${swp1})" ]; then
-+		RET=1
-+	fi
-+
-+	dcb app replace dev ${swp1} default-prio ${orig_port_prio}
-+	if [ $orig_port_prio -ne $(port_default_prio_get ${swp1}) ]; then
-+		RET=1
-+	fi
-+
-+	log_test "Apptrust, restore original settings"
-+}
-+
-+# Function to get current DSCP priorities
-+get_dscp_prios() {
-+	local if_name=$1
-+	dcb -j app show dev ${if_name} | jq -c '.dscp_prio'
-+}
-+
-+# Function to set a specific DSCP priority on a device
-+replace_dscp_prio() {
-+	local if_name=$1
-+	local dscp=$2
-+	local prio=$3
-+	dcb app replace dev ${if_name} dscp-prio ${dscp}:${prio}
-+}
-+
-+# Function to compare DSCP maps
-+compare_dscp_maps() {
-+	local old_json=$1
-+	local new_json=$2
-+	local dscp=$3
-+	local prio=$4
-+
-+	# Create a modified old_json with the expected change for comparison
-+	local modified_old_json=$(echo "$old_json" |
-+		jq --argjson dscp $dscp --argjson prio $prio \
-+			'map(if .[0] == $dscp then [$dscp, $prio] else . end)' |
-+		tr -d " \n")
-+
-+	# Compare new_json with the modified_old_json
-+	if [[ "$modified_old_json" == "$new_json" ]]; then
-+		return 0
-+	else
-+		return 1
-+	fi
-+}
-+
-+# Function to set DSCP priorities
-+set_and_verify_dscp() {
-+	local port=$1
-+	local dscp=$2
-+	local new_prio=$3
-+
-+	local old_prios=$(get_dscp_prios $port)
-+
-+	replace_dscp_prio "$port" $dscp $new_prio
-+
-+	# Fetch current settings and compare
-+	local current_prios=$(get_dscp_prios $port)
-+	if ! compare_dscp_maps "$old_prios" "$current_prios" $dscp $new_prio; then
-+		echo "Error: Unintended changes detected in DSCP map for $port after setting DSCP $dscp to $new_prio."
-+		return 1
-+	fi
-+	return 0
-+}
-+
-+# Function to restore original priorities
-+restore_priorities() {
-+	local port=$1
-+	local original_prios=$2
-+
-+	echo "Removing test artifacts for $port"
-+	local current_prios=$(get_dscp_prios $port)
-+	local prio_str=$(echo "$current_prios" |
-+		jq -r 'map("\(.[0]):\(.[1])") | join(" ")')
-+	dcb app del dev $port dscp-prio $prio_str
-+
-+	echo "Restoring original DSCP priorities for $port"
-+	local restore_str=$(echo "$original_prios" |
-+		jq -r 'map("\(.[0]):\(.[1])") | join(" ")')
-+	dcb app add dev $port dscp-prio $restore_str
-+
-+	local current_prios=$(get_dscp_prios $port)
-+	if [[ "$original_prios" != "$current_prios" ]]; then
-+		echo "Error: Failed to restore original DSCP priorities for $port"
-+		return 1
-+	fi
-+	return 0
-+}
-+
-+# Initialize DSCP priorities. Set them to predictable values for testing.
-+init_dscp_prios() {
-+	local port=$1
-+	local original_prios=$2
-+
-+	echo "Removing any existing DSCP priority mappins for $port"
-+	local prio_str=$(echo "$original_prios" |
-+		jq -r 'map("\(.[0]):\(.[1])") | join(" ")')
-+	dcb app del dev $port dscp-prio $prio_str
-+
-+	# Initialize DSCP priorities list
-+	local dscp_prios=""
-+	for dscp in {0..63}; do
-+		dscp_prios+=("$dscp:0")
-+	done
-+
-+	echo "Setting initial DSCP priorities map to 0 for $port"
-+	dcb app add dev $port dscp-prio ${dscp_prios[@]}
-+}
-+
-+# Main function to test global DSCP map across specified ports
-+test_global_dscp_map() {
-+	local ports=("$swp1" "$swp2")
-+	local original_dscp_prios_port0=$(get_dscp_prios ${ports[0]})
-+	local orig_apptrust=$(port_get_default_apptrust ${swp1})
-+	local orig_port_prio=$(port_default_prio_get ${swp1})
-+	local apptrust_order="dscp"
-+	local port_prio=0
-+	local dscp_prio
-+	local dscp
-+
-+	RET=0
-+
-+	set_apptrust_order ${swp1} "${apptrust_order}"
-+	dcb app replace dev ${swp1} default-prio ${port_prio}
-+
-+	# Initialize DSCP priorities
-+	init_dscp_prios "${ports[0]}" "$original_dscp_prios_port0"
-+
-+	# Loop over each DSCP index
-+	for dscp in {0..63}; do
-+		# and test each Internal Priority value
-+		for dscp_prio in {0..7}; do
-+			# do it for each port. This is to test if the global DSCP map
-+			# is accessible from all ports.
-+			for port in "${ports[@]}"; do
-+				if ! set_and_verify_dscp "$port" $dscp $dscp_prio; then
-+					RET=1
-+				fi
-+			done
-+
-+			# Test if the DSCP priority is correctly applied to the packets
-+			run_test_dscp "DSCP (${dscp}) QoS classification, prio: ${dscp_prio}" \
-+				"${apptrust_order}" ${port_prio} ${dscp_prio} ${dscp}
-+			if [ ${RET} -eq 1 ]; then
-+				break
-+			fi
-+		done
-+	done
-+
-+	# Restore original priorities
-+	if ! restore_priorities "${ports[0]}" "${original_dscp_prios_port0}"; then
-+		RET=1
-+	fi
-+
-+	set_apptrust_order ${swp1} "${orig_apptrust}"
-+	if [[ "$orig_apptrust" != "$(port_get_default_apptrust ${swp1})" ]]; then
-+		RET=1
-+	fi
-+
-+	dcb app replace dev ${swp1} default-prio ${orig_port_prio}
-+	if [ $orig_port_prio -ne $(port_default_prio_get ${swp1}) ]; then
-+		RET=1
-+	fi
-+
-+	log_test "DSCP global map"
-+}
-+
-+trap cleanup EXIT
-+
-+ALL_TESTS="
-+	test_port_default
-+	test_port_apptrust
-+	test_global_dscp_map
-+"
-+
-+setup_prepare
-+setup_wait
-+tests_run
-+
-+exit $EXIT_STATUS
--- 
-2.39.2
+What about splitting server and client usage?
 
+---- >8 ----
+diff --git a/Documentation/networking/devmem.rst b/Documentation/networking=
+/devmem.rst
+index e4e978fbcdbd5f..f32acfd62075d2 100644
+--- a/Documentation/networking/devmem.rst
++++ b/Documentation/networking/devmem.rst
+@@ -245,12 +245,14 @@ To run ncdevmem, you need to run it on a server on th=
+e machine under test, and
+ you need to run netcat on a peer to provide the TX data.
+=20
+ ncdevmem has a validation mode as well that expects a repeating pattern of
+-incoming data and validates it as such::
++incoming data and validates it as such. For example, you can launch
++ncdevmem on the server by::
+=20
+-	# On server:
+ 	ncdevmem -s <server IP> -c <client IP> -f eth1 -d 3 -n 0000:06:00.0 -l \
+ 		 -p 5201 -v 7
+=20
+-	# On client:
++On client side, use regular netcat to send TX data to ncdevmem process
++on the server::
++
+ 	yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | \
+ 		tr \\n \\0 | head -c 5G | nc <server IP> 5201 -p 5201
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--p760D9CQLIFGzr8t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZjTjFwAKCRD2uYlJVVFO
+o9RPAQCNza/o9eilURPtLMgckHLWGXSLgl+m05JS4n+5eQOBfAEAuaR+vADZuSKC
+PnV18jn47Aqz1SmrD+MDjjeFy4rw0gM=
+=E6BN
+-----END PGP SIGNATURE-----
+
+--p760D9CQLIFGzr8t--
 
