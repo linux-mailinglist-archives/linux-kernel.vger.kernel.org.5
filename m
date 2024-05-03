@@ -1,148 +1,108 @@
-Return-Path: <linux-kernel+bounces-167320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F21F08BA7D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:32:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F31E8BA7DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FE771C2175D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:32:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39E08281FE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2091F1474B9;
-	Fri,  3 May 2024 07:31:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4CC1474D3;
+	Fri,  3 May 2024 07:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K4RSiuhw"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMoxFuP/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB789139CF1;
-	Fri,  3 May 2024 07:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6DE139593;
+	Fri,  3 May 2024 07:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714721512; cv=none; b=JrWTLZC1Qv3LvPuodqZ5sPb3esB41AfFXMk0O2IITGeuBGH4UIgPHa9Vdljtf9xwivWzx5lbxhz5u9zL56zUqzvfSPcqo7w4ZhU01Tacj/DqfRLj+ZHwkcaR25znrBb2BXX0zAa4K3bklW55dVel38xSCsF6y0iVBUlKYmbN9PA=
+	t=1714721705; cv=none; b=aLfS3hptG+p+W96FiVDmXpqqAqKHIvdVnLGhd3X8HkAjKGW4qsc5wx3Y9ZkTha5OyTKdI7t7to6oB5sej+9p9IoAOdcQpKZovskHAw71yADOZCjwCroEtJVMTLWWppgN3aYymnsenLVDb3WbXRemunldoTCr1swhXlJovwwTNyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714721512; c=relaxed/simple;
-	bh=z8iGdLewHVDyU+iakSdGIIswwj50C1Gpp+xOcNLZtdE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PqYnTRNsMHGRx5WytjPERoOne+FdQPD1sHw/NLvHINp1zLfizISptZcLRjel/IO7SWOAJxjxcP+peyW1gbMY/6/1xIGHSg/VFmCHBaKL0KUgbC3ZDo1FV7zNZKQaj159LAF1W/DU5cOsZ/Epl1ACUDDyMI1lnzGkU0gG35WLd98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K4RSiuhw; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51f0f6b613dso2177949e87.1;
-        Fri, 03 May 2024 00:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714721509; x=1715326309; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8nIAbUzFZ0W2jGneqHDrLTTJJlX3iJTnQjqRXAlljl4=;
-        b=K4RSiuhwvtuQIrqxbHRaKqFpZpAN0pDIA032PPcTHNfDW/cqRebUzAOC4OyUtFWOVj
-         TePY8OAl4zp4EDlYbgEtlest416t4A7hmRAPf5DRVkSl6aU9MOxG15syAmWkECyn+1B+
-         pfFcpGACn5etKYbk0S/+4FV7h8Buw8HiKNfE46ol63DN2nFeVccfG8M7kSjJjp9ra5kx
-         fGceH30VDXwjQPq6Fdd30gTU73NRz2H3c6fY05PlFAjxAI1N9y1/FSoHoDbUfMTnEDtx
-         DHMnOuWo9OjWWnFken/0UAXfFmyff7wKhUhKP8rZRpArU2p5laV7b3+HlIWBgoqXe0lb
-         1t0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714721509; x=1715326309;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8nIAbUzFZ0W2jGneqHDrLTTJJlX3iJTnQjqRXAlljl4=;
-        b=M8FfsIeiMf98Z7l01ktiUpirpnZPgvsM3YrGeu7PJSDQfOS6KGM0OToEdkL4pppzS2
-         iZ0iR5H548/EaV5h19kfvTIay7Ec5fD4WsvSyGQFxQ10/PJb3xb87j/XMPWwMsXtZvoG
-         E49vRjwhwTyaCdg0h+oZQY0rtUIc8icQycsRp3kq4h1+lAeXfNaY1Pqln+tOjN3JaMw3
-         xPtmFsC978Yzk36Yotilp8teT7upbD7BeEwTpTmL9DQE2m1rg3IJAElj0Ul82lEgI0u9
-         oAALp5aBeyOq0p34CdWiVPjnIflbS9fxR/9/f3n0aDlMxo2Ao2z4FPMBBi1cr5fhuBeW
-         AbOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVOC+0KsrCeYM5DGt7aDDX90GYQIXKArbg2dPD/4fDW7/kTtnwi5XXBEWqWk6xnKSUP5SJLE6mDNjALUBDUq9i67PO0fbb4T0bgr7LDqteZo7JFGJEQaWE7XZnQjUPCP7lVCiFju8NaqtrctXlrg3OgxZo/hY/bWxkD9GhuAO4YwQ/Uza8xLT61oD1RYZK229CBCXCY2k0qbh350WarP9IbrQ6MeQCijyeZZK8nRcc=
-X-Gm-Message-State: AOJu0Yzryiny1W5AjynLvydE7uxWZEwZE57f16sppyEfXscVcnFr1Ag3
-	avTIl5zUBUokxlBJEVj3hcbA4a+76SRIYOzIZj5veKtxCqIEBDxk
-X-Google-Smtp-Source: AGHT+IFsUViOgQWBfed0iW3it0Tz8tCjvrW37J5LJ5nqlT1r2qRnsl694GKdCGtShTdCqT/cBC7gsQ==
-X-Received: by 2002:a05:6512:3ba:b0:51c:d528:c333 with SMTP id v26-20020a05651203ba00b0051cd528c333mr570067lfp.20.1714721508677;
-        Fri, 03 May 2024 00:31:48 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id x27-20020ac259db000000b0051d71292d5bsm450650lfn.74.2024.05.03.00.31.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 00:31:47 -0700 (PDT)
-Message-ID: <017b2462-f9c9-42c0-bfd9-1a0e76d2ea3d@gmail.com>
-Date: Fri, 3 May 2024 10:31:46 +0300
+	s=arc-20240116; t=1714721705; c=relaxed/simple;
+	bh=pC91j2Fk6CmGMbzSbYOZVVJ6XRNvvhHzHeGWZQeg3vk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hRhPErDBApxIqRrDEDwo71f+rZ3xBzvhxtU2AKuIK/A8is1ARtvdFBjVE9ibFRmP4lWc7y+WEixg5VLaij2gesKucglVlBx7tLsCuaNganLIRcmMgmMjmDsQ/FjcFMTdYRY2EE4RB08T7orp1sUTlUg8drNfoUVRrCghY1Y7BQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMoxFuP/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 831F9C116B1;
+	Fri,  3 May 2024 07:35:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714721704;
+	bh=pC91j2Fk6CmGMbzSbYOZVVJ6XRNvvhHzHeGWZQeg3vk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EMoxFuP/8+/tBjtlxuT32p4uAwKGR5ysEaMBdK5a794d6zYEnDCNTIfJ+3in8n4ww
+	 7xpS7babtCyPdelDpyEfi3++9S3duQ0FKEUpy16u1+gyRQC8d35XUOFsy3/3eg9otP
+	 S/LugJbaSia3gfi5Pphf2OrBcW2LFn+HLTjrrexO6KKUm7PFWv/Tyd9QC7G/SAQroG
+	 z6eNRYzg1adI/HkHmE8uVh2Iv1mUqSy72Z6va5COtp/FBs+ch0yHeVLvEG5SKfiFTj
+	 2wXbsDitdFtiY5PWoVnZJPZmpJDCZDEJ4MQ13D6BFGYVDolXPyRIU56NKG1feQQbYr
+	 Wg/Av3N9cjVTg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1s2nRh-0000000040a-1OYn;
+	Fri, 03 May 2024 09:35:05 +0200
+Date: Fri, 3 May 2024 09:35:05 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Jaiganesh Narayanan <njaigane@codeaurora.org>,
+	Doug Anderson <dianders@chromium.org>,
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain
+ support
+Message-ID: <ZjSTqfxgrox0IceO@hovoldconsulting.com>
+References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
+ <CACRpkdYw8jzFH5n377G76iMqri70Tf-1Vc=P5D6ESU_U0qRXWQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mfd: Use full path to other schemas
-Content-Language: en-US, en-GB
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-renesas-soc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240503072116.12430-1-krzysztof.kozlowski@linaro.org>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240503072116.12430-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdYw8jzFH5n377G76iMqri70Tf-1Vc=P5D6ESU_U0qRXWQ@mail.gmail.com>
 
-On 5/3/24 10:21, Krzysztof Kozlowski wrote:
-> When referencing other schema, it is preferred to use an absolute path
-> (/schemas/....), which allows also an seamless move of particular schema
-> out of Linux kernel to dtschema.
+On Fri, May 03, 2024 at 09:28:41AM +0200, Linus Walleij wrote:
+> On Thu, Apr 25, 2024 at 5:46 AM Bjorn Andersson
+> <quic_bjorande@quicinc.com> wrote:
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->   .../bindings/mfd/actions,atc260x.yaml         |  6 +--
->   .../devicetree/bindings/mfd/brcm,cru.yaml     |  8 ++--
->   .../devicetree/bindings/mfd/brcm,misc.yaml    |  2 +-
->   .../bindings/mfd/canaan,k210-sysctl.yaml      |  6 +--
->   .../bindings/mfd/delta,tn48m-cpld.yaml        |  4 +-
->   .../devicetree/bindings/mfd/iqs62x.yaml       |  4 +-
->   .../bindings/mfd/kontron,sl28cpld.yaml        | 10 ++--
->   .../devicetree/bindings/mfd/max77650.yaml     |  8 ++--
->   .../bindings/mfd/maxim,max77686.yaml          |  2 +-
->   .../bindings/mfd/maxim,max77693.yaml          |  2 +-
->   .../bindings/mfd/richtek,rt4831.yaml          |  4 +-
->   .../bindings/mfd/ricoh,rn5t618.yaml           |  6 +--
->   .../bindings/mfd/rockchip,rk805.yaml          |  2 +-
->   .../bindings/mfd/rockchip,rk808.yaml          |  2 +-
->   .../bindings/mfd/rockchip,rk817.yaml          |  2 +-
->   .../bindings/mfd/rockchip,rk818.yaml          |  2 +-
->   .../bindings/mfd/rohm,bd71815-pmic.yaml       |  2 +-
->   .../bindings/mfd/rohm,bd71828-pmic.yaml       |  4 +-
->   .../bindings/mfd/rohm,bd71837-pmic.yaml       |  2 +-
->   .../bindings/mfd/rohm,bd9571mwv.yaml          |  2 +-
->   .../bindings/mfd/rohm,bd9576-pmic.yaml        |  2 +-
+> > When a GPIO is configured as OPEN_DRAIN gpiolib will in
+> > gpiod_direction_output() attempt to configure the open-drain property of
+> > the hardware and if this fails fall back to software emulation of this
+> > state.
+> >
+> > The TLMM block in most Qualcomm platform does not implement such
+> > functionality, so this call would be expected to fail. But due to lack
+> > of checks for this condition, the zero-initialized od_bit will cause
+> > this request to silently corrupt the lowest bit in the config register
+> > (which typically is part of the bias configuration) and happily continue
+> > on.
+> >
+> > Fix this by checking if the od_bit value is unspecified and if so fail
+> > the request to avoid the unexpected state, and to make sure the software
+> > fallback actually kicks in.
+> >
+> > It is assumed for now that no implementation will come into existence
+> > with BIT(0) being the open-drain bit, simply for convenience sake.
+> >
+> > Fixes: 13355ca35cd1 ("pinctrl: qcom: ipq4019: add open drain support")
+> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> 
+> I tried to follow the discussion but couldn't get to a verdict on this patch,
+> should it be applied or not, and if it should be applied, should the Fixes:
+> tag be dropped or left and considered a nonurgent fix as it does not
+> affect current behaviour?
 
-For the ROHM stuff,
-Reviewed-by: Matti Vaittinen <mazziesaccount@gmail.com>
+It should not be applied in its current form (e.g. as the commit message
+is incorrect). Bjorn will be sending a v2.
 
->   .../bindings/mfd/samsung,s2mpa01.yaml         |  2 +-
->   .../bindings/mfd/samsung,s2mps11.yaml         | 12 ++---
->   .../bindings/mfd/samsung,s5m8767.yaml         |  4 +-
->   .../devicetree/bindings/mfd/st,stmfx.yaml     |  2 +-
->   .../devicetree/bindings/mfd/st,stpmic1.yaml   |  4 +-
->   .../bindings/mfd/stericsson,ab8500.yaml       | 48 +++++++++----------
->   .../bindings/mfd/stericsson,db8500-prcmu.yaml | 40 ++++++++--------
->   .../devicetree/bindings/mfd/ti,tps65086.yaml  |  4 +-
->   29 files changed, 99 insertions(+), 99 deletions(-)
->
-Thanks!
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Johan
 
