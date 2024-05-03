@@ -1,164 +1,160 @@
-Return-Path: <linux-kernel+bounces-167768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572668BAEF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AF6C8BAEF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:25:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8651EB2314B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:24:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D42ACB23292
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB4C15532A;
-	Fri,  3 May 2024 14:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A11155384;
+	Fri,  3 May 2024 14:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Z0xYgguv"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ezGhBUYp"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7641552F7;
-	Fri,  3 May 2024 14:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E54155344
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714746120; cv=none; b=eD7fHQt+Vd9pd0um7QgeUE2hO1jTfiWtIdgPveTpkmTAbnwKikiIcrCnv5tVjFVJHNSEI/cKynp6z3i8qABTfzzXp7Qq/Y/C3ptG/afSb0uOuwWLqC4TsHWLfRVHtF4B+z13fGNo2TIS/gaiv0DD0Tjv2itBKz+rAkfLcWyVYLM=
+	t=1714746161; cv=none; b=CyPpohPPitgwA605P1k7AmPTSM4oYUC2AlAGvZw8w+LnZa1RqxxB/gRxloXqSAfn/s2sGscoMkyJETcxffTMUenwsSNY1oVguBsNcZitZDZNHJFLkpNrM0E/xUQ24MiyUfOHCI6uPQSkYzFtP1yDWg/Ifj1wTuq/i3WWJqu00NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714746120; c=relaxed/simple;
-	bh=bLnPfADEwEwkOX0WWN6OPsmdt+pl5f8Iuzuh935QVFQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=vBY1Reo0cts8a2B/OjB2UAUW7j5On9T9LdWVXFwiKhV/rms8C2at0q1exb0E2rEKi+QLPkkU0aBqo/8gYPM7cFyvYESiskVIcsdOao9qyU2WF87o+nZ7uRiqjMddK+j2WnhJgnYAIvpuJbkZA/Ij+4dhCa1qEr+WLXERxIRYzA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Z0xYgguv; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BA8B01C000C;
-	Fri,  3 May 2024 14:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714746111;
+	s=arc-20240116; t=1714746161; c=relaxed/simple;
+	bh=CQuCKx1f52rBmguZ6r3kKXQ8Q8tgOq7dYH9ndvPdeg8=;
+	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=Ay0FEQU1MWECdWFCLV1sHnoiN1iG9BqvG0PsAkxGSAdXhU2XIiFnAXUqTMMigfaFoY9/dIz+IqS9gMgWHHAFZAu/EVtSXDKVoRtWd3A9UNXQSnTXvidQgu49c6Pp49WuFG8K5VUawvf+xDt98MCnxednVS8rqg884f/1XaLLkxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ezGhBUYp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714746158;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aHh6D+ByoS0ChKmmLmwD9Yo2EL46j5O9IJF8s7BAGCM=;
-	b=Z0xYgguvPb0niup9/7f1RVaaaXWIlXmRSf4CLDnZw2sG2oGbBxXy04KWfQKOrTKhsVP5PI
-	Y5vjBKqArd7ea8kg6QmMWfW1ZHRi1Dd05z/hMq7IVwg+7dc54meeFYNZlovfV2HYg5qzpx
-	5JWe/vKXETX4WtXi/zRU9NnF13ipf3kIkDoTjsQ5foUmeBnkYBIk8VfI9DqFqN3NDPCRhL
-	mxCEWumgcFxzrUd5+1fNfa8LJyYR7broXXxQefbcwq0nneXfmEv9KrsottgUm4ytzg+LrT
-	kBNCefmAtTEknF1b+rdHBqy2+4HMNsiiCyoWIprA3iLE8FgrCCcS+L+DzUYTYg==
-Date: Fri, 3 May 2024 16:21:48 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor.dooley@microchip.com>,
- Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Saravana Kannan
- <saravanak@google.com>, Bjorn Helgaas <bhelgaas@google.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Lars Povlsen <lars.povlsen@microchip.com>, Steen
- Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon
- <daniel.machon@microchip.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Allan
- Nielsen <allan.nielsen@microchip.com>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 06/17] dt-bindings: net: mscc-miim: Add resets property
-Message-ID: <20240503162148.1dc64b9a@bootlin.com>
-In-Reply-To: <202405021322091c565595@mail.local>
-References: <20240430083730.134918-1-herve.codina@bootlin.com>
-	<20240430083730.134918-7-herve.codina@bootlin.com>
-	<5d899584-38ed-4eee-9ba5-befdedbc5734@lunn.ch>
-	<20240430174023.4d15a8a4@bootlin.com>
-	<2b01ed8a-1169-4928-952e-1645935aca2f@lunn.ch>
-	<20240502115043.37a1a33a@bootlin.com>
-	<20240502-petted-dork-20eb02e5a8e3@wendy>
-	<4f9fd16b-773d-40e7-86d8-db19e2f6da16@lunn.ch>
-	<202405021322091c565595@mail.local>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fdzGfOXdyJ77aM6wV3QFOsIhYI1kALNNR677cthOE1w=;
+	b=ezGhBUYpaDBGHutTpPMw6OrDeZaoPsrrusA/f57vjwpmtVsRmfwrhdXwqCHN/9WCHKcmh2
+	EXszFoAv3imytjIEIzILgwQMBfzKvIUWhwDB2Tv4keuKWR1v6C4Jmu8wU7LsmQUH7iouaI
+	dq40NFAej1eByy4cQ6YbIETI7Oe/GsE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-251--q8-pTE7PZah1LJSYg3Xsg-1; Fri,
+ 03 May 2024 10:22:34 -0400
+X-MC-Unique: -q8-pTE7PZah1LJSYg3Xsg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 204AF28EC11E;
+	Fri,  3 May 2024 14:22:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.22])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5558840F5F8;
+	Fri,  3 May 2024 14:22:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Christian Brauner <christian@brauner.io>
+cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [PATCH v2] afs: Fix fileserver rotation getting stuck
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <998835.1714746152.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 03 May 2024 15:22:32 +0100
+Message-ID: <998836.1714746152@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Hi,
+Hi Christian,
 
-On Thu, 2 May 2024 15:22:09 +0200
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+Could you pick this up, please?
 
-> On 02/05/2024 14:26:36+0200, Andrew Lunn wrote:
-> > On Thu, May 02, 2024 at 11:31:00AM +0100, Conor Dooley wrote:  
-> > > On Thu, May 02, 2024 at 11:50:43AM +0200, Herve Codina wrote:  
-> > > > Hi Andrew,
-> > > > 
-> > > > On Tue, 30 Apr 2024 18:31:46 +0200
-> > > > Andrew Lunn <andrew@lunn.ch> wrote:
-> > > >   
-> > > > > > We have the same construction with the pinctrl driver used in the LAN966x
-> > > > > >   Documentation/devicetree/bindings/pinctrl/mscc,ocelot-pinctrl.yaml
-> > > > > > 
-> > > > > > The reset name is 'switch' in the pinctrl binding.
-> > > > > > I can use the same description here as the one present in the pinctrl binding:
-> > > > > >   description: Optional shared switch reset.
-> > > > > > and keep 'switch' as reset name here (consistent with pinctrl reset name).
-> > > > > > 
-> > > > > > What do you think about that ?    
-> > > > > 
-> > > > > It would be good to document what it is shared with. So it seems to be
-> > > > > the switch itself, pinctl and MDIO? Anything else?
-> > > > >   
-> > > > 
-> > > > To be honest, I know that the GPIO controller (microchip,sparx5-sgpio) is
-> > > > impacted but I don't know if anything else is impacted by this reset.
-> > > > I can update the description with:
-> > > >   description:
-> > > >     Optional shared switch reset.
-> > > >     This reset is shared with at least pinctrl, GPIO, MDIO and the switch
-> > > >     itself.
-> > > > 
-> > > > Does it sound better ?  
-> > > 
-> > > $dayjob hat off, bindings hat on: If you don't know, can we get someone
-> > > from Microchip (there's some and a list in CC) to figure it out?  
-> > 
-> > That is probably a good idea, there is potential for hard to find bugs
-> > here, when a device gets an unexpected reset. Change the order things
-> > probe, or an unexpected EPRODE_DEFER could be interesting.
-> >   
-> 
-> 
-> The datasheet states:
-> "The VCore system comprises all the blocks attached to the VCore Shared
-> Bus (SBA), including the PCIe, DDR, frame DMA, SI slave, and MIIM slave
-> blocks. The device includes all the blocks attached to the Switch Core
-> Register Bus (CSR) including the VRAP slave. For more information about
-> the VCore System blocks, see Figure 5-1."
-> 
-> However, the reset driver protects the VCORE itself by setting bit 5.
-> Everything else is going to be reset.
-> 
+David
+---
+afs: Fix fileserver rotation getting stuck
 
-Right,
-I will update the reset description with:
-  description:
-    Optional shared switch reset.
-    This reset is shared with all blocks attached to the Switch Core Register
-    Bus (CSR) including VRAP slave.
+Fix the fileserver rotation code in a couple of ways:
 
-Is that better ?
+ (1) op->server_states is an array, not a pointer to a single record, so
+     fix the places that access it to index it.
 
-Best regards,
-Hervé
--- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+ (2) In the places that go through an address list to work out which one
+     has the best priority, fix the loops to skip known failed addresses.
+
+Without this, the rotation algorithm may get stuck on addresses that are
+inaccessible or don't respond.
+
+This can be triggered manually by finding a server that advertises a
+non-routable address and giving it a higher priority, eg.:
+
+        echo "add udp 192.168.0.0/16 3000" >/proc/fs/afs/addr_prefs
+
+if the server, say, includes the address 192.168.7.7 in its address list,
+and then attempting to access a volume on that server.
+
+Fixes: 495f2ae9e355 ("afs: Fix fileserver rotation")
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/4005300.1712309731@warthog.procyon.org.uk/=
+ # v1
+---
+ Changes
+ =3D=3D=3D=3D=3D=3D=3D
+ ver #2)
+  - Use the untried address set precomputed in the 'set' variable.
+
+ fs/afs/rotate.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/afs/rotate.c b/fs/afs/rotate.c
+index ed04bd1eeae8..ed09d4d4c211 100644
+--- a/fs/afs/rotate.c
++++ b/fs/afs/rotate.c
+@@ -541,11 +541,13 @@ bool afs_select_fileserver(struct afs_operation *op)
+ 		    test_bit(AFS_SE_EXCLUDED, &se->flags) ||
+ 		    !test_bit(AFS_SERVER_FL_RESPONDING, &s->flags))
+ 			continue;
+-		es =3D op->server_states->endpoint_state;
++		es =3D op->server_states[i].endpoint_state;
+ 		sal =3D es->addresses;
+ =
+
+ 		afs_get_address_preferences_rcu(op->net, sal);
+ 		for (j =3D 0; j < sal->nr_addrs; j++) {
++			if (es->failed_set & (1 << j))
++				continue;
+ 			if (!sal->addrs[j].peer)
+ 				continue;
+ 			if (sal->addrs[j].prio > best_prio) {
+@@ -605,6 +607,8 @@ bool afs_select_fileserver(struct afs_operation *op)
+ 	best_prio =3D -1;
+ 	addr_index =3D 0;
+ 	for (i =3D 0; i < alist->nr_addrs; i++) {
++		if (!(set & (1 << i)))
++			continue;
+ 		if (alist->addrs[i].prio > best_prio) {
+ 			addr_index =3D i;
+ 			best_prio =3D alist->addrs[i].prio;
+@@ -674,7 +678,7 @@ bool afs_select_fileserver(struct afs_operation *op)
+ 	for (i =3D 0; i < op->server_list->nr_servers; i++) {
+ 		struct afs_endpoint_state *estate;
+ =
+
+-		estate =3D op->server_states->endpoint_state;
++		estate =3D op->server_states[i].endpoint_state;
+ 		error =3D READ_ONCE(estate->error);
+ 		if (error < 0)
+ 			afs_op_accumulate_error(op, error, estate->abort_code);
+
 
