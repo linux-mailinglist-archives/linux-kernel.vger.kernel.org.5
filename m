@@ -1,186 +1,153 @@
-Return-Path: <linux-kernel+bounces-168140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EC578BB42B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:35:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D1C8BB431
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:35:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C9E1C22D60
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:35:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66CD21F25808
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A652158A21;
-	Fri,  3 May 2024 19:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5E4339A1;
+	Fri,  3 May 2024 19:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kIk/pWhL"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eo5QI00p"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19015158866
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A0E2206E;
+	Fri,  3 May 2024 19:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714764914; cv=none; b=gv8Cdz+z9vAbWriwTtdCvtgK2d542du1/a800wFh3mTxTnWjbuTgyRFZB7B1UXpBOi9n37Bsoqe8VmYQ40+SQ/vb0iX0RpswaZkP1c1CBdXWoDu59xMNUSV9izx4qVvp3/nIidiulbjcViLBFv5lmXjdNbBLtxq3SSX1e42yb18=
+	t=1714764950; cv=none; b=p8r4sblhTg9Pkq68IxpQDeu3kttXJ3nusMSGt0+cFSdO3HWCe1LcYI/OXFj8ZeyP7frkfO4rabooUbvIDqSsM5zSLFaNDdTCfenyQO4rfC0FlzKJtRr35uDOW8n1DOLTycix9Sc+BsoUnxH/HWO1j8g7TRj16xvs6Z5B22ReYV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714764914; c=relaxed/simple;
-	bh=r8Nv21VrvCRT1FuqygB1ITanHjlHw4scuJdDnqqN7w8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kEOPUc3+Pyqx5LISKTTlITozz/3RcOL6qNJTEzbTwypE7pH334h0mbULmO04uQ6b58eeifnPZVdJcQb5KikCuurynM44gICTNQ5XJ61rdjYQswVWXceUHslXcfe8qdEOtt8oj7ULgnwHpzTHLKKVVw4yd+9KhKHVnphpJI+CDm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=kIk/pWhL; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2b3e2d3d05cso19905a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:35:11 -0700 (PDT)
+	s=arc-20240116; t=1714764950; c=relaxed/simple;
+	bh=OhK3E+a940tahvBPeiK0xswt7avRqyafDuFtSYMIobs=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N3SZTZSndJSn2TfTLHN5xPsWmep7VAaBh2rgbT5g3x6z+GM9yyKlHfyGtMsME2DzkfX0+63EkL4QaV8x2nuT+4MLijNGbzS2U+0ZIZRy9et5lzzuMu+73f+AqQ4a86PWinGqAWatZtISODIDROafQj9cXaGcBmy6BScut8KzKNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eo5QI00p; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-34d96054375so5978f8f.2;
+        Fri, 03 May 2024 12:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1714764911; x=1715369711; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ORetLTXl3HzmbjljZHEUgf3Mmr/eaSDx8Jozq/iEtsM=;
-        b=kIk/pWhLLh24YCRYq99z9MlLqs5IGr1laqUoGKIcb/YeqEOpn34TV5+d0nSq/IzRDC
-         op9OgzM/NDXqRj08cYtt1YQdMojR+dcKkjiZ44pL9uedK1vgPXZn+9GvR7nOh96Ial/e
-         w1foGDzUo9hovPN6zEOoQ8hV7PafXmJf5vqDNjB1TTCdkKQ1wNb0I++90yfVMY+wDfwV
-         f1CPg/rpax5507TL8k8Q6h1za4Fy58/KS1OQk74JpEnZaU7KCV+izDDhcdCaiBy8Aa+E
-         jsvsm77j3EjNFgNTgRizpY3MtRLLAQpb5JGHoWZ5t8fqUsoXbY75SUYAhDzPyhkQxaZh
-         D/nA==
+        d=gmail.com; s=20230601; t=1714764948; x=1715369748; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=U0mqsADwP2HKMLmT/kWuFaaNyNjoyU0vnELezZHXEzQ=;
+        b=Eo5QI00p1NBIHgNKBOAYzVrJ9Y1VfFACJQ3IMblkIOeSiQJ4B1niWy8QPcMWgQMOuL
+         FZtc2pANoDkooo5iKlv0rn53DPu/Pn7QSDZbtaT6NNQs7cSD4EsNbNUJNWNm/avgSmBZ
+         ap5ry83Bt9wLh672e6YfmVsDMJoY85G0oTC++AuqmXuLGfFXfn3If2jyLdWlp6Fuk8hV
+         5ZNEZZf+DeIKY9aYccVhN8Uucawb5RTngqgtEJQqeVcwYdcLkZE9/jINnAAHXm5GE8Dp
+         hrx/fGogEk8puCDj/VssnRM2LAxbREtgA53j+tyzqk8zIUCosxnF5ifeRcy9hTeY2W7X
+         FS+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714764911; x=1715369711;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ORetLTXl3HzmbjljZHEUgf3Mmr/eaSDx8Jozq/iEtsM=;
-        b=iSvopkqgqueDtMbbmtUT9yS76HXzrzkDh/kpXyW9S5uHN84BVSfTmUsTQ21OO1bjzj
-         6O/tV8sL7IFOQZXjVMBx2XBmRhU3zaV+WLnF/F7T+rT5KZnUWLdhYpaDyzA3T/jWfOD3
-         K5u4HsYhFMvdWdqsMfTzlNeDGhuifkzG3JGDCiGn40PP2s9Qzl0hj2yIqrknSEv374Ww
-         42B8Mk9p+DsHouI4bIT4Tz+NNM4utDOF3xLdVIcORzGFeR14nNTegccgkHrNohnnxfIm
-         rkJGCxzzaobUD+v0LV0gSJEa3eu3thV4N9nzAcbxvIHhkBii2iyLxWEuVNmZTkN1cndH
-         gNlg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDxJDmyV8N6YQx+5Pz55dgvTSjwKQ9e5PNzi6DKMEIouRoIjfj9TDAfaAzYLEu5qnkx15X/Hua9OttzbsZ/hyC4iL4uZcJq+/auhO9
-X-Gm-Message-State: AOJu0YzX82kcOiUi5qL9bBGPAaOhNt7QrtmOlBp6aBDfRK/lD7H0VWIS
-	dDRV8Y/wsad53koggtP/9E3U0eS+6lyRRDQ6lzF6KHzlZa45CTlHzwbxtesYrWMzFpeyHBoavpI
-	G
-X-Google-Smtp-Source: AGHT+IHPB1IZ4O2sSxiGYAZKvpeGjbdnZ2bAwpyCrMWAsjHJbfq5KyMCcWf/Ef7me/A0cgN11ffW+A==
-X-Received: by 2002:aa7:880c:0:b0:6ec:ef1c:5c55 with SMTP id c12-20020aa7880c000000b006ecef1c5c55mr3736637pfo.2.1714764911345;
-        Fri, 03 May 2024 12:35:11 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id gx14-20020a056a001e0e00b006f44be6cef2sm1664133pfb.114.2024.05.03.12.35.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 12:35:10 -0700 (PDT)
-Message-ID: <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
-Date: Fri, 3 May 2024 13:35:09 -0600
+        d=1e100.net; s=20230601; t=1714764948; x=1715369748;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U0mqsADwP2HKMLmT/kWuFaaNyNjoyU0vnELezZHXEzQ=;
+        b=Xq3EuHbR83BxT6+UasNrlbTHrnuS/4EMi/3Oyj8/5pUi/33ibp72S3z1N1zfO86B28
+         3GuUg+yCIh//r4Yc54apkayB2S855rWm/Sf5iSHyqHAnOssuovQzAjkIQlHLIUEdaQQ6
+         s6MRvx4L7A9ALqYh8rt1OC/CsIBput/BULC4k0LLKD7Ay0s0Sloue9owfmlopoILrgRg
+         OF/wUWS8CtGwSKNHPhgqa9RfaxSsWkjQwpIhFLGqcxV2sBVghx9IgeZ5eDVRNIZa3TTP
+         xB0HSuq68vzMN9ECopSjGJZQhzQB1JR/2WvdervH8NyUPwbQ7fDa/5u/JuHwnroT7P9y
+         32CA==
+X-Forwarded-Encrypted: i=1; AJvYcCU5Qy6jzRIRE7Ila8VWzb7W6tZYK3Sk77HTIyTmBzd3ttZz5Ni7HStQJxvq6Azr9Us9pCgx6ZWfXjLaihsxbOvoDPuTmFMcYR30ISL5U62EJQIFFd5/Q/9eObcw6Mna1AojBq5Vh9h4T2PyWXvY7HlqwRRaLS3kV9kl9VGgVq94k4s24Zk=
+X-Gm-Message-State: AOJu0YyyYOqFzyKRCLUIT2lKyCZ5dLwbAi4nM5o3vdpo45JRr7N3iTWU
+	LkVPtvTxE2q6o+cW4EbLVxxOav+NFpF/KZMbneJ5KyJb4mzd59yF
+X-Google-Smtp-Source: AGHT+IHo44bJgKTBq2upb63EKQBywuVxOdIxe/H649mJQj0Mlb9UwkEBkVjGLEGcFAKKFyNU3DY9+w==
+X-Received: by 2002:a5d:558e:0:b0:34d:b605:ec68 with SMTP id i14-20020a5d558e000000b0034db605ec68mr2531426wrv.17.1714764946919;
+        Fri, 03 May 2024 12:35:46 -0700 (PDT)
+Received: from Ansuel-XPS. (93-34-90-105.ip49.fastwebnet.it. [93.34.90.105])
+        by smtp.gmail.com with ESMTPSA id s11-20020a05600c45cb00b00419f572671dsm6673868wmo.20.2024.05.03.12.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 12:35:46 -0700 (PDT)
+Message-ID: <66353c92.050a0220.fd42f.7cfb@mx.google.com>
+X-Google-Original-Message-ID: <ZjU8kKfPANkAF6gG@Ansuel-XPS.>
+Date: Fri, 3 May 2024 21:35:44 +0200
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	=?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Daniel =?iso-8859-1?Q?Gonz=E1lez?= Cabanelas <dgcbueu@gmail.com>
+Subject: Re: [PATCH 4/6] mips: bmips: setup: make CBR address configurable
+References: <20240503135455.966-1-ansuelsmth@gmail.com>
+ <20240503135455.966-5-ansuelsmth@gmail.com>
+ <bf20e911-26db-4291-95d4-c91cc1d7f000@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?] [io-uring?]
- general protection fault in __ep_remove)
-To: Kees Cook <keescook@chromium.org>
-Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
- Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
- io-uring@vger.kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
-References: <0000000000002d631f0615918f1e@google.com>
- <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
- <202405031110.6F47982593@keescook>
- <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
- <202405031207.9D62DA4973@keescook>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <202405031207.9D62DA4973@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf20e911-26db-4291-95d4-c91cc1d7f000@broadcom.com>
 
-On 5/3/24 1:22 PM, Kees Cook wrote:
-> On Fri, May 03, 2024 at 12:49:11PM -0600, Jens Axboe wrote:
->> On 5/3/24 12:26 PM, Kees Cook wrote:
->>> Thanks for doing this analysis! I suspect at least a start of a fix
->>> would be this:
->>>
->>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
->>> index 8fe5aa67b167..15e8f74ee0f2 100644
->>> --- a/drivers/dma-buf/dma-buf.c
->>> +++ b/drivers/dma-buf/dma-buf.c
->>> @@ -267,9 +267,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
->>>  
->>>  		if (events & EPOLLOUT) {
->>>  			/* Paired with fput in dma_buf_poll_cb */
->>> -			get_file(dmabuf->file);
->>> -
->>> -			if (!dma_buf_poll_add_cb(resv, true, dcb))
->>> +			if (!atomic_long_inc_not_zero(&dmabuf->file) &&
->>> +			    !dma_buf_poll_add_cb(resv, true, dcb))
->>>  				/* No callback queued, wake up any other waiters */
->>
->> Don't think this is sane at all. I'm assuming you meant:
->>
->> 	atomic_long_inc_not_zero(&dmabuf->file->f_count);
+On Fri, May 03, 2024 at 12:09:02PM -0700, Florian Fainelli wrote:
+> On 5/3/24 06:54, Christian Marangi wrote:
+> > Add support to provide CBR address from DT to handle broken
+> > SoC/Bootloader that doesn't correctly init it. This permits to use the
+> > RAC flush even in these condition.
+> > 
+> > To provide a CBR address from DT, the property "mips-cbr-reg" needs to
+> > be set in the "cpus" node. On DT init, this property presence will be
+> > checked and will set the bmips_cbr_addr value accordingly. Also
+> > bmips_rac_flush_disable will be set to false as RAC flush can be
+> > correctly supported.
+> > 
+> > The CBR address from DT will be applied only if the CBR address from the
+> > registers is 0, if the CBR address from the registers is not 0 and
+> > is not equal to the one set in DT (if provided) a WARN is printed.
+> > 
+> > To ALWAYS overwrite the CBR address the additional property
+> > "mips-broken-cbr-reg" needs to be set.
+> > 
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> >   arch/mips/bmips/setup.c | 30 +++++++++++++++++++++++++++---
+> >   1 file changed, 27 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+> > index 18561d426f89..bef84677248e 100644
+> > --- a/arch/mips/bmips/setup.c
+> > +++ b/arch/mips/bmips/setup.c
+> > @@ -34,7 +34,11 @@
+> >   #define REG_BCM6328_OTP		((void __iomem *)CKSEG1ADDR(0x1000062c))
+> >   #define BCM6328_TP1_DISABLED	BIT(9)
+> > -/* CBR addr doesn't change and we can cache it */
+> > +/*
+> > + * CBR addr doesn't change and we can cache it.
+> > + * For broken SoC/Bootloader CBR addr might also be provided via DT
+> > + * with "mips-cbr-reg" in the "cpus" node.
+> > + */
+> >   void __iomem *bmips_cbr_addr;
+> >   extern bool bmips_rac_flush_disable;
+> > @@ -212,8 +216,28 @@ void __init device_tree_init(void)
+> >   	/* Disable SMP boot unless both CPUs are listed in DT and !disabled */
+> >   	np = of_find_node_by_name(NULL, "cpus");
+> > -	if (np && of_get_available_child_count(np) <= 1)
+> > -		bmips_smp_enabled = 0;
+> > +	if (np) {
 > 
-> Oops, yes, sorry. I was typed from memory instead of copy/paste.
+> Please reduce the indentation with early return/gotos. There might also be a
+> need to do some validation that the CBR is at least outside of the DRAM
+> window, that is we cannot blindly trust the DT to have gotten the CBR right
+> IMHO.
 
-Figured :-)
-
->> but won't fly as you're not under RCU in the first place. And what
->> protects it from being long gone before you attempt this anyway? This is
->> sane way to attempt to fix it, it's completely opposite of what sane ref
->> handling should look like.
->>
->> Not sure what the best fix is here, seems like dma-buf should hold an
->> actual reference to the file upfront rather than just stash a pointer
->> and then later _hope_ that it can just grab a reference. That seems
->> pretty horrible, and the real source of the issue.
-> 
-> AFAICT, epoll just doesn't hold any references at all. It depends,
-> I think, on eventpoll_release() (really eventpoll_release_file())
-> synchronizing with epoll_wait() (but I don't see how this happens, and
-> the race seems to be against ep_item_poll() ...?)
->
-> I'm really confused about how eventpoll manages the lifetime of polled
-> fds.
-
-epoll doesn't hold any references, and it's got some ugly callback to
-deal with that. It's not ideal, nor pretty, but that's how it currently
-works. See eventpoll_release() and how it's called. This means that
-epoll itself is supposedly safe from the file going away, even though it
-doesn't hold a reference to it.
-
-Except that in this case, the file is already gone by the time
-eventpoll_release() is called. Which presumably is some interaction with
-the somewhat suspicious file reference management that dma-buf is doing.
-But I didn't look into that much, outside of noting it looks a bit
-suspect.
-
->>> Due to this issue I've proposed fixing get_file() to detect pathological states:
->>> https://lore.kernel.org/lkml/20240502222252.work.690-kees@kernel.org/
->>
->> I don't think this would catch this case, as the memory could just be
->> garbage at this point.
-> 
-> It catches it just fine! :) I tested it against the published PoC.
-
-Sure it _may_ catch the issue, but the memory may also just be garbage
-at that point. Not saying it's a useless addition, outside of the usual
-gripes of making the hot path slower, just that it won't catch all
-cases. Which I guess is fine and expected.
-
-> And for cases where further allocations have progressed far enough to
-> corrupt the freed struct file and render the check pointless, nothing
-> different has happened than what happens today. At least now we have a
-> window to catch the situation across the time frame before it is both
-> reallocated _and_ the contents at the f_count offset gets changed to
-> non-zero.
-
-Right.
+Do you have any hint on how to do the check if we are outside DRAM?
 
 -- 
-Jens Axboe
-
+	Ansuel
 
