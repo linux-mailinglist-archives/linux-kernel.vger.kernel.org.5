@@ -1,143 +1,200 @@
-Return-Path: <linux-kernel+bounces-167488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A568BAA2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:50:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A788BAA2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:51:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C556E1C21B70
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:50:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18A2E28254A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6641E14F9D5;
-	Fri,  3 May 2024 09:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kkA02YFj"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17EB914F9EC;
+	Fri,  3 May 2024 09:51:20 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C8314A601
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102D313959C;
+	Fri,  3 May 2024 09:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714729835; cv=none; b=qp+n+3+tdKhNoTgqKYNVHh8oWbV5gcxzn2xiNS0yb3gjnFRgDmI1RUNm9Uj5GU941oCGOKo2nwcB33kBZG6tRLKqBMB82SqSWnroYnx4VNLUssIA4dKuCol69fHr0oW4q9EcXoUgFa6kImpvvbjXULa1/GNke2OMttQoaSDMLdU=
+	t=1714729879; cv=none; b=ZwAHAVyNwkJyK2poKGUc5nN195J65IbfbxU01dfaMNwD9Lm8Sgz+x/hfLJHa7A+1HudsdN8Mb8Cj8009WARsTbbhvjUN0Xi3SDcuHNfiRkLb9UH/I/zZsN3D6uB8O/VWMSP1mSXw+fB2a+D8uvoMyFyGe1uNSFOq/liSxvDYOmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714729835; c=relaxed/simple;
-	bh=9Di2FkeIFOduQtnDEZw5Cz1U2fbjjAw7LIM/336g1k8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Qz2ZvYQeJ09Nvy2yR7aDh/erv8UADo5RF2XqMRbkgCFUFiI0qB8YbxLAUU7M31O8/T8tW/VR5hlMudBsQG9I87uVW9/e1ShN+8akmZOegVR/+5iGvfczq9yD/3DRcBRhRDOppE2qePx7oQ0AIxl6oq+O8l1muXwWpzqMlPd/2Jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kkA02YFj; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ec8d265389so3389475ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 02:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714729832; x=1715334632; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XbIFWMJbm46ABCEZghwIka4n+0EiK+K27u1UogEz3qM=;
-        b=kkA02YFjiF9iHjxTuGSidkQNyuP8/lwpIQKdWBbIWvbW22UrqE7WtCYqiUo7pEYwUD
-         PPV3oPVXM1Z1stDTMtbW3Ye0iJ7iOUSpOb2OIjHv5RDfHDzpneaEtRHjXSEpTCx7D1uB
-         7eM9z/OMSVEkn0JiWxBSop0NA4V9gQJIb/SrY8Yh0xTWx2nReZPw6i2FKavEcYeJKPTH
-         L6eYkWMdk36IL8dETq81O8YtvgzQniTrzxOqP5aESTfppJpczA3yGXiqAsrDL5zKMHo2
-         CtpQ/fTbSu0QvYurBTel1tS5KYK5k6AsaM1kz/aHC+FDDb8QPwiUSdRFLtaOvtv+t5TM
-         fs1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714729832; x=1715334632;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XbIFWMJbm46ABCEZghwIka4n+0EiK+K27u1UogEz3qM=;
-        b=jPb9vJRL6UNQqpciLIjYZxI9lA3ewjpg0fWjTGBMfU+116paChgxe/6/ej3l+3USum
-         9Nz868Z9w+cPzAkACm/X6u6PWYOsUkewcwczLLPZeeQMWvqbRKKkgqR76jEAEEw+m1fi
-         in5VgqsmLc4rI7InnbnLcZciy2HwpVS3f3VDg1l67uwPHmXaYNFapWcVHlRB1CSHveRU
-         KEG7yvzdPKZ5sE7oSWc3b6koINnx74bWtfTQmdEVX80+zRSG2Z8VDTxLIdjOOSQMBatM
-         0HxebtdvKs0fYtnvRGIGr4TlGzQL8Jzr/mnuvOTLCqnFWB+z//cWO6WiqDhZWGAwzb7o
-         br6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVzYg2BypmTzpka8CVJXPh3xQ6nBJzwTR5KMxqv8x/nDuUQGlyfHBxyeLs4oGcytkNTwlcVZVD9oJ5rfsfkgXQoiVI2miNT9VeUDHwE
-X-Gm-Message-State: AOJu0YzZFfXf4KQpGu0SscP3o2ef+6rpcCoHCsm8COyYOLvb4Ph2AYYg
-	oJ2G9gvrkMTK5zFcaid+M4FcBHZlbhCMym/LA1FABEuBKB2g87nB
-X-Google-Smtp-Source: AGHT+IFrrnUeg1/9tnJoxphrYCutsVqK1aBW2OCIgiOzjy5644o7ZgXkmSsWe6YH7QgSl44ghsAr4Q==
-X-Received: by 2002:a05:6a20:914a:b0:1ad:8f18:8621 with SMTP id x10-20020a056a20914a00b001ad8f188621mr2584834pzc.6.1714729832416;
-        Fri, 03 May 2024 02:50:32 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id x1-20020a170902ec8100b001eb3d459143sm2849758plg.48.2024.05.03.02.50.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 02:50:31 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: akpm@linux-foundation.org,
-	Liam.Howlett@oracle.com,
-	nathan@kernel.org
-Cc: ndesaulniers@google.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	linux-kernel@vger.kernel.org,
-	maple-tree@lists.infradead.org,
-	linux-mm@kvack.org,
-	llvm@lists.linux.dev,
-	jserv@ccns.ncku.edu.tw,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] maple_tree: Fix build failure with W=1 and LLVM=1
-Date: Fri,  3 May 2024 17:50:27 +0800
-Message-Id: <20240503095027.747838-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714729879; c=relaxed/simple;
+	bh=nl8IYhxxn7R72hjVZ+8gasR48TtifZBriO+2gTzBRmw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JRn8WvwP9juPUzSr34YRsbBl/Z6LIMVJztvbsTDtzLNHEc61rB8+Yl/Q70r77Oy+S0VCm2AKXCCdP2v/RRzcbyjUJbGu9gWoQJ9ZwPkGpRHvzfiVn9lpJ43T7paDW/F2g8ERi+QQRBJOxnELZ+cTtuWgHFi8+XzvtQlei6foj/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VW5bH28w9zyNMT;
+	Fri,  3 May 2024 17:48:27 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 83A431403D2;
+	Fri,  3 May 2024 17:51:08 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 3 May 2024 17:51:07 +0800
+Message-ID: <dca44ba5-5c33-05ef-d9de-21a84f9d7eaa@huawei.com>
+Date: Fri, 3 May 2024 17:51:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [syzbot] [ext4?] WARNING in mb_cache_destroy
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>, <tytso@mit.edu>, syzbot
+	<syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com>
+CC: <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<llvm@lists.linux.dev>, <nathan@kernel.org>, <ndesaulniers@google.com>,
+	<ritesh.list@gmail.com>, <syzkaller-bugs@googlegroups.com>,
+	<trix@redhat.com>, Baokun Li <libaokun1@huawei.com>, yangerkun
+	<yangerkun@huawei.com>
+References: <00000000000072c6ba06174b30b7@google.com>
+ <0000000000003bf5be061751ae70@google.com>
+ <20240502103341.t53u6ya7ujbzkkxo@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240502103341.t53u6ya7ujbzkkxo@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-When compiling library code using "make W=1 LLVM=1 lib/", clang
-generated the following compilation errors:
+Hi Honza,
 
-lib/maple_tree.c:351:21: error: unused function 'mte_set_full' [-Werror,-Wunused-function]
-static inline void *mte_set_full(const struct maple_enode *node)
-                    ^
-lib/maple_tree.c:356:21: error: unused function 'mte_clear_full' [-Werror,-Wunused-function]
-static inline void *mte_clear_full(const struct maple_enode *node)
-                    ^
-lib/maple_tree.c:361:20: error: unused function 'mte_has_null' [-Werror,-Wunused-function]
-static inline bool mte_has_null(const struct maple_enode *node)
-                   ^
-3 errors generated.
+On 2024/5/2 18:33, Jan Kara wrote:
+> On Tue 30-04-24 08:04:03, syzbot wrote:
+>> syzbot has bisected this issue to:
+>>
+>> commit 67d7d8ad99beccd9fe92d585b87f1760dc9018e3
+>> Author: Baokun Li <libaokun1@huawei.com>
+>> Date:   Thu Jun 16 02:13:56 2022 +0000
+>>
+>>      ext4: fix use-after-free in ext4_xattr_set_entry
+> So I'm not sure the bisect is correct since the change is looking harmless.
+Yes, the root cause of the problem has nothing to do with this patch,
+and please see the detailed analysis below.
+> But it is sufficiently related that there indeed may be some relationship.
+> Anyway, the kernel log has:
+>
+> [   44.932900][ T1063] EXT4-fs warning (device loop0): ext4_evict_inode:297: xattr delete (err -12)
+> [   44.943316][ T1063] EXT4-fs (loop0): unmounting filesystem.
+> [   44.949531][ T1063] ------------[ cut here ]------------
+> [   44.955050][ T1063] WARNING: CPU: 0 PID: 1063 at fs/mbcache.c:409 mb_cache_destroy+0xda/0x110
+>
+> So ext4_xattr_delete_inode() called when removing inode has failed with
+> ENOMEM and later mb_cache_destroy() was eventually complaining about having
+> mbcache entry with increased refcount. So likely some error cleanup path is
+> forgetting to drop mbcache entry reference somewhere but at this point I
+> cannot find where. We'll likely need to play with the reproducer to debug
+> that. Baokun, any chance for looking into this?
+>
+> 								Honza
+As you guessed, when -ENOMEM is returned in ext4_sb_bread(),
+the reference count of ce is not properly released, as follows.
 
-Remove unused static inline functions to resolve compilation errors
-with clang.
+ext4_create
+  __ext4_new_inode
+   security_inode_init_security
+    ext4_initxattrs
+     ext4_xattr_set_handle
+      ext4_xattr_block_find
+      ext4_xattr_block_set
+       ext4_xattr_block_cache_find
+         ce = mb_cache_entry_find_first
+             __entry_find
+             atomic_inc_not_zero(&entry->e_refcnt)
+         bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
+         if (PTR_ERR(bh) == -ENOMEM)
+             return NULL;
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Before merging into commit 67d7d8ad99be("ext4: fix use-after-free
+in ext4_xattr_set_entry"), it will not return early in 
+ext4_xattr_ibody_find(),
+so it tries to find it in iboy, fails the check in xattr_check_inode() and
+returns without executing ext4_xattr_block_find(). Thus it will bisect
+the patch, but actually has nothing to do with it.
+
+ext4_xattr_ibody_get
+  xattr_check_inode
+   __xattr_check_inode
+    check_xattrs
+     if (end - (void *)header < sizeof(*header) + sizeof(u32))
+       "in-inode xattr block too small"
+
+Here's the patch in testing, I'll send it out officially after it is tested.
+(PS:  I'm not sure if propagating the ext4_xattr_block_cache_find() 
+errors would be better.)
+
+Regards,
+Baokun
+
+
+From: Baokun Li <libaokun1@huawei.com>
+Date: Fri, 3 May 2024 16:51:43 +0800
+Subject: [PATCH] ext4: fix mb_cache_entry's e_refcnt leak in
+  ext4_xattr_block_cache_find()
+
+Syzbot reports a warning as follows:
+
+============================================
+WARNING: CPU: 0 PID: 5075 at fs/mbcache.c:419 mb_cache_destroy+0x224/0x290
+Modules linked in:
+CPU: 0 PID: 5075 Comm: syz-executor199 Not tainted 6.9.0-rc6-gb947cc5bf6d7
+RIP: 0010:mb_cache_destroy+0x224/0x290 fs/mbcache.c:419
+Call Trace:
+  <TASK>
+  ext4_put_super+0x6d4/0xcd0 fs/ext4/super.c:1375
+  generic_shutdown_super+0x136/0x2d0 fs/super.c:641
+  kill_block_super+0x44/0x90 fs/super.c:1675
+  ext4_kill_sb+0x68/0xa0 fs/ext4/super.c:7327
+[...]
+============================================
+
+This is because when finding an entry in ext4_xattr_block_cache_find(), if
+ext4_sb_bread() returns -ENOMEM, the ce's e_refcnt, which has already grown
+in the __entry_find(), won't be put away, and eventually trigger the above
+issue in mb_cache_destroy() due to reference count leakage. So correct the
+handling of the -ENOMEM error branch to avoid the above issue.
+
+Reported-by: syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=dd43bd0f7474512edc47
+Fixes: fb265c9cb49e ("ext4: add ext4_sb_bread() to disambiguate ENOMEM 
+cases")
+Cc: stable@kernel.org # v5.0-rc1
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- lib/maple_tree.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+  fs/ext4/xattr.c | 7 +++----
+  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index 55e1b35bf877..cd3f5399f9f3 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -348,21 +348,6 @@ static inline void *mte_safe_root(const struct maple_enode *node)
- 	return (void *)((unsigned long)node & ~MAPLE_ROOT_NODE);
- }
- 
--static inline void *mte_set_full(const struct maple_enode *node)
--{
--	return (void *)((unsigned long)node & ~MAPLE_ENODE_NULL);
--}
--
--static inline void *mte_clear_full(const struct maple_enode *node)
--{
--	return (void *)((unsigned long)node | MAPLE_ENODE_NULL);
--}
--
--static inline bool mte_has_null(const struct maple_enode *node)
--{
--	return (unsigned long)node & MAPLE_ENODE_NULL;
--}
--
- static __always_inline bool ma_is_root(struct maple_node *node)
- {
- 	return ((unsigned long)node->parent & MA_ROOT_PARENT);
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index b67a176bfcf9..5c9e751915fd 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -3113,11 +3113,10 @@ ext4_xattr_block_cache_find(struct inode *inode,
+
+          bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
+          if (IS_ERR(bh)) {
+-            if (PTR_ERR(bh) == -ENOMEM)
+-                return NULL;
++            if (PTR_ERR(bh) != -ENOMEM)
++                EXT4_ERROR_INODE(inode, "block %lu read error",
++                         (unsigned long)ce->e_value);
+              bh = NULL;
+-            EXT4_ERROR_INODE(inode, "block %lu read error",
+-                     (unsigned long)ce->e_value);
+          } else if (ext4_xattr_cmp(header, BHDR(bh)) == 0) {
+              *pce = ce;
+              return bh;
 -- 
-2.34.1
+2.39.2
 
 
