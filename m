@@ -1,175 +1,117 @@
-Return-Path: <linux-kernel+bounces-168089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C0B88BB389
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:56:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 236BA8BB38E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48B841C2122A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:56:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85A51F23943
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24131158D6D;
-	Fri,  3 May 2024 18:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DD315748E;
+	Fri,  3 May 2024 18:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MVTyk0K9"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="vw/IqCuZ"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F80158866;
-	Fri,  3 May 2024 18:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0173015530D
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714762528; cv=none; b=uvboQhrFBHclfDGg381inmCv7Fk8TWY6MaxNqD2w3xsHqX//X0MIf4nqzeVv5VSND5NHd/rNgSVj5YH+xRDCo9vxuypfKrAtn2mjolAicartDD5ZUVSsECbPJQRsjddBULJ3Ccg2+duNRflJz8ZwGBgLPcFzqEPRZzeSZLtmYDg=
+	t=1714762572; cv=none; b=baYgN21ckHK/82I9fKMYn0eVkDfNoPHyOFD5mK3/Bp7LveEbVnc2KWxx2JG2obhTIKbXKdLpSS0RdRngGK11eVHQ3jFG2oQ7KprnZ7T8TWgcNqYUReGiLNvNhL4wbS7p+KvED2pzPQjKKLXABphV3/JpfhEODeVL1RAGVnc8qtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714762528; c=relaxed/simple;
-	bh=3kNvXvkN6naoI7GD4sRzPfHePGAYfimaGj1maVSZXX8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=n39keNSxWathnJqj+9sIs/Kxw1mT40+LLdc3W0rony+4HDn+fFLJ0O54WvEVzi3kHIhC6PLsQAAOQPcO1cGQRHzvJYrAwDHKTonhv1UBrrdwFQXgwFSdcBuPwj4h2yF8VIJWpBGPTHmt2mPgih+z6AdUFFE95VtefyNHtTh4e1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MVTyk0K9; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a58fbbcd77aso979970966b.2;
-        Fri, 03 May 2024 11:55:26 -0700 (PDT)
+	s=arc-20240116; t=1714762572; c=relaxed/simple;
+	bh=+VunjP6oHby9KChFd/CfAkViUD4pF37WAjMIg1Bx2Qw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jbrjX2dqZjyHUee8/LwEWJoz0iCpE9/WmTfav4GdUpKhfQV1Y0XfifFUw184KLEuCMxzfZlYUftbrK3tEnntjiZPUZPjiXXZncN+8blBr5GbKpBumEyEjH3Ntz0zNwWIndKvXB7y1tPnDFTfO/diEvz73l1+JoqajAkt5OkKvUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=vw/IqCuZ; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-418e4cd2196so399605e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714762525; x=1715367325; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F4JYeUr0dOQRMVbNboqjhvtximVshCSVg7z47+X+6e4=;
-        b=MVTyk0K9YKRJnNRt4LbI+yOG4ZfSCOfWz4rBaSd3G4Uuo5vNDRb2OIeC4cmq0v/Sud
-         KsGqjtTMMNp+w7w4iS1tWm65SoKo7fdubbO98zmekxIUcpgT9Wbm9I4a3b2yGvk9/yHF
-         g1b21dCp84+oWkY2ReQkUsryHvutIlJPN+eo1lYA/8jLKh9RUQaTTLTIkU6BgYynotTD
-         W18d8jjn1Ae3NTspF1HFmaSrwxO9q8tnjcIPl+XC/lBsp9IoKDW0mJrzh/xCfJI63X3v
-         LZk9nUDxoi7DKTJgkAsQnxY8bTJjSElbk+VlXM36YEPIeppVHNm4ea9FBF0sT0KX0hox
-         lV6Q==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714762567; x=1715367367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2gDg0EtFt/xxlIOvEogtGv9myXrE9F+TQ1+RihYnLgw=;
+        b=vw/IqCuZKAumGfMG99/+sRrQA01qwlZK9Ogb4HN3MI80daBlNSelLwU9lSfgJU9ViD
+         GtfX3koVb4Vz1rkgJbL8PVYmq8jiB3Oj2Mav2f+SPQwQiUlyWtG/yTDJKw30VNwebTnP
+         wCoSPQL6n70b+UA4hfRpV3zcJ+dgMZMpF244VopVmBUAf4Wh7s6MwLgVixuYfma4B/cn
+         0Qv2DUruChJVptks/aEILw/jkZpMmG1ZVyzWW9onph/GU6sENW3jddtB3CalNmL8QRNz
+         kzfklJxe+Bt3NxJU9jaJXIDhH9wbH3ZCSTT+YQFSZNyG70chHfQFsNIgzZIxs9m3Nr3p
+         wVKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714762525; x=1715367325;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F4JYeUr0dOQRMVbNboqjhvtximVshCSVg7z47+X+6e4=;
-        b=V1cUdGfV67tclrIBWA6926lwwMfxIijqTfzdRxPM9DW/uy2SnAzfLiv9JYvio/K5wA
-         aUqDZ4x8M420tb2iu+9nvJgb7JFi5KLznxr2wAVgqRpdzne0IkWNQwqoq/Q2o2A82+wq
-         Ejzln9uXnqhrepRGQqD4r4o2zytJSbjnydr7UmPY9HxxR/Ccdpj1oUAu0lg2HPNUf7gz
-         vg7xC89KomlQM8sgvp4DYbp4WBGxbffKvHIfNfhmyxiwHMwvh1vGDzVyHIaUDr3G9Rg7
-         lyObSTlL8WHVKVfITEvBKU1Dc6YUkWSjrDtmkrwYJwaOp8H4WoD58Kd3kpachKrHrlzq
-         uezQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVT4DxeCbg8zjeD1MIY+e1XkM3VJb9R+Vj4+gFnrFnohcE1cN+sH7dG6RtA4SSdXw9M7tmtnfQ0yHkiGY3GtARNbCZs/hrPZX4NW1rnsC6PfUO+FcuMF1u/Ksm6BNSe0r3ENVHtuWUgqcwc//hGr+I6O7S22Sl7GjwNJ2rA6TFRlBeTFv5KPR4R7qNImOhup+6S3nTSlnFpiOYzqxlQquABb4dVH/tzdYQ=
-X-Gm-Message-State: AOJu0YybgpPZzDsZ8nOzYEgpsUpcI1l0hm4QwWombXPuefdHFhapRdxR
-	3J5lhkX0AepMoV7C440LgSSuGaTU7viRD5pgJWAZq+0x9qJy5Mhe
-X-Google-Smtp-Source: AGHT+IGl6b9e2HFGYnhoAnaljhI1GQ0PiFI5MbCO2zuMHmb1huwM89XxkBc/QIEubt+jlSDtr2i80w==
-X-Received: by 2002:a17:906:fc20:b0:a55:b487:5676 with SMTP id ov32-20020a170906fc2000b00a55b4875676mr2228045ejb.72.1714762525087;
-        Fri, 03 May 2024 11:55:25 -0700 (PDT)
-Received: from hex.my.domain (83.25.185.84.ipv4.supernova.orange.pl. [83.25.185.84])
-        by smtp.gmail.com with ESMTPSA id l8-20020a170906078800b00a598d3ddf8dsm1104618ejc.28.2024.05.03.11.55.23
+        d=1e100.net; s=20230601; t=1714762567; x=1715367367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2gDg0EtFt/xxlIOvEogtGv9myXrE9F+TQ1+RihYnLgw=;
+        b=PlAXZiYxBgp14qzGRlp32f5Z5a3WclaCJMehleE9rY4YLs31zrFjnuUnLafauI0myE
+         wPSrXAR/oIH4gQGaEudgB3lG+UknxdOXyr3D4rYOh1cY1SLImiKRgKhl3t8lhuxzQ3xC
+         wR0Ka4GcXABtaSRNo1m68IKDBf0e8UuxoYOglFYjdjRLNhy4kUi1tS0UnN+IWUr57v6F
+         Uzg3rZ0eOjy40wPPDtJfOLPH3CpdIh6CjQ76Pt5mq8AaIFDYKJtad6S2DM4bpdReE0XV
+         PzE6hsfn7mJIEXrA806XNp6+vjplGlCkt0ac5l3QwxkvUJytq5sMX6iZp+5bxpIDWGuS
+         T+rA==
+X-Forwarded-Encrypted: i=1; AJvYcCWXHNgSmnAPj4AUBmahdGlXuYS0ohwr2UyRxLfIZ38cSTbwYVcfFol7iu4Gpo9F0BRY8/59OD4nl+HYGIN1TTJqo+iJEC5HKvz/BgiX
+X-Gm-Message-State: AOJu0Yz5yWsdNuYMUoIGqAu/p4RZrN5F5sQvrVdBRq/lkw1JPfh7Jxtm
+	y6as0qVoPemrTQk8IEhT+lKeoxswD2bozmE6KAoVS+ydd58FE0n0bZljYaaGHYs=
+X-Google-Smtp-Source: AGHT+IGt+qvGVuXWRwYw3TPochmOYVElXHAovZvrSOswxxRQK0YRqcOF0ifWDjD0FIZ1B1YfN7nZIQ==
+X-Received: by 2002:a05:600c:3514:b0:41d:7c48:5555 with SMTP id h20-20020a05600c351400b0041d7c485555mr2704667wmq.20.1714762567287;
+        Fri, 03 May 2024 11:56:07 -0700 (PDT)
+Received: from localhost.localdomain (host-79-16-6-199.retail.telecomitalia.it. [79.16.6.199])
+        by smtp.gmail.com with ESMTPSA id y12-20020a5d614c000000b0034dd3849eeasm4400937wrt.106.2024.05.03.11.56.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 11:55:24 -0700 (PDT)
-From: Artur Weber <aweber.kernel@gmail.com>
-Date: Fri, 03 May 2024 20:55:13 +0200
-Subject: [PATCH 3/3] ARM: dts: samsung: exynos4212-tab3: Fix headset mic,
- add jack detection
+        Fri, 03 May 2024 11:56:06 -0700 (PDT)
+From: Angelo Dureghello <adureghello@baylibre.com>
+X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
+To: lars@metafoo.de,
+	Michael.Hennerich@analog.com,
+	nuno.sa@analog.com,
+	jic23@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org
+Cc: linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Angelo Dureghello <adureghello@baylibre.com>
+Subject: [PATCH] dt-bindings: iio: dac: fix ad354xr output range
+Date: Fri,  3 May 2024 20:55:28 +0200
+Message-ID: <20240503185528.2043127-1-adureghello@baylibre.org>
+X-Mailer: git-send-email 2.45.0.rc1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240503-midas-wm1811-gpio-jack-v1-3-e8cddbd67cbf@gmail.com>
-References: <20240503-midas-wm1811-gpio-jack-v1-0-e8cddbd67cbf@gmail.com>
-In-Reply-To: <20240503-midas-wm1811-gpio-jack-v1-0-e8cddbd67cbf@gmail.com>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org, 
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
- Artur Weber <aweber.kernel@gmail.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714762519; l=2229;
- i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=3kNvXvkN6naoI7GD4sRzPfHePGAYfimaGj1maVSZXX8=;
- b=agat+hgkRN9DNTowBNeEtXOd2WrfzFQ9JevjJtvYwfVfxYh/0eH8GkWG0msG//Zw21Hq4/csU
- Qr4xAZ+ecQdCWUpolpGSUoMlA8eRC4nR1P0KeIVHHJ6gqm3OzlAOxIG
-X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
- pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
+Content-Transfer-Encoding: 8bit
 
-Add the necessary properties to the samsung,midas-audio node to allow
-for headset jack detection, set up the mic bias regulator GPIO and fix
-some other small issues with the sound setup.
+From: Angelo Dureghello <adureghello@baylibre.com>
 
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+Fix output range, as per datasheet must be -2.5 to 7.5.
+
+Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
- arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-index e5254e32aa8f..a059857e3054 100644
---- a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-@@ -285,6 +285,8 @@ mic_bias_reg: voltage-regulator-4 {
- 		regulator-name = "MICBIAS_LDO_2.8V";
- 		regulator-min-microvolt = <2800000>;
- 		regulator-max-microvolt = <2800000>;
-+		gpio = <&gpm0 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
- 	};
- 
- 	submic_bias_reg: voltage-regulator-5 {
-@@ -297,8 +299,17 @@ submic_bias_reg: voltage-regulator-5 {
- 	sound: sound {
- 		compatible = "samsung,midas-audio";
- 		model = "TAB3";
-+
- 		mic-bias-supply = <&mic_bias_reg>;
- 		submic-bias-supply = <&submic_bias_reg>;
-+		lineout-sel-gpios = <&gpj1 2 GPIO_ACTIVE_HIGH>;
-+
-+		headset-detect-gpios = <&gpx0 4 GPIO_ACTIVE_LOW>;
-+		headset-key-gpios = <&gpx3 6 GPIO_ACTIVE_LOW>;
-+		headset-4pole-threshold-microvolt = <710 2000>;
-+		headset-button-threshold-microvolt = <0 130 260>;
-+		io-channel-names = "headset-detect";
-+		io-channels = <&adc 0>;
- 
- 		audio-routing = "HP", "HPOUT1L",
- 				"HP", "HPOUT1R",
-@@ -345,6 +356,11 @@ wlan_pwrseq: sdhci3-pwrseq {
- 	};
- };
- 
-+&adc {
-+	vdd-supply = <&ldo3_reg>;
-+	status = "okay";
-+};
-+
- &bus_acp {
- 	devfreq = <&bus_dmc>;
- 	status = "okay";
-@@ -505,12 +521,11 @@ &i2c_4 {
- 	wm1811: audio-codec@1a {
- 		compatible = "wlf,wm1811";
- 		reg = <0x1a>;
--		clocks = <&pmu_system_controller 0>;
--		clock-names = "MCLK1";
-+		clocks = <&pmu_system_controller 0>,
-+			 <&s5m8767_osc S2MPS11_CLK_BT>;
-+		clock-names = "MCLK1", "MCLK2";
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		interrupt-parent = <&gpx3>;
--		interrupts = <6 IRQ_TYPE_LEVEL_HIGH>;
- 
- 		gpio-controller;
- 		#gpio-cells = <2>;
-
+diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+index 96340a05754c..8265d709094d 100644
+--- a/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+@@ -139,7 +139,7 @@ allOf:
+                 Voltage output range of the channel as <minimum, maximum>
+                 Required connections:
+                   Rfb1x for: 0 to 2.5 V; 0 to 3V; 0 to 5 V;
+-                  Rfb2x for: 0 to 10 V; 2.5 to 7.5V; -5 to 5 V;
++                  Rfb2x for: 0 to 10 V; -2.5 to 7.5V; -5 to 5 V;
+               oneOf:
+                 - items:
+                     - const: 0
 -- 
-2.45.0
+2.45.0.rc1
 
 
