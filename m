@@ -1,158 +1,103 @@
-Return-Path: <linux-kernel+bounces-168314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF93B8BB653
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:47:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B5628BB656
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:47:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79100285D21
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 570222866C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2A664CFC;
-	Fri,  3 May 2024 21:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7113C2C694;
+	Fri,  3 May 2024 21:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l5AZ0+Rn"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IeBg60tK";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lw4CfQAw"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984931EB21;
-	Fri,  3 May 2024 21:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ABA654903;
+	Fri,  3 May 2024 21:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772477; cv=none; b=rRWtayDfFayAUjTkwoKAFpUkFAta4xwKTwTfkqSC7gz0G3Jb7HCVeiYaAOWOLKhir7wKOoUbRFfS2fP4mjXgJyBn5O4X2/6SAjcMl+Obsg1rftbs6DVv5VyKnknap/iOw0WCe7TmkdmAJpTervMPRsXKGJJrtg9ZKjiNHuGkrRE=
+	t=1714772522; cv=none; b=Js6fBIZBvpsTVpmBYU1p5h7vVXIWY4srRMJOeb9r9uKZG/R8uT6cWh0VeG+2/LwlZIaKjI/eoG/h6MCKEOI3iwuTvGhgD+KKWeN9MqsM4xKlS2XIRP4P0yZ8wnCvw1xMR0GLZ4dchp8DIjTEBxy4E/ALefevc8FP4td3c8p26bA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772477; c=relaxed/simple;
-	bh=5Ie0VfWEVEhTaPq2tuo8Tm98X78hh2rfQuYKbrLkDTA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KPGVcO0/DmPS6vR8gsNvKKaRvPqiqhoWop7mREefYeTMryI0gqMnv/dEisaP7XxLRjgtgZ0wL6M4L+VqzUjrg3bp0pETxF4iURQ2z9E/PvqviASx7xMC4eKUZORz+DjnCgBw6DYhpqPi4XQ8eBI/aPSvB7ZtaqFrJhRK4E/8FTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=l5AZ0+Rn; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8376c566-14a4-4b11-89ba-bb544ee5f8e2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714772472;
+	s=arc-20240116; t=1714772522; c=relaxed/simple;
+	bh=HQm+V3Biee53no+YJeqbhU4w8NB6wtn8SA4D32s6iXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=je/tRnM3p4Va1NcoPCYpddwJFiJl+c8tLKdvuwfvPbaeMPyxB9gxgNojPkLb6LBl620YdMYC+DcuXXOJq1y/b8xc6gTQJLfd5WJ7mxEu2lgnLyNmxwgclvACtGzwZ07nzI54vkxgkYIp6XShEovVuEr9CHdE+RnFdRqyAxT6LtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IeBg60tK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lw4CfQAw; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 3 May 2024 23:41:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714772519;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=p/Q/2B8nlKGo4p9HVJI/N3QC9LbWf3C4w9luKfxzv9s=;
-	b=l5AZ0+RnzYYlybEQotGfzh4XVbQDt7zU3J4piKdbNzJrVsWee6Ytrv97Z62cDJVbVu/Aaw
-	1zj+kQNI1WZ2HpFhqTBmQ0lC2+Z8lYHghuEjV/ljuTa89ZTz0zmpjIjaEQlUW6Y8XLy3WV
-	8j1d/wmf+7oZgbgvR7Qp6PPck6jCt3w=
-Date: Fri, 3 May 2024 14:41:00 -0700
+	bh=rm+oVconEb8YVTlSeJTiM2JoTmuBUcCQK7KwBej9OiE=;
+	b=IeBg60tKkbm9N/BcYYvVbK1kBVYcQ4JKONUl83wDZljZal3E87dNJ05FtGtG1qBrmc9xNP
+	8LBhKCXHSuSDvxXQPqjrY6QnYwpv7CxMNcbJhFnWyXqvKyCJTXwXDTSnI0XJFpopF2IiW4
+	9DCPQN59gYMwdU7Dka5RhGZbRuQjow1L9bW4WlxhzsV+Z9qzyFucnw12SgcL4Z7ce90HoR
+	7BLQVQOw4ffoQP/8XtuXUIsJ8m+3UsWxWLw/HwFfoTo0fCcwSs/sgMpn9QlOOu1/dAcv3F
+	QprKPIKC8doHpn7bwV3k6lI7AsU/N1nRC8XhdBVS10K0Q0wS1m93yZcOkS9gCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714772519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rm+oVconEb8YVTlSeJTiM2JoTmuBUcCQK7KwBej9OiE=;
+	b=lw4CfQAwSHiG9TSRGDDHaMyDeOm7T38Eei/usvVBJ+Yk0AisxpKsszaEomJnere1BenYKx
+	ROo4CvmJzV4UdSAg==
+From: Nam Cao <namcao@linutronix.de>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Yinghai Lu <yinghai@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Rajesh Shah <rajesh.shah@intel.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH 2/4] PCI: pciehp: bail out if pci_hp_add_bridge() fails
+Message-ID: <20240503214152.p902TB4a@linutronix.de>
+References: <401e4044e05d52e4243ca7faa65d5ec8b19526b8.1714762038.git.namcao@linutronix.de>
+ <20240503212341.GA1604125@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
- clockid_t timestamp type
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
- kernel@quicinc.com
-References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
- <20240424222028.1080134-3-quic_abchauha@quicinc.com>
- <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
- <0f88ec53-6c92-434d-81c8-538b31a2385e@quicinc.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <0f88ec53-6c92-434d-81c8-538b31a2385e@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240503212341.GA1604125@bhelgaas>
 
-On 5/3/24 2:33 PM, Abhishek Chauhan (ABC) wrote:
+On Fri, May 03, 2024 at 04:23:41PM -0500, Bjorn Helgaas wrote:
+> On Fri, May 03, 2024 at 09:23:20PM +0200, Nam Cao wrote:
+> > If there is no bus number available for the downstream bus of the
+> > hot-plugged bridge, pci_hp_add_bridge() will fail. The driver proceeds
+> > regardless, and the kernel crashes.
+> > 
+> > Abort if pci_hp_add_bridge() fails.
 > 
->> BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
->>             u64, tstamp, u32, tstamp_type)
->> {
->>      /* ... */
->>      case BPF_SKB_CLOCK_TAI:
->>          if (!tstamp)
->>              return -EINVAL;
->>          skb->tstamp = tstamp;
->>          skb->tstamp_type = SKB_CLOCK_TAI;
->>          break;
->>          case BPF_SKB_CLOCK_REALTIME:
->>          skb->tstamp = tstamp;
->>          skb->tstamp_type = SKB_CLOCK_REALTIME;
->>          break;
->>
->>      /* ... */
->> }
->>
->>>                return -EINVAL;
->>
->>> @@ -9388,17 +9394,17 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
->>>    {
->>>        __u8 value_reg = si->dst_reg;
->>>        __u8 skb_reg = si->src_reg;
->>> -    /* AX is needed because src_reg and dst_reg could be the same */
->>> -    __u8 tmp_reg = BPF_REG_AX;
->>> -
->>> -    *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
->>> -                  SKB_BF_MONO_TC_OFFSET);
->>> -    *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>> -                SKB_MONO_DELIVERY_TIME_MASK, 2);
->>> -    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
->>> -    *insn++ = BPF_JMP_A(1);
->>> -    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
->>> -
->>> +    BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
->>
->> Add these also:
->>
->>      BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
->>      BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
->>      BUILD_BUG_ON(SKB_CLOCK_TAI != BPF_SKB_CLOCK_TAI);
->>
+> Thanks for this and for the details in the cover letter.  The cover
+> letter doesn't get directly preserved and connected to the git commit,
+> so please include some of the details here in the commit log.
 > 
-> Martin, The above suggestion of adding BUILD_BUG_ON always gives me a warning stating the following.
+> I don't think we need *everything* from the cover letter; just enough
+> of the messages to show what went wrong and how the kernel crashed, so
+> somebody who trips over this can connect the crash with this fix.  And
+> the timestamps are not relevant, so you can strip them out.  The qemu
+> repro case is useful too, thanks for that!
 > 
-> Some systems considers warning as error if compiler flags are enabled. I believe this requires your suggestion before i raise RFC v6 patchset to either keep the
-> BUILD_BUG_ON or remove it completely.
+> Same for the shpchp patch.
+> 
+> And use "git log --oneline drivers/pci/hotplug/pciehp_pci.c" and match
+> the formatting (in particular, the capitalization) of your subject
+> lines.
 
-cast it?
+Thanks for the detailed instructions. I will send v2 next week.
 
-> 
-> /local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9395:34: warning: comparison between ‘enum skb_tstamp_type’ and ‘enum <anonymous>’ [-Wenum-compare]
->   9395 |  BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
->        |                                  ^~
-> /local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:451:9: note: in definition of macro ‘__compiletime_assert’
->    451 |   if (!(condition))     \
->        |         ^~~~~~~~~
-> /local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:471:2: note: in expansion of macro ‘_compiletime_assert’
->    471 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->        |  ^~~~~~~~~~~~~~~~~~~
-> /local/mnt/workspace/kernel_master/linux-next/include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
->     39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->        |                                     ^~~~~~~~~~~~~~~~~~
-> /local/mnt/workspace/kernel_master/linux-next/include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
->     50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->        |  ^~~~~~~~~~~~~~~~
-> /local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9395:2: note: in expansion of macro ‘BUILD_BUG_ON’
->   9395 |  BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
->        |  ^~~~~~~~~~~~
-> /local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9396:35: warning: comparison between ‘enum skb_tstamp_type’ and ‘enum <anonymous>’ [-Wenum-compare]
->   9396 |  BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
->        |                                   ^~
-> /local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:451:9: note: in definition of macro ‘__compiletime_assert’
->    451 |   if (!(condition))     \
->        |         ^~~~~~~~~
-> 
->           |                                      ^~
-> 
-> 
-> 
-
+Best regards,
+Nam
 
