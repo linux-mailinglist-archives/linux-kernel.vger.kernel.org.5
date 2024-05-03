@@ -1,103 +1,112 @@
-Return-Path: <linux-kernel+bounces-167513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 926D98BAAA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:19:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E20C18BAAA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:20:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64AAAB217BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:19:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D0DF28514F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F30415099A;
-	Fri,  3 May 2024 10:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DA3+D+AX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFBE5152189;
+	Fri,  3 May 2024 10:19:42 +0000 (UTC)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDB814F9E3;
-	Fri,  3 May 2024 10:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C54914F9FD;
+	Fri,  3 May 2024 10:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714731553; cv=none; b=aE7ulha3Ha0r4bc/iI37/5xo0dToV/8xEpv2CfaB0SLpfxmu4uEcQlpifg0e9yf9k1VyiVJ+xt2UXnqZdivmpPUijwxCnaULGf2yuswpPPDQBKkrqtd605LPVCwFd2BKRa1VX6uiY//EWERxuwmSHyki//K4QK+9yjtBmZezA6w=
+	t=1714731582; cv=none; b=TKQAO6S3iH9rOfu8lNKzMn3/WqRreyZSIiQ3qufeeVAkjcmaI72ucYHH2wHMHjd4ppNm7xuvx34eYm++K5m4SzIgGKYOiTEQNuBFHJxhRzZFj2uxlVwa2nSWkH38uNuYuDuTTxXKi4rf7g1kYq36bcrZa4Z1P90yVqVagHU6QJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714731553; c=relaxed/simple;
-	bh=w6EbXMLbZy+Iq3jqd1Fpizg4P9aa3UkGFXgdsxOAiOE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Afc21NHHB2wb0FJ/JDm0jKI1oU/4r7VNe/EkMb8gxYJFAGCJUdWnMSWlBW20AviIu+QOIYUauAa1lV5+n/5QSOzGfYpNwEz4PnZ7fX0RsA4oikgmH7mhjeDZ1Wcq4yX9JPfVsMSi7T+Yvp8zneJbF3aZdobmC/q8mJPHIrXt4+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DA3+D+AX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD506C116B1;
-	Fri,  3 May 2024 10:19:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714731552;
-	bh=w6EbXMLbZy+Iq3jqd1Fpizg4P9aa3UkGFXgdsxOAiOE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=DA3+D+AXpjojEMciQeTe1i220pdfpQ2s1jKP7ixvlbzkYFvSXkQvoPyPp0SVVAZkg
-	 grs9jC0mqBlOKno9ibb889SH+1MH88nYrYntgKf/2isFppzu5+zWc8IoseCy4udfio
-	 2AEWS5a1gGu23Ir4M0vUDkFSaoV6b88EehNn2qraBQluFSugljkD+CxvZeMCuVp3Cb
-	 1aAZsA3YFnCV2R9BHPlABwcGuQgui1+Kp29Wze9wUxoLBOrwaycnB+taHiJFVYZBnv
-	 WxEy3GHXWCUPytWLRC5lqdF4h9VrtyunwF8vLdoMQkPKOeKHaKOIe91PhG1hNNjwHc
-	 meRsB9t7qUz8Q==
-From: Georgi Djakov <djakov@kernel.org>
-To: gregkh@linuxfoundation.org
-Cc: linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	djakov@kernel.org
-Subject: [GIT PULL] interconnect changes for 6.10
-Date: Fri,  3 May 2024 13:19:01 +0300
-Message-Id: <20240503101901.1681356-1-djakov@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714731582; c=relaxed/simple;
+	bh=CwbRZryxDvSIlBPZ/SNUliy+TfASd/RcVyRRmY5+U0c=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ua6H5g3ph9wHFWcr13aASpx84S70zdFMV/ZOL/8EKEE98/g7OJDYnrA1dkKqLdr5MRdcvmbAiSaScLaMDlrVnonBY9J9TU/2GxrpRbRUi3tkce1MMosJZH2q2esvUBvxNNOt0V0V/W+n6VturY2CcpxrM6/OEIOwI8f09vGgNU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 443AJ5byC3408017, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 443AJ5byC3408017
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 3 May 2024 18:19:05 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 3 May 2024 18:19:06 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 3 May 2024 18:19:05 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::1a1:9ae3:e313:52e7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::1a1:9ae3:e313:52e7%5]) with mapi id
+ 15.01.2507.035; Fri, 3 May 2024 18:19:05 +0800
+From: Justin Lai <justinlai0215@realtek.com>
+To: Simon Horman <horms@kernel.org>
+CC: "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net"
+	<davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        Ping-Ke Shih <pkshih@realtek.com>, Larry Chiu <larry.chiu@realtek.com>
+Subject: RE: [PATCH net-next v17 02/13] rtase: Implement the .ndo_open function
+Thread-Topic: [PATCH net-next v17 02/13] rtase: Implement the .ndo_open
+ function
+Thread-Index: AQHanHHZpNHx0voP+0CDD26jysJVP7GEr5aAgACdBfA=
+Date: Fri, 3 May 2024 10:19:05 +0000
+Message-ID: <3199bfed19ad4e0bb8ca868b6c46588a@realtek.com>
+References: <20240502091847.65181-1-justinlai0215@realtek.com>
+ <20240502091847.65181-3-justinlai0215@realtek.com>
+ <20240503085257.GM2821784@kernel.org>
+In-Reply-To: <20240503085257.GM2821784@kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-Hello Greg,
-
-This is the pull request with interconnect changes for the v6.10-rc1 merge
-window. It contains tiny clean-up and fix. As always, the summary is
-in the signed tag.
-
-The patches have been in linux-next for more than a week with no reported
-issues. Please pull into char-misc-next when possible.
-
-Thanks,
-Georgi
-
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
-
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.10-rc1
-
-for you to fetch changes up to 230d05b1179f6ce6f8dc8a2b99eba92799ac22d7:
-
-  interconnect: qcom: qcm2290: Fix mas_snoc_bimc QoS port assignment (2024-04-11 20:46:26 +0300)
-
-----------------------------------------------------------------
-interconnect changes for 6.10
-
-This pull request contains the interconnect changes for the 6.10-rc1 merge
-window. It contains some small driver changes listed below:
-
-Driver changes:
-- Cleanup sm6115 QoS port numbering.
-- Fix incorrect port value in qcm2290 driver.
-
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
-
-----------------------------------------------------------------
-Konrad Dybcio (2):
-      interconnect: qcom: sm6115: Unspaghettify SNoC QoS port numbering
-      interconnect: qcom: qcm2290: Fix mas_snoc_bimc QoS port assignment
-
- drivers/interconnect/qcom/qcm2290.c |  2 +-
- drivers/interconnect/qcom/sm6115.c  | 33 ++++----
- 2 files changed, 19 insertions(+), 16 deletions(-)
+> On Thu, May 02, 2024 at 05:18:36PM +0800, Justin Lai wrote:
+> > Implement the .ndo_open function to set default hardware settings and
+> > initialize the descriptor ring and interrupts. Among them, when
+> > requesting irq, because the first group of interrupts needs to process
+> > more events, the overall structure will be different from other groups
+> > of interrupts, so it needs to be processed separately.
+> >
+> > Signed-off-by: Justin Lai <justinlai0215@realtek.com>
+>=20
+> Hi Justin,
+>=20
+> some minor feedback from my side.
+>=20
+> > +static int rtase_open(struct net_device *dev) {
+> > +     struct rtase_private *tp =3D netdev_priv(dev);
+> > +     struct rtase_int_vector *ivec =3D &tp->int_vector[0];
+> > +     const struct pci_dev *pdev =3D tp->pdev;
+> > +     u16 i, j;
+> > +     int ret;
+>=20
+> nit: please use reverse xmas tree order - longest line to shortest -
+>      for local variable declarations in new Networking code.
+>=20
+Hi Simon,
+This is partly because ivec needs to use tp for initialization,
+so tp is placed in front of ivec, causing this situation.
 
