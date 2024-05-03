@@ -1,250 +1,119 @@
-Return-Path: <linux-kernel+bounces-167583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3CA38BAB92
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:29:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7DBC8BABA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:34:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C732F1C21B43
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:29:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6E70B22330
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12543848A;
-	Fri,  3 May 2024 11:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C08152523;
+	Fri,  3 May 2024 11:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qMole+1Z";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RaV1Bx9g"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ex1N/J/z"
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A9F1AACA;
-	Fri,  3 May 2024 11:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8B9152517
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 11:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714735732; cv=none; b=uFCM4shkRWG/Zhgi72QM763ei4bBWB2DayLZ+xLHsIAmTfl3/zb/19Rwa2sVTEhkrzXQQxjzy6qEmxqoi2jfdOFS89O93d3svFZSCg7NDNdAq876Cgk0vw7rkqwKODJpXQNY/7z5v+55/GHHqDiWob2zZGlqG1Ah/GWA7aFV+/o=
+	t=1714736023; cv=none; b=rVwkqCGdSHbID/D/0dsNzI9Og+wWARnrDtroF8Lv3udPdWKicGS7DvnvFWJ1FY9S1HmXl1v+v6tMpkV4EG7CGYJJ5TlNpn0hroxcqbUaC8YQPd6BsVqH5gou/uAZqa/gh9b6vsr5JSO5Qdas/tcrkbrbw66M00v3cXomzZRfKW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714735732; c=relaxed/simple;
-	bh=88WW0kURqdBjfVybYXftiM2YM7XJ7njj5pm4ndP4vaA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=isK1LKmlfaA/wm5E0EJBqcUiSZrSjTwG33I6cEeTDnFz50QiY7Yl4HT7v+CAQjoloNw6K1kemm+nkPQ9IngWVKCR4Jh51xppu+2WTRG5Li+2gtU56gJJ10j1Cn43RIqqIz9+SX0109SB7pTQU7EkVO+lpjSVkAhHm/rvvkJBsT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qMole+1Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RaV1Bx9g; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6A64F20254;
-	Fri,  3 May 2024 11:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714735728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P9yMKpP+WtXCZbyBz2t9/3WxqhYBErFHeUW75pJnqQ8=;
-	b=qMole+1Zdn0F1+ZqrG6EUVw5BjK9JmJ/rWM42iSp1qhhaRFnfLatmTJKZ1QVF47iRkZhbj
-	lX6qTmtqvXkGpFyKOoKQI6S/5vcHacEXGRixfkQ8bCecLcnP+y/1/rJzFaiJ5Ga1o8zEPF
-	UQ9G5e87Ncq26CecfQEajUTpHUOGkGk=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714735727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P9yMKpP+WtXCZbyBz2t9/3WxqhYBErFHeUW75pJnqQ8=;
-	b=RaV1Bx9gMOPXbKF3N6rOhGhw1fHnczyZ1plP5vjk2ZRWIo3sZd1ItSM26Xqg+gUDWJ/MZr
-	9UTCuRye3t7jnBKyDQfP7+5+9XB5XWKuVEl0LdoxBOenusm/k3yU8QdQfb38G9DN7TQWpM
-	JYlOVIsMT/Wp0RETs6GHPHQV1Iprnas=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 510AD139CB;
-	Fri,  3 May 2024 11:28:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LDnLEG/KNGapWQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 03 May 2024 11:28:47 +0000
-Date: Fri, 3 May 2024 13:28:42 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcg: use READ_ONCE()/WRITE_ONCE() to access
- stock->nr_pages
-Message-ID: <ZjTKareAb6Q3VGAF@tiehlicka>
-References: <20240501095420.679208-1-leitao@debian.org>
+	s=arc-20240116; t=1714736023; c=relaxed/simple;
+	bh=WADYspwgMs2YdaZV7xUa0mIJSKnYTWlC60xHwnIngW4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tWcAxh6pniR3kbwBSovpP7DBekJKYlTR3mKAJSgZn9yKmxzkvFmMA/N29yXuKp5cSovYJo4hQPdQS77KqwvH0/Cv7DgRVJYGGZ4IraDSJPnrZx52FdmVFLlVrydzl+L5x77UEpQXIuyH1hnkmV9Q5HCG+wCzLBReItIBYEMfPB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ex1N/J/z; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-790e7c02430so508018985a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 04:33:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714736020; x=1715340820; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PV1uvsPD3hPVQBDeLEfhqbETDS++mq2cZ2grIK4TBwQ=;
+        b=Ex1N/J/zXeUWtVlEw9zP/ShKR7HxAkQC0S0l6bqsdPbmsy4j5FWojUOxxiCq9iixAT
+         u5lZi/2Xwon1dGTs8UKtzrrYrb4lfX7Id/5Xkavud9r56NFIjUcJSFt60sMs10b69kiP
+         Tgv6MzV4c1Gy5Yb/Dr5frXHF9dZV4ExXsRGjo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714736020; x=1715340820;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PV1uvsPD3hPVQBDeLEfhqbETDS++mq2cZ2grIK4TBwQ=;
+        b=kLrBaA4E1k6c45d2MEc1L+RHDQ1uAk0muvhIDipZX2E4CHEf2rK9qQDByOiIIlzr5h
+         TN1GYULg3wKojjRmZr209iv07/DOWKG5I6gsb/Ec5WiN/gGSkuhWjUbsS1yKmX9m1Wi1
+         LIh1k29yyqzQlnH3xIskE/vcaz+1dfq6Y2wKoLd8HEz8bDJsmctGHL+RFuciLJaKvuUI
+         aCK5/O04viI8dvtIDC2f336uRbdOX/xgkkk9J3m4NtxWpse9+ciDWM2oy1uduTYpB0AG
+         O2ksFvuNI8TgnUW7p7/1bhQXifMHr5Q3mMX54PuQAt2vsTMMZAzpW4uUK/STDBI2oNvQ
+         6vCA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbgjTyKQWYSzs+RaIqU9/S0cGG8jqgbwuuhHqRxnpUi/NOTAtD54jSrT7erJY5Tz/eyjUvQOaN1N9WhrSZ3ER0dujHe6TmZn/L1+6x
+X-Gm-Message-State: AOJu0YyBbeNdig4LdX1z6okqZztnEZa0KCRZ0UO4RPoJZuMsbzDaVf/V
+	Um7EKJhqarb6FAvyDlTUcx3yoTlfiSRPIj86/Lq+P7qqu8ffrxRjmHL00f/EhVsz/wfGlTdRUhz
+	mng==
+X-Google-Smtp-Source: AGHT+IFPT+c5g8iGSubsJn1MAU4lk1gCDhjOfclD78asjQf9ys4/KXilDg0+WfalUYicwon901btig==
+X-Received: by 2002:a05:6214:501d:b0:6a0:a7c7:4d5d with SMTP id jo29-20020a056214501d00b006a0a7c74d5dmr2533425qvb.58.1714736020543;
+        Fri, 03 May 2024 04:33:40 -0700 (PDT)
+Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
+        by smtp.gmail.com with ESMTPSA id f6-20020a056214164600b006a10054acadsm1137432qvw.19.2024.05.03.04.33.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 04:33:40 -0700 (PDT)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Fri, 03 May 2024 11:33:20 +0000
+Subject: [PATCH] media: cec.h: Fix kerneldoc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501095420.679208-1-leitao@debian.org>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240503-fixdoc-v1-1-44d26e6f9dba@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAH/LNGYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDUwNj3bTMipT8ZN0UQ2MLg9QkIxPj5BQloOKColSgDNig6NjaWgCZWnJ
+ 4WAAAAA==
+To: Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.4
 
-On Wed 01-05-24 02:54:20, Breno Leitao wrote:
-> A memcg pointer in the per-cpu stock can be accessed by drain_all_stock()
-> and consume_stock() in parallel, causing a potential race.
-> 
-> KCSAN shows this data-race clearly in the splat below:
-> 
-> 	BUG: KCSAN: data-race in drain_all_stock.part.0 / try_charge_memcg
-> 
-> 	write to 0xffff88903f8b0788 of 4 bytes by task 35901 on cpu 2:
-> 	try_charge_memcg (mm/memcontrol.c:2323 mm/memcontrol.c:2746)
-> 	__mem_cgroup_charge (mm/memcontrol.c:7287 mm/memcontrol.c:7301)
-> 	do_anonymous_page (mm/memory.c:1054 mm/memory.c:4375 mm/memory.c:4433)
-> 	__handle_mm_fault (mm/memory.c:3878 mm/memory.c:5300 mm/memory.c:5441)
-> 	handle_mm_fault (mm/memory.c:5606)
-> 	do_user_addr_fault (arch/x86/mm/fault.c:1363)
-> 	exc_page_fault (./arch/x86/include/asm/irqflags.h:37
-> 		        ./arch/x86/include/asm/irqflags.h:72
-> 			arch/x86/mm/fault.c:1513
-> 			arch/x86/mm/fault.c:1563)
-> 	asm_exc_page_fault (./arch/x86/include/asm/idtentry.h:623)
-> 
-> 	read to 0xffff88903f8b0788 of 4 bytes by task 287 on cpu 27:
-> 	drain_all_stock.part.0 (mm/memcontrol.c:2433)
-> 	mem_cgroup_css_offline (mm/memcontrol.c:5398 mm/memcontrol.c:5687)
-> 	css_killed_work_fn (kernel/cgroup/cgroup.c:5521 kernel/cgroup/cgroup.c:5794)
-> 	process_one_work (kernel/workqueue.c:3254)
-> 	worker_thread (kernel/workqueue.c:3329 kernel/workqueue.c:3416)
-> 	kthread (kernel/kthread.c:388)
-> 	ret_from_fork (arch/x86/kernel/process.c:147)
-> 	ret_from_fork_asm (arch/x86/entry/entry_64.S:257)
-> 
-> 	value changed: 0x00000014 -> 0x00000013
-> 
-> This happens because drain_all_stock() is reading stock->nr_pages, while
-> consume_stock() might be updating the same address, causing a potential
-> data-race.
-> 
-> Make the shared addresses bulletproof regarding to reads and writes,
-> similarly to what stock->cached_objcg and stock->cached.
-> Annotate all accesses to stock->nr_pages with READ_ONCE()/WRITE_ONCE().
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+is_claiming_log_addrs documentation was missing.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+fix this kernel-doc warning:
+include/media/cec.h:296: warning: Function parameter or struct member 'is_claiming_log_addrs' not described in 'cec_adapter'
 
-It is worth mentioning that the race is harmless.
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+https://gitlab.freedesktop.org/linux-media/media-staging/-/pipelines/1169148/test_report?job_name=doc
+---
+ include/media/cec.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  mm/memcontrol.c | 24 +++++++++++++++---------
->  1 file changed, 15 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index fabce2b50c69..d3befe3b62fa 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2310,6 +2310,7 @@ static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages)
->  static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->  {
->  	struct memcg_stock_pcp *stock;
-> +	unsigned int stock_pages;
->  	unsigned long flags;
->  	bool ret = false;
->  
-> @@ -2319,8 +2320,9 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->  	local_lock_irqsave(&memcg_stock.stock_lock, flags);
->  
->  	stock = this_cpu_ptr(&memcg_stock);
-> -	if (memcg == READ_ONCE(stock->cached) && stock->nr_pages >= nr_pages) {
-> -		stock->nr_pages -= nr_pages;
-> +	stock_pages = READ_ONCE(stock->nr_pages);
-> +	if (memcg == READ_ONCE(stock->cached) && stock_pages >= nr_pages) {
-> +		WRITE_ONCE(stock->nr_pages, stock_pages - nr_pages);
->  		ret = true;
->  	}
->  
-> @@ -2334,16 +2336,18 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->   */
->  static void drain_stock(struct memcg_stock_pcp *stock)
->  {
-> +	unsigned int stock_pages = READ_ONCE(stock->nr_pages);
->  	struct mem_cgroup *old = READ_ONCE(stock->cached);
->  
->  	if (!old)
->  		return;
->  
-> -	if (stock->nr_pages) {
-> -		page_counter_uncharge(&old->memory, stock->nr_pages);
-> +	if (stock_pages) {
-> +		page_counter_uncharge(&old->memory, stock_pages);
->  		if (do_memsw_account())
-> -			page_counter_uncharge(&old->memsw, stock->nr_pages);
-> -		stock->nr_pages = 0;
-> +			page_counter_uncharge(&old->memsw, stock_pages);
-> +
-> +		WRITE_ONCE(stock->nr_pages, 0);
->  	}
->  
->  	css_put(&old->css);
-> @@ -2380,6 +2384,7 @@ static void drain_local_stock(struct work_struct *dummy)
->  static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->  {
->  	struct memcg_stock_pcp *stock;
-> +	unsigned int stock_pages;
->  
->  	stock = this_cpu_ptr(&memcg_stock);
->  	if (READ_ONCE(stock->cached) != memcg) { /* reset if necessary */
-> @@ -2387,9 +2392,10 @@ static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->  		css_get(&memcg->css);
->  		WRITE_ONCE(stock->cached, memcg);
->  	}
-> -	stock->nr_pages += nr_pages;
-> +	stock_pages = READ_ONCE(stock->nr_pages) + nr_pages;
-> +	WRITE_ONCE(stock->nr_pages, stock_pages);
->  
-> -	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
-> +	if (stock_pages > MEMCG_CHARGE_BATCH)
->  		drain_stock(stock);
->  }
->  
-> @@ -2428,7 +2434,7 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
->  
->  		rcu_read_lock();
->  		memcg = READ_ONCE(stock->cached);
-> -		if (memcg && stock->nr_pages &&
-> +		if (memcg && READ_ONCE(stock->nr_pages) &&
->  		    mem_cgroup_is_descendant(memcg, root_memcg))
->  			flush = true;
->  		else if (obj_stock_flush_required(stock, root_memcg))
-> -- 
-> 2.43.0
+diff --git a/include/media/cec.h b/include/media/cec.h
+index d3abe84c9c9e..d131514032f2 100644
+--- a/include/media/cec.h
++++ b/include/media/cec.h
+@@ -187,6 +187,7 @@ struct cec_adap_ops {
+  *	in order to transmit or receive CEC messages. This is usually a HW
+  *	limitation.
+  * @is_enabled:		the CEC adapter is enabled
++ * @is_claiming_log_addrs:  true if cec_claim_log_addrs() is running
+  * @is_configuring:	the CEC adapter is configuring (i.e. claiming LAs)
+  * @must_reconfigure:	while configuring, the PA changed, so reclaim LAs
+  * @is_configured:	the CEC adapter is configured (i.e. has claimed LAs)
 
+---
+base-commit: 1aa1329a67cc214c3b7bd2a14d1301a795760b07
+change-id: 20240503-fixdoc-d1380eb243cd
+
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Ricardo Ribalda <ribalda@chromium.org>
+
 
