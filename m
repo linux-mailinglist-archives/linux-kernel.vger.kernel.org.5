@@ -1,114 +1,151 @@
-Return-Path: <linux-kernel+bounces-167703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC478BADAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:25:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FBA08BADB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A801B20EAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:24:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C898F1F22ED6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042C715380B;
-	Fri,  3 May 2024 13:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4861153826;
+	Fri,  3 May 2024 13:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kW3w76/r"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QohNH+5A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C76114A0AB
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14C621A06;
+	Fri,  3 May 2024 13:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742690; cv=none; b=bSGEONmJRKamJHor2CH0xOjMIbd6mFUcp+5wQIkLkGegaYYeB4/cLeRTU01TD87fhRrqkka/bEXuI08GSrdYkGONUeGS/nKjoYWaUUhCBMfLCpnXal9kPRPX6dcZa2bqoHxm82fx2HbhMkzgpyb9V46Xgt0v0sXg1TbX//to7lY=
+	t=1714742787; cv=none; b=YYI5IsfDV7zy3B+Tp/zGXLMJUvxPmmQ44tGCzMjS2phYYfmg6uZuraoMB3EzhEKdWWJNPYc4lkPez6etC8gbmISBuXa0R0xMnS4my7Gaj+kD+9eIKn489AsUZhC+xF66RZbnP7QkO//KRMr1WjqROoI/I0Bfr99315hERB0E+QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742690; c=relaxed/simple;
-	bh=LnQBqRowOn/mmqH744BQ56CUkrHMmmG7pILmr2k3FwQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Lz/CaU2t46haTT7ywsrw8cRNkxNUslpTiDst3QYptIYa47cJN87yiYVHY7nrbZToa3JBRO6HBzrzEQcMkrLp7zCP7rNzdnqr8OGT7x1eQXvyZCvgnQK+FG3RCbhjIpXJcKqiWnZl0oL5fgU42K2tagcvClJ71QqcFKTh2amdP44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kW3w76/r; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6f041e39bc7so8425144b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714742688; x=1715347488; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ccOeukr23e3h6a0N8DffRaB2MUtEUXB1eb2oExcKkQ=;
-        b=kW3w76/rsYjB2Aw2hH5w+q98JKgzG+DyYm6qhv9gF2jS+2J8EE6ZiUxcYdjIDfKZV9
-         hVeJCOICkGQGIa1vyzFmb8v3+7sNDVjcl6XPCcxof2AC2y5hWgIHADeaEuSnM5Ehbzd+
-         r2X75cvehYAW/hljvHI4wCTg2bAvHOZ+Fg5eJuEIM0MdAQFtfyKnmohkcgQN8Q3wwUr3
-         5ErAGQX+Eqjc++Vv4kwhqRcMIELSk4MSqQiYZxFYEx+YWR+s0gAD2xzhN0FaiQExpZUI
-         arorupLC/GMjgPEjZaiOc9BQYj8vS2VWw9ZFWUMO1mAD8LHstE1ut1SO2cZxLbIORbXL
-         F6Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714742688; x=1715347488;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ccOeukr23e3h6a0N8DffRaB2MUtEUXB1eb2oExcKkQ=;
-        b=E/RTym4geGe7kPiv8EyrYlpGnt4fmgZ9pv3Vn5MATV8b1Tn5nh71yPSakWOWHuKEPt
-         fZW2j9S7QOp1xEHaNmv9zg4BPhjUwuCOkJvtAlg4DyMX9nSd4Pgfoyy5/NTgDrgUlr9m
-         2GmJQ14yDq+lz8140zskQmQVIdYzP/V2yS9w4PuoCxTGmJhA8tlyLRJVh7TxPAnfd/A1
-         0y8it/Y7qY6bYpLYHeskkDFm0x103wBj6rrIMBg3PdmkrFMWMhI5iS7z6YDpC9liwZ8P
-         4K8+tihLIHE47i5P7sb4K3NcNkEd9u09vP4Eh9LD9FGvC2vPIoS3S425FdqSYn4uEVFr
-         rwuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTtFFMURHXD5hsYh/ZvoJd3xhO004PzV4t3XDO+zsmBBtGOxqdebtCglf2MbIvvhhE9BwBFFOI94TfNl1FHvEd6dEXyNypJzRHIrB7
-X-Gm-Message-State: AOJu0YwzNgVkCz0vNIoaPhZR6iTBcZig0PB88G5pE4RE3qes3lunWPve
-	T8JE33u9CLu0be6hzKyaGjsbGV54JCVC+j0IU69IwkmIKp7sbYLsG+EfZenRbJvoIDiNI427Dc1
-	ztQ==
-X-Google-Smtp-Source: AGHT+IFqaqDYUgUT1sFW3BILdnSLhDiEXyo5YaoA9nj8RUO7yNSem5r8cA469uOkvhX2zmIw7iPay/E5mxs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:181a:b0:6f4:42d7:fe02 with SMTP id
- y26-20020a056a00181a00b006f442d7fe02mr106073pfa.3.1714742688288; Fri, 03 May
- 2024 06:24:48 -0700 (PDT)
-Date: Fri, 3 May 2024 06:24:47 -0700
-In-Reply-To: <DS0PR11MB6373EA67C70B8579A194089EDC1F2@DS0PR11MB6373.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1714742787; c=relaxed/simple;
+	bh=FzJmLJEAfWbfxoDrGzOyw0EXb6lj4tCCnC3PFnqsC+8=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=ULAItGzEw8a+4zx5lvDr5VYl/gpBe0IUGA6o4+rvuHXao21MhNzk8ZMAqj/Z5ub1KA8uATgP3vewhsmEpmdaIQpTu4mr5eBFEZOg0llAxJXulqvfl3BHuNqytR3ItatYnx4ARtJz+2UT7tMKYibMgWSq4BHmZWzdGeAg2AUbO58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QohNH+5A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33CA4C116B1;
+	Fri,  3 May 2024 13:26:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714742786;
+	bh=FzJmLJEAfWbfxoDrGzOyw0EXb6lj4tCCnC3PFnqsC+8=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=QohNH+5ACzoqeSQBk3VonpvWlJw8iyUIYzpZ+b2IrA5H7UkLmHu7+eMluTFHH4Xl+
+	 8nzyy4Z/u9inj0mdTpo5579ZQpvuOi4Jwy7rOmlKH5N+6Tz4P9O0nJ+DhwpX2rozjG
+	 gh1tbgOZHDqCqFniDir6nvtaaKSF04vlALRjofWeRBREG+iWs9teyZy8/gg7SYHmSf
+	 Xr/oZhE41aeiawkv3kqXWky5oQwpTX1s4W6u75Ckr6BPKa8go5a7QEB/vcx30UXzLH
+	 2QB0iizPbib7MR7lC5WFD9HMFl/+ccspoIF2iDD5rlr3oMpprpbCJPaxRgXxOqQc4k
+	 IWTbcqgzj2OTQ==
+Date: Fri, 03 May 2024 08:26:25 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240425125252.48963-1-wei.w.wang@intel.com> <20240425125252.48963-4-wei.w.wang@intel.com>
- <ZjQjYiwBg1jGmdUq@google.com> <DS0PR11MB6373EA67C70B8579A194089EDC1F2@DS0PR11MB6373.namprd11.prod.outlook.com>
-Message-ID: <ZjTlkSi9jYn2e9oc@google.com>
-Subject: Re: [PATCH v3 3/3] KVM: x86/pmu: Add KVM_PMU_CALL() to simplify
- static calls of kvm_pmu_ops
-From: Sean Christopherson <seanjc@google.com>
-To: Wei W Wang <wei.w.wang@intel.com>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ Sascha Hauer <s.hauer@pengutronix.de>, imx@lists.linux.dev, 
+ Conor Dooley <conor.dooley@microchip.com>, Shawn Guo <shawnguo@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Fabio Estevam <festevam@gmail.com>, 
+ Alexander Stein <alexander.stein@ew.tq-group.com>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20240503-imx95-dts-v3-v4-0-535ddc2bde73@nxp.com>
+References: <20240503-imx95-dts-v3-v4-0-535ddc2bde73@nxp.com>
+Message-Id: <171474271031.624119.6280624703185299261.robh@kernel.org>
+Subject: Re: [PATCH v4 0/3] arm64: dts: add i.MX95 and EVK board
 
-On Fri, May 03, 2024, Wei W Wang wrote:
-> On Friday, May 3, 2024 7:36 AM, Sean Christopherson wrote:
-> > On Thu, Apr 25, 2024, Wei Wang wrote:
-> > >  #define KVM_X86_CALL(func) static_call(kvm_x86_##func)
-> > > +#define KVM_PMU_CALL(func) static_call(kvm_x86_pmu_##func)
-> > 
-> > ...
-> > 
-> > > @@ -796,7 +796,7 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
-> > >  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> > >
-> > >  	memset(pmu, 0, sizeof(*pmu));
-> > > -	static_call(kvm_x86_pmu_init)(vcpu);
-> > > +	KVM_PMU_CALL(init)(vcpu);
-> > >  	kvm_pmu_refresh(vcpu);
-> > 
-> > I usually like macros to use CAPS so that they're clearly macros, but in this case
-> > I find the code a bit jarring.  Essentially, I *want* my to be fooled into thinking
-> > it's a function call, because that's really what it is.
-> > 
-> > So rather than all caps, what if we follow function naming style?  E.g.
-> 
-> Yep, it looks good to me, and the coding-style doc mentions that "CAPITALIZED
-> macro names are appreciated but macros resembling functions may be named in
-> lower case".
-> 
-> To maintain consistency, maybe apply the same lower-case style for KVM_X86_CALL()?
 
-Yeah, for sure, I should have explicitly called that out.
+On Fri, 03 May 2024 09:37:10 +0800, Peng Fan (OSS) wrote:
+> Add a minimal i.MX95 dtsi and EVK board dts.
+> i.MX95 has a M33 running SCMI firmware, but as of now, the scmi pinctrl
+> driver still not ready for i.MX95, so we count on bootloader to
+> configure the pinctrl for lpuart and sdhc and it boots well. After pinctrl
+> driver ready, we could move to use scmi pinctrl.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+> Changes in v4:
+> - Sort nodes by address
+> - Drop coresight nodes
+> - Align clock rates for SDHC1-3
+> - Drop wdog3 board specific property
+> - Link to v3: https://lore.kernel.org/r/20240428-imx95-dts-v3-v3-0-765395f88b9f@nxp.com
+> 
+> Changes in v3:
+> - Drop irqsteer node because binding not accepted
+> - Pass dtbs_check
+> - Link to v2: https://lore.kernel.org/r/20240226-imx95-dts-v2-0-00e36637b07e@nxp.com
+> 
+> Changes in v2:
+> - Addressed Rob and Krzysztof's comments, and fix dts_check issue
+>   To pass the dtbs_check, need apply:
+>   https://lore.kernel.org/all/20240226070910.3379108-1-peng.fan@oss.nxp.com/
+>   https://lore.kernel.org/all/20240226130243.3820915-1-peng.fan@oss.nxp.com/
+>   https://lore.kernel.org/all/20240226130516.3821803-1-peng.fan@oss.nxp.com/
+>   https://lore.kernel.org/all/20240226130826.3824251-1-peng.fan@oss.nxp.com/
+>   https://lore.kernel.org/all/20240219-imx-mailbox-v8-1-75535a87794e@nxp.com/
+> 
+> - Link to v1: https://lore.kernel.org/r/20240218-imx95-dts-v1-0-2959f89f2018@nxp.com
+> 
+> ---
+> Peng Fan (3):
+>       dt-bindings: arm: fsl: add i.MX95 19x19 EVK board
+>       arm64: dts: freescale: add i.MX95 basic dtsi
+>       arm64: dts: freescale: add i.MX95 19x19 EVK minimal board dts
+> 
+>  Documentation/devicetree/bindings/arm/fsl.yaml    |    6 +
+>  arch/arm64/boot/dts/freescale/Makefile            |    1 +
+>  arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts |  112 +++
+>  arch/arm64/boot/dts/freescale/imx95-clock.h       |  187 ++++
+>  arch/arm64/boot/dts/freescale/imx95-power.h       |   55 ++
+>  arch/arm64/boot/dts/freescale/imx95.dtsi          | 1049 +++++++++++++++++++++
+>  6 files changed, 1410 insertions(+)
+> ---
+> base-commit: bb7a2467e6beef44a80a17d45ebf2931e7631083
+> change-id: 20240428-imx95-dts-v3-bee59f0e559b
+> 
+> Best regards,
+> --
+> Peng Fan <peng.fan@nxp.com>
+> 
+> 
+> 
+
+
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
+
+
+New warnings running 'make CHECK_DTBS=y freescale/imx95-19x19-evk.dtb' for 20240503-imx95-dts-v3-v4-0-535ddc2bde73@nxp.com:
+
+arch/arm64/boot/dts/freescale/imx95-19x19-evk.dtb: mmc@428b0000: 'assigned-clocks' is a dependency of 'assigned-clock-parents'
+	from schema $id: http://devicetree.org/schemas/clock/clock.yaml#
+arch/arm64/boot/dts/freescale/imx95-19x19-evk.dtb: mmc@428b0000: 'assigned-clocks' is a dependency of 'assigned-clock-rates'
+	from schema $id: http://devicetree.org/schemas/clock/clock.yaml#
+
+
+
+
+
 
