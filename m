@@ -1,110 +1,132 @@
-Return-Path: <linux-kernel+bounces-168195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311418BB4F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:36:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27618BB4F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:37:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E06AE283F76
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:36:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91B3A1F211A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E122E62F;
-	Fri,  3 May 2024 20:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F29C23775;
+	Fri,  3 May 2024 20:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GD6O8Hin"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EsqdJ6Oc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EDD224D4
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 20:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961151C68C
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 20:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714768606; cv=none; b=aNKnqB+PBeyqqX/t3dEXGda5LFll5R7COLyG8lnsnHctkB6w7EKvH4YiofuHpVQsf0Mcr6ZfWBpkdOUaZ5j6AXSogANJetvumxiG9lpD5ifJTPfs/skZhL6g+AlvZz7cSLc3VboYWM51K4wI1yidACGA7dSTtLveVFtBQY5Mm7o=
+	t=1714768639; cv=none; b=BqRs+xOot0qqzyWhwmNaSqDxJuS5EgWkQ5mp8Ih5GJytXEp1I9tY0vI+6aoHAHXSH/cHhkltmZmoCkIxUWwp8x/QJ2Odto9DN9cfVTXhUxSCi+0vGKAhYWeG2nkIjTLkbPWaM2egr0b9Lvi/b1yC/Pr7Y1eoSP1tGEKUsZrpizU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714768606; c=relaxed/simple;
-	bh=FBZMACvGRXJqMeLEDzDUFBkDEnHe6DAU3slqqPNPaqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sAI0TV7FSlLswoJvQUU8pHSQZ87gKlQqMgmUYDCpIu7KAQnXSW/rSDK3ke4U1+bDvj7qCp4LmsVZbQQAyByXr0UH0PlbRSNWL6DRVMZNi5MrADEwNF4gTqWAxn2gVUIf6u8610MQ6MRHGBt1yb6h7HIdxuts4DkBN0B95cslAN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GD6O8Hin; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41a1d88723bso1426375e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 13:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714768601; x=1715373401; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SOGaco3fXlUM58da9nIuO+b/VVWLgaUOQsvu5003Nmw=;
-        b=GD6O8HinHuMJbamq0ke8yQHFLrkso1UKNXelni7YFcwZ4nHMKCTOFHFx+XSo/YwT7e
-         rIUmuZNa9lZp16ToKr/BqFDOTVsa1pkFY+jRARlqd+7fBCQ8FaUluobC9FLIK6U9TS3d
-         X4aGYYXpy+GDgZVMVfeoA3omLI4MYAXeD8PjzvcLsQjK6INcpdEBwyg6HQg42qsuGYxD
-         GhkUfV04sTBhtErjBeY4sVI43bd8hqtpSjDkJwnOm/0fWIC6ssBAgw1vyDw87+h/Yxw3
-         tlUffhKU1rMfVz8ULC4hA54CXAXF7p7ybtHEy64U9xE6YcSdpCFtgcRdABGaH+zK6phw
-         +TKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714768601; x=1715373401;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SOGaco3fXlUM58da9nIuO+b/VVWLgaUOQsvu5003Nmw=;
-        b=sW0qejNtthC3KiPt8axJ8oX9GaylnAa7N84My4cku1DiH1y+gXJuqnPjPfnzCxWGOh
-         eGO8776iu4c5JzaaZjk+KMFQB9bkmaTVkbGUvqkjMhgG8yx6A6J7WMcyQPtsVw/POCri
-         UmNV5VayILLoGS4jgj080a5TGOpJ59LtTfrIaNkyRquGtcluVfPuOQCl2bK2jMEOiTzg
-         GBjDz1KbXBBCLsaFIEXSc51xH848qLW7sOdfuAUnc/W4llSn6+s1BzJCgwldYCU+8W58
-         C32VhDPlGCpGlT9rg9TTfda8qIMQrMePTVo/r4AzC8yWIa4PdWdnSJdwG+lelae52SKS
-         SDjg==
-X-Forwarded-Encrypted: i=1; AJvYcCVWvTD248XNXbb7wOaMl9dbIGCcZmthVFz+DHbJOdwu9Rjgc0TQzmhY6aVu7ezgl2GypRmj/SeV7YKP+Up6p2QAFoLB1pC6Xs+iEM2T
-X-Gm-Message-State: AOJu0YzB+7cGDEFqzZ1i9y1fQlUQ7t6SuJZJUFuERhyErXD53pd4oBZ7
-	wFUuTMJXeY89iyczU0O5ByLjlGhdCvMELrH8/LU1r0PQktWo8Quy17Exg/PVWyU=
-X-Google-Smtp-Source: AGHT+IHT1ANwaQtrF/f0AcbUmuzqU9zPw45kPKXJTTCYO6bMPHHy7X3ECjv7drf3rYFms81bZXcA/g==
-X-Received: by 2002:a05:600c:1d26:b0:418:e88b:92c3 with SMTP id l38-20020a05600c1d2600b00418e88b92c3mr3068178wms.2.1714768601152;
-        Fri, 03 May 2024 13:36:41 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id r9-20020a05600c35c900b0041bf5b9fb93sm6826049wmq.5.2024.05.03.13.36.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 13:36:40 -0700 (PDT)
-Date: Fri, 3 May 2024 23:36:37 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Lars Kellogg-Stedman <lars@oddbit.com>
-Cc: Duoming Zhou <duoming@zju.edu.cn>, linux-hams@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
-	davem@davemloft.net, jreuter@yaina.de
-Subject: Re: [PATCH net] ax25: Fix refcount leak issues of ax25_dev
-Message-ID: <78ae8aa0-eac5-4ade-8e85-0479a22e98a3@moroto.mountain>
-References: <20240501060218.32898-1-duoming@zju.edu.cn>
- <my4l7ljo35dnwxl33maqhyvw7666dmuwtduwtyhnzdlb6bbf5m@5sbp4tvg246f>
+	s=arc-20240116; t=1714768639; c=relaxed/simple;
+	bh=Ro+9bsKaVb7uKrUgAz6odmTDr5TLuTDADOERyWJUfzo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bdvdJi0SVtwujnTcRJkKqvTYRXOEzPPNOPfwRVuG7atHRGXv3GrvHPJShUA1NTWRJOCrUz3o/AOc8yTa/AW6h+Zf65NeVblUWTFqs43ofuS6Hb/UZ/Bzd7Ux9S2ztZVjTG3lx3UJSI2nD+6ux7K8tydJ380yvk/0LxHSPtfFAJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EsqdJ6Oc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29849C4AF1D
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 20:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714768639;
+	bh=Ro+9bsKaVb7uKrUgAz6odmTDr5TLuTDADOERyWJUfzo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=EsqdJ6OcJWETWUhpCwpMA7kVhcwZbo4QGKsPZtOs9q7uO3/eGBBBCWZKREVzl4RIK
+	 hdAiCBv1k9GwUDF4nK0yl6Qwwr0GnMu7WtEcF/WYH00xkIr5jlvxoDXKdqlfOSCN9V
+	 XUaxC4s/2EMuszcHyJxbBP5SWt2UHBHOf41LJqsYJzcWS4impzbgs9NahTZuFGDI08
+	 90zPJ5xsZ4PxCL807Y4t6UPj//c+N3fpOcxH8ImzjStW3kzck2w6W04G39nB+sQyjW
+	 qHWKENAVkMtKy42gzCGJs+1fSuJsLhRRU7qjmW64MDaB8Yzyz6LkrNyPqJ7DAIMaIJ
+	 ggBwULvOxCwTw==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2db6f5977e1so987431fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 13:37:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX+kwxqv5szS0SXyDll0Or9caOhO3VaTANkAZF4EYVVEXIiHZ4I9ZhD93ayx9ga4c5nD2hbjNvNi0e7vJBMYq4ya6wzhFhoxyWoBtzK
+X-Gm-Message-State: AOJu0Yy1q2WllTQX5qUlZnMNaRclL97RQuiyGhKTB2S/3KLfLXHkLn49
+	WROHYc2KXRFIEfb+pffuurmOKijTlw9fBvKvkSuTv6CAAihEIDXeO0jat/KkXY4kfa26T9+GT7B
+	j/kFqOS+eYENZ+nm8cYHlEwKmUQ==
+X-Google-Smtp-Source: AGHT+IEU6kJH3Hj6GBk7ZMK9MNzSJ/pnpqC7ouSpGxATXAjHjv95yzliu3RZvgHmJZWZt8RFNmPRaERLowg9znSoslg=
+X-Received: by 2002:a2e:9d19:0:b0:2e1:eb27:3513 with SMTP id
+ t25-20020a2e9d19000000b002e1eb273513mr2443272lji.52.1714768637832; Fri, 03
+ May 2024 13:37:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <my4l7ljo35dnwxl33maqhyvw7666dmuwtduwtyhnzdlb6bbf5m@5sbp4tvg246f>
+References: <20240503005023.174597-1-21cnbao@gmail.com> <20240503005023.174597-3-21cnbao@gmail.com>
+ <e0c1cbb2-da06-4658-a23a-962496e83557@arm.com>
+In-Reply-To: <e0c1cbb2-da06-4658-a23a-962496e83557@arm.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 3 May 2024 13:37:06 -0700
+X-Gmail-Original-Message-ID: <CANeU7QkYXmpmTAVjGqin4Wpg9hydPPYZKho-MwQMMt9uJ8Lu4Q@mail.gmail.com>
+Message-ID: <CANeU7QkYXmpmTAVjGqin4Wpg9hydPPYZKho-MwQMMt9uJ8Lu4Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] mm: remove swap_free() and always use swap_free_nr()
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	baolin.wang@linux.alibaba.com, david@redhat.com, hanchuanhua@oppo.com, 
+	hannes@cmpxchg.org, hughd@google.com, kasong@tencent.com, 
+	linux-kernel@vger.kernel.org, surenb@google.com, v-songbaohua@oppo.com, 
+	willy@infradead.org, xiang@kernel.org, ying.huang@intel.com, 
+	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Could you test this diff?
+On Fri, May 3, 2024 at 2:31=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
+>
+> On 03/05/2024 01:50, Barry Song wrote:
+> > From: Barry Song <v-songbaohua@oppo.com>
+> >
+> > To streamline maintenance efforts, we propose discontinuing the use of
+> > swap_free(). Instead, we can simply invoke swap_free_nr() with nr set
+> > to 1. This adjustment offers the advantage of enabling batch processing
+> > within kernel/power/swap.c. Furthermore, swap_free_nr() is designed wit=
+h
+> > a bitmap consisting of only one long, resulting in overhead that can be
+> > ignored for cases where nr equals 1.
+> >
+> > Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: Pavel Machek <pavel@ucw.cz>
+> > Cc: Len Brown <len.brown@intel.com>
+> > Cc: Hugh Dickins <hughd@google.com>
+> > ---
+> >  include/linux/swap.h |  5 -----
+> >  kernel/power/swap.c  |  7 +++----
+> >  mm/memory.c          |  2 +-
+> >  mm/rmap.c            |  4 ++--
+> >  mm/shmem.c           |  4 ++--
+> >  mm/swapfile.c        | 19 +++++--------------
+> >  6 files changed, 13 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> > index d1d35e92d7e9..f03cb446124e 100644
+> > --- a/include/linux/swap.h
+> > +++ b/include/linux/swap.h
+> > @@ -482,7 +482,6 @@ extern int add_swap_count_continuation(swp_entry_t,=
+ gfp_t);
+> >  extern void swap_shmem_alloc(swp_entry_t);
+> >  extern int swap_duplicate(swp_entry_t);
+> >  extern int swapcache_prepare(swp_entry_t);
+> > -extern void swap_free(swp_entry_t);
+>
+> I wonder if it would be cleaner to:
+>
+> #define swap_free(entry) swap_free_nr((entry), 1)
+>
+> To save all the churn for the callsites that just want to pass a single e=
+ntry?
+>
+Either way works. It will produce the same machine code. I have a
+slight inclination to just drop swap_free(entry) API so that it
+discourages the caller to do a for loop over swap_free().
 
-regards,
-dan carpenter
+Acked-by: Chris Li <chrisl@kernel.org>
 
-diff --git a/net/ax25/af_ax25.c b/net/ax25/af_ax25.c
-index 558e158c98d0..a7f96a4ceff4 100644
---- a/net/ax25/af_ax25.c
-+++ b/net/ax25/af_ax25.c
-@@ -1129,8 +1129,10 @@ static int ax25_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 	/*
- 	 * User already set interface with SO_BINDTODEVICE
- 	 */
--	if (ax25->ax25_dev != NULL)
-+	if (ax25->ax25_dev != NULL) {
-+		ax25_dev_hold(ax25->ax25_dev);
- 		goto done;
-+	}
- 
- 	if (addr_len > sizeof(struct sockaddr_ax25) && addr->fsa_ax25.sax25_ndigis == 1) {
- 		if (ax25cmp(&addr->fsa_digipeater[0], &null_ax25_address) != 0 &&
+Chris
 
