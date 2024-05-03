@@ -1,116 +1,79 @@
-Return-Path: <linux-kernel+bounces-168429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1248BB87C
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:48:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 356A88BB881
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:50:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D221B21BA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:48:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6670B1C2336E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBC684E16;
-	Fri,  3 May 2024 23:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5E784FDA;
+	Fri,  3 May 2024 23:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hi/ze38P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bytY8/uF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE05984D30
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E54F58ACC;
+	Fri,  3 May 2024 23:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714780119; cv=none; b=oWE01+fG5drjxRaUX6vZc78LbgKk2eDpccPtXa6npClitVCisDlDc0SC3aAJbmc0i32gc0bHluyicYhBCROw7gq+q74sefclqI0XerXXhCOLhZgSWqAvmXbuShzU3m7pJRrVGZvAYdXIn27UKWo+b+v5A+aBEvXtrIWdmbXMECQ=
+	t=1714780202; cv=none; b=R3OBF8TA6RzOEbgM1EdhTSr4iPQYgEVseBkJzEKgIe4VOAAB4wvrTuHm9iYbdCemV34UfwmfvR6KvSIVUk5SOIKQuIur9Yl5BlCsPgrEsLtZ0f+H1IzgI1TPAg3uKvVeAghIegH4EfGlmi4kGU0T0M8dL5j0mN/m/ZdiqYPOfN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714780119; c=relaxed/simple;
-	bh=MBVYVk8YRq3x5wnUxk1XWITNQn7czjHBfq7A9PEktHE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qCWYLdgkfTFSdcgQIVpzRxmz+1qpPt8+8+TeWbhDyjLe4wrPJQMyM7yR1CERzhKdVzwKKzlyY7JB+Em4aUVJvrJuEUT+0yoio1Rg6VZKr34t3JcVzJdRFobTQZ3+rXgcV6iAuJ32YC3MfeidGHtHZcTm5Yo7chxYNStjOr4pibc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hi/ze38P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9500FC116B1;
-	Fri,  3 May 2024 23:48:36 +0000 (UTC)
+	s=arc-20240116; t=1714780202; c=relaxed/simple;
+	bh=2YpmUB6M3pSqN3NzsLH/1Ao0GXXtZMFte53gEx/HtJU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=bG9P5qkFAhHLfXHipBaBIV61PUJ17QZQfMK+xPFc/ENom9H2LXydjyPRaB/IETUcx3aJBWV5ISu3CHt+AzG4OsZY3CqMC4T8LayW4CXZq+W4IQ5vfqYJ+hKIviSuB3nO9VBWDP0SIOUxtFmnxC3cIhWoFOLblBclsn5IWanNRgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bytY8/uF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4487FC116B1;
+	Fri,  3 May 2024 23:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714780118;
-	bh=MBVYVk8YRq3x5wnUxk1XWITNQn7czjHBfq7A9PEktHE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hi/ze38P+azLP0viMTP2sQ8nr8jbTE4YvyapIPXzB1pFJPYib9L7zFZLLgg8qjkCM
-	 RHZN4L8MQ1LHNAV4RGJ2jL4ZFV2Hf6qkRkC+GCGVnu4H20Nk0IqYQXAoj1X0SFRe4i
-	 tLBfros+RknG4vvE9SYDxi2pfWx1SrNNzv8FFZE9M7NwfNJhIZBNkul0DlVryVv7bV
-	 k4xuv9Q74CeagysDX8AE8MtPAC/OiNRF7OPMj4HA/lgrhdYFbJfLd2n/FtZULHtY8a
-	 zEOcvVvjiWkcE7j4p+KweQXMoQvToIFPJOoQiSGXDYkZi8XBgzgrCDcf103gLltOdw
-	 8dqGEuKfX3QxQ==
-Date: Fri, 3 May 2024 16:48:34 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v4 3/5] x86/syscall: Mark exit[_group] syscall handlers
- __noreturn
-Message-ID: <20240503234834.y3gfp5qthporsx7m@treble>
-References: <cover.1713559768.git.jpoimboe@kernel.org>
- <3b99cb2919c88ab3d353337423b2f0f1b9173f0a.1713559768.git.jpoimboe@kernel.org>
- <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
- <20240421052540.w7gtahoko2qerhqq@treble>
- <CAJzB8QF_+51+rrJmq3iXkaAbmbbyKYVf0m_LpQCRSLS_FgHUMQ@mail.gmail.com>
- <CAJzB8QFx344hSSYy4jigtmQX+KfSpFOn+18WAfZAeym5LUMoKg@mail.gmail.com>
- <CAJzB8QFxfCCYTMfEYidB+PYvDV5J2zbdsnpyQR-gS-D-0y2gEA@mail.gmail.com>
- <20240503195653.5wkdfwno7nybepqc@treble>
- <20240503204417.2kxp2i3xjdmtapxq@treble>
- <a8d0a893-25ec-4119-abb5-c65adda51b49@paulmck-laptop>
+	s=k20201202; t=1714780201;
+	bh=2YpmUB6M3pSqN3NzsLH/1Ao0GXXtZMFte53gEx/HtJU=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=bytY8/uFZrCn37wOWEy3wId3z3QN5E14L9yhJt0D+EYhIdXPHW10GivvdAUibjWAA
+	 77KVVH3Tr9z7QsqxN0i872jVu1dAILURmwjlJTWvaar2F8qu8RxIOl8G77Aqoaqa/0
+	 aqyVah3WabniMmvfn87oH4SsqR89Jl3PoOTVaDzrRS5e9wj1Z3/XgEsgVdimvLPJnV
+	 SuCq3OGEbTxS6eIfgRhzEM9EWoCrrb8enpHUWhY3BtcZ3z31i+NGloYB8XJBC8I67u
+	 ASayxzLM3AoyBfXDr47x+3Y7ijNWI1FocxZmes/1RWmOfLQL90MMjOEADJmZ3PvaUf
+	 ksE3KLiIxNtfQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a8d0a893-25ec-4119-abb5-c65adda51b49@paulmck-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 04 May 2024 02:49:58 +0300
+Message-Id: <D10EUK2TUF57.1E87NSEA2ZYU@kernel.org>
+Cc: "Lukas Wunner" <lukas@wunner.de>, "Stefan Berger"
+ <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <davem@davemloft.net>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: ecc - Protect ecc_digits_from_bytes from
+ reading too many bytes
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Herbert Xu" <herbert@gondor.apana.org.au>
+X-Mailer: aerc 0.17.0
+References: <20240426225553.3038070-1-stefanb@linux.ibm.com>
+ <D0W3MTR0CY08.Q2UIYE4N274L@kernel.org> <Zi8UXS1MD5V58dnN@wunner.de>
+ <D0WIZTMRKHSJ.1Z4ZV54DLVWAB@kernel.org>
+ <ZjS83WIPglXiUH3n@gondor.apana.org.au>
+In-Reply-To: <ZjS83WIPglXiUH3n@gondor.apana.org.au>
 
-On Fri, May 03, 2024 at 04:33:00PM -0700, Paul E. McKenney wrote:
-> Does arch/x86/entry/syscall_32.c need the following additional patch?
-> 
-> A quick smoke test passes, but perhaps I am just getting lucky...
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
-> index aab31760b4e3e..d9ae910ea6f33 100644
-> --- a/arch/x86/entry/syscall_32.c
-> +++ b/arch/x86/entry/syscall_32.c
-> @@ -14,9 +14,13 @@
->  #endif
->  
->  #define __SYSCALL(nr, sym) extern long __ia32_##sym(const struct pt_regs *);
-> +#define __SYSCALL_NORETURN(nr, sym) extern long __noreturn __ia32_##sym(const struct pt_regs *);
->  #include <asm/syscalls_32.h>
->  #undef __SYSCALL
->  
-> +#undef __SYSCALL_NORETURN
-> +#define __SYSCALL_NORETURN __SYSCALL
-> +
->  #define __SYSCALL(nr, sym) __ia32_##sym,
->  const sys_call_ptr_t ia32_sys_call_table[] = {
->  #include <asm/syscalls_32.h>
+On Fri May 3, 2024 at 1:30 PM EEST, Herbert Xu wrote:
+> On Mon, Apr 29, 2024 at 01:14:15PM +0300, Jarkko Sakkinen wrote:
+> >=20
+> > Yeah, sure, that would be even better, or even memzero_explicit()?
+>
+> memzero_explicit should only be used for stack memory.
 
-Ah, yeah, that looks right.
+BTW, is this in kernel documentation? It's a guideline really
+and would be nice to have reminder, that's all.
 
--- 
-Josh
+BR, Jarkko
 
