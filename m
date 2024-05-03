@@ -1,78 +1,103 @@
-Return-Path: <linux-kernel+bounces-168317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532F48BB65C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:48:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8178BB660
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6C4B1F21519
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B17B26DD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918EC7EEE1;
-	Fri,  3 May 2024 21:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B8484DF7;
+	Fri,  3 May 2024 21:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gnDWUcIB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="LBITSpJY"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61A24CDE0
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15B958AC4;
+	Fri,  3 May 2024 21:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772662; cv=none; b=hJAb5v5mjMzIAUWMqY9QdoiIIK/OiTEPQpeRv030KUPFDKZY2fklIPRu2+GFe8j3cVrrBcUqkz6IJ2yvCw8GcSmOqvklTwVkmC2ndrGR1NKydMVT8z0Mi5Eo+1O5kHP37MQSYuNuKYt1lYYLdGf0oS3fps+2EE4UF6mE8YTto30=
+	t=1714772742; cv=none; b=Wes5WWDUT25GfLUX5I9hkAeipwq9C0nZBf4Z2886fo+s2T6InXmjXKwU5z7QV85SPZpBa9ofAp1g+gj7HYXyPiAsK+oZpR97btQxuIDiZ0r9HolAF/cOyYABdodKPGTCz7yXdFWF9C8evE3dq6wPKuqTqxzr/jB1Hj+AB05XA+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772662; c=relaxed/simple;
-	bh=PUzXMSbC+X5EcWRG/at4HlBAQNJNqZepjSdVbkYW9hw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=mCFVCZsRH4J0nk9A4ahjNdV/8v+H/DSpA5tmSfeQquZSrNTS7ewHjilo0jWvkvwH+SU5GQscRWYeOSYA2KTt5fIEFOWCKi4r4HUfGfvhdjLOurgP0GQ1Dss+40oaZOxAOnRxEmZ/Snr+MFo35uyd0ZGOHHNXcK8Sbw4MXVrmL0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gnDWUcIB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D86AC116B1;
-	Fri,  3 May 2024 21:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714772662;
-	bh=PUzXMSbC+X5EcWRG/at4HlBAQNJNqZepjSdVbkYW9hw=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=gnDWUcIB+KvvqI0jQWF+yIL6sQYUyALL1OYAkDRfTTnTmrS+TXRgg9Lsi90PpdduQ
-	 hnoPjYtg/ocLBNWcyynP0kHKEW68WX0ecx/4M/PaWOW6CQQpOPgkSy9suVYjIvSHr/
-	 r2P8NZd6hGs1ll4kqvYNlh9RmySa/7rxX6WgoIoZ6Zvia7yTU07usXzCF+IABsqIEU
-	 aIM7o6z+/Ehv++2CpOG3o9J+0NGavF2t1w0AuAGMlFc6MCWR6WytKq0Pq//qeejmOc
-	 kP49CpU40vKB9pjpI1Tg7erW9ugdFkDblaWxgQlRnRXWZBRC2m4aGYFpZKnFpTX307
-	 RJYSxYZVS2o0Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 48585C4339F;
-	Fri,  3 May 2024 21:44:22 +0000 (UTC)
-Subject: Re: [GIT PULL] xen: branch for v6.9-rc7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240503122028.16437-1-jgross@suse.com>
-References: <20240503122028.16437-1-jgross@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240503122028.16437-1-jgross@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.9a-rc7-tag
-X-PR-Tracked-Commit-Id: 802600ebdf23371b893a51a4ad046213f112ea3b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ddb4c3f25b7b95df3d6932db0b379d768a6ebdf7
-Message-Id: <171477266229.28875.12276129093596082835.pr-tracker-bot@kernel.org>
-Date: Fri, 03 May 2024 21:44:22 +0000
-To: Juergen Gross <jgross@suse.com>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org, sstabellini@kernel.org
+	s=arc-20240116; t=1714772742; c=relaxed/simple;
+	bh=lOYEhpsDzSYPAdQ3BrBv0vEy/GPofPZX+8B5tDMr4Qo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PsaOIklf60V4xlXoSOn3/3itSDzse/Mc2dps0S0BPukCzQ9KxLffEguyl34LRb3MTsEBN26t8S62H+pjnapS4hwBGHVE7tDmbFIlPXxD6pEfiuJeGrauS2vm7uS0lFCIlPaHT9lBn9VTftrhu+PjOtk1Sq/q7cc72Mex3BnWQgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=LBITSpJY; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=3lCoy8uzoX7QQd8eqESv9U82+gq2FTw7cMvL87kLhkY=; b=LBITSpJYboAcmP2sLMLog8nydW
+	mt/eEb1k1RxaC/1rf9axcfr3DpdDFVZWBzSM5oiyiRFUxSmSTNk7S/pL3r/LyK0sUx0B7ulVQ3JNQ
+	r6F9ALR0ltwB+yhzi14FlChXAh3y8p88L3KhQBzlGvQE9Qyjmf9GyQKp0ImLKiTti9oHi8k3hRvo3
+	wVh2ps6XnwBsfVzZeN71mN1klcTNC+Iw2ovocjktngU/aRLmD9i2C0kfkNl/XDxg43VHY7LcXvmHW
+	cP5n8cc1rlrFA4QbwGKtuB0RilMr6TQXDJT8CFkSL/wplslwGYSr1h0+/PUFgSGJlDgXOv0RWp+HJ
+	KdWj72Tw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1s30ih-00B9OV-2B;
+	Fri, 03 May 2024 21:45:31 +0000
+Date: Fri, 3 May 2024 22:45:31 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org,
+	christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name,
+	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	minhquangbui99@gmail.com, sumit.semwal@linaro.org,
+	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
+Message-ID: <20240503214531.GB2118490@ZenIV>
+References: <202405031110.6F47982593@keescook>
+ <20240503211129.679762-2-torvalds@linux-foundation.org>
+ <20240503212428.GY2118490@ZenIV>
+ <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-The pull request you sent on Fri,  3 May 2024 14:20:28 +0200:
+On Fri, May 03, 2024 at 02:33:37PM -0700, Linus Torvalds wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.9a-rc7-tag
+> Look at the hack in __ep_remove(): if it is concurrent with
+> eventpoll_release_file(), it will hit this code
+> 
+>         spin_lock(&file->f_lock);
+>         if (epi->dying && !force) {
+>                 spin_unlock(&file->f_lock);
+>                 return false;
+>         }
+> 
+> and not free the epi.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ddb4c3f25b7b95df3d6932db0b379d768a6ebdf7
+What does that have to do with ep_item_poll()?
 
-Thank you!
+eventpoll_release_file() itself calls __ep_remove().  Have that
+happen while ep_item_poll() is running in another thread and
+you've got a problem.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+AFAICS, exclusion is on ep->mtx.  Callers of ep_item_poll() are
+* __ep_eventpoll_poll() - grabs ->mtx
+* ep_insert() - called under ->mtx
+* ep_modify() - calls are under ->mtx
+* ep_send_events() - grabs ->mtx
+
+and eventpoll_release_file() grabs ->mtx around __ep_remove().
+
+How do you get through eventpoll_release_file() while someone
+has entered ep_item_poll()?
 
