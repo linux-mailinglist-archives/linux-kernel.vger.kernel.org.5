@@ -1,120 +1,119 @@
-Return-Path: <linux-kernel+bounces-167793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0957D8BAF3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:49:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634068BAF3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:49:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B93492843C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94DDA1C2257E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA7046542;
-	Fri,  3 May 2024 14:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771E44643A;
+	Fri,  3 May 2024 14:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="a9cbh5sD"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="P66wCa8G"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F3942076
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012E342056;
+	Fri,  3 May 2024 14:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714747761; cv=none; b=HPCZ5P0x5L4ktO03qEIyQxEYufQIbFQF9b+D7c6hLvlN4Vo2PFltxPMzSqQbexpllVE4VHB/yWhugS5uA9gElWbqeO0EQhBeCbzJNGwKlJgUSxCCSDuNOssrkamew82n5ueCPPIHUS2BsF+6sWikeAANQfZNSsbp50LNoqtH944=
+	t=1714747775; cv=none; b=R2yVOXD3qI5F8ES34mDT2v5StRbZG+sGbAmad3hvW+QQxbZRHNUvFj3MlXm9SwVEZQPTA0k+RLfcOwgKcUaSgtJi6iKHp0ZTkWXGeBuAu/S1QtUQuyGc1xsI16YH2tKeFCWuEmChIaSo4SvwrbioMIBOerImD0UYHzLg+GmMHb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714747761; c=relaxed/simple;
-	bh=sIkQv8FPBAXSI8J1xzgFSbGfjS0vfeSYsCzMMHqXQDY=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=BD7eY5X2cUKSMp/mellz7oCYYmElp1WjlnIL/aZVrUgbw4kIkIAJJLTVXyyMG/4kVS3KPXQ4rAhYG/V23KKdsRPzDlQZDJLO31gQdRvm9UrUT9Yc5KADTMnyHvr2BQX4MQVDCObDPF8thCifcz8Gzhjr6UaqQtno9vyo4EKUV3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=a9cbh5sD; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-572babec735so2496732a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1714747758; x=1715352558; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vue7AEGpbhQWdtlSVezRt8OjfVIEQ/ARZwW50j0jLhw=;
-        b=a9cbh5sDSwJDQ8iBvEeC2mEr7o3XLcgZEp77KkqkfMD/3UzJEHgbQq7Hm6cExjhipe
-         kqZvDUllA3z2CvPereKBM6mNgtndcAC6lFVXN2N2I8pOhw1duTt1tOCXP7W7uoD00u6G
-         GiLTVsEZQOsIgpz4nR4JzY0IfXghYwZUps9U6nV9esOUO4r03GM7OMBJNOIPV6e6dq0C
-         Knvt+85JChzyaULAFrVDdudikLCslfy+KdiaFpaV2CazUhwKvHbHFL7S/JeVgYXJfZrq
-         YDtakTeuA0858mw/imalZX7AHmas00g5qJXkW8VdbsQ6Eope6mhRAfD4wjEo8f7Cw6WQ
-         ntyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714747758; x=1715352558;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vue7AEGpbhQWdtlSVezRt8OjfVIEQ/ARZwW50j0jLhw=;
-        b=MAxvfTBaeD7I20sFdZhFp6O2nxtRX+VnqK133EX1CeOKtunjM5HeFhukxjyuF1xlg/
-         oFO3+j1Rm44gm5qJ+WDekywEncdN6rOI6Se7pYUN7a3w1PF8EvfG64/w7flsef33GlUX
-         avesBv1U17rhOmYgTcc0HpJYmbeNHSIxoLPdJU0AbVvURfIMxGNgs8Nmqc67MWn4LkN+
-         uPIGVRQA81UaX0C6c3FsB6u4r/rozvCvxcjYb1xSw2swddqBAe8EKyoPS6iCOr6K5Jcr
-         lrZFnKFT1B4reRiPlS9tRbdvjd3/FgCaUT4m99hweZ1S99zeGmO6ZE3AI1R9zUaa/2vV
-         UzpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX32tURTts4q//vjBwL4FX5euWNoC//bzeAauW2mvrBYp9xc3f1gp4SvfQ3REiS6InQNWu59jHjSEBAXJfjbGAf84CqqwpSB3WgK5qv
-X-Gm-Message-State: AOJu0YxhGjnv2ulAcZqyS6HIr/Nhs45nQNfQqZNcqPHfUI61HalqoTAZ
-	kEB8QHUnR+qDHGBhtKay81AoHvxq9HmBErW5RMHc8PWpKRnyk4hELfEmIS0bOyI=
-X-Google-Smtp-Source: AGHT+IHS2L8YhvIVed6CV2FoQZFS19uLuOGp4sfBdE1Ni9CdpttS1oQhwnJdmrpHyLiNBhnvgP/6Kw==
-X-Received: by 2002:a50:9551:0:b0:572:aed3:a1b1 with SMTP id v17-20020a509551000000b00572aed3a1b1mr5220368eda.17.1714747758080;
-        Fri, 03 May 2024 07:49:18 -0700 (PDT)
-Received: from smtpclient.apple ([2001:a61:aa3:5c01:ad5a:d037:b2a5:befe])
-        by smtp.gmail.com with ESMTPSA id ba17-20020a0564021ad100b00572ba362607sm1738666edb.51.2024.05.03.07.49.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 May 2024 07:49:17 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1714747775; c=relaxed/simple;
+	bh=ZdaAcZwjeEGQL9HK0+7ZDImDJwKA/pqYRR2WTr4YDiM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BbKk1HbM+aQ1W+tEtO+CKCamqENFLPT6dn0R+aX1Se5wUNi5fArGLP1X1b0CkeiYuuzGfPmO35dhLJuRuIhqhoyEyykktA4B9pfmTGPeUpvpH815befv2cJyCohchh+sTELWKTB0LJfIUAQk0UbTnR9KcxtW1xhpZ1B/cOV0LsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=P66wCa8G; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4436vduw010022;
+	Fri, 3 May 2024 09:49:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=e
+	9rixmbrWHDGZ6J2M+NgxEP1yn4EKSSaL4tVG+ihimE=; b=P66wCa8GLTtrFWKdE
+	PfQ7r9FrXlgaNykLWwGyIYcD+OhuKU9SeZDW/rFjqbVszsxMdWLZh6weseJoFGwD
+	HrUx0sV5jTIP2wMim1DpqUaVKQpcH6g2YBrtPtuASZTfGdVQaePFBp3p9hpb2eDx
+	Rm1syQ5Yo1D8eJnGxkdf4X0uU8a+RwzEmhSnMg0ib+F6BLhjgh3uH87gS4xyUZua
+	ZwVHXcYp/HvG/LIYgUcYc5FIh93F+QO9IxPISnZDffCS1Hi815fqTUQ6G9Yzn1/U
+	l2ZjKvdwyItvH1kj+w7Y2anbv65nRBZLDjiog40G6oPeqdhjq+vXfUznB2DN5WXH
+	bSDkg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xv0e8hn7v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 09:49:22 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 15:49:20 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Fri, 3 May 2024 15:49:20 +0100
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 506D582026C;
+	Fri,  3 May 2024 14:49:20 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <tiwai@suse.com>
+CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
+Subject: [PATCH] ALSA: hda/cs_dsp_ctl: Actually remove ALSA controls
+Date: Fri, 3 May 2024 15:49:20 +0100
+Message-ID: <20240503144920.61075-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] bitops: Change function return types from long to int
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <99B58F85-CC9C-49F6-9A34-B8A59CABE162@toblux.com>
-Date: Fri, 3 May 2024 16:49:05 +0200
-Cc: =?utf-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
- Xiao W Wang <xiao.w.wang@intel.com>,
- Palmer Dabbelt <palmer@rivosinc.com>,
- Charlie Jenkins <charlie@rivosinc.com>,
- Namhyung Kim <namhyung@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>,
- Youling Tang <tangyouling@loongson.cn>,
- Tiezhu Yang <yangtiezhu@loongson.cn>,
- Jinyang He <hejinyang@loongson.cn>,
- Linux-Arch <linux-arch@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <F1D1D3D4-CFB0-47A8-87F0-E1D8A6B5904F@toblux.com>
-References: <20240420223836.241472-1-thorsten.blum@toblux.com>
- <42e6a510-9000-44a4-b6bf-2bca9cf74d5e@linux.intel.com>
- <C0856D2E-53FF-45EB-B0F9-D4F836C7222C@toblux.com>
- <e7e4ff27-ebb3-4ed6-a7cc-36c36ab90a36@app.fastmail.com>
- <99B58F85-CC9C-49F6-9A34-B8A59CABE162@toblux.com>
-To: Arnd Bergmann <arnd@arndb.de>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: M9uz6xZrXz6IqMHVhnaAae2NIHxiVlhN
+X-Proofpoint-GUID: M9uz6xZrXz6IqMHVhnaAae2NIHxiVlhN
+X-Proofpoint-Spam-Reason: safe
 
-On 22. Apr 2024, at 17:55, Arnd Bergmann <arnd@arndb.de> wrote:
->> 
->> I can generally merge such a series with architecture specific
->> changes through the asm-generic tree, with the appropriate Acks
->> from the maintainers.
+hda_cs_dsp_control_remove() must remove the ALSA control when
+deleting all the infrastructure for handling the control.
 
-What would it take for this patch (with only generic type changes) to be
-applied?
+Without this it is possible for ALSA controls to be left in
+the Soundcard after the amp driver module has been unloaded.
+So the get/set callbacks point to code that no longer exists.
 
-I did some further investigations and disassembled my test kernel images.
-The patch reduced the number of ARM instructions by 872 with GCC 13 and by
-2,354 with GCC 14. Other architectures that rely on the generic bitops
-functions will most likely also benefit from this patch.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 3233b978af23 ("ALSA: hda: hda_cs_dsp_ctl: Add Library to support CS_DSP ALSA controls")
+---
+Note: it would be better to use the control private_free to do the
+cleanup, and that is my plan long-term. But that is a larger change
+to the code.
 
-Tests were done with base commit 9d1ddab261f3e2af7c384dc02238784ce0cf9f98.
+I like to keep bugfix patches as simple as possible so they are
+low-risk and easy to cherry-pick into older kernels. So this patch
+fixes the bug. Sometime I will send a patch for future kernel
+versions that reworks the cleanup to use private_free.
+---
+ sound/pci/hda/hda_cs_dsp_ctl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks,
-Thorsten
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
+index 463ca06036bf..a42653d3473d 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.c
++++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+@@ -203,6 +203,10 @@ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
+ {
+ 	struct hda_cs_dsp_coeff_ctl *ctl = cs_ctl->priv;
+ 
++	/* Only public firmware controls will have an associated kcontrol */
++	if (ctl && ctl->kctl)
++		snd_ctl_remove(ctl->card, ctl->kctl);
++
+ 	kfree(ctl);
+ }
+ EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_remove, SND_HDA_CS_DSP_CONTROLS);
+-- 
+2.39.2
+
 
