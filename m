@@ -1,289 +1,166 @@
-Return-Path: <linux-kernel+bounces-168372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD648BB7A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:41:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F23BA8BB7AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:42:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AEC51F25382
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:41:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD9282894D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DD812E1C8;
-	Fri,  3 May 2024 22:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3474F84A22;
+	Fri,  3 May 2024 22:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b="O7fQEBAh"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2133.outbound.protection.outlook.com [40.107.101.133])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZmAhSACs"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240DA127E37;
-	Fri,  3 May 2024 22:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.133
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714775775; cv=fail; b=T9JHGHqsQz0DBWRWk5iiOYRsX/aoNtHf4/r6A0Pakao3uemLJLOGVeWM7Q8BP5dzmOQlKAjiWcyRj1EG27rhc6L9gFkXOIBv7T/RdwzLapkupQ1mbxpHXjFlMsxLwpWQLT+x3IUSlJQ4qnLjd8PdeiIfsss+u0YXrEECZiV3tJg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714775775; c=relaxed/simple;
-	bh=kEmdIGOF+hQ7w8aOSI9G+Qd8MrBscwqlzQVmDM0jFeE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YBb5u5k2nin9Ts/eWQE86vRJGcGPinSKeu5jm43CWSOrBEqXcKcsGWA6tkRJDyEhOv/WyWJjpEunYpFtc4G4YQXyY1R5cBwsq200Inw9nENtE2fUypN96chM6J7bABExluZRuvKxq2GGyERCisuTTbq6jWwHmRy7/XnVB4wlaHg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com; spf=pass smtp.mailfrom=phytec.com; dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b=O7fQEBAh; arc=fail smtp.client-ip=40.107.101.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aJScZeVpIqacH+vY04r5uo91wAd4+kUgsx5xbl6uwXa+ITPRt+bWjdoN+gSml2v/YMYGiIYXfR/buiB4EWYcYTOUv961+vYR2NLN7nkot0+sMxDBoRGjlKZUWbjZXvSdEWVZMkf5NxFvgUsGbX+30YWxV5oX/dUc1CFr6Nvwo8M0IUByJNuTEDLz9j68p+WXha/zzHs7SoyoxsJs4jjsuNYN1mAru57PFwXn4N3vtj5trMFHGymHlJ+tc9d8IfD9Bi+zgzu3ZDgTKqCvb55A/alHqdqRN2kb39xqickktzuCr0t4H+ve8hlACWCVX1dr8SG+PDwJhAWS8Gj8OBkdxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mRIpdyYQQ83Ocqd4fLpJJf/d+BkIHGJFv/HGlqg9Eg4=;
- b=R2qMyN5VjBsNfNT8dL4cUuND3zwHrkO8z25OYyNKCxIe4G2C8nwSKfzNdcY17XmHKFNI4jJ16TIz2yGS+IgmALZOt8w8HGG5fqqT26OrVJXCi6zJru8/mE/pAdfWvZD8Cdhqbxsnhqiw0GtpTIr4+IX8dAEMkOessI8uXslvdE4RHDFh0mIM8IQlWrm5iOGGVJSAk7nssBsjvaJc6yLgDHQ+jn5J569BlMQ+0MtF5s627L1PU1G+kl/zRo4MOFMABOyalU3QxcHo2M7dxsOd+T1RrtB/i5lUIWqGpgQsrEE/3uuXlJAzxOOzENlhow3eSS6GGQe+IH/9chYvY2t4cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=phytec.com; dmarc=pass action=none header.from=phytec.com;
- dkim=pass header.d=phytec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=phytec.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mRIpdyYQQ83Ocqd4fLpJJf/d+BkIHGJFv/HGlqg9Eg4=;
- b=O7fQEBAhozYy+rlUr2bZgr0lfbpgbSZwCtV180v/BP9Kt0CikXbtzKxydSHZCd0MXb13g2yErlPfh5pHIdf51Lt+ZOxFhb4oH42oS6NHx6jB2QVu1OnukR5UkXCr6LhgdN4E8jx6he0nCtxvWcGvsKYzzTZb5flyy48foMs3gBk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=phytec.com;
-Received: from SA1PR22MB5636.namprd22.prod.outlook.com (2603:10b6:806:3e2::15)
- by PH7PR22MB3616.namprd22.prod.outlook.com (2603:10b6:510:1d3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Fri, 3 May
- 2024 22:36:09 +0000
-Received: from SA1PR22MB5636.namprd22.prod.outlook.com
- ([fe80::aaeb:2d53:9f16:db45]) by SA1PR22MB5636.namprd22.prod.outlook.com
- ([fe80::aaeb:2d53:9f16:db45%4]) with mapi id 15.20.7544.029; Fri, 3 May 2024
- 22:36:09 +0000
-From: Nathan Morrisson <nmorrisson@phytec.com>
-To: nm@ti.com,
-	vigneshr@ti.com,
-	kristo@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	upstream@lists.phytec.de,
-	w.egorov@phytec.de
-Subject: [PATCH 2/2] arm64: dts: ti: am642-phyboard-electra: Add overlay to enable PCIe
-Date: Fri,  3 May 2024 15:35:52 -0700
-Message-Id: <20240503223552.2168847-3-nmorrisson@phytec.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240503223552.2168847-1-nmorrisson@phytec.com>
-References: <20240503223552.2168847-1-nmorrisson@phytec.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH0PR04CA0056.namprd04.prod.outlook.com
- (2603:10b6:610:77::31) To SA1PR22MB5636.namprd22.prod.outlook.com
- (2603:10b6:806:3e2::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2AB2C684;
+	Fri,  3 May 2024 22:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714775938; cv=none; b=ormzEf/4QU9eJEAyn9GOx7AzKE6vU8y3AX8l2qsWTuOcYPE3ixsJFUEgNpGlIjPVLOkVAfrABbcl5LjMF0x0ZsLT9dhsVKkGG+7QqIrSeF/TYGFW1dtLoVE8SIgm6eLqp/k8rAEo252nf3HO0YeqS61n3i2z0KhbQ157u3SIGG0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714775938; c=relaxed/simple;
+	bh=SM9kYn7TNaYtIgIW4dTtS96tqMgkyYWOqgZTw1Kw9S8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IFrDtbMYhCZnD9SlL5R+ZTAKIY9YN5F58DAt/+yfNHCxdx6vykSetZc+glPsGIE1ZKEW1E9BWv2xTwicxD7sK/wDd8owlNbV0P+nug3QmkySkvCWt+QLpBuOU0LH6mlAVWS2BAdY29O7nlxh0kJ4gC6GOTLAOOGkK320OqtwL8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZmAhSACs; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443LNWRh020078;
+	Fri, 3 May 2024 22:38:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=urnXA00algNWY4sZig1/JWwNFY3hO76XDLqsf9MC3bE=; b=Zm
+	AhSACs0y5sI5/mfNnvkifc1xLlUywujp2TTczjo1qapAfjws9dv5Smr/bJYOgL/a
+	f3OYu5ekBvmX/bJOGb90K2bKdnqrM6ZCS94BjVuZa3ebVj5NRAVw9U6e2m5ROGjn
+	GCbGbBNS5Rck0F5tnArbksG5rvNakGMEauflI+hQZ/TFc9xJxhghTZJrCg6o4YFw
+	+QfqwEi9t4pm1NNiCZOqoO4aFlx4zMPLdzaWlkbkzj4cy+9mjmjph0gotYL5xCSr
+	Ao+N5T7DN/0iFlT/ZtfDRWGPRnZC9nfniNONBs/WhhC10BYm34/GDHW3eY61NIKU
+	THKJTCR765/UCmX6EoOA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvwfa9j3e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 22:38:41 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443Mce6T028489
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 3 May 2024 22:38:40 GMT
+Received: from [10.110.114.34] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 15:38:39 -0700
+Message-ID: <24fb0b07-af03-1341-d98c-46f4f167fbbb@quicinc.com>
+Date: Fri, 3 May 2024 15:38:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR22MB5636:EE_|PH7PR22MB3616:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a2a95e6-3de4-4747-fc7f-08dc6bc16dab
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|52116005|7416005|376005|1800799015|366007|38350700005;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?MLBzFieORZzRZtFBOi0o5pwth/8j0fx2KXnjUGEcsxhpFJc74rxxj+c2P4XF?=
- =?us-ascii?Q?ruj0PHHeUlsWREv+GtQkCk1UFAAkowsEAwSuaysW5PZED8rY7LkJ+lmB3XDz?=
- =?us-ascii?Q?JF6FXddnRp0PrPwKn3pI5no/NC/D1Jxpwfhr+f0t+ne89gAOL8+zGCGHktsj?=
- =?us-ascii?Q?e7VSGVESkHlE3ncuVGhY1TzfXsORObnXkNzO0yiD0lmOps/rY2Fw0Ikpe5+U?=
- =?us-ascii?Q?EtoZzxfEr24ls+0L3TIVg7xLelDybOeG08MHpNxzlineVac5kC7WJqyUr9UT?=
- =?us-ascii?Q?5N/12Y8AIQMVbNPjslamDHid7KBwflHZiUJLVi5+ca6c/IAw2wdMYVl8IpIs?=
- =?us-ascii?Q?pB4D/BfiM+LYptjpMNl2MQFuoYBnWiXq8bH7NbQruGk05wpofdbg/vVRhl+O?=
- =?us-ascii?Q?/GBpgULVnxY6sIF7oq0kHyrWuGvXZShdIN+PTqLixh/WWRDDUTtTwYqpKKn5?=
- =?us-ascii?Q?JI3dB0ZDiHsaPl6mHoL4Lgd6h0aIgFVj540ebJmmkfYy5nuVSSUuLK98rQHP?=
- =?us-ascii?Q?V5p7M5eFj1HhXBlPz4wLyKIqBfInvP4cEO+1MgTemIIF6dc9/c5qn6UmH2gQ?=
- =?us-ascii?Q?uoTpnYITObPaSs6oLzIJc2V4elp5YzMCRhHreYR3rcI3svAqYzpMc2vfrFAC?=
- =?us-ascii?Q?R8cSDGPwtpu02IqrDzerDyx02T2do+Nsx25lnNHsqOOKs/dO5vPF/OE+bd/m?=
- =?us-ascii?Q?Bc3SwwwrizxUk9VuY4GUG6LIn+jYsNrtEI8yinBhi6S0atuuB0hTE4jSMCZn?=
- =?us-ascii?Q?aqgS1/gl7BY8JDm1/G2WCz4DrAqXLVv3e9cJ42ZCfgWGyLhdaIDVVA4zxhXr?=
- =?us-ascii?Q?dpFpIUIq8wySEP0CezDxJN01T2RJgWyTQKxKxmujxBaYPB28WGnGjY6oehO/?=
- =?us-ascii?Q?lbmdy9Iu5RiMTD14tln2Q+tjAxmtcoNZYTxngbrsgcTua5AVWz/+qUxdKIeg?=
- =?us-ascii?Q?7KSR3ze3vgsmuZ+55wcMSe52Bx5d/+VHT2kEDF6QmsLce2Lefm9D9heFmm17?=
- =?us-ascii?Q?KLS2NHI7jcYkFXWsmtqt88grM3btJg+8/bQV9QXdfeVcfwOcsxNpSg6TA+hq?=
- =?us-ascii?Q?+eieQ00RxYmBbOFZRgf3/nRY9qeQjnu3uFupAAm6qYEFUsS+FxeR+MRKSGSW?=
- =?us-ascii?Q?wFPbpKCzvjbuZ1p6HDMdGtY8QWswJUo/NVlaCu/eSdvO+DLJ+M/TyKOGRe8v?=
- =?us-ascii?Q?uo7VN7nkerAzbh+3ea+TM5zhXuJ/EKLNYeY4fsJtDQw5g7+Zx7qOGWLLVpWr?=
- =?us-ascii?Q?pBX2JBAvsk8woowZFIVD/icrsIJt2e7M5xrQfN+Iyg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR22MB5636.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(7416005)(376005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?gCg0RjEmdJCbQnyPOloZxCgUurDDHq6Xjrww4BPKxh3W+92fGCyk0OSgY1hK?=
- =?us-ascii?Q?aEStJUhLBSloHmrkP2ZGn+dEJMV2pvR6fU2PoIl0lnoN33qiT3YX/938d8AM?=
- =?us-ascii?Q?ET0SQI8ux8ETORTxQDP5DKAUvDQ/oHJPfnaTVhoI9CjHq65AfeuA7MqHbmSb?=
- =?us-ascii?Q?7vBFjKdOxnwcOaGmZUQObu8TYcDsNv4bLwVQWQgCXIo8TfBn2gSnCbaNwDZL?=
- =?us-ascii?Q?pM+d5P1/pa3plN4X9X/9PZDZYQzc0fC0EqkOIJBo0rvaGs+CRktcl6oMXZIZ?=
- =?us-ascii?Q?IEOmpXtnQA4ww6NeArsU55qLmGgobU3xlvYtNre9uBiyIIqOnVL7nNdyLn9K?=
- =?us-ascii?Q?xj/bzg4fjEIvqkAZ5v29Fsep2tSQjVH4OH/DY2lpdC7vk4hWidnXOurfdWzx?=
- =?us-ascii?Q?M0RijA2xZuKQgDEpnyEX5LLgtlkZWqMN7RvJfvTU0KB2x2/QkfgVeRsZxhRF?=
- =?us-ascii?Q?BLlPNQjf26m2BQCTr46fnjwzxe0l4CvRCz6SAUpoGFYzjZj3ttyvRK+QWAfB?=
- =?us-ascii?Q?lpjvpQJ/wkl3fmD83VSQsxO3ZCQ1+4x0/rsn/mt4Kti0Vfd2531Z/OumoxpK?=
- =?us-ascii?Q?QAkRZ3d/iXjVw5eqflpoyUv+8zLj910JMDg4JFxi5mK0xutWefMPXSldNd65?=
- =?us-ascii?Q?gDdCEo1atcSBSuOJ8gdIb35afiokK/+eCqC0Sey5uWzTKAUR4n4ZxVxqZlvj?=
- =?us-ascii?Q?i3kaejVkUYlmEnmIl1mHOS06fP5DZWgcR4rJabx7ELq8aWNNg78lfV0picyk?=
- =?us-ascii?Q?plSdsf6gJvdHMKtpU0ndIztLJjVSYlnQk5cw7eqOak+RlJ2TiQbvRFQbsxi1?=
- =?us-ascii?Q?/LLYJRB/LG3gP6jcKhsocjTb/8LarVe44vWm8RdFgxO7hX2M6H7rWm8eGig0?=
- =?us-ascii?Q?kofw+5D+EuXmprZlRa5jf/dEj6XYDhQJ5QjETiaiqsviEzRh7DE8oPnl5RNd?=
- =?us-ascii?Q?+GZzSscnNVNjv6rRfTvAign4kOl/q/wCahhXCIoqiMuR4VW/6w9RIojyLQO6?=
- =?us-ascii?Q?hwXl7z6SfBTWHimczNQiiwLScb3+3cHuo5l07PadnVLiUi5TZDuCQgRCJrCt?=
- =?us-ascii?Q?ZHq2xXUjv5g9c9Ir1etVvZwz1TPBs7QY+fPC3pgSeo+tvjHyCovGekYQusKP?=
- =?us-ascii?Q?26U0fzbsJKbdBcifm9R7M+iQsjN3EBno2sfRR1PKSIFY3ASeOupoTHV3PvcF?=
- =?us-ascii?Q?9VLW/z87IFyzacisuJCZNpRPP0u6stRqURfWv7/nbvay5Nz1zIHabO7Wl912?=
- =?us-ascii?Q?9UMx88m5w8RMQmOu6lDPTsDZXcxnsd0Q4dxf+QJpZdeR2YM0fiRhGVaRzDZZ?=
- =?us-ascii?Q?I4treszJbaFUclvM0wum16dxWZ0OC60GypTzxcul5Prb2OQjSA87j1vlCOUU?=
- =?us-ascii?Q?mqwCIbwywQixddbgkcTly3qjpjz305UrwkJZq0Dkb2VQRsdi/8zKyMRlqjm6?=
- =?us-ascii?Q?8zgAdDQdOSUPRU1IPH9gl5n3Et0LNWQ9H1iIwdmYnXmyesHo9Dk9+8ZOHebI?=
- =?us-ascii?Q?a9Ck6+65brbU6/pTjXW7FYdR4ELPWXF86PgbwQzman+rH0Dx0fke2tPojSJY?=
- =?us-ascii?Q?KE2pgyBYYhgBuOUvOKZIOhFzxOP3syPo0HIyhnUR?=
-X-OriginatorOrg: phytec.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a2a95e6-3de4-4747-fc7f-08dc6bc16dab
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR22MB5636.namprd22.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 22:36:09.3821
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 67bcab1a-5db0-4ee8-86f4-1533d0b4b5c7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aKL8YcoKOqKPYgZHTNWrCFUB3S4PaDIxYyCqAcQ68SDqHjWHFfn5+mUZW0GxkwUSiiq726U5fyEe5KXKrW2dvg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR22MB3616
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/2] drm/ci: validate drm/msm XML register files
+ against schema
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn
+ Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Helen Koike <helen.koike@collabora.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240503-fd-fix-lxml-v2-0-f80a60ce21a1@linaro.org>
+ <20240503-fd-fix-lxml-v2-2-f80a60ce21a1@linaro.org>
+ <69b593b7-109c-825f-3dbb-5e8cce63ff01@quicinc.com>
+ <CAA8EJpp4x+NEpMAGtgOmu-0NY8ycTu0iQX6-1Vv76mkKPea_Cw@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpp4x+NEpMAGtgOmu-0NY8ycTu0iQX6-1Vv76mkKPea_Cw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5O7mhWqJWY2GtAgNP9TNe07xL1XgU3Z8
+X-Proofpoint-ORIG-GUID: 5O7mhWqJWY2GtAgNP9TNe07xL1XgU3Z8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-03_15,2024-05-03_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
+ spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2405030161
 
-Add an overlay to enable PCIe on the am642-phyboard-electra. This
-will disable USB3 and restrict us to USB2.
 
-Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  3 +
- .../k3-am642-phyboard-electra-pcie-usb2.dtso  | 88 +++++++++++++++++++
- 2 files changed, 91 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-pcie-usb2.dtso
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 9a722c2473fb..6a38ce2603af 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -48,6 +48,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-pcie-usb2.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
-@@ -131,6 +132,8 @@ k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
- 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
- k3-am642-evm-icssg1-dualemac-dtbs := \
- 	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
-+k3-am642-phyboard-electra-pcie-usb2.dtbs := \
-+	k3-am642-phyboard-electra-rdk.dtb k3-am642-phyboard-electra-pcie-usb2.dtbo
- k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-pcie-usb2.dtso b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-pcie-usb2.dtso
-new file mode 100644
-index 000000000000..03fc81a6018f
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-pcie-usb2.dtso
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/*
-+ * DT overlay for PCIe support (limits USB to 2.0/high-speed)
-+ *
-+ * Copyright (C) 2021 PHYTEC America, LLC - https://www.phytec.com
-+ * Author: Matt McKee <mmckee@phytec.com>
-+ *
-+ * Copyright (C) 2024 PHYTEC America, LLC - https://www.phytec.com
-+ * Author: Nathan Morrisson <nmorrisson@phytec.com>
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/phy/phy-cadence.h>
-+
-+#include "k3-pinctrl.h"
-+#include "k3-serdes.h"
-+
-+&{/} {
-+	pcie_refclk0: pcie-refclk0 {
-+		compatible = "gpio-gate-clock";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pcie_usb_sel_pins_default>;
-+		clocks = <&serdes_refclk>;
-+		#clock-cells = <0>;
-+		enable-gpios =  <&main_gpio1 7 GPIO_ACTIVE_HIGH>;
-+		status = "okay";
-+	};
-+};
-+
-+&main_pmx0 {
-+	pcie_usb_sel_pins_default: pcie-usb-sel-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x017c, PIN_OUTPUT, 7)	/* (T1) PRG0_PRU0_GPO7.GPIO1_7 */
-+		>;
-+	};
-+
-+	pcie_pins_default: pcie-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0098, PIN_OUTPUT, 7)	/* (W19) GPMC0_WAIT0.GPIO0_37 */
-+		>;
-+	};
-+};
-+
-+&pcie0_rc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie_pins_default>;
-+	reset-gpios = <&main_gpio0 37 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes0_pcie_usb_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+	status = "okay";
-+};
-+
-+&serdes0_pcie_usb_link {
-+	cdns,phy-type = <PHY_TYPE_PCIE>;
-+};
-+
-+&serdes_ln_ctrl {
-+	idle-states = <AM64_SERDES0_LANE0_PCIE0>;
-+};
-+
-+&serdes0 {
-+	assigned-clock-parents = <&pcie_refclk0>, <&pcie_refclk0>, <&pcie_refclk0>;
-+};
-+
-+&serdes_refclk {
-+	clock-frequency = <100000000>;
-+};
-+
-+/*
-+ * Assign pcie_refclk0 to serdes_wiz0 as ext_ref_clk.
-+ * This makes sure that the clock generator gets enabled at the right time.
-+ */
-+&serdes_wiz0 {
-+	clocks = <&k3_clks 162 0>, <&k3_clks 162 1>, <&pcie_refclk0>;
-+};
-+
-+&usbss0 {
-+	ti,usb2-only;
-+};
-+
-+&usb0 {
-+	maximum-speed = "high-speed";
-+};
--- 
-2.25.1
+On 5/3/2024 1:20 PM, Dmitry Baryshkov wrote:
+> On Fri, 3 May 2024 at 22:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 5/3/2024 11:15 AM, Dmitry Baryshkov wrote:
+>>> In order to validate drm/msm register definition files against schema,
+>>> reuse the nodebugfs build step. The validation entry is guarded by
+>>> the EXPERT Kconfig option and we don't want to enable that option for
+>>> all the builds.
+>>>
+>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>> ---
+>>>    drivers/gpu/drm/ci/build.sh  | 3 +++
+>>>    drivers/gpu/drm/ci/build.yml | 1 +
+>>>    2 files changed, 4 insertions(+)
+>>>
+>>> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+>>> index 106f2d40d222..28a495c0c39c 100644
+>>> --- a/drivers/gpu/drm/ci/build.sh
+>>> +++ b/drivers/gpu/drm/ci/build.sh
+>>> @@ -12,6 +12,9 @@ rm -rf .git/rebase-apply
+>>>    apt-get update
+>>>    apt-get install -y libssl-dev
+>>>
+>>> +# for msm header validation
+>>> +apt-get install -y python3-lxml
+>>> +
+>>>    if [[ "$KERNEL_ARCH" = "arm64" ]]; then
+>>>        GCC_ARCH="aarch64-linux-gnu"
+>>>        DEBIAN_ARCH="arm64"
+>>> diff --git a/drivers/gpu/drm/ci/build.yml b/drivers/gpu/drm/ci/build.yml
+>>> index 17ab38304885..9c198239033d 100644
+>>> --- a/drivers/gpu/drm/ci/build.yml
+>>> +++ b/drivers/gpu/drm/ci/build.yml
+>>> @@ -106,6 +106,7 @@ build-nodebugfs:arm64:
+>>>      extends: .build:arm64
+>>>      variables:
+>>>        DISABLE_KCONFIGS: "DEBUG_FS"
+>>> +    ENABLE_KCONFIGS: "EXPERT DRM_MSM_VALIDATE_XML"
+>>>
+>>
+>> Wouldnt this end up enabling DRM_MSM_VALIDATE_XML for any arm64 device.
+>>
+>> Cant we make this build rule msm specific?
+> 
+> No need to. We just need to validate the files at least once during
+> the whole pipeline build.
+>
 
+ah okay, today the arm64 config anyway sets all arm64 vendor drm configs 
+to y.
+
+A couple of more questions:
+
+1) Why is this enabled only for no-debugfs option?
+2) Will there be any concerns from other vendors to enable CONFIG_EXPERT 
+in their CI runs as the arm64 config is shared across all arm64 vendors.
 
