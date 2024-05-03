@@ -1,102 +1,115 @@
-Return-Path: <linux-kernel+bounces-168336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F438BB6EE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:13:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D93FC8BB6EF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 460F4B226B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:13:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DD1D1F25666
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996655FDD3;
-	Fri,  3 May 2024 22:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA2E5B5D3;
+	Fri,  3 May 2024 22:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uTkfVglz"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dL58ZFmd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AEC5B5D6
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43AF59161
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714774400; cv=none; b=EY4HmOP1Up32vnPfHUQL9/nLTNewc5Xwswe8y04ShwpF2jOytjAXOrJjaDWtsLu9jaD4NiJekIx6KJOGi/bas1DszYAMSV7r6ght8B+A42xadNOA8xyWB/AAyEzdmszkVsknFZHfEguZHrklhak/uT/Div85GAO54CcejvYLMO4=
+	t=1714774427; cv=none; b=ELz+RUfM76Jzxc+zEXugTQxnMmm7pLOb5GP/enGLeog1tLLtsHmomjDjt18MzUZY4nE5bgODQ5jX07JwFYPOoE11vrUdq8uQM/JJmKEygwVjaCbrBoUAhiCCy0C4tgu/LZvlVxEeiYyLqhQuc4DUX6OMhEhH5T7rWolJkiQT1a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714774400; c=relaxed/simple;
-	bh=tTu4T0YSToV5yW1ztczWGRMlzVAablQJ7IdHacuoYhE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=RZWhnqjmeJE/WeQRAin3bsdi2fVWMo+SKEjMsQSuuiidoCFbG8fcECHSJ/HrKBA+1L8qeWP3t1Nrrv/Eb3Vk9rQEg9wmugz3Tel4kDNs5PY+LrfAUIMz4QHmw+HZIEB5qNEYEUxabM/O8gJ88ISu+F/deR2EeKe1kGqRgHYm8qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uTkfVglz; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc64f63d768so300497276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 15:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714774398; x=1715379198; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lPuqnqlQf1TFbSeYbj5+H2+Mrg1R7W+s6tOfYqt9u3k=;
-        b=uTkfVglzYHyJBMbyqCy/8X0psriDURjGmWZPaWZJNvJAY4BHiBAOxT9RgvAqq8+6ab
-         ssUH7OVxVir8NFFMWpuuY973La2gOXDLHAslZ+K86ozSO0OU7xQWgwYHANmGoRL3ATgE
-         1+VorM1+iD5cQ4R0NNQa1BjNt7Ozki/YTZjFcIAHMbboRT9xHe9K/A11MOf3sMWcSX9B
-         LeC43k8tuwpzQ9v7mOMMBlGSr8NqtcrXVLT0QVO8NZJOQi4T3X/9hhDB9TaOMVho4sh1
-         6CwPKsNKLcQx9BSsv9WWVt2CBS3ZSYNSyxKf8OOfeMyYnT9KAZrqL1+SCDxIqR36/t6b
-         ynGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714774398; x=1715379198;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lPuqnqlQf1TFbSeYbj5+H2+Mrg1R7W+s6tOfYqt9u3k=;
-        b=rYEEUJp/Y3OSE0A0gcsw1u15CmhLW3yvQJOjSQip85e3TFL5e3D95rVtIEc6f3UF6S
-         eZ+6MJGulTqdiafNcqvIOsFQu2O9+eX8YQYumeitZur3l9BmpBUxsxngAKRqfbcoPzPy
-         Y+H5Yj5/KH4szB8DJY2pJoqI0DAqiYR+EvsYLUS83P87v2Zj3uY/9FsDVpHRJS6YlJMQ
-         Y/cD4OVtZHUPloen/HvyELS7GIX1ayApmR45MLjA1nhDch5u0sXRNt7Mu6eiIiPF/se4
-         BnML8KwEOEy4m3c/AhgUJtkoVcvyqNbxiP0ZLkE90HAdRgOXvO6ZcTaCHIW3UTt4tWCc
-         0fYg==
-X-Forwarded-Encrypted: i=1; AJvYcCURMddAp2+RHAG6NJsk41Zuw7ObaO0muSOmN2aVqI6BTD/kqKDwE6fyYIjgFZoDwFiL3ukIqFYGVwmPyJ1EuotOA7tJ3+FidExpAYOZ
-X-Gm-Message-State: AOJu0YzofHQc/uXsP1FSVtUnP5XgH82vgBv+GT95L/6xo/G9sUrPo68F
-	oEWg3NQThUtvL7vJB3MqBF00PFTVM8F55MJKOtbSz7kmL9CNAObcOStULgm7HXKFzY0KntItfR0
-	Kmg==
-X-Google-Smtp-Source: AGHT+IFTEgkYDtwGLWZJdyovW4tTRZOEDccm5U4FAzOb/u3poMhryEcruOMiy7+Pl9xE3D52TIrnELvR2Fs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1007:b0:dc6:d233:ffdd with SMTP id
- w7-20020a056902100700b00dc6d233ffddmr1277567ybt.0.1714774398707; Fri, 03 May
- 2024 15:13:18 -0700 (PDT)
-Date: Fri,  3 May 2024 15:13:12 -0700
-In-Reply-To: <20240424103317.28522-1-clopez@suse.de>
+	s=arc-20240116; t=1714774427; c=relaxed/simple;
+	bh=HbGa2OPDrW1btTMtK6Lox9/dGpxHQnDUa2fRGEVQEH8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=knQ4+H72jDenMoEUduCRmmZhz7qvP1nUvdH4csUUBc8hY6KaECYfrhSiO/0dp9ZZ2gocUwnHi+CRIc1sYO3nHbUMzTvLd9BN80yAg6f2EWs+GtO7SP4xYwxmO8mQDjJrrhiZcsW1r1Q+gtSMIs2QDJfGw57r9amnf0Vqtk6vwnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dL58ZFmd; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714774424;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SXJGg6Yv+cev4+++4ag1dpaYqLQ1DRjklZr5exWF9PQ=;
+	b=dL58ZFmdQf1+tFk8zK3GQOZh7742LrDbVes2ukBzz2NGpXvZfOSUfN6oYsisPOpf16ycD/
+	9Q4yPme/UpBmpFKRFWhsDLcBp4aKw43XV4KoCrNxm+82d7Z8nAiN+rryGYTvj0qv2vXYKb
+	TN1iadw3TaVCIhr8jsGt7cue4jhLnZs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-342-ZoJOM9MwNsKw103QBC28Mw-1; Fri,
+ 03 May 2024 18:13:39 -0400
+X-MC-Unique: ZoJOM9MwNsKw103QBC28Mw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 23E9B29AB3F5;
+	Fri,  3 May 2024 22:13:39 +0000 (UTC)
+Received: from [10.22.34.156] (unknown [10.22.34.156])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 67F5540C140B;
+	Fri,  3 May 2024 22:13:38 +0000 (UTC)
+Message-ID: <8373c730-2e08-4abb-8d21-fd9a76116d2c@redhat.com>
+Date: Fri, 3 May 2024 18:13:38 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240424103317.28522-1-clopez@suse.de>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-Message-ID: <171477432131.1257597.4087115549657208837.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: fix documentation for KVM_CREATE_GUEST_MEMFD
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-doc@vger.kernel.org, "=?UTF-8?q?Carlos=20L=C3=B3pez?=" <clopez@suse.de>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH next v2 5/5] locking/osq_lock: Optimise decode_cpu() and
+ per_cpu_ptr().
+To: David Laight <David.Laight@ACULAB.COM>,
+ "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+ "'peterz@infradead.org'" <peterz@infradead.org>
+Cc: "'mingo@redhat.com'" <mingo@redhat.com>,
+ "'will@kernel.org'" <will@kernel.org>,
+ "'boqun.feng@gmail.com'" <boqun.feng@gmail.com>,
+ 'Linus Torvalds' <torvalds@linux-foundation.org>,
+ "'virtualization@lists.linux-foundation.org'"
+ <virtualization@lists.linux-foundation.org>,
+ 'Zeng Heng' <zengheng4@huawei.com>
+References: <2b4e8a5816a742d2bd23fdbaa8498e80@AcuMS.aculab.com>
+ <7c1148fe64fb46a7a81c984776cd91df@AcuMS.aculab.com>
+ <9d4024ba-6422-4775-b934-bfa80a72a858@redhat.com>
+ <16557e30-8353-4cd1-995b-23ec763d2b07@redhat.com>
+ <a2c35933c3de481faec0b201ab1a0c16@AcuMS.aculab.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <a2c35933c3de481faec0b201ab1a0c16@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Wed, 24 Apr 2024 12:33:16 +0200, Carlos L=C3=B3pez wrote:
-> The KVM_CREATE_GUEST_MEMFD ioctl returns a file descriptor, and is
-> documented as such in the description. However, the "Returns" field
-> in the documentation states that the ioctl returns 0 on success.
-> Update this to match the description.
->=20
->=20
 
-Applied to kvm-x86 generic, thanks!
+On 5/3/24 17:10, David Laight wrote:
+> From: Waiman Long
+>> Sent: 03 May 2024 17:00
+> ...
+>> David,
+>>
+>> Could you respin the series based on the latest upstream code?
+> I've just reapplied the patches to 'master' and they all apply
+> cleanly and diffing the new patches to the old ones gives no differences.
+> So I think they should still apply.
+>
+> Were you seeing a specific problem?
+>
+> I don't remember any suggested changed either.
+> (Apart from a very local variable I used to keep a patch isolated.)
 
-[1/1] KVM: fix documentation for KVM_CREATE_GUEST_MEMFD
-      https://github.com/kvm-x86/linux/commit/2098acaf2445
+No, I just want to make sure that your patches will still apply. Anyway, 
+it will be easier for the maintainer to merge your remaining patches if 
+you can send out a new version even if they are almost the same as the 
+old ones.
 
---
-https://github.com/kvm-x86/linux/tree/next
+Thanks,
+Longman
+
 
