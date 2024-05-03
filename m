@@ -1,96 +1,217 @@
-Return-Path: <linux-kernel+bounces-168157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A6C8BB46B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:58:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873678BB471
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27056285E85
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:58:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B242C1C224C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A821C158D7E;
-	Fri,  3 May 2024 19:58:07 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3C1158D82;
+	Fri,  3 May 2024 19:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="b3im61za"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3D141C72
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1ADD158A11
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714766287; cv=none; b=c8WZaa3vRRyyBL0FqrtQZ1BGKLH1Lc/GtN5nWAlqCimhas+xYsIur6OkQZrgllKBafXRu4so1imw02ixh6szbqDfWVc6R0ygdiNK+EUtYw+SX6h1ArYGL8NKEFOtwRrrW5yzSZmblzSvsipOA8/rKTu2MTvk7EfzJLcIvaIHpMY=
+	t=1714766396; cv=none; b=T1cdaRhR3G37laEee00YN+qSnEMuRwqPRkTBrUwKw23vctwfHDPW/sbsaLXePjDL/hdcj2fdOBDGYMnKXZHQoJnA6qY+MZR+bPYauKjS3G2YoZQYY7jsr8jnWUUJL5A9EMpl3SJePeWJ+KDG6e712wuUuvWBleh+98qKc34nPzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714766287; c=relaxed/simple;
-	bh=GxOghFVCZOu1BSfEKDJHdFXujzxM0Vhi46jNlkXNViI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=BdYUY7uVstJMo52McjZW/4HhywUgjcq8ybKYqdjbm4F5WmqgXrR7AauhGnl0kf05qv+uHRnof60yJF2H53ZyWx5tfpLiHAs8Xx3013tjOq82Powpg9yZ5tBEAdnK5g8msmym25vcAm1hi2DDLAIh/NEWXLvybCo/KphMy2kjDh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7da42114485so3394139f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:58:05 -0700 (PDT)
+	s=arc-20240116; t=1714766396; c=relaxed/simple;
+	bh=beW2GRBusmoKiQrMjaKiQjjBpA89CRgNEN6X1/xF3ns=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PaDwInTQv93XwSjyNCJbTjk3ttQkDtCLz9QB2lArKAvabEc0LpsOPBK3gStcIPjcXF5LeuB9jfCkwKLcJUA7P1NWayaWtw11Yz214fwGveSpAL4yebYAAbnAmav1+dLLPAq3DF3jrfTFtF0oUR6uLl04RQdJb0NGUw0fdOhD0Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=b3im61za; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1ecddf96313so290555ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714766394; x=1715371194; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kXbuS/Hft89FN1tBWD1yXoLgj43aVjsF859uRSyCcO8=;
+        b=b3im61zadIpLdYujeNcd402k760wCKJlgp5Z4gp5IuPQRgxicPEVayx5/K9nRO8la0
+         NheO2zb4JRXkL7gAxEcZyZNdGNaHsiHbLRmhpZWpMzQFBMbvq4kTFUDqL684mIK15WIK
+         O8BvDXW1eGqkwDCn+evRLRFiGhxw8o9k/E/6E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714766285; x=1715371085;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pwVY/fyH1gQuGakUUTvfCy/Q1T0f0xT1xNncswAUms0=;
-        b=Q6UAEJtCMcu8ozn27YYJvCEUNK8RYD6CJa75Do7QYt/bRKig8Ww1fFmOFakrGcCCej
-         18jz8yfNnREG5jljA8piACPHUi9dD+YdGgSDJrwX8I4zmqc/ky/f7HV0DVntubNhZ0T+
-         4mDHEBqxjFPf5InG89V8EigqwJdy3zjy5/I/lVswuOlqS821D2bKO9wrym/nCHeZR+GF
-         Ecdr1nGi06wK890b1E9UxaEfumtdSlvLDHQpLgcKD7Pfg0PdcLmBDglHar79sAm5Trk4
-         jFHywnaW1N4dkIuMH3nXLOmSghsZ5NdZQYPB0GssOHoChJoRMPYOc7dljoG8x3UhX2XK
-         c2cw==
-X-Forwarded-Encrypted: i=1; AJvYcCXsVS8NsR5P165ibJX28GKGQH9UOj5RfXa2+EyDVjI1P5EdCtoxTACd/wTawTrrwjO5sQXOmr/gyyVrhgQjg4RfsrNiRX8BwRV+8RbD
-X-Gm-Message-State: AOJu0YyjMnacDKr+yqHS8vipE075YaudLdpyRqOWiXeEjB0fhkBGBElV
-	uKEvAkJyjciGWuexofdrktzWVkoOW88SMAEKprIc4j1aBNo+LIVtL8hU8ACa/Esr8y/+mcIdPSq
-	wL+kBAIHBpfk+V4nw1aoBLaVM4GXspijHc246g28pJPcCpMs7nnPRU44=
-X-Google-Smtp-Source: AGHT+IFsKhYlfy6o3M/ol0YgBhmeqITegGAPVwX3qSt2L72wwyPU5neB1NYYig825a03FvrKiVlSZ/AuOfzjIlZAaX292wXvouR3
+        d=1e100.net; s=20230601; t=1714766394; x=1715371194;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kXbuS/Hft89FN1tBWD1yXoLgj43aVjsF859uRSyCcO8=;
+        b=sWMHqsNRCLnSnDTQF89ALlKmAkH02KnODJGIcE8qv/LlrzOoicsuZjaqSbMqPwGpJH
+         eBnixSoD8YBp/znfR/NZ2TIT1FQmVZ1v4SeyUfbH01ltOqrgrU/WhSWPcdtn1qTEBxrQ
+         8GRX24xqpOc8XGNc5R6633BLSE0yBUpvNICooXTtoqpgISopxpHj9e3KMN0Yymny/DAK
+         bSDswGjJUsD0O61Bk+qDQkdv7Vny6EEs4wtJu1ySWt4MnKgJJNMZEd4E4sv7BCOwP1IV
+         aTaTdiwpaPdXbECu5rjqa76Vh3zDOi8RWUSJC7ekgBy73S2xEC4qgOD8zPAwFxJsDCXz
+         5taw==
+X-Forwarded-Encrypted: i=1; AJvYcCXOilax9scaPcCASYbiedXlQzsCR0ncIBT1gW/NVj+Sz9WB/YY6z1IduEUTR/9bAGU0f/VMWMlIs66ZL8mDR2TLZHIQifguqLYmbYsf
+X-Gm-Message-State: AOJu0Yxrosioo3Cexy33gcdqgsNoSGaM77unPYLnu/qZyftLXwzNhgls
+	zY1dL5scYh/X3Jb9mUQ16ZZz/4TmTWXRkKKmKgtrXtJ53//47ghfJIWEUQz+8w==
+X-Google-Smtp-Source: AGHT+IF7CJaHehS47rwSXtmiD/0Qq2/Az5cGhZ/XA6S28lF8JjtukRtodBuIYdyT740U/+9Oz5YhZA==
+X-Received: by 2002:a17:902:d58d:b0:1eb:d79a:c111 with SMTP id k13-20020a170902d58d00b001ebd79ac111mr5316118plh.4.1714766394020;
+        Fri, 03 May 2024 12:59:54 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3651440plh.43.2024.05.03.12.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 12:59:52 -0700 (PDT)
+Date: Fri, 3 May 2024 12:59:52 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
+	io-uring@vger.kernel.org, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
+Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?]
+ [io-uring?] general protection fault in __ep_remove)
+Message-ID: <202405031237.B6B8379@keescook>
+References: <0000000000002d631f0615918f1e@google.com>
+ <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
+ <202405031110.6F47982593@keescook>
+ <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
+ <202405031207.9D62DA4973@keescook>
+ <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218d:b0:36c:307b:7f08 with SMTP id
- j13-20020a056e02218d00b0036c307b7f08mr196694ila.0.1714766283713; Fri, 03 May
- 2024 12:58:03 -0700 (PDT)
-Date: Fri, 03 May 2024 12:58:03 -0700
-In-Reply-To: <00000000000022a23c061604edb3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000036c3d90617922353@google.com>
-Subject: Re: [syzbot] [kasan?] [mm?] INFO: rcu detected stall in __run_timer_base
-From: syzbot <syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, brauner@kernel.org, davem@davemloft.net, 
-	dvyukov@google.com, elver@google.com, glider@google.com, hdanton@sina.com, 
-	jhs@mojatatu.com, kasan-dev@googlegroups.com, keescook@chromium.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, luyun@kylinos.cn, netdev@vger.kernel.org, 
-	pctammela@mojatatu.com, syzkaller-bugs@googlegroups.com, victor@mojatatu.com, 
-	viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
 
-syzbot has bisected this issue to:
+On Fri, May 03, 2024 at 01:35:09PM -0600, Jens Axboe wrote:
+> On 5/3/24 1:22 PM, Kees Cook wrote:
+> > On Fri, May 03, 2024 at 12:49:11PM -0600, Jens Axboe wrote:
+> >> On 5/3/24 12:26 PM, Kees Cook wrote:
+> >>> Thanks for doing this analysis! I suspect at least a start of a fix
+> >>> would be this:
+> >>>
+> >>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> >>> index 8fe5aa67b167..15e8f74ee0f2 100644
+> >>> --- a/drivers/dma-buf/dma-buf.c
+> >>> +++ b/drivers/dma-buf/dma-buf.c
+> >>> @@ -267,9 +267,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+> >>>  
+> >>>  		if (events & EPOLLOUT) {
+> >>>  			/* Paired with fput in dma_buf_poll_cb */
+> >>> -			get_file(dmabuf->file);
+> >>> -
+> >>> -			if (!dma_buf_poll_add_cb(resv, true, dcb))
+> >>> +			if (!atomic_long_inc_not_zero(&dmabuf->file) &&
+> >>> +			    !dma_buf_poll_add_cb(resv, true, dcb))
+> >>>  				/* No callback queued, wake up any other waiters */
+> >>
+> >> Don't think this is sane at all. I'm assuming you meant:
+> >>
+> >> 	atomic_long_inc_not_zero(&dmabuf->file->f_count);
+> > 
+> > Oops, yes, sorry. I was typed from memory instead of copy/paste.
+> 
+> Figured :-)
+> 
+> >> but won't fly as you're not under RCU in the first place. And what
+> >> protects it from being long gone before you attempt this anyway? This is
+> >> sane way to attempt to fix it, it's completely opposite of what sane ref
+> >> handling should look like.
+> >>
+> >> Not sure what the best fix is here, seems like dma-buf should hold an
+> >> actual reference to the file upfront rather than just stash a pointer
+> >> and then later _hope_ that it can just grab a reference. That seems
+> >> pretty horrible, and the real source of the issue.
+> > 
+> > AFAICT, epoll just doesn't hold any references at all. It depends,
+> > I think, on eventpoll_release() (really eventpoll_release_file())
+> > synchronizing with epoll_wait() (but I don't see how this happens, and
+> > the race seems to be against ep_item_poll() ...?)
+> >
+> > I'm really confused about how eventpoll manages the lifetime of polled
+> > fds.
+> 
+> epoll doesn't hold any references, and it's got some ugly callback to
+> deal with that. It's not ideal, nor pretty, but that's how it currently
+> works. See eventpoll_release() and how it's called. This means that
+> epoll itself is supposedly safe from the file going away, even though it
+> doesn't hold a reference to it.
 
-commit da71714e359b64bd7aab3bd56ec53f307f058133
-Author: Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Tue Aug 22 10:12:31 2023 +0000
+Right -- what remains unclear to me is how struct file lifetime is
+expected to work in the struct file_operations::poll callbacks. Because
+using get_file() there looks clearly unsafe...
 
-    net/sched: fix a qdisc modification with ambiguous command request
+> Except that in this case, the file is already gone by the time
+> eventpoll_release() is called. Which presumably is some interaction with
+> the somewhat suspicious file reference management that dma-buf is doing.
+> But I didn't look into that much, outside of noting it looks a bit
+> suspect.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b9b317180000
-start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1079b317180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b9b317180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
-dashboard link: https://syzkaller.appspot.com/bug?extid=1acbadd9f48eeeacda29
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16435913180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111600cb180000
+Not yet, though. Here's (one) race state from the analysis. I added lines
+for the dma_fence_add_callback()/dma_buf_poll_cb() case, since that's
+the case that would escape any eventpoll_release/epoll_wait
+synchronization (if it exists?):
 
-Reported-by: syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com
-Fixes: da71714e359b ("net/sched: fix a qdisc modification with ambiguous command request")
+close(dmabuf->file)
+__fput_sync (f_count == 1, last ref)
+f_count-- (f_count == 0 now)
+__fput
+                                     epoll_wait
+                                     vfs_poll(dmabuf->file)
+                                     get_file(dmabuf->file)(f_count == 1)
+                                     dma_fence_add_callback()
+eventpoll_release
+dmabuf->file deallocation
+                                     dma_buf_poll_cb()
+                                     fput(dmabuf->file) (f_count == 1)
+                                     f_count--
+                                     dmabuf->file deallocation
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Without fences to create a background callback, we just do a double-free:
+
+close(dmabuf->file)
+__fput_sync (f_count == 1, last ref)
+f_count-- (f_count == 0 now)
+__fput
+                                     epoll_wait
+                                     vfs_poll(dmabuf->file)
+                                     get_file(dmabuf->file)(f_count == 1)
+                                     dma_buf_poll_cb()
+                                     fput(dmabuf->file) (f_count == 1)
+                                     f_count--
+                                     eventpoll_release
+                                     dmabuf->file deallocation
+eventpoll_release
+dmabuf->file deallocation
+
+
+get_file(), via epoll_wait()->vfs_poll()->dma_buf_poll(), has raised
+f_count again. Then eventpoll_release() is doing things to remove
+dmabuf->file from the eventpoll lists, but I *think* this is synchronized
+so that an epoll_wait() will only call .poll handlers with a valid
+(though possibly f_count==0) file, but I can't figure out where that
+happens. (If it's not happening, we have a much bigger problem, but I
+imagine we'd see massive corruption all the time, which we don't.)
+
+So, yeah, I can't figure out how eventpoll_release() and epoll_wait()
+are expected to behave safely for .poll handlers.
+
+Regardless, for the simple case: it seems like it's just totally illegal
+to use get_file() in a poll handler. Is this known/expected? And if so,
+how can dmabuf possibly deal with that?
+
+-- 
+Kees Cook
 
