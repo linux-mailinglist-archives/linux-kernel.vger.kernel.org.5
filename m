@@ -1,159 +1,220 @@
-Return-Path: <linux-kernel+bounces-167157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D7D8BA509
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:45:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D1228BA508
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:45:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D63B1C21DBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:45:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDA461F21F29
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3E317547;
-	Fri,  3 May 2024 01:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4249ADF5B;
+	Fri,  3 May 2024 01:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QSdIChzv"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScvmS01x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D18DF510
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 01:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D63FC0C;
+	Fri,  3 May 2024 01:45:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714700706; cv=none; b=rVzEvbgOWy//KodU6gO0vXv4Eat/BemtKRMvvuVS7uehFuH5tosJfYf80G9ISUYBEumJxwLopI6W7IPvIHqjLGj9HDBSFYshNwd9r1A8qrncvpwxErQLuQ1hMjy7GOseKxqv2UJUL2INE/wXwG7+ruBLTIq40twWRnb4pDdXlwQ=
+	t=1714700704; cv=none; b=EWoDoXPY+uFWt8aPj+Odn5CfIApZGzQWPW/yq4lou8Iws0mv0HOGHMtIwSInu05Uc4nUivAa9ZvgzzSWaYHOapwYFXHLD61+jIp87PntRzgEqHoH4mGd0LISungr4Aicqh9rw5sVxLhSN8Dir3oHxySMTnNclroBAqNCSpf42e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714700706; c=relaxed/simple;
-	bh=ey+G/MUCESd2sdoi0DGUPvdRUSE5ujEB7MzNjilZVjA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HqxHLyuU/WJ3jP2qn6N9/LbtT9g/fsT0rfWungzzJ9332qmUZehRUwUhzoMIlSDF/8xig0DaI2HWAghDMe777xp2xrU1/Irc0O/Uy85aGseOnj3o/d+8xGzQ7Zu+ZHzBRun65YjXc4Wsc4luHWFPWhjJgk8YiXLwBYKz65FC7so=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QSdIChzv; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7e043f577c5so1231913241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 18:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714700702; x=1715305502; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OBpaufwW255tHTakY+OCArHInOzRj+zykzi7grRdC1U=;
-        b=QSdIChzvK+BQA5cQWiTb4CxhP97XO71q4ummreVIhk2zDfkIjibDRkNT/gVwgW3fmP
-         xuh0QDzPNf4a6TYid8nOEQ/VyqAgZEdXHoCFQLq3AJK/0VHEmYhLkITU0JYNSmK5Fzzh
-         uGiFoSz6I25tLb4HtbdjpzDGEmA/+ZFyHEOdIB6pmv9HH8ELMW8+IJRsTr4NouQ5ihLY
-         mEj88a1IrvEN6sQDkSZKtw5/QWy+VcZj7ibhCVOXg2Rl1YZek42yO0gvmDfnaW+ssRM4
-         QHsbbmXUYlwGT8RZqV8JZwvf/b0PuRw2yhtEbYWMZqUDBPdxlA2sV5y8gvZbQMF1XHvO
-         0n5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714700702; x=1715305502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OBpaufwW255tHTakY+OCArHInOzRj+zykzi7grRdC1U=;
-        b=dkGm2WSylzNALWCazdGDucdWhKq463fgBbf7y+dTimB3okSmlXID9xHofAmgHpC2w8
-         4Ytg1fwNWiCbiizPVIA4vh2//9DGPvKmxWr3BAgRKy0y0DXEawMhw4PyEFrUVAIgKrGk
-         Ym24L9Yn+Wa/9bXTrDL8+GYefQM+wpVe6/i3o2gu1ty3qpIUs4VTqBnG541e0Oj4Vl5g
-         ujmm6B7WFdn/zudWHC2buBq/oHUIso+SwnrBOgrAGeoI69asKjc4fVq75mgC0RSa9mkH
-         Xp+DYNAtd7fXW231gxhUi353f0Cc1zdR2sFKpXdc/Yjq5lKGEpHwbhAXi7g89StSqw1b
-         5jsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWXBwH7P806mcp2LFxEPwWefMQQC+hN8+GTQ6h072xDmqOuyQolkl6hueugAbikDFlcx3pI1yP9KX4F+nBtPKeGHtSq/FWktSBg7R1d
-X-Gm-Message-State: AOJu0YyYw5XhC1gbxwbXScnlTMeyhXSgnZB343QJvBIxzv4R3H1G2iY+
-	CvCrFxrzIK38dAccSxwYhYMvf1dQySvNiUZDHPYpBQabtQsPI04IMgoMJYwjpDUBA6nPmLZsmcQ
-	Uh6ABoNbiFNWKHAJb5tjPNIBJkfw=
-X-Google-Smtp-Source: AGHT+IFZyWmBAJipXUPPt+Uv0QLkbPfwvtGgat1yYkY94P24DIj2C1Oirn7fshUPnUvtMM9lPCqJXhZGWJE6z4SC6r8=
-X-Received: by 2002:a67:c58e:0:b0:47b:bda4:c30d with SMTP id
- h14-20020a67c58e000000b0047bbda4c30dmr2040619vsk.3.1714700702183; Thu, 02 May
- 2024 18:45:02 -0700 (PDT)
+	s=arc-20240116; t=1714700704; c=relaxed/simple;
+	bh=6KMomhSz8zhsXPFTxWfV/8aUvl/7zXaRfUMTLeJdIF8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=brKNEiQwL61dyMsOQDjH83SsyTWyWaH2i2PwC8KxLAi+DkxLhW2j7gtDKdy/UcKiLeRijgsqgsLRPpP0skH1XF53ODwvmBfcB6QMFYV2Xc1GaUwLNmOmtNgHoDvseW2OzLAuCznDxaQMrLvfgPdJZx1C0sdXqEvhWkCDSaCJZ4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScvmS01x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E8A4C113CC;
+	Fri,  3 May 2024 01:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714700704;
+	bh=6KMomhSz8zhsXPFTxWfV/8aUvl/7zXaRfUMTLeJdIF8=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=ScvmS01xy5teHAUmnYU1nnIhcIacQF7nuu72Gj97qy7S/6MvT1FiTsx3RRdjBZiCz
+	 PBBkS+zDlmatJ28bsEtNp9seqSbMeyc575YxJPDV/0fX2PA1Z3/pG+QpWQzJlCAZ7U
+	 tCXOr1/tyiPwDfnCH9MWqlzhFMDOg+ebjPH+J64gKytUYYMWrfmtIdy3C0KT020xo7
+	 R/zKaLPvNe5B16p82MwM5izfpl7a8iymkpkeivlPwDXwnMAatE35bJvkScj9hrfcMb
+	 2sFDfSxJxSDW2TVsqM7LvuWOqEbLQX1jkZOfKzhpjW5gyx41s/+Am5GqLTB9BMTK3I
+	 xWJsaXMUMiuXQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240502161827.403338-1-pchelkin@ispras.ru> <20240502161827.403338-3-pchelkin@ispras.ru>
-In-Reply-To: <20240502161827.403338-3-pchelkin@ispras.ru>
-From: Barry Song <21cnbao@gmail.com>
-Date: Fri, 3 May 2024 13:44:51 +1200
-Message-ID: <CAGsJ_4zKRSnpoepYsw8qiwVHY-ztWYixKjtD7D1SKbhYho=pUw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dma-mapping: benchmark: prevent potential kthread hang
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: Xiang Chen <chenxiang66@hisilicon.com>, Christoph Hellwig <hch@lst.de>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, 
-	Barry Song <song.bao.hua@hisilicon.com>, iommu@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>, 
-	lvc-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 03 May 2024 04:44:57 +0300
+Message-Id: <D0ZMO1P1SE1I.3BP2LLE1Q0IJA@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v13 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
+ <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+X-Mailer: aerc 0.17.0
+References: <20240430195108.5676-1-haitao.huang@linux.intel.com>
+ <20240430195108.5676-15-haitao.huang@linux.intel.com>
+In-Reply-To: <20240430195108.5676-15-haitao.huang@linux.intel.com>
 
-On Fri, May 3, 2024 at 4:29=E2=80=AFAM Fedor Pchelkin <pchelkin@ispras.ru> =
-wrote:
+On Tue Apr 30, 2024 at 10:51 PM EEST, Haitao Huang wrote:
+> With different cgroups, the script starts one or multiple concurrent SGX
+> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
+> test case, which loads an enclave of EPC size equal to the EPC capacity
+> available on the platform. The script checks results against the
+> expectation set for each cgroup and reports success or failure.
 >
-> If some of kthreads executing map_benchmark_thread() return with an error
-> code (e.g. due to a memory allocation failure), then the next kthreads in
-> the array are not stopped and potentially loop for indefinite time.
+> The script creates 3 different cgroups at the beginning with following
+> expectations:
 >
-> Call kthread_stop() for each started thread as map_benchmark_thread()
-> expects that happening in order to exit.
+> 1) small - intentionally small enough to fail the test loading an
+> enclave of size equal to the capacity.
+> 2) large - large enough to run up to 4 concurrent tests but fail some if
+> more than 4 concurrent tests are run. The script starts 4 expecting at
+> least one test to pass, and then starts 5 expecting at least one test
+> to fail.
+> 3) larger - limit is the same as the capacity, large enough to run lots o=
+f
+> concurrent tests. The script starts 8 of them and expects all pass.
+> Then it reruns the same test with one process randomly killed and
+> usage checked to be zero after all processes exit.
 >
-> Found by Linux Verification Center (linuxtesting.org).
+> The script also includes a test with low mem_cg limit and large sgx_epc
+> limit to verify that the RAM used for per-cgroup reclamation is charged
+> to a proper mem_cg. For this test, it turns off swapping before start,
+> and turns swapping back on afterwards.
 >
-> Fixes: 65789daa8087 ("dma-mapping: add benchmark support for streaming DM=
-A APIs")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> ---
->  kernel/dma/map_benchmark.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+> Add README to document how to run the tests.
 >
-> diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-> index ea938bc6c7e3..7e39a4690331 100644
-> --- a/kernel/dma/map_benchmark.c
-> +++ b/kernel/dma/map_benchmark.c
-> @@ -140,13 +140,17 @@ static int do_map_benchmark(struct map_benchmark_da=
-ta *map)
->
->         msleep_interruptible(map->bparam.seconds * 1000);
->
-> -       /* wait for the completion of benchmark threads */
-> +       /* wait for the completion of all started benchmark threads */
->         for (i =3D 0; i < threads; i++) {
-> -               ret =3D kthread_stop(tsk[i]);
-> -               if (ret)
-> -                       goto out;
-> +               int kthread_ret =3D kthread_stop(tsk[i]);
-> +
-> +               if (kthread_ret)
-> +                       ret =3D kthread_ret;
->         }
->
-> +       if (ret)
-> +               goto out;
-> +
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 
-do we still need to do copy_to_user(argp, &map->bparam, sizeof(map->bparam)
-after  do_map_benchmark(map) fails?
-do we also need the below?
-diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-index 02205ab53b7e..28ca165cb62c 100644
---- a/kernel/dma/map_benchmark.c
-+++ b/kernel/dma/map_benchmark.c
-@@ -252,6 +252,9 @@ static long map_benchmark_ioctl(struct file *file,
-unsigned int cmd,
-                 * dma_mask changed by benchmark
-                 */
-                dma_set_mask(map->dev, old_dma_mask);
-+
-+               if (ret)
-+                       return ret;
-                break;
-        default:
-                return -EINVAL;
+Here's the transcript:
 
+make: Entering directory '/home/jarkko/linux-tpmdd/tools/testing/selftests/=
+sgx'
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c main.c -o /home/jarkko/linux-tpmdd/tools/testi=
+ng/selftests/sgx/main.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c load.c -o /home/jarkko/linux-tpmdd/tools/testi=
+ng/selftests/sgx/load.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c sigstruct.c -o /home/jarkko/linux-tpmdd/tools/=
+testing/selftests/sgx/sigstruct.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c call.S -o /home/jarkko/linux-tpmdd/tools/testi=
+ng/selftests/sgx/call.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c sign_key.S -o /home/jarkko/linux-tpmdd/tools/t=
+esting/selftests/sgx/sign_key.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -o /home/jarkko/linux-tpmdd/tools/testing/selftes=
+ts/sgx/test_sgx /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/main.o=
+ /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/load.o /home/jarkko/l=
+inux-tpmdd/tools/testing/selftests/sgx/sigstruct.o /home/jarkko/linux-tpmdd=
+/tools/testing/selftests/sgx/call.o /home/jarkko/linux-tpmdd/tools/testing/=
+selftests/sgx/sign_key.o -z noexecstack -lcrypto
+gcc -Wall -Werror -static-pie -nostdlib -ffreestanding -fPIE -fno-stack-pro=
+tector -mrdrnd -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../../../=
+tools/include test_encl.c test_encl_bootstrap.S -o /home/jarkko/linux-tpmdd=
+/tools/testing/selftests/sgx/test_encl.elf -Wl,-T,test_encl.lds,--build-id=
+=3Dnone
+/usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: w=
+arning: /tmp/ccToNCLw.o: missing .note.GNU-stack section implies executable=
+ stack
+/usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: N=
+OTE: This behaviour is deprecated and will be removed in a future version o=
+f the linker
+TAP version 13
+1..2
+# timeout set to 120
+# selftests: sgx: test_sgx
+# TAP version 13
+# 1..16
+# # Starting 16 tests from 1 test cases.
+# #  RUN           enclave.unclobbered_vdso ...
+# #            OK  enclave.unclobbered_vdso
+# ok 1 enclave.unclobbered_vdso
+# #  RUN           enclave.unclobbered_vdso_oversubscribed ...
+# #            OK  enclave.unclobbered_vdso_oversubscribed
+# ok 2 enclave.unclobbered_vdso_oversubscribed
+# #  RUN           enclave.unclobbered_vdso_oversubscribed_remove ...
+# # main.c:402:unclobbered_vdso_oversubscribed_remove:Creating an enclave w=
+ith 98566144 bytes heap may take a while ...
+# # main.c:457:unclobbered_vdso_oversubscribed_remove:Changing type of 9856=
+6144 bytes to trimmed may take a while ...
+# # main.c:473:unclobbered_vdso_oversubscribed_remove:Entering enclave to r=
+un EACCEPT for each page of 98566144 bytes may take a while ...
+# # main.c:494:unclobbered_vdso_oversubscribed_remove:Removing 98566144 byt=
+es from enclave may take a while ...
+# #            OK  enclave.unclobbered_vdso_oversubscribed_remove
+# ok 3 enclave.unclobbered_vdso_oversubscribed_remove
+# #  RUN           enclave.clobbered_vdso ...
+# #            OK  enclave.clobbered_vdso
+# ok 4 enclave.clobbered_vdso
+# #  RUN           enclave.clobbered_vdso_and_user_function ...
+# #            OK  enclave.clobbered_vdso_and_user_function
+# ok 5 enclave.clobbered_vdso_and_user_function
+# #  RUN           enclave.tcs_entry ...
+# #            OK  enclave.tcs_entry
+# ok 6 enclave.tcs_entry
+# #  RUN           enclave.pte_permissions ...
+# #            OK  enclave.pte_permissions
+# ok 7 enclave.pte_permissions
+# #  RUN           enclave.tcs_permissions ...
+# #            OK  enclave.tcs_permissions
+# ok 8 enclave.tcs_permissions
+# #  RUN           enclave.epcm_permissions ...
+# #            OK  enclave.epcm_permissions
+# ok 9 enclave.epcm_permissions
+# #  RUN           enclave.augment ...
+# #            OK  enclave.augment
+# ok 10 enclave.augment
+# #  RUN           enclave.augment_via_eaccept ...
+# #            OK  enclave.augment_via_eaccept
+# ok 11 enclave.augment_via_eaccept
+# #  RUN           enclave.tcs_create ...
+# #            OK  enclave.tcs_create
+# ok 12 enclave.tcs_create
+# #  RUN           enclave.remove_added_page_no_eaccept ...
+# #            OK  enclave.remove_added_page_no_eaccept
+# ok 13 enclave.remove_added_page_no_eaccept
+# #  RUN           enclave.remove_added_page_invalid_access ...
+# #            OK  enclave.remove_added_page_invalid_access
+# ok 14 enclave.remove_added_page_invalid_access
+# #  RUN           enclave.remove_added_page_invalid_access_after_eaccept .=
+.
+# #            OK  enclave.remove_added_page_invalid_access_after_eaccept
+# ok 15 enclave.remove_added_page_invalid_access_after_eaccept
+# #  RUN           enclave.remove_untouched_page ...
+# #            OK  enclave.remove_untouched_page
+# ok 16 enclave.remove_untouched_page
+# # PASSED: 16 / 16 tests passed.
+# # Totals: pass:16 fail:0 xfail:0 xpass:0 skip:0 error:0
+ok 1 selftests: sgx: test_sgx
+# timeout set to 120
+# selftests: sgx: run_epc_cg_selftests.sh
+# # Setting up SGX cgroup limits.
+# ./run_epc_cg_selftests.sh: line 129: echo: write error: Invalid argument
+# # Failed setting up misc limits for sgx_epc.
+# SKIP: Kernel does not support SGX cgroup.
+ok 2 selftests: sgx: run_epc_cg_selftests.sh # SKIP
+make: Leaving directory '/home/jarkko/linux-tpmdd/tools/testing/selftests/s=
+gx'
+jarkko@mustatorvisieni:~/linux-tpmdd> zcat /proc/config.gz | grep GROUP_MIS=
+C
+CONFIG_CGROUP_MISC=3Dy
 
->         loops =3D atomic64_read(&map->loops);
->         if (likely(loops > 0)) {
->                 u64 map_variance, unmap_variance;
-> --
-> 2.45.0
->
->
+BR, Jarkko
 
