@@ -1,442 +1,433 @@
-Return-Path: <linux-kernel+bounces-167904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE088BB0E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:29:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCC88BB0E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:29:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6F412822E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:29:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44CF41F216BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E20D15667F;
-	Fri,  3 May 2024 16:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491C3155328;
+	Fri,  3 May 2024 16:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TKfvy8u8"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="QwbmOp7P"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2102.outbound.protection.outlook.com [40.92.23.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1223E1553B6
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714753745; cv=none; b=mbBTiDrWqhhCH8pDa3tkYqFnjIyAYuiR0fCo/2Tr5pTBjKxZq4IYBKu+HuBxeS5kfQ43ffBCy+VOJ15HiYS9yzKjuRTAMO054S2BoEjFfS/jqcum+7iluv5DioJLNP++m11dOnzrRcfqpWNgOLNnV3bvEyDwe/mXdaNjgonLn6o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0708A4D9FD;
+	Fri,  3 May 2024 16:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.23.102
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714753745; cv=fail; b=s0NK1PMTtD7jJQdCQadGHfN9p5Okm8/kCnQGfwcshpB0dki7QYvJjQ3m/qYp2WLNIPEc5wMm6fX6B+/V1mMwJ4qHONVdMNmkFExLWoXT0MCE1NJIypBph+8/V7VaZWZ6kBd3HJRobcjXf+THLhzyq8vD2yu2lfXmUO7Dz7pYL34=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714753745; c=relaxed/simple;
-	bh=+gJrURUGg8vTjavvnvTV30xxUQYc3d46PCw+cBhsEmg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ktWjEi9nPg/O7MqT2Flit7RTZfAicdZZK0brBRnv4PqENjaLOZNBmGW+RKiE3wJHZtCRxDtF1sGN7U6shB6mH8szafryHfapheGJY4QZPDQ+B1yJYkCTNpwqiEJMrK+RyEQ7904A6sDbGU0WS2Q+ClXsnHfnlxKgA+1tJf7ifPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TKfvy8u8; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51ae2e37a87so11304429e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714753741; x=1715358541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KcJ+k0H6/m0Cv9X3Vbvj6SbMtSmOhVR/JgA1iQ66e10=;
-        b=TKfvy8u82Aoba8D9OUVpQeWI3aGDz46ehlGm4H5xtSrbq2aDsDuGv6dlx/WLX2sIRk
-         BS+91Abf3LMJCwmL2aOCQh4VTkF2K3zvV1TihwXD/dpuaeIlXJULDApdD/io7eq21Tl6
-         tLMQdSUU0v8GFK3v+7VEuT4qHnc6ydBbHxtNElBCobJFldXqL0uO6bm0ghE+iTVFA6I7
-         fqqPIZs3YW7RshvjbOFWiBTYgQmcqoQK7Ddk5qBfuVkNg28udBG+QbIdAp6JNlVkqjCV
-         DL/y0WU4dxQfwrKTLaR80LG9hXmXd+Ev9OddgGtrRmJJxag6+vW66CoFslSrhDgJgxbf
-         790A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714753741; x=1715358541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KcJ+k0H6/m0Cv9X3Vbvj6SbMtSmOhVR/JgA1iQ66e10=;
-        b=bX4VQECYjf/nwWeJY8KF9kFXZkZlfYsJJ1yi1sNeJdCpYVf3aCRYQ76q7FJRuRar5x
-         WffpskfiXrEbXrqVr/VlqXKqvwPZGU9EaW6ZzROU5bGDDi0TQ8XztEGltPff56rFSnEv
-         DdD0KjHPodVy8IKpxEl91fsfVUzqiyf+1B98DE5U/KdCy9Z2TBLjCD2TquYWaqiKnCaT
-         Idh+vxMvCncASXWlNlHWbawVqJMXhK2qk8+j6RrKrscVA/k2g5YEJT+bD366hls7Az35
-         9iWtCnCtL1w2Vda8T3sF546lqL3IO92sFHmJ2bdJ+KTVqUlJ+Mv4JMNFS/5Rl1Kj8gC+
-         YwwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1VehBW+/rakwZCGFhio4og6Z93EIyX1EO9y2YrdGDMydQF2OufrAYkz7N9OSp7lCCGKYn4zBIXK6QNRfXAWlbzsvwBq8IaFbJicEY
-X-Gm-Message-State: AOJu0YxVwW/oNb7myhDPN84xr3RTVHPvafY1xdDseb3C7mK2VJZNQDYs
-	0J9sCdcb3ilTc2ue7MTTy2U8FohzFPVWPk+8xqj3kvJdWTephqROXxTw2xp4VkpqzCby5Ul+nb3
-	5J1Q4mPVebbavk16zYP00JbcFt/v5AifnzKcYwQ==
-X-Google-Smtp-Source: AGHT+IFtdP67COLORBthU+58PbG7sbgN360zM6O7Llu9lr3w+NSo/oXEx4BQXw+Mu92MLwTVGUQE6PDxBjuL9iQgMRY=
-X-Received: by 2002:ac2:4959:0:b0:51d:abb3:d701 with SMTP id
- o25-20020ac24959000000b0051dabb3d701mr2283308lfi.5.1714753740901; Fri, 03 May
- 2024 09:29:00 -0700 (PDT)
+	bh=YVO9EctjzBDC02Q3Ir0n73yMHsCrcsUQ7rB42P+KuEM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZDp9I88bFQFe/e2Xnw1i/YEWInaScSz8jO3FvffbI7pLR2LAKdyqxwVKPyEWg8h1Q8qXLMWLDboBsBgno3bpik+oq5wQZcVL+Oi1v1QyW5cZ96pt1NphFP0Br0/S7A2Gbl6FLU2HIMp4tsHuBahfSsZ4bgiFJX/P0sHbfcqMsMg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=QwbmOp7P; arc=fail smtp.client-ip=40.92.23.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AhmJ61ZHGxGwlee1JgTSfR3XLLK+ET1RRI8PYTREFtMh8MMkioPm2i7gpImDFOztPZW8A1iUBVrJbjCs8bWAsQWU38ABD4osIlHJYdw3zNaSN2DmgQi/vHbUlovLf+DrG0u0xDazFX/QVfX3vLG308J+I9VTd5924cCdNr9pp1JB0ui5/ZGElCl0Doim2P231/oRLLIBKc+bg2LaETnCnwVh601y1WIDvtdD5e395qnFGcd9xnTQrI1gHrly0n3i1piw58rlIi6JNYTtgyAQLUgLOZYyDLe4wPpukPVLc9j1XKNUK0BVR87IZtZpV0hFwp0fP0I60qidM/g+CJzAiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/bAfl9s6aXfwpEU2dMYC/8CfKmR8alos9r7tL6M/SwM=;
+ b=eW1Mte+4chapVJ4o1CGAYty5PDS3vjooOVwZ4P8l1+NW9pfMy0d8IC8nb6TamJVUBB3HQ6Tekw3cpFUpi5ypqqgBX0NXBiYGahwAnoDZh1azyrFWrc00LvLVwIuSqZ1sh1/S2iV6AB1rE7aORWrgtrSr8SGte2dC0/4Azob2eFaNDjxIulo99JYKtvnH96OctC8LBPmEk6PsSiyr56juF8MYMKTrIuzYvXvgD5OZjxZ8i71udKVi6POKCVpTVpTskZvOilmI+yzeyUK9Zy0Gqdl+Z6JN8084MEgr9g3ms6iGx/Q4M+gDDqdE6/24FjgL8NNkpD2eZtjYpiWNjcuuRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/bAfl9s6aXfwpEU2dMYC/8CfKmR8alos9r7tL6M/SwM=;
+ b=QwbmOp7PzGVasgpcxHxemeccZn5zolcIFS/aZIGhW+nmtjlddJtDo3pk8UZrTT+JsGdEgh0es9ixEe4D5ALDaM57NZE5SZIZmE4mD71Ed8j5fGuy4mz43biQNscwZSWVft2dN/m7woQzId3LKNVMTJzG/9ugVmMf5qtRMei7j4bZyRjxJ72THK0OHhH7AjDqDZlcrSQ3Dblaaax3Jd3WypFEngZQXyRgOljc2CbeLeJLPCMx0zwxcLlcc8zzxrmwZMh7VnqyLG4EaLP+TCMomJj4dtC26IkPp9CmTu759+SrJfFYanYmElHVOfxLOQ8zOapuRHtzGHaXnLzQaJxGHQ==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SJ0PR02MB7485.namprd02.prod.outlook.com (2603:10b6:a03:290::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.34; Fri, 3 May
+ 2024 16:29:00 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::cedd:1e64:8f61:b9df]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::cedd:1e64:8f61:b9df%2]) with mapi id 15.20.7544.029; Fri, 3 May 2024
+ 16:29:00 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
+	<x86@kernel.org>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, Kuppuswamy
+ Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova
+	<elena.reshetova@intel.com>, Jun Nakajima <jun.nakajima@intel.com>, Rick
+ Edgecombe <rick.p.edgecombe@intel.com>, Tom Lendacky
+	<thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, Sean
+ Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
+	Baoquan He <bhe@redhat.com>, "kexec@lists.infradead.org"
+	<kexec@lists.infradead.org>, "linux-coco@lists.linux.dev"
+	<linux-coco@lists.linux.dev>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Dave Hansen <dave.hansen@intel.com>, Tao Liu
+	<ltao@redhat.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang
+	<haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>
+Subject: RE: [PATCHv10 06/18] x86/mm: Make
+ x86_platform.guest.enc_status_change_*() return errno
+Thread-Topic: [PATCHv10 06/18] x86/mm: Make
+ x86_platform.guest.enc_status_change_*() return errno
+Thread-Index: AQHainGOGgLZb+RBzEGqD3vxVAH8/rGF1L6A
+Date: Fri, 3 May 2024 16:29:00 +0000
+Message-ID:
+ <SN6PR02MB41574C2859020B4FD2769703D41F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-7-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20240409113010.465412-7-kirill.shutemov@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [lLXVGSFLIWgI8GBDoptx5TBo15FYb8dJ]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ0PR02MB7485:EE_
+x-ms-office365-filtering-correlation-id: 22955027-b143-44c5-aea9-08dc6b8e2375
+x-microsoft-antispam:
+ BCL:0;ARA:14566002|461199019|102099023|440099019|3412199016;
+x-microsoft-antispam-message-info:
+ H6HAeNE9XHVPsyUY8duZJqk1ngNKp4oNN0WkIdJEcr7n9vuGPg6DSogP2mAy24bYPn3zzE1e4vPw8kBJLWX7L4BTnYsUm8S4gsdC/EWFM493DB8Eid2l4+jb0BH/b/Lhhgup2bu/I9pYRTM3mVjdLewy2r1qrKKSmYmpxjgb7NROwWyiISc7ipTmdxuXXXOaU+Lil/8ERxZIlrGkWapQ32F8KSyHia05MAZDP40InNcS5XaeFmg31k0GmmWtvmSanL0VQ92DWoa1q28A9MA3BXSSMHSziazpSM5pdyNfz0YqNjRHJX4/r30x5NuqVSWtebSeYc88htqr49XLjcBEMtxQ4ApyJ3o3C4IHvGZUFtya6qL3MN4Gnpl2lTmBV77xEJgviy4k+nAJrRPqX/FXl5Ku3/Kq0Q+UZx4WFoNo5XMVVgBlBj/BvLvGNFhemDQ8/w1an+xswzvhyDjO7ZVCVBeoPHLXUWaofYf42xDAPlgRYe8f8Zu3JT/iL2rrIFeDHfgJYUSDQFmKRgkajs9V4flffbr/aK+3FBuYbg0bwaG/ARnuwx0NDTYfZ3gb7WXb
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?1d8QWYCm2HA4i3QEeqXV1q+pj3A4ShmQ2vu42AGp1T67a1aywmk0yPwZpiAq?=
+ =?us-ascii?Q?DpZin0pDlA5G6lVKUN4Jic5UW7GqpMJCZS3nZXp4ho6B5M/UqySI5MCq6a+I?=
+ =?us-ascii?Q?JjWVSExHX1JvsDpOsxg++1xl2IHBhQzASqPnQlv1ZCoeKiyVDcPUETlyV0JN?=
+ =?us-ascii?Q?6Pu9zf/apzGd7eYyVPFaEv7D4dc/Bc8RwVteZJrvB5BvbXM4bIlLuPQNI3gl?=
+ =?us-ascii?Q?8BA/fsTF/CQAQGid+ZRSB6SOtCrbWWsnl+tmNtK0UUlgNlnmIgCDTy4xEqxn?=
+ =?us-ascii?Q?35qGs0z6pYJi/K+sf/UecWTcUKZgw8rJD/9XtxzcAkvF9trGr5ZjxVGGCX9B?=
+ =?us-ascii?Q?8j2cTRav7v5lMWe/4J2UdfMVQUdYe2r08mHysUEnixwzL+pN3dnAYC/sRMU5?=
+ =?us-ascii?Q?/kn8blGLIFG9y/VTIHtm7uC3GQD9Y4JwHDQiDweSxxURmvLhTGQt0F8oyCIY?=
+ =?us-ascii?Q?+20/vIUfaa4+NwrLLUEzUiqZN4qUUNRGT3/T9ngPbVK22ypX1g7DrgX4xLEm?=
+ =?us-ascii?Q?0a3m7DLNumuhNQqI7uQaYaTmOei/10LfJpKlfefsrbU82+0Fn4lMY3NdV11x?=
+ =?us-ascii?Q?R07vTSh+5LFHoyc1BHNR8lFYojUGP9Zgyu9rFyh/j4AV+d0GrOJ8cVneWr4B?=
+ =?us-ascii?Q?rYn4/EiWDNN2vpE9BOVbdj6fLLwsP+SsuxJldalZ6nMul48vL3WFE4zXCfEi?=
+ =?us-ascii?Q?G0g1eglZHThcVqVB6D0gxiXVbuDcrMFGSZzUZs0i4X2nQXYLN2amUkNTbDhL?=
+ =?us-ascii?Q?4XEKVA25H2ht+RaOJH8jLeRMimBDl6trhZp8lP84zj2c413tCxkR3bOp44JO?=
+ =?us-ascii?Q?F4dBkD4GqYjzd1JGEJnCmcpvh7ocpT5CkyAs4rkkqz8/EcR+jlYF3JakB9Xz?=
+ =?us-ascii?Q?6I8WpJyze82BguRcByEEsf236RuIIsOm5GB/eiKIlaveE9aqnp7f1YQpxgLb?=
+ =?us-ascii?Q?tuu8EnIx1P9OKEYxqfgsIslEyjuGPPpoznJd2cxQfWlyqjWa9K1i47uJchto?=
+ =?us-ascii?Q?BG8u6YiS8n006vV4zpbUnvcYD421mE7JaM5xcfFoeqpgoM/7g12RJiNDoi2B?=
+ =?us-ascii?Q?YWdVBncCGtBdq0VQNRl+emJmUZS+jukxbcUqURojTpE6EdxgRvhAaZtNsx5B?=
+ =?us-ascii?Q?C50eLrCtDxM2+esTIXGXO9fy8g6hPVBODloINLcU0MiSPxZrPcgSzPQJqjQl?=
+ =?us-ascii?Q?JQmXmARpkhpu1TMKV+mB3vtfPxeGxkhO335725Ru9BbEKYOaUOUtLNv173I?=
+ =?us-ascii?Q?=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502-dev-charlie-support_thead_vector_6_9-v5-0-d1b5c013a966@rivosinc.com>
- <20240502-dev-charlie-support_thead_vector_6_9-v5-5-d1b5c013a966@rivosinc.com>
-In-Reply-To: <20240502-dev-charlie-support_thead_vector_6_9-v5-5-d1b5c013a966@rivosinc.com>
-From: Evan Green <evan@rivosinc.com>
-Date: Fri, 3 May 2024 09:28:24 -0700
-Message-ID: <CALs-Hsvt4f4hP--6Wb8QAYM20dPFegRj-GeaD7hoJiW1ZY+w4Q@mail.gmail.com>
-Subject: Re: [PATCH v5 05/17] riscv: Extend cpufeature.c to detect vendor extensions
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22955027-b143-44c5-aea9-08dc6b8e2375
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2024 16:29:00.4168
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7485
 
-On Thu, May 2, 2024 at 9:46=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.co=
-m> wrote:
->
-> Separate vendor extensions out into one struct per vendor
-> instead of adding vendor extensions onto riscv_isa_ext.
->
-> Add a hidden config RISCV_ISA_VENDOR_EXT to conditionally include this
-> code.
->
-> The xtheadvector vendor extension is added using these changes.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+From: Kirill A. Shutemov <kirill.shutemov@linux.intel.com> Sent: Tuesday, A=
+pril 9, 2024 4:30 AM
+>=20
+> TDX is going to have more than one reason to fail
+> enc_status_change_prepare().
+>=20
+> Change the callback to return errno instead of assuming -EIO;
+> enc_status_change_finish() changed too to keep the interface symmetric.
+>=20
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> Tested-by: Tao Liu <ltao@redhat.com>
 > ---
->  arch/riscv/Kconfig                               |  2 +
->  arch/riscv/Kconfig.vendor                        | 19 +++++
->  arch/riscv/include/asm/cpufeature.h              | 18 +++++
->  arch/riscv/include/asm/vendor_extensions.h       | 34 +++++++++
->  arch/riscv/include/asm/vendor_extensions/thead.h | 16 ++++
->  arch/riscv/kernel/Makefile                       |  2 +
->  arch/riscv/kernel/cpufeature.c                   | 93 ++++++++++++++++++=
-+-----
->  arch/riscv/kernel/vendor_extensions.c            | 18 +++++
->  arch/riscv/kernel/vendor_extensions/Makefile     |  3 +
->  arch/riscv/kernel/vendor_extensions/thead.c      | 18 +++++
->  10 files changed, 203 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index be09c8836d56..fec86fba3acd 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -759,6 +759,8 @@ config RISCV_EFFICIENT_UNALIGNED_ACCESS
->
->  endchoice
->
-> +source "arch/riscv/Kconfig.vendor"
-> +
->  endmenu # "Platform type"
->
->  menu "Kernel features"
-> diff --git a/arch/riscv/Kconfig.vendor b/arch/riscv/Kconfig.vendor
-> new file mode 100644
-> index 000000000000..85ac30496b0e
-> --- /dev/null
-> +++ b/arch/riscv/Kconfig.vendor
-> @@ -0,0 +1,19 @@
-> +menu "Vendor extensions"
-> +
-> +config RISCV_ISA_VENDOR_EXT
-> +       bool
-> +
-> +menu "T-Head"
-> +config RISCV_ISA_VENDOR_EXT_THEAD
-> +       bool "T-Head vendor extension support"
-> +       select RISCV_ISA_VENDOR_EXT
-> +       default y
-> +       help
-> +         Say N here to disable detection of and support for all T-Head v=
-endor
-> +         extensions. Without this option enabled, T-Head vendor extensio=
-ns will
-> +         not be detected at boot and their presence not reported to user=
-space.
-> +
-> +         If you don't know what to do here, say Y.
-> +endmenu
-> +
-> +endmenu
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index 0c4f08577015..fedd479ccfd1 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -35,6 +35,24 @@ extern u32 riscv_vlenb_of;
->
->  void riscv_user_isa_enable(void);
->
-> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size)=
- {     \
-> +       .name =3D #_name,                                                =
-         \
-> +       .property =3D #_name,                                            =
-         \
-> +       .id =3D _id,                                                     =
-         \
-> +       .subset_ext_ids =3D _subset_exts,                                =
-         \
-> +       .subset_ext_size =3D _subset_exts_size                           =
-         \
-> +}
-> +
-> +#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
- NULL, 0)
-> +
-> +/* Used to declare pure "lasso" extension (Zk for instance) */
-> +#define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
-> +       _RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, =
-ARRAY_SIZE(_bundled_exts))
-> +
-> +/* Used to declare extensions that are a superset of other extensions (Z=
-vbb for instance) */
-> +#define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
-> +       _RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
-> +
->  #if defined(CONFIG_RISCV_MISALIGNED)
->  bool check_unaligned_access_emulated_all_cpus(void);
->  void unaligned_emulation_finish(void);
-> diff --git a/arch/riscv/include/asm/vendor_extensions.h b/arch/riscv/incl=
-ude/asm/vendor_extensions.h
-> new file mode 100644
-> index 000000000000..bf4dac66e6e6
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/vendor_extensions.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright 2024 Rivos, Inc
-> + */
-> +
-> +#ifndef _ASM_VENDOR_EXTENSIONS_H
-> +#define _ASM_VENDOR_EXTENSIONS_H
-> +
-> +#include <asm/cpufeature.h>
-> +
-> +#include <linux/array_size.h>
-> +#include <linux/types.h>
-> +
-> +/*
-> + * The extension keys of each vendor must be strictly less than this val=
-ue.
-> + */
-> +#define RISCV_ISA_VENDOR_EXT_MAX 32
-> +
-> +struct riscv_isavendorinfo {
-> +       DECLARE_BITMAP(isa, RISCV_ISA_VENDOR_EXT_MAX);
-> +};
-
-Nice, I think this was a good compromise: being honest with the
-compiler about the fixed array sizes, with the tradeoff that all
-vendors have to use the same ceiling for the number of bits. If one
-vendor raises this ceiling absurdly and starts creating huge amounts
-of waste we can revisit.
-
-> +
-> +struct riscv_isa_vendor_ext_data_list {
-> +       const size_t ext_data_count;
-> +       const struct riscv_isa_ext_data *ext_data;
-> +       struct riscv_isavendorinfo per_hart_isa_bitmap[NR_CPUS];
-> +       struct riscv_isavendorinfo all_harts_isa_bitmap;
-> +};
-> +
-> +extern struct riscv_isa_vendor_ext_data_list *riscv_isa_vendor_ext_list[=
-];
-> +
-> +extern const size_t riscv_isa_vendor_ext_list_size;
-> +
-> +#endif /* _ASM_VENDOR_EXTENSIONS_H */
-> diff --git a/arch/riscv/include/asm/vendor_extensions/thead.h b/arch/risc=
-v/include/asm/vendor_extensions/thead.h
-> new file mode 100644
-> index 000000000000..48421d1553ad
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/vendor_extensions/thead.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_RISCV_VENDOR_EXTENSIONS_THEAD_H
-> +#define _ASM_RISCV_VENDOR_EXTENSIONS_THEAD_H
-> +
-> +#include <asm/vendor_extensions.h>
-> +
-> +#include <linux/types.h>
-> +
-> +/*
-> + * Extension keys must be strictly less than RISCV_ISA_VENDOR_EXT_MAX.
-> + */
-> +#define RISCV_ISA_VENDOR_EXT_XTHEADVECTOR              0
-> +
-> +extern struct riscv_isa_vendor_ext_data_list riscv_isa_vendor_ext_list_t=
-head;
-> +
-> +#endif
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index 81d94a8ee10f..53361c50fb46 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -58,6 +58,8 @@ obj-y +=3D riscv_ksyms.o
->  obj-y  +=3D stacktrace.o
->  obj-y  +=3D cacheinfo.o
->  obj-y  +=3D patch.o
-> +obj-y  +=3D vendor_extensions.o
-> +obj-y  +=3D vendor_extensions/
->  obj-y  +=3D probes/
->  obj-y  +=3D tests/
->  obj-$(CONFIG_MMU) +=3D vdso.o vdso/
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 12c79db0b0bb..cc9ec393c8f6 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -24,6 +24,7 @@
->  #include <asm/processor.h>
->  #include <asm/sbi.h>
->  #include <asm/vector.h>
-> +#include <asm/vendor_extensions.h>
->
->  #define NUM_ALPHA_EXTS ('z' - 'a' + 1)
->
-> @@ -102,24 +103,6 @@ static bool riscv_isa_extension_check(int id)
->         return true;
+>  arch/x86/coco/tdx/tdx.c         | 20 +++++++++++---------
+>  arch/x86/hyperv/ivm.c           | 22 ++++++++++------------
+>  arch/x86/include/asm/x86_init.h |  4 ++--
+>  arch/x86/kernel/x86_init.c      |  4 ++--
+>  arch/x86/mm/mem_encrypt_amd.c   |  8 ++++----
+>  arch/x86/mm/pat/set_memory.c    |  8 +++++---
+>  6 files changed, 34 insertions(+), 32 deletions(-)
+>=20
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index c1cb90369915..26fa47db5782 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -798,28 +798,30 @@ static bool tdx_enc_status_changed(unsigned long va=
+ddr, int numpages, bool enc)
+>  	return true;
 >  }
->
-> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size)=
- {     \
-> -       .name =3D #_name,                                                =
-         \
-> -       .property =3D #_name,                                            =
-         \
-> -       .id =3D _id,                                                     =
-         \
-> -       .subset_ext_ids =3D _subset_exts,                                =
-         \
-> -       .subset_ext_size =3D _subset_exts_size                           =
-         \
-> -}
-> -
-> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
- NULL, 0)
-> -
-> -/* Used to declare pure "lasso" extension (Zk for instance) */
-> -#define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
-> -       _RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, =
-ARRAY_SIZE(_bundled_exts))
-> -
-> -/* Used to declare extensions that are a superset of other extensions (Z=
-vbb for instance) */
-> -#define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
-> -       _RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
-> -
->  static const unsigned int riscv_zk_bundled_exts[] =3D {
->         RISCV_ISA_EXT_ZBKB,
->         RISCV_ISA_EXT_ZBKC,
-> @@ -353,6 +336,21 @@ static void __init riscv_parse_isa_string(unsigned l=
-ong *this_hwcap, struct risc
->                 bool ext_long =3D false, ext_err =3D false;
->
->                 switch (*ext) {
-> +               case 'x':
-> +               case 'X':
-> +                       if (acpi_disabled)
-> +                               pr_warn_once("Vendor extensions are ignor=
-ed in riscv,isa. Use riscv,isa-extensions instead.");
-> +                       /*
-> +                        * To skip an extension, we find its end.
-> +                        * As multi-letter extensions must be split from =
-other multi-letter
-> +                        * extensions with an "_", the end of a multi-let=
-ter extension will
-> +                        * either be the null character or the "_" at the=
- start of the next
-> +                        * multi-letter extension.
-> +                        */
-> +                       for (; *isa && *isa !=3D '_'; ++isa)
-> +                               ;
-> +                       ext_err =3D true;
-> +                       break;
->                 case 's':
->                         /*
->                          * Workaround for invalid single-letter 's' & 'u'=
- (QEMU).
-> @@ -368,8 +366,6 @@ static void __init riscv_parse_isa_string(unsigned lo=
-ng *this_hwcap, struct risc
->                         }
->                         fallthrough;
->                 case 'S':
-> -               case 'x':
-> -               case 'X':
->                 case 'z':
->                 case 'Z':
->                         /*
-> @@ -572,6 +568,59 @@ static void __init riscv_fill_hwcap_from_isa_string(=
-unsigned long *isa2hwcap)
->                 acpi_put_table((struct acpi_table_header *)rhct);
+>=20
+> -static bool tdx_enc_status_change_prepare(unsigned long vaddr, int numpa=
+ges,
+> -					  bool enc)
+> +static int tdx_enc_status_change_prepare(unsigned long vaddr, int numpag=
+es,
+> +					 bool enc)
+>  {
+>  	/*
+>  	 * Only handle shared->private conversion here.
+>  	 * See the comment in tdx_early_init().
+>  	 */
+> -	if (enc)
+> -		return tdx_enc_status_changed(vaddr, numpages, enc);
+> -	return true;
+> +	if (enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+> +		return -EIO;
+> +
+> +	return 0;
 >  }
->
-> +static void __init riscv_fill_cpu_vendor_ext(struct device_node *cpu_nod=
-e, int cpu)
-> +{
-> +       if (!IS_ENABLED(CONFIG_RISCV_ISA_VENDOR_EXT))
-> +               return;
+>=20
+> -static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpag=
+es,
+> +static int tdx_enc_status_change_finish(unsigned long vaddr, int numpage=
+s,
+>  					 bool enc)
+>  {
+>  	/*
+>  	 * Only handle private->shared conversion here.
+>  	 * See the comment in tdx_early_init().
+>  	 */
+> -	if (!enc)
+> -		return tdx_enc_status_changed(vaddr, numpages, enc);
+> -	return true;
+> +	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+> +		return -EIO;
 > +
-> +       for (int i =3D 0; i < riscv_isa_vendor_ext_list_size; i++) {
-> +               struct riscv_isa_vendor_ext_data_list *ext_list =3D riscv=
-_isa_vendor_ext_list[i];
-> +
-> +               for (int j =3D 0; j < ext_list->ext_data_count; j++) {
-> +                       const struct riscv_isa_ext_data ext =3D ext_list-=
->ext_data[j];
-> +                       struct riscv_isavendorinfo *isavendorinfo =3D &ex=
-t_list->per_hart_isa_bitmap[cpu];
-> +
-> +                       if (of_property_match_string(cpu_node, "riscv,isa=
--extensions",
-> +                                                    ext.property) < 0)
-> +                               continue;
-> +
-> +                       /*
-> +                        * Assume that subset extensions are all members =
-of the
-> +                        * same vendor.
-> +                        */
-> +                       if (ext.subset_ext_size)
-> +                               for (int k =3D 0; k < ext.subset_ext_size=
-; k++)
-> +                                       set_bit(ext.subset_ext_ids[k], is=
-avendorinfo->isa);
-> +
-> +                       set_bit(ext.id, isavendorinfo->isa);
-> +               }
-> +       }
-> +}
-> +
-> +static void __init riscv_fill_vendor_ext_list(int cpu)
-> +{
-> +       bool first =3D true;
-> +
-> +       if (!IS_ENABLED(CONFIG_RISCV_ISA_VENDOR_EXT))
-> +               return;
-> +
-> +       for (int i =3D 0; i < riscv_isa_vendor_ext_list_size; i++) {
-> +               struct riscv_isa_vendor_ext_data_list *ext_list =3D riscv=
-_isa_vendor_ext_list[i];
-> +
-> +               if (first) {
-> +                       bitmap_copy(ext_list->all_harts_isa_bitmap.isa,
-> +                                   ext_list->per_hart_isa_bitmap[cpu].is=
-a,
-> +                                   RISCV_ISA_VENDOR_EXT_MAX);
-> +                       first =3D false;
+> +	return 0;
+>  }
+>=20
+>  void __init tdx_early_init(void)
+> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+> index 768d73de0d09..b4a851d27c7c 100644
+> --- a/arch/x86/hyperv/ivm.c
+> +++ b/arch/x86/hyperv/ivm.c
+> @@ -523,9 +523,9 @@ static int hv_mark_gpa_visibility(u16 count, const u6=
+4 pfn[],
+>   * transition is complete, hv_vtom_set_host_visibility() marks the pages
+>   * as "present" again.
+>   */
+> -static bool hv_vtom_clear_present(unsigned long kbuffer, int pagecount, =
+bool enc)
+> +static int hv_vtom_clear_present(unsigned long kbuffer, int pagecount, b=
+ool enc)
+>  {
+> -	return !set_memory_np(kbuffer, pagecount);
+> +	return set_memory_np(kbuffer, pagecount);
+>  }
+>=20
+>  /*
+> @@ -536,20 +536,19 @@ static bool hv_vtom_clear_present(unsigned long kbu=
+ffer, int pagecount, bool enc
+>   * with host. This function works as wrap of hv_mark_gpa_visibility()
+>   * with memory base and size.
+>   */
+> -static bool hv_vtom_set_host_visibility(unsigned long kbuffer, int pagec=
+ount, bool enc)
+> +static int hv_vtom_set_host_visibility(unsigned long kbuffer, int pageco=
+unt, bool enc)
+>  {
+>  	enum hv_mem_host_visibility visibility =3D enc ?
+>  			VMBUS_PAGE_NOT_VISIBLE : VMBUS_PAGE_VISIBLE_READ_WRITE;
+>  	u64 *pfn_array;
+>  	phys_addr_t paddr;
+> +	int i, pfn, err;
+>  	void *vaddr;
+>  	int ret =3D 0;
+> -	bool result =3D true;
+> -	int i, pfn;
+>=20
+>  	pfn_array =3D kmalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
+>  	if (!pfn_array) {
+> -		result =3D false;
+> +		ret =3D -ENOMEM;
+>  		goto err_set_memory_p;
+>  	}
+>=20
+> @@ -568,10 +567,8 @@ static bool hv_vtom_set_host_visibility(unsigned lon=
+g kbuffer, int pagecount, bo
+>  		if (pfn =3D=3D HV_MAX_MODIFY_GPA_REP_COUNT || i =3D=3D pagecount - 1) =
+{
+>  			ret =3D hv_mark_gpa_visibility(pfn, pfn_array,
+>  						     visibility);
+> -			if (ret) {
+> -				result =3D false;
+> +			if (ret)
+>  				goto err_free_pfn_array;
+> -			}
+>  			pfn =3D 0;
+>  		}
+>  	}
+> @@ -586,10 +583,11 @@ static bool hv_vtom_set_host_visibility(unsigned lo=
+ng kbuffer, int pagecount, bo
+>  	 * order to avoid leaving the memory range in a "broken" state. Setting
+>  	 * the PRESENT bits shouldn't fail, but return an error if it does.
+>  	 */
+> -	if (set_memory_p(kbuffer, pagecount))
+> -		result =3D false;
+> +	err =3D set_memory_p(kbuffer, pagecount);
+> +	if (err && !ret)
+> +		ret =3D err;
+>=20
+> -	return result;
+> +	return ret;
+>  }
+>=20
+>  static bool hv_vtom_tlb_flush_required(bool private)
+> diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_i=
+nit.h
+> index 6149eabe200f..28ac3cb9b987 100644
+> --- a/arch/x86/include/asm/x86_init.h
+> +++ b/arch/x86/include/asm/x86_init.h
+> @@ -151,8 +151,8 @@ struct x86_init_acpi {
+>   * @enc_cache_flush_required	Returns true if a cache flush is needed bef=
+ore changing page encryption status
+>   */
+>  struct x86_guest {
+> -	bool (*enc_status_change_prepare)(unsigned long vaddr, int npages, bool=
+ enc);
+> -	bool (*enc_status_change_finish)(unsigned long vaddr, int npages, bool =
+enc);
+> +	int (*enc_status_change_prepare)(unsigned long vaddr, int npages, bool =
+enc);
+> +	int (*enc_status_change_finish)(unsigned long vaddr, int npages, bool e=
+nc);
+>  	bool (*enc_tlb_flush_required)(bool enc);
+>  	bool (*enc_cache_flush_required)(void);
+>  };
+> diff --git a/arch/x86/kernel/x86_init.c b/arch/x86/kernel/x86_init.c
+> index d5dc5a92635a..a7143bb7dd93 100644
+> --- a/arch/x86/kernel/x86_init.c
+> +++ b/arch/x86/kernel/x86_init.c
+> @@ -134,8 +134,8 @@ struct x86_cpuinit_ops x86_cpuinit =3D {
+>=20
+>  static void default_nmi_init(void) { };
+>=20
+> -static bool enc_status_change_prepare_noop(unsigned long vaddr, int npag=
+es, bool enc) { return true; }
+> -static bool enc_status_change_finish_noop(unsigned long vaddr, int npage=
+s, bool enc) { return true; }
+> +static int enc_status_change_prepare_noop(unsigned long vaddr, int npage=
+s, bool enc) { return 0; }
+> +static int enc_status_change_finish_noop(unsigned long vaddr, int npages=
+, bool enc) { return 0; }
+>  static bool enc_tlb_flush_required_noop(bool enc) { return false; }
+>  static bool enc_cache_flush_required_noop(void) { return false; }
+>  static bool is_private_mmio_noop(u64 addr) {return false; }
+> diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.=
+c
+> index 422602f6039b..e7b67519ddb5 100644
+> --- a/arch/x86/mm/mem_encrypt_amd.c
+> +++ b/arch/x86/mm/mem_encrypt_amd.c
+> @@ -283,7 +283,7 @@ static void enc_dec_hypercall(unsigned long vaddr, un=
+signed long size, bool enc)
+>  #endif
+>  }
+>=20
+> -static bool amd_enc_status_change_prepare(unsigned long vaddr, int npage=
+s, bool enc)
+> +static int amd_enc_status_change_prepare(unsigned long vaddr, int npages=
+, bool enc)
+>  {
+>  	/*
+>  	 * To maintain the security guarantees of SEV-SNP guests, make sure
+> @@ -292,11 +292,11 @@ static bool amd_enc_status_change_prepare(unsigned =
+long vaddr, int npages, bool
+>  	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP) && !enc)
+>  		snp_set_memory_shared(vaddr, npages);
+>=20
+> -	return true;
+> +	return 0;
+>  }
+>=20
+>  /* Return true unconditionally: return value doesn't matter for the SEV =
+side */
+> -static bool amd_enc_status_change_finish(unsigned long vaddr, int npages=
+, bool enc)
+> +static int amd_enc_status_change_finish(unsigned long vaddr, int npages,=
+ bool enc)
+>  {
+>  	/*
+>  	 * After memory is mapped encrypted in the page table, validate it
+> @@ -308,7 +308,7 @@ static bool amd_enc_status_change_finish(unsigned lon=
+g vaddr, int npages, bool e
+>  	if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
+>  		enc_dec_hypercall(vaddr, npages << PAGE_SHIFT, enc);
+>=20
+> -	return true;
+> +	return 0;
+>  }
+>=20
+>  static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index 80c9037ffadf..e5b454036bf3 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -2156,7 +2156,8 @@ static int __set_memory_enc_pgtable(unsigned long a=
+ddr, int numpages, bool enc)
+>  		cpa_flush(&cpa, x86_platform.guest.enc_cache_flush_required());
+>=20
+>  	/* Notify hypervisor that we are about to set/clr encryption attribute.=
+ */
+> -	if (!x86_platform.guest.enc_status_change_prepare(addr, numpages, enc))
+> +	ret =3D x86_platform.guest.enc_status_change_prepare(addr, numpages, en=
+c);
+> +	if (ret)
+>  		goto vmm_fail;
+>=20
+>  	ret =3D __change_page_attr_set_clr(&cpa, 1);
+> @@ -2174,7 +2175,8 @@ static int __set_memory_enc_pgtable(unsigned long a=
+ddr, int numpages, bool enc)
+>  		return ret;
+>=20
+>  	/* Notify hypervisor that we have successfully set/clr encryption attri=
+bute. */
+> -	if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
+> +	ret =3D x86_platform.guest.enc_status_change_finish(addr, numpages, enc=
+);
+> +	if (ret)
+>  		goto vmm_fail;
+>=20
+>  	return 0;
+> @@ -2183,7 +2185,7 @@ static int __set_memory_enc_pgtable(unsigned long a=
+ddr, int numpages, bool enc)
+>  	WARN_ONCE(1, "CPA VMM failure to convert memory (addr=3D%p, numpages=3D=
+%d) to %s.\n",
+>  		  (void *)addr, numpages, enc ? "private" : "shared");
 
-I think this is still not quite right. This behaves properly when
-called on the first cpu (let's say 0), but then we call it again with
-cpu 1, first gets set to true, and we clobber the old work we did for
-cpu 0. If we knew that cpu 0 was always called first (this looks true
-since both calls are within a for_each_possible_cpu() loop), and that
-this was only called once at boot for cpu 0 (looks true, and
-riscv_fill_hwcap() is __init), then it could be bool first =3D cpu =3D=3D 0=
-.
+Nit: Now that there's an error code instead of just a boolean, it would be =
+nice
+to have this warning message include the error code.  Some of the callers o=
+f
+set_memory_decrypted()/encrypted() also output a message on failure that
+includes the error code, in which case this message will be redundant.  But
+many callers do not.
+
+>=20
+> -	return -EIO;
+> +	return ret;
+>  }
+>=20
+>  static int __set_memory_enc_dec(unsigned long addr, int numpages, bool e=
+nc)
+> --
+> 2.43.0
+>=20
+
+My nit notwithstanding,
+
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 
