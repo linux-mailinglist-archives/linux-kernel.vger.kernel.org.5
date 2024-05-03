@@ -1,252 +1,131 @@
-Return-Path: <linux-kernel+bounces-167523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D97158BAACB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:34:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F848BAAD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:36:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F15C81C2188E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:34:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95991281B35
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A042E7E766;
-	Fri,  3 May 2024 10:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283611514DC;
+	Fri,  3 May 2024 10:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DIOwmEFV"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="N8I4+Cwi"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8575A1EB2A
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 10:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05CF14BF85;
+	Fri,  3 May 2024 10:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714732486; cv=none; b=pfqGODndWK3FM16J8Grr/GSoZjd1ZH765J/8KfpdVZH7aZQxma4CVaPCAVrEpGBrzz+nYDklUoBNamvHIuEEpJxy6jkqdN1hExjRQhl7NW5XaqR2K0/WtARE76DHIb8mVnxGfrQNiTtiwZiR4Z9K54t6ESpSHp4U6vAe9xwPEec=
+	t=1714732598; cv=none; b=cHA1nP9IAgF0+Xn+gP67TBpC+rAAvw014bbKFUKVVPAYz3kaqfixgkofOjJQ/fVonTAE1L7t+OEQ6HPUTx7FBj7QVI9IYgE1/0AM5kqU4RitLaRbxj5biGHEqrSimvok7iwfgu+teuvUKKCUAgqI3m184yVLoODSIGPFHBN4Hlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714732486; c=relaxed/simple;
-	bh=eNvegdv5BEUYvcLicupfBaOtjhE9FEc3Oct1bDpyAqA=;
+	s=arc-20240116; t=1714732598; c=relaxed/simple;
+	bh=E1HUFQRNQQzIWGVLLr1YxlSskv3v0oqQToBpRizAc/g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gi5mPGvzEy2/0XtSZDsNduWesa3c7Pr2funMzxCmWOz3vbHNzFU4KnfZOe07Nqq1XDVVkzqIbiIOKmAPvrBVDJREPWz2LGPIPL5QwuSv8mgHA09zAs1oAGAJI2LWLieWv20qJDyxzwifwkf1L4gFUMw4QpvZCmuwLFDs2ApP2DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DIOwmEFV; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 87D9A40E01F6;
-	Fri,  3 May 2024 10:34:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 2Axz4-7bNS4D; Fri,  3 May 2024 10:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714732470; bh=yoolI6BTv+BQCi2zu/RW+yLYP2FDu5y4KsL/rlMd26M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DIOwmEFVRrnfgfAlB/Pyov49iVCojofkIIOmDwbAnyV3oydu1EGjIT2n1YE25WGMy
-	 3eQwJXgpHIMp+IZfhEfgrZXVxXE3764VJe1rVxKqkJmv6GDxwT5JraLVcPZIHyURkn
-	 NatfIYVc+Wri8V9ohL8XYjeHrIG01kRBdVH3e/rHFlIHnqp363Haa+Ej86fhx2hFcd
-	 lLUUsVrl/j3eTqpXjvPwQtdIl0K8wDDcGVC6aLMsGwNb6xH8zJ8pd20CvSuTpPXqwp
-	 QS3Dov24BvLWLXKHl75UkKcSyQKTaOt+7s13ZJHXZXEQRB7zh783vFeZeemCNweqe9
-	 m8zrJ6ZNzSqPnqUjrZMEgkK0THciDWfTqwr41euW2J0SMKq/EWW/dynrRTRkE2EFEH
-	 PQzrRaX63v7HVAXhXBF3atglGgfm4JkJ7oEXuS+VgIwgUWknSQjmD/uuztmdnNGVpy
-	 63GYJOo5B55lQPqjxYc2JqQQ+dk5POOlgPSX2I102R2xVZ9u1L7B89AWrQxmp6JTOP
-	 1BLogMNBkv9pZuAq8aTpNEvfWqW03ijZ19kEeoLckezKpghYPr5PyluuQEQlZZmP0z
-	 23wQJgs6HF0rFvEub4V/vMrVEQZKZ18ep1a6Dh+lPhRvXToPny3jWv7GQMkC6/Lvzn
-	 1z5IuLhBjvFinls0cyIT+CG8=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9349D40E0192;
-	Fri,  3 May 2024 10:34:16 +0000 (UTC)
-Date: Fri, 3 May 2024 12:34:07 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>
-Subject: Re: [PATCH v4 05/15] x86/sev: Use kernel provided SVSM Calling Areas
-Message-ID: <20240503103407.GSZjS9n-XMMKi5ZOek@fat_crate.local>
-References: <cover.1713974291.git.thomas.lendacky@amd.com>
- <07266b47e749267ef9a9ccbc9e8e9df78ed54857.1713974291.git.thomas.lendacky@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uf5TR56DawSoIjN0FXYOZTcINarNT1QM6mlebQdV/KLRrSNimQD9Oo1eMLW3cStoPiKMO1pNZCwnfO3rtJ4sx8M//pYemIOYI/Nr9qNgfpmyI1WuigMdsbkrpFuSRkt0slImZd/BMqWItkMWEkIRNcFfiDD4zyftxAPCUacGVD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=N8I4+Cwi; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=qh5Wc3QqXgam82TMaOdVdy+cfP6ZNoEKs7ddCVe4jPY=; b=N8I4+CwiBUkzZYIyGzOqQsvzoP
+	cCulMNJhaL2ygzPgYmNxiIytFGF+IHAZTJlW+4byTl+H1wU91wfyhXytPSpMyruKM0qH5KSX0/zb3
+	M0q8Xbygslb8bYQIpKyIjcsZNaQg/QlWYyn52lYXcksuWoDoJPjWtlzs918/ctl5xS4pp+70AejpZ
+	OhT/9b+OOu90NRC9JXP0qfZxYlcy+pcNpDPFbgfrnHw1FTRS23pxj0DUFeYKUk3VnYsJropW0Di81
+	TbrsNflYBNuzXjCwiY53z3m6L9fTjcAMDy3NRSeShDj/z2uaw7qLx2j5fikTkkfH5hfv1oFxw5CPT
+	fv3XU5Zg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2qH0-00000000W9c-2SYt;
+	Fri, 03 May 2024 10:36:14 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 402B93001FD; Fri,  3 May 2024 12:36:14 +0200 (CEST)
+Date: Fri, 3 May 2024 12:36:14 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+	Zack Rusin <zack.rusin@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Andi Shyti <andi.shyti@linux.intel.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Matt Atwood <matthew.s.atwood@intel.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Nirmoy Das <nirmoy.das@intel.com>,
+	Jonathan Cavitt <jonathan.cavitt@intel.com>,
+	Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org, linux-kbuild@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 5/5] fs: Convert struct file::f_count to refcount_long_t
+Message-ID: <20240503103614.GF30852@noisy.programming.kicks-ass.net>
+References: <20240502223341.1835070-5-keescook@chromium.org>
+ <20240502224250.GM2118490@ZenIV>
+ <202405021548.040579B1C@keescook>
+ <20240502231228.GN2118490@ZenIV>
+ <202405021620.C8115568@keescook>
+ <20240502234152.GP2118490@ZenIV>
+ <202405021708.267B02842@keescook>
+ <20240503001445.GR2118490@ZenIV>
+ <202405021736.574A688@keescook>
+ <20240503-inventar-braut-c82e15e56a32@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <07266b47e749267ef9a9ccbc9e8e9df78ed54857.1713974291.git.thomas.lendacky@amd.com>
+In-Reply-To: <20240503-inventar-braut-c82e15e56a32@brauner>
 
-This one would need multiple review mails.
-
-Lemme make this part 1.
-
-On Wed, Apr 24, 2024 at 10:58:01AM -0500, Tom Lendacky wrote:
->  arch/x86/include/asm/sev-common.h |  13 ++
->  arch/x86/include/asm/sev.h        |  32 +++++
->  arch/x86/include/uapi/asm/svm.h   |   1 +
->  arch/x86/kernel/sev-shared.c      |  94 +++++++++++++-
->  arch/x86/kernel/sev.c             | 207 +++++++++++++++++++++++++-----
-
-Ok, now would be as good time as any to start moving the SEV guest bits
-to where we want them to live:
-
-arch/x86/coco/sev/
-
-so pls add the new SVSM guest support bits there:
-
-arch/x86/coco/sev/svsm.c
-arch/x86/coco/sev/svsm-shared.c
-
-I guess.
-
-And things which touch sev.c and sev-shared.c will have to add patches
-which move bits to the new location.
-
->  arch/x86/mm/mem_encrypt_amd.c     |   8 +-
->  6 files changed, 320 insertions(+), 35 deletions(-)
+On Fri, May 03, 2024 at 11:37:25AM +0200, Christian Brauner wrote:
+> On Thu, May 02, 2024 at 05:41:23PM -0700, Kees Cook wrote:
+> > On Fri, May 03, 2024 at 01:14:45AM +0100, Al Viro wrote:
+> > > On Thu, May 02, 2024 at 05:10:18PM -0700, Kees Cook wrote:
+> > > 
+> > > > But anyway, there needs to be a general "oops I hit 0"-aware form of
+> > > > get_file(), and it seems like it should just be get_file() itself...
+> > > 
+> > > ... which brings back the question of what's the sane damage mitigation
+> > > for that.  Adding arseloads of never-exercised failure exits is generally
+> > > a bad idea - it's asking for bitrot and making the thing harder to review
+> > > in future.
+> > 
+> > Linus seems to prefer best-effort error recovery to sprinkling BUG()s
+> > around.  But if that's really the solution, then how about get_file()
+> > switching to to use inc_not_zero and BUG on 0?
 > 
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index 1225744a069b..4cc716660d4b 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -96,6 +96,19 @@ enum psc_op {
->  	/* GHCBData[63:32] */				\
->  	(((u64)(val) & GENMASK_ULL(63, 32)) >> 32)
->  
-> +/* GHCB Run at VMPL Request/Response */
+> Making get_file() return an error is not an option. For all current
+> callers that's pointless churn for a condition that's not supposed to
+> happen at all.
+> 
+> Additionally, iirc *_inc_not_zero() variants are implemented with
+> try_cmpxchg() which scales poorly under contention for a condition
+> that's not supposed to happen.
 
-Run?
+	unsigned long old = atomic_long_fetch_inc_relaxed(&f->f_count);
+	WARN_ON(!old);
 
-> +#define GHCB_MSR_VMPL_REQ		0x016
-> +#define GHCB_MSR_VMPL_REQ_LEVEL(v)			\
-> +	/* GHCBData[39:32] */				\
-> +	(((u64)(v) & GENMASK_ULL(7, 0) << 32) |		\
-> +	/* GHCBDdata[11:0] */				\
-> +	GHCB_MSR_VMPL_REQ)
-> +
-> +#define GHCB_MSR_VMPL_RESP		0x017
-> +#define GHCB_MSR_VMPL_RESP_VAL(v)			\
-> +	/* GHCBData[63:32] */				\
-> +	(((u64)(v) & GENMASK_ULL(63, 32)) >> 32)
-> +
->  /* GHCB Hypervisor Feature Request/Response */
->  #define GHCB_MSR_HV_FT_REQ		0x080
->  #define GHCB_MSR_HV_FT_RESP		0x081
-
-..
-
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index 46ea4e5e118a..6f57eb804e70 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -18,9 +18,11 @@
->  #define sev_printk_rtl(fmt, ...)	printk_ratelimited(fmt, ##__VA_ARGS__)
->  #else
->  #undef WARN
-> -#define WARN(condition, format...) (!!(condition))
-> +#define WARN(condition, format...)	(!!(condition))
->  #define sev_printk(fmt, ...)
->  #define sev_printk_rtl(fmt, ...)
-> +#undef vc_forward_exception
-> +#define vc_forward_exception(c)		panic("SNP: Hypervisor requested exception\n")
->  #endif
->  
->  /*
-> @@ -244,6 +246,96 @@ static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt
->  	return ES_VMM_ERROR;
->  }
->  
-> +static __always_inline void issue_svsm_call(struct svsm_call *call, u8 *pending)
-
-svsm_issue_call()
-
-I guess.
-
-> +{
-> +	/*
-> +	 * Issue the VMGEXIT to run the SVSM:
-
-.. to call the SVSM:" I guess.
-
-> +	 *   - Load the SVSM register state (RAX, RCX, RDX, R8 and R9)
-> +	 *   - Set the CA call pending field to 1
-> +	 *   - Issue VMGEXIT
-> +	 *   - Save the SVSM return register state (RAX, RCX, RDX, R8 and R9)
-> +	 *   - Perform atomic exchange of the CA call pending field
-> +	 */
-
-That goes above the function name.
-
-> +	asm volatile("mov %9, %%r8\n\t"
-> +		     "mov %10, %%r9\n\t"
-> +		     "movb $1, %11\n\t"
-> +		     "rep; vmmcall\n\t"
-> +		     "mov %%r8, %3\n\t"
-> +		     "mov %%r9, %4\n\t"
-> +		     "xchgb %5, %11\n\t"
-> +		     : "=a" (call->rax_out), "=c" (call->rcx_out), "=d" (call->rdx_out),
-> +		       "=m" (call->r8_out), "=m" (call->r9_out),
-> +		       "+r" (*pending)
-> +		     : "a" (call->rax), "c" (call->rcx), "d" (call->rdx),
-> +		       "r" (call->r8), "r" (call->r9),
-> +		       "m" (call->caa->call_pending)
-> +		     : "r8", "r9", "memory");
-> +}
-
-Btw, where are we documenting this calling convention?
-
-Anyway, I think you can do it this way (pasting the whole thing for
-easier review):
-
-static __always_inline void issue_svsm_call(struct svsm_call *call, u8 *pending)
-{
-	register unsigned long r8 asm("r8") = call->r8;
-	register unsigned long r9 asm("r9") = call->r9;
-
-	call->caa->call_pending = 1;
-
-	/*
-	 * Issue the VMGEXIT to run the SVSM:
-	 *   - Load the SVSM register state (RAX, RCX, RDX, R8 and R9)
-	 *   - Set the CA call pending field to 1
-	 *   - Issue VMGEXIT
-	 *   - Save the SVSM return register state (RAX, RCX, RDX, R8 and R9)
-	 *   - Perform atomic exchange of the CA call pending field
-	 */
-	asm volatile("rep; vmmcall\n\t"
-		     "xchgb %[pending], %[call_pending]"
-		     : "=a" (call->rax_out),
-		       "=c" (call->rcx_out),
-		       "=d" (call->rdx_out),
-		       [pending] "+r" (*pending),
-		       "+r" (r8),
-		       "+r" (r9)
-		     : "a" (call->rax),
-		       "c" (call->rcx),
-		       "d" (call->rdx),
-		       [call_pending] "m" (call->caa->call_pending)
-		     : "memory");
-
-	call->r8_out = r8;
-	call->r9_out = r9;
-}
-
-I *think* the asm is the same but it needs more looking in detail. It
-probably could be simplified even more.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Or somesuch might be an option?
 
