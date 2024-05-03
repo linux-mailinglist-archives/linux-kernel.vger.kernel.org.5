@@ -1,172 +1,170 @@
-Return-Path: <linux-kernel+bounces-167492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C57588BAA5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:56:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6249A8BAA61
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:56:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D14D1F231F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:56:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 922D61C21A03
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F96A14F9D4;
-	Fri,  3 May 2024 09:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E97B1514CD;
+	Fri,  3 May 2024 09:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kHWHfSui"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uUgmLlcY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE37A150989;
-	Fri,  3 May 2024 09:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B983B53372;
+	Fri,  3 May 2024 09:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714730073; cv=none; b=o6RohJEky6oGAtfIhIT6rEWMFhGrf+PQi/5srtnuDYA7J1T8eABcAnkBEyJpswqd9KUNk6CGClZlKpnG8fHH/zvUqvEim6JtHV0K/m3efvhno4FjJfzIeKnFUXz3Xrzgd1TRB0pbLG6XyhI//kBUxT+dT7EELbvzrsqyt2zm35U=
+	t=1714730119; cv=none; b=XukFcF05x1my8JTcwYnJt0sm1duxTIon5zDOi6SKRU08oGAGCvyLe78gkNIQhmPQyeVwkGdk9X5K0pAQp3POHXhI6cAJN8wYerlQmkHpaFwg5BlJvbb427KLlYpcq3QmLaNhpuj8pHfzRJ5GQ7jGnSBH4yXuzNN7Ch74h8I4ukg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714730073; c=relaxed/simple;
-	bh=v/TQaWbOwMfphmJ/Zi0Tbv/dv/6f1wvOj2uU3AX1OVE=;
+	s=arc-20240116; t=1714730119; c=relaxed/simple;
+	bh=2ZuH8DJWKdI8xZCLGCNsawY8TILgFbvsCfAw9mJuqqQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i4plD6Zg1Vs93Hu519B4S5PyA10lVcHjSOJcYGbBf36It5zSPqoMQWEWlg0NV6dG6WR6CB/p1MfvmPSaATIHQeU0sCE8RY90L+L4cDmkQ4rGY3kTL4Ux6sRa1bD46BTEwmHRWZX2xcr71nT8xBvbp+ZDwJzTq+UN1Tff5822/YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kHWHfSui; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a599332afcbso76155766b.2;
-        Fri, 03 May 2024 02:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714730070; x=1715334870; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nB8ezzHpTc44+65boWeG1jYxDuQrI33mmzE4JzfUA9U=;
-        b=kHWHfSuiT4mj4IYY0pK5+Ec2nVWl3dMyGgN9yviWUCA3Ic5gU8I1UvBrlVTHd6Rakm
-         fzaPtiw7eaHzJOL9T+XKCXbn4WOsxnzouEo33QZ61BRAh0/qaQdJZEWcUT0H8guw3ufZ
-         eNDlcFLaElXWXfs0kZNjkmnnHxyobrNzqc6o5bi7vzhqdLstnp1gHOKw8bZdbiNTjHZ+
-         VYVtzRsLMlhnQ2gaFtQclPaBPHlT/HpD4xjqP/Orsz58sNtOolPhBt0MNCulV0iXYaEN
-         LE0IvrXF420wioqbuN3sHwPHYwpyF9RF6DsEIstyHj2S8OtQHYG9e9uuEfHG9QRdq+WG
-         K38Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714730070; x=1715334870;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nB8ezzHpTc44+65boWeG1jYxDuQrI33mmzE4JzfUA9U=;
-        b=gHNdnffj0d4RvAIVgVZ3vQQMQYOVVm2pJxNG7FduMhi3QGYRD1dW11QLs4dTiJELdh
-         Ams0e6+xcTDQy7+gbBLythV7o+GZt5ag6KiwcneOe+QmChL9dYtCM5c7UWSCWAE30MRi
-         TgH/RuRFcRa1tXGUih1C4+fl2XGmZC3dXAesZR2M/DnTcog/zJISbaTJUn7BkZInhbvS
-         Fwrf99c2HGmbCCXPToGUJ0Bjb1Y6FZUOCow9JkZoiXrW6Zx+Kie4UYMACNEBIdq47XhA
-         VMkO/Xh007EL1cN/XgOxxA7+7V/e7R88KPf0boB5LSgC6p9uAA5i1fQs72cMfiuSTXOw
-         tTng==
-X-Forwarded-Encrypted: i=1; AJvYcCXttAnCVdHVW6Gs3iQIDmu003pdnopFu4gUZSLtUsQYofgHqVIyZkAhPPKIF3eI90/HhdnMnN5F8dKPEvpZKT3xIuVIyuWzI28eA5ESZTD6MBzKBOcunOQ6CqgUXFed1Vt+YBslSANcyHj4fSPB8B6XkcBTkM8vECn1wEBpVGTohV4i71+ukFNlV9EXwGp5fg==
-X-Gm-Message-State: AOJu0Yy6YJMqjZVBbx/leMA7sZ633JagAiaIlpyMXQ4YKniCbflxBYMC
-	lpz99ZzvNTOEesJKuXzYZSl8bcSCovTuPhFlJkY4URifaA99qo3f
-X-Google-Smtp-Source: AGHT+IHYWz90YQrkaQdhsPY8v5NgsF1SkGxapc7VqJIHcdobxsXRE5wS2oRdfK0BUZ21ksyFVsioDQ==
-X-Received: by 2002:a17:906:288a:b0:a54:4f06:4d00 with SMTP id o10-20020a170906288a00b00a544f064d00mr1035341ejd.65.1714730069702;
-        Fri, 03 May 2024 02:54:29 -0700 (PDT)
-Received: from gmail.com (1F2EF54C.unconfigured.pool.telekom.hu. [31.46.245.76])
-        by smtp.gmail.com with ESMTPSA id x26-20020a170906b09a00b00a588729de82sm1530119ejy.142.2024.05.03.02.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 02:54:29 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 3 May 2024 11:54:26 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-Cc: tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterz@infradead.org, mingo@redhat.com,
-	ananth.narayan@amd.com, gautham.shenoy@amd.com,
-	linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org, sandipan.das@amd.com,
-	alexander.shishkin@linux.intel.com, irogers@google.com,
-	gustavoars@kernel.org, kprateek.nayak@amd.com,
-	ravi.bangoria@amd.com
-Subject: Re: [PATCH 2/2] perf/x86/rapl: Fix the energy-pkg event for AMD CPUs
-Message-ID: <ZjS0Uio+nvZLLmyb@gmail.com>
-References: <20240502095115.177713-1-Dhananjay.Ugwekar@amd.com>
- <20240502095115.177713-3-Dhananjay.Ugwekar@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=C/n3/M49g3E1toxDnJrND6HsNbj5iigZcdFffX2fukTWZdaz14xP9dONg5F0GBz3mi8COMF6GbODK1dBkVrNElPX0OzAh0AEEbAPNzPNrOo+LBopJml2jPJwAT/kepks+0u2EFkiJ6Wfwr7XQfSPU4Wu4Plmdg/2LdNFkOYnaDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uUgmLlcY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 176ECC116B1;
+	Fri,  3 May 2024 09:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714730119;
+	bh=2ZuH8DJWKdI8xZCLGCNsawY8TILgFbvsCfAw9mJuqqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uUgmLlcYkJi4Y9gh/4f5/UdhgmN1qqy6bsEAoLCyzmpGORX35Th540t8i7lEGvXZ4
+	 WCILsRry+m8Vughb03wMZaLhX+rlvn4toLuPxwUuGEGrVLZYPeUZykQie/nHgSITYl
+	 Lq0bqWxJphmgtfw8yawhscCNwgGc+BEmGFd3USkh7wlNcYCTglcafrpsFwhDBQiP1q
+	 UqvqK7tjZhkeq9yjIzsYXdm9qlpI6SW63uidnuhg8wes1IeOZkp5a5zvMuwok1CmVQ
+	 26FNNz6vSyamHDnWtksDmjRLupE/t+lEHA81eAhGFs81luI64SE3dlOfalYaZiASl/
+	 WS/3KIIK8LsKA==
+Date: Fri, 3 May 2024 10:55:12 +0100
+From: Lee Jones <lee@kernel.org>
+To: Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>,
+	Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Alexander Shiyan <shc_work@mail.ru>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
+	linux-omap@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Subject: Re: [PATCH v2 00/19] backlight: Constify lcd_ops
+Message-ID: <20240503095512.GQ1227636@google.com>
+References: <20240424-video-backlight-lcd-ops-v2-0-1aaa82b07bc6@kernel.org>
+ <171472928415.1323021.3458121588308140519.b4-ty@kernel.org>
+ <20240503094319.GP1227636@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240502095115.177713-3-Dhananjay.Ugwekar@amd.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240503094319.GP1227636@google.com>
 
+On Fri, 03 May 2024, Lee Jones wrote:
 
-* Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com> wrote:
+> On Fri, 03 May 2024, Lee Jones wrote:
+> 
+> > On Wed, 24 Apr 2024 08:33:26 +0200, Krzysztof Kozlowski wrote:
+> > > Changes in v2:
+> > > - Collect tags, including wrongly places Thomas' tag (which requires me
+> > >   to manually edit 15 other patches to drop it).
+> > > - Combine here checkpatch patch:
+> > >   https://lore.kernel.org/all/20240414185440.288812-1-krzk@kernel.org/
+> > > - Link to v1: https://lore.kernel.org/r/20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org
+> > > 
+> > > [...]
+> > 
+> > Applied, thanks!
+> > 
+> > [01/19] backlight: Constify lcd_ops
+> >         commit: 9258e31adebf0ccf0797867841f3f9800695dba2
+> > [02/19] backlight: ams369fg06: Constify lcd_ops
+> >         commit: 8053c4fa200c3fef07859bac9469ad3f26f5aba1
+> > [03/19] backlight: corgi_lcd: Constify lcd_ops
+> >         commit: 18c5d4ab9f6312f2c9c6c409287d552112db810a
+> > [04/19] backlight: hx8357: Constify lcd_ops
+> >         commit: 1d669c1998b559393ec2eaac0449f4989a255049
+> > [05/19] backlight: ili922x: Constify lcd_ops
+> >         commit: e77fef89de954b1557cb91b64696cd4fc06c80ad
+> > [06/19] backlight: ili9320: Constify lcd_ops
+> >         commit: 06cfc92faa1eabb2ea226c58d6fd0b5ab117ee39
+> > [07/19] backlight: jornada720_lcd: Constify lcd_ops
+> >         commit: a54b4999dc204bc5839bb70602078c7c8e4a5010
+> > [08/19] backlight: l4f00242t03: Constify lcd_ops
+> >         commit: 657e6c1b270e9f4a890059f5d08a08ea842fa1a8
+> > [09/19] backlight: lms283gf05: Constify lcd_ops
+> >         commit: 66e5a10818fd332e973d36429e36f4c436a86a91
+> > [10/19] backlight: lms501kf03: Constify lcd_ops
+> >         commit: 31c205d1e8426dd0cce0143c500ff1ff71fe64d1
+> > [11/19] backlight: ltv350qv: Constify lcd_ops
+> >         commit: 24424f84d7568d9d794657622e080b1cba1e9290
+> > [12/19] backlight: otm3225a: Constify lcd_ops
+> >         commit: 02949072ee8fb6141cd8ac2be9867ef466580ddb
+> > [13/19] backlight: platform_lcd: Constify lcd_ops
+> >         commit: d217a8d5a39851caa16996756682715c9debb4a9
+> > [14/19] backlight: tdo24m: Constify lcd_ops
+> >         commit: c7a1809d1982f671e66a4b1c1ffd8bdd5ba260aa
+> > [15/19] HID: picoLCD: Constify lcd_ops
+> >         commit: 238724635763e7c5d82c0581b0c49e5dfdd5505a
+> > [16/19] fbdev: clps711x: Constify lcd_ops
+> >         commit: 55d9a955375af3b3fd5725a9b5cbc658d4bdd244
+> > [17/19] fbdev: imx: Constify lcd_ops
+> >         commit: a6abbb5783345c4c7cc9fbd583b81e167bd0207d
+> > [18/19] fbdev: omap: lcd_ams_delta: Constify lcd_ops
+> >         commit: ca991e8e096c9f0cff0300289e2d4813192b8ef3
+> > [19/19] const_structs.checkpatch: add lcd_ops
+> >         commit: f02aeccbec6108d768f54d31e7cb48b06c0e3814
+> 
+> Please ensure you use checkpatch.pl before submitting:
+> 
+> ====
+> 
+> ERROR: Does not appear to be a unified-diff format patch
+> 
+> total: 1 errors, 0 warnings, 0 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> "[PATCH v2 19/19] const_structs.checkpatch: add lcd_ops" has style problems, please review.
+> 
+> NOTE: If any of the errors are false positives, please report
+>       them to the maintainer, see CHECKPATCH in MAINTAINERS.
+> WARNING: Missing commit description - Add an appropriate one
+> 
+> ERROR: Missing Signed-off-by: line(s)
+> 
+> total: 1 errors, 1 warnings, 7 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> Your patch has style problems, please review.
+> 
+> NOTE: If any of the errors are false positives, please report
+>       them to the maintainer, see CHECKPATCH in MAINTAINERS.
+> 
+> ====
+> 
+> Some of them are a little odd.  I fixed the relevant ones
 
-> After commit ("x86/cpu/topology: Add support for the AMD 0x80000026 leaf"),
-> on AMD processors that support extended CPUID leaf 0x80000026, the
-> topology_die_cpumask() and topology_logical_die_id() macros, no longer 
-> return the package cpumask and package id, instead they return the CCD 
-> (Core Complex Die) mask and id respectively. This leads to the energy-pkg 
-> event scope to be modified to CCD instead of package.
-> 
-> Replacing these macros with their package counterparts fixes the
-> energy-pkg event for AMD CPUs.
-> 
-> However due to the difference between the scope of energy-pkg event for 
-> Intel and AMD CPUs, we have to replace these macros conditionally only for
-> AMD CPUs.
-> 
-> On a 12 CCD 1 Package AMD Zen4 Genoa machine:
-> 
-> Before:
-> $ cat /sys/devices/power/cpumask
-> 0,8,16,24,32,40,48,56,64,72,80,88.
-> 
-> The expected cpumask here is supposed to be just "0", as it is a package 
-> scope event, only one CPU will be collecting the event for all the CPUs in 
-> the package.
-> 
-> After:
-> $ cat /sys/devices/power/cpumask
-> 0
-> 
-> Signed-off-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-> Fixes: 63edbaa48a57 ("x86/cpu/topology: Add support for the AMD 0x80000026 leaf")
-> ---
->  arch/x86/events/rapl.c | 30 ++++++++++++++++++++++++++----
->  1 file changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-> index 46e673585560..d77bf7959a43 100644
-> --- a/arch/x86/events/rapl.c
-> +++ b/arch/x86/events/rapl.c
-> @@ -102,6 +102,10 @@ static struct perf_pmu_events_attr event_attr_##v = {				\
->  	.event_str	= str,							\
->  };
->  
-> +#define rapl_pmu_is_pkg_scope()				\
-> +	(boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||	\
-> +	 boot_cpu_data.x86_vendor == X86_VENDOR_HYGON)
-> +
->  struct rapl_pmu {
->  	raw_spinlock_t		lock;
->  	int			n_active;
-> @@ -139,9 +143,21 @@ static unsigned int rapl_cntr_mask;
->  static u64 rapl_timer_ms;
->  static struct perf_msr *rapl_msrs;
->  
-> +static inline unsigned int get_rapl_pmu_idx(int cpu)
-> +{
-> +	return rapl_pmu_is_pkg_scope() ? topology_logical_package_id(cpu) :
-> +					 topology_logical_die_id(cpu);
-> +}
-> +
-> +static inline cpumask_t *get_rapl_pmu_cpumask(int cpu)
-> +{
-> +	return rapl_pmu_is_pkg_scope() ? topology_core_cpumask(cpu) :
-> +					 topology_die_cpumask(cpu);
-> +}
+Change of plan - I actually can't find anything to fix.
 
-Note that this breaks the build with this config:
+All of this reports seem bogus!
 
-  https://download.01.org/0day-ci/archive/20240503/202405030828.RgFuznL9-lkp@intel.com/config
-
-I've removed the commit from perf/core for now.
-
-Thanks,
-
-	Ingo
+-- 
+Lee Jones [李琼斯]
 
