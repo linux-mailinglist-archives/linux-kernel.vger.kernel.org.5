@@ -1,97 +1,88 @@
-Return-Path: <linux-kernel+bounces-168334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB74C8BB6E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:13:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA118BB6EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:13:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8306B2138B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:13:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF5F0B2165B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132035B1FB;
-	Fri,  3 May 2024 22:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D3C7641E;
+	Fri,  3 May 2024 22:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILhKzxu7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LizLuuvl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E38364AC;
-	Fri,  3 May 2024 22:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C081EB21;
+	Fri,  3 May 2024 22:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714774377; cv=none; b=mrgHFSKP2q+Az/vHi6rKjobdFhDIj6RS94TbhFh24a82wIr7Ue5RNkWkVXAj/vXSqtR2BGeO1ps8d2fbeQXK9EdZmSHKehoeu86dxuNbkIVF9l3vZmyv5r7+sZBz+Vxgyp51vGlt+Pcnd3LKjFEQQ4R2j+I+sfkkXPqW2+qiSYI=
+	t=1714774382; cv=none; b=Dx6AiNMVv2inNUYHJ8C6ocU+Tc4cHmAf5gZ47YUPF1z4Nafy++oIxMJnBFBvzsgyrrEOMHTNfUcKcReRJ87bSlgehr+qtFS7KXInPEULYu9SEUn70JDK7fhZw17BUlQcUSHTYrbZAkAbYooHbXPFpXDlXejFOo68txYZ8R3chs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714774377; c=relaxed/simple;
-	bh=YkP2K6jpxNEQf4lXAwpJOOcHT6UPDCIc3FFQpwklXDg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=GX3XvNhbofPl/AaxxHUIygHfZYwgwr474zVRLHXHHrcefqTFQ+OOfWFwQqDtOgglAZ6FwA8IxBGR43JEOWOMkf2VGULpm1CR1WmTU/tN7HV6ihHsk2332z92/hC70aU/4TmcfFt3ZhZFp6EpTtBjtiUsbpiO/kV4NeyL22bneTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILhKzxu7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A857EC116B1;
-	Fri,  3 May 2024 22:12:56 +0000 (UTC)
+	s=arc-20240116; t=1714774382; c=relaxed/simple;
+	bh=lfmOGOZfhnCUlEiIDxBBf2bhFfZo+XWkOL15C/9q4gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jL0ld8vNAmHUBKWX76C9ZS44enJSRwxISvGUjIhS+mNwCkK/WkdzOQj8bVpx+fhNDrR3B0cGNL6t9pbOmMmsIR68L95BfWcYVlknvpm7cV/qEIEPs8D3GSKtRYiZlVHSZ5srEarObYIfzuxDYp1kesSLtuEm+lFIrJRHOWdDeGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LizLuuvl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E21A6C116B1;
+	Fri,  3 May 2024 22:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714774376;
-	bh=YkP2K6jpxNEQf4lXAwpJOOcHT6UPDCIc3FFQpwklXDg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ILhKzxu7oUwgRZMSb5FgKI+skcjYd8K+c+U9i5uDdl07ql6s35NefExj3VJiRt0M+
-	 nZDQnRX8dY9Q6Q+YU5yyzBBiFAkA0Y2j9PsQwj6nKx+RQGH7fzGIS4rwA7cvIndaT6
-	 fV89eLej03eDgVvxwWmnWkqsXMiReHz7+7j9ExwfuaC2g1VlTsUGzpt04Uf472L3fJ
-	 sqwrkSMWan41jm/wREC5pG8br2+kbd2Qx7DPA0UrK20MrQ9vW8dT4iWC7q036iDVl+
-	 5HJq/nA+ogSZzOc9a9x+gurcR9NosBuL12k7FelkACuMKbVElrkQJ8EY8ASSVDP4oy
-	 vNmdUKkWcndZQ==
-Date: Fri, 3 May 2024 17:12:54 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: bhelgaas@google.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Andres Salomon <dilinger@queued.net>
-Subject: Re: [PATCH] x86: Code cleanup for ehci_hdr
-Message-ID: <20240503221254.GA1607085@bhelgaas>
+	s=k20201202; t=1714774381;
+	bh=lfmOGOZfhnCUlEiIDxBBf2bhFfZo+XWkOL15C/9q4gg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LizLuuvl3rIQpUP79UErjXcSkos8A0+bWmuon50exKaQxHHovPycNRnTPTY42cSdK
+	 tPk26zSCuLzBZBmwxgmvlxX4SJ+nUmpVGWJC9f7/vYwj9yqsa1Pd8/Z/td2Irvy8LU
+	 u26vNVtSW9V2MJPM2EMAMZCaLNiVRfP3k/NV1t6mmHVc6SYd7iZbkYK7zk5bhDEE4W
+	 dzMTBykNicvk4hvWRqa9jwQUyxPjCkYMtbaCd0opgAr2WdJU75sm4LkESwDbMraJGL
+	 2XSMKIhrFZSc+5Bs6hGpAfMTG0dHdow/2S95mJpAFgHi+Lo4RCvM3nco5D4wCcRYD5
+	 s0IILBeTsS96w==
+Date: Fri, 3 May 2024 15:13:00 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: Edward Cree <ecree.xilinx@gmail.com>, Martin Habets
+ <habetsm.xilinx@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
+ Horman <horms@kernel.org>, netdev@vger.kernel.org (open list:SFC NETWORK
+ DRIVER), linux-net-drivers@amd.com (open list:SFC NETWORK DRIVER),
+ linux-kernel@vger.kernel.org (open list), Wolfram Sang
+ <wsa+renesas@sang-engineering.com>, amd-gfx@lists.freedesktop.org (open
+ list:RADEON and AMDGPU DRM DRIVERS), dri-devel@lists.freedesktop.org (open
+ list:DRM DRIVERS), intel-gfx@lists.freedesktop.org (open list:INTEL DRM
+ DISPLAY FOR XE AND I915 DRIVERS), intel-xe@lists.freedesktop.org (open
+ list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
+ nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+ GEFORCE/QUADRO GPUS), linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM
+ HOST DRIVERS), linux-media@vger.kernel.org (open list:BTTV VIDEO4LINUX
+ DRIVER), linux-fbdev@vger.kernel.org (open list:FRAMEBUFFER LAYER)
+Subject: Re: [PATCH v1 10/12] sfc: falcon: Make I2C terminology more
+ inclusive
+Message-ID: <20240503151300.0f202c30@kernel.org>
+In-Reply-To: <20240430173812.1423757-11-eahariha@linux.microsoft.com>
+References: <20240430173812.1423757-1-eahariha@linux.microsoft.com>
+	<20240430173812.1423757-11-eahariha@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125030623.513902-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-[+cc Andres, author of 3ef0e1f8cad0]
+On Tue, 30 Apr 2024 17:38:09 +0000 Easwar Hariharan wrote:
+> I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced "master/slave"
+> with more appropriate terms. Inspired by and following on to Wolfram's
+> series to fix drivers/i2c/[1], fix the terminology for users of
+> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+> in the specification.
+> 
+> Compile tested, no functionality changes intended
 
-On Thu, Jan 25, 2024 at 11:06:23AM +0800, Kunwu Chan wrote:
-> This part was commented from commit 3ef0e1f8cad0
-> ("x86: olpc: add One Laptop Per Child architecture support")
-> in about 16 years before.
-> 
-> If there are no plans to enable this part code in the future,
-> we can remove this dead code.
-> 
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-
-Applied to pci/misc for v6.10, thanks.
-
-> ---
->  arch/x86/pci/olpc.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/x86/pci/olpc.c b/arch/x86/pci/olpc.c
-> index f3aab76e357a..4b18c6404363 100644
-> --- a/arch/x86/pci/olpc.c
-> +++ b/arch/x86/pci/olpc.c
-> @@ -154,9 +154,6 @@ static const uint32_t ehci_hdr[] = {  /* dev f function 4 - devfn = 7d */
->  	0x0,	0x40,	0x0,	0x40a,			/* CapPtr INT-D, IRQA */
->  	0xc8020001, 0x0, 0x0,	0x0,	/* Capabilities - 40 is R/O, 44 is
->  					   mask 8103 (power control) */
-> -#if 0
-> -	0x1,	0x40080000, 0x0, 0x0,	/* EECP - see EHCI spec section 2.1.7 */
-> -#endif
->  	0x01000001, 0x0, 0x0,	0x0,	/* EECP - see EHCI spec section 2.1.7 */
->  	0x2020,	0x0,	0x0,	0x0,	/* (EHCI page 8) 60 SBRN (R/O),
->  					   61 FLADJ (R/W), PORTWAKECAP  */
-> -- 
-> 2.39.2
-> 
+FWIW we're assuming someone (Wolfram?) will take all of these,
+instead of area maintainers picking them individually.
+Please let us know if that's incorrect.
 
