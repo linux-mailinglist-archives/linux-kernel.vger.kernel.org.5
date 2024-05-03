@@ -1,145 +1,164 @@
-Return-Path: <linux-kernel+bounces-167803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3E338BAF5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:07:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D081A8BAF61
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:07:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313DB1C22314
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:07:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B4A2846F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2BF48788;
-	Fri,  3 May 2024 15:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FC74CB35;
+	Fri,  3 May 2024 15:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H/px9BW4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="42RFbvBF"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACD148CCC
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1991148788;
+	Fri,  3 May 2024 15:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714748825; cv=none; b=XW9cCHaQ/YAHvZ1VMqoBBPPaGjZLoqwvjUfFe/GQ60rXqrr3ktvJhCoi+dyUH0sIPxppLrGndVnIq80JfCdPIs49FR6IlLI6/GuKL9FTweeRQU7ID1yXLOU88DuRQJPuVEBkz9QT3NLzoXbuTwokMl1kp/Z58lxVlMgUYCvFsAg=
+	t=1714748846; cv=none; b=IiVGU7q/Is1aw5Q/J5Ohhup6jnYtTDwiI+xR0YjdCb27VsDiFv5zIOebaKJ4lQ3hkRB1KmCbPn2oTJAujYCWgK7OhH5qAD1z3S81bQuAY0Zfs/rbWi6D18VHcnOUHZbpZU2D3cRLeaze0o5NXC8Mozh7XxMf8KkpPn+BNrN90BI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714748825; c=relaxed/simple;
-	bh=k9s24ntmSBOewn9Zrhb/0BIr0dPxZe+x4zy/XWS4LFU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=fr6ypIlJVbkVSijbDzL4dQCdST9HlSTtM8oQVWV8wJic3WWkzxwSbUJhxeMEtpDlCFkT1pnotRuZbxJwXFS00PAHV3YiAx1XDhvT8vm6MIrsiHtaJkMVd42KkUo9wCAzoDyizf+BM/H9e1OEmW1F56mN9BwBED4PefvKdJuTzh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H/px9BW4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714748823;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WQPeshu6niEUNuSz35jaYgA/Ulg7rIGCZOHChBJq76g=;
-	b=H/px9BW4BEV7vxu3at67Y8ZrABHb04fnXXxUugfM1sFBwDKVacxbnXY3ZsbB+rLgabfxix
-	61dVIAa7BwG2gHBT55SU/A4N8VzQ3t1Mzg3Cduqv2v8mMyEihKhzyDPc6LQ4YBSC0YnaUc
-	CFtu3jeiQLB/RfvNRoS3j2Ma77F/LJ4=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-99TA8MUPMLm18LY02gF2Qg-1; Fri, 03 May 2024 11:07:01 -0400
-X-MC-Unique: 99TA8MUPMLm18LY02gF2Qg-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6a0c9092176so89749986d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 08:07:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714748821; x=1715353621;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WQPeshu6niEUNuSz35jaYgA/Ulg7rIGCZOHChBJq76g=;
-        b=VF0+hoZd53L4pKdJrClOpipDT24HWKCgIhNZgIx/Jd7BdXXahHUwpA0fP+B1EcDTzi
-         IgCTb5xVOyIenf89tBtf6W+2XsAEUMbjcsyOKI34yRM0WyRoUsVBQs5d/tIpp9oBLbVw
-         +AkVyNlX3QjDF9Dn9QvlBj31j3B6Jwmm14yO3PnTdKZVcKQhw1X+afNSusshNXZwldT6
-         mYiOJRRtGHqI+3RcDoy608tLDKeiRlTyFmZg9zG1MhrgXwzCvD3aFLQBZsZxQX3BnSSR
-         DqOYJZazQjxxhx0QyRjbEhlwJzKdXLVVx1GpNi137XPvSHyhQCaM3sxoRtrVY6z4mrM9
-         n7Zg==
-X-Forwarded-Encrypted: i=1; AJvYcCWlKJUltHUxiB0RIITnI9VlRfNucIUkZfUxZGSx0r0zqqaS1U4nZto8Xadtu8NodvAn+78104IFG2F9xtoUd5LnZU7J8JlglczVI8Sc
-X-Gm-Message-State: AOJu0Yz4RI2n31z+9HdXDMXoIqZk5t1WNi+u5/EcDCq2OdOUT9rFRpJR
-	HkV4/mCwxkYsNW7TFITk1cbrdmchEbGfuI2tfp0vdTshDwSzmx2TfAqiwKbcEvs4IFJK+2r+W+m
-	zwnnzzYVEdXPejlJrk8QZGG2OLAXyGCBUxC/0eGGRHn7rpKHBi+d9Ce3PgIth8g==
-X-Received: by 2002:a05:6214:1d28:b0:6a0:7e1b:94b2 with SMTP id f8-20020a0562141d2800b006a07e1b94b2mr3500219qvd.16.1714748820812;
-        Fri, 03 May 2024 08:07:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE58nX1yMSsXx8T4M1bwWkbRW6TndZK2zPSzImpXTW1iQHJ+hiY0QElGI8RXi6FLWzqh7lbjg==
-X-Received: by 2002:a05:6214:1d28:b0:6a0:7e1b:94b2 with SMTP id f8-20020a0562141d2800b006a07e1b94b2mr3500172qvd.16.1714748820323;
-        Fri, 03 May 2024 08:07:00 -0700 (PDT)
-Received: from rh (p200300c93f4cc600a5cdf10de606b5e2.dip0.t-ipconnect.de. [2003:c9:3f4c:c600:a5cd:f10d:e606:b5e2])
-        by smtp.gmail.com with ESMTPSA id f19-20020ac84713000000b00437392f1c20sm1652949qtp.76.2024.05.03.08.06.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 08:07:00 -0700 (PDT)
-Date: Fri, 3 May 2024 17:06:54 +0200 (CEST)
-From: Sebastian Ott <sebott@redhat.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-    linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>, 
-    James Morse <james.morse@arm.com>, 
-    Suzuki K Poulose <suzuki.poulose@arm.com>, 
-    Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 2/6] KVM: arm64: unify trap setup code
-In-Reply-To: <ZjHmX_O7KTInLuL5@linux.dev>
-Message-ID: <5c17b8e9-9281-f6ef-df71-11821e19b112@redhat.com>
-References: <20240426104950.7382-1-sebott@redhat.com> <20240426104950.7382-3-sebott@redhat.com> <ZjHmX_O7KTInLuL5@linux.dev>
+	s=arc-20240116; t=1714748846; c=relaxed/simple;
+	bh=n90ymFXYX/mPfwdlXeVC+RLGTkwM83bllw5REKRbAYQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h8cb/1r6GDExCqFU6Q0YZdXmN15Mw3iV7+6JTu881Z22NL5TfWTK56CP1P0cq096jKXHSTVCd1KSP+z8FIicNSI8sk3UKmBm04oWwG13jsQcfZBUTAZLynhRh1q2MHHOdEeFJnYcP/jBAXu32s96x58Ne8euNcm0K0nnz+NbXFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=42RFbvBF; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714748843;
+	bh=n90ymFXYX/mPfwdlXeVC+RLGTkwM83bllw5REKRbAYQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=42RFbvBFAwhCfVH7YzE1nz8tBDn7sHpGBECnfzeQ00h//pNKDSpkjCY8OX4wPsGsp
+	 bsmONm+55u5/VTgK4SVIThbiTUoRamfbLcEj3Deflm4X3LsQSfRMzaIbWvIMPSCWDi
+	 sflhY36Dgj5pgL+Zfx8CGu0yvHOIJpQiX3I1EDkJx39kYZKVdibuQgngZjV+Nus0YT
+	 vw83sJX3dEz6VLxnD90KDPCm/98TAaxujsxMNISIYSeo6ElykIeEnmqcuI6/CPrOwe
+	 ZUkJzN2TN+0cV9gWZC9sa5ciY6XXpFoBmqB/1t536HRx6GIElGnlmNMe6aITYAFfhw
+	 nKTIeP0Xghnpg==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E79473782160;
+	Fri,  3 May 2024 15:07:22 +0000 (UTC)
+Date: Fri, 3 May 2024 17:07:21 +0200
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Ivan Bornyakov <brnkv.i1@gmail.com>
+Cc: Nas Chung <nas.chung@chipsnmedia.com>,
+	Jackson Lee <jackson.lee@chipsnmedia.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] Wave515 decoder IP support
+Message-ID: <20240503150721.qd6d7csev5452rss@basti-XPS-13-9310>
+References: <20240415100726.19911-1-brnkv.i1@gmail.com>
+ <mwgydgjstvedkatdvopt3wh4imhnzflr7ut3vejgl6fz3vbgzg@x4spldwklrm3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <mwgydgjstvedkatdvopt3wh4imhnzflr7ut3vejgl6fz3vbgzg@x4spldwklrm3>
 
-On Wed, 1 May 2024, Oliver Upton wrote:
-> On Fri, Apr 26, 2024 at 12:49:46PM +0200, Sebastian Ott wrote:
->> There are 2 functions to set up traps via HCR_EL2:
+Hey Ivan,
+
+On 02.05.2024 09:40, Ivan Bornyakov wrote:
+>On Mon, Apr 15, 2024 at 01:07:18PM GMT, Ivan Bornyakov wrote:
+>> Initial support for Wave515 multi-decoder IP among other refinements.
+>> This was tested on FPGA prototype, so wave5_dt_ids[] was not expanded.
+>>
+>> fluster score for JCT-VC-HEVC_V1 testsuite with
+>> GStreamer-H.265-V4L2-Gst1.0 decoder is 132/147
+>>
+>> The issue with Main10 tests is that fluster expects decoded file to be
+>> in yuv420p10le format while this driver decodes HEVC Main10 into 8-bit
+>> yuv420p. Though result is looks alright to the naked eye, proper
+>> decoding into yuv420p10le is to be added.
+>>
+>> The rest failed fluster tests are common with Wave521.
+>>
+>> ChangeLog:
+>>   v1:
+>> https://lore.kernel.org/linux-media/20240318144225.30835-1-brnkv.i1@gmail.com/
+>>   v2:
+>> https://lore.kernel.org/linux-media/20240325064102.9278-1-brnkv.i1@gmail.com/
+>>     * drop patch "dt-bindings: media: cnm,wave521c: drop resets restriction"
+>>       The only user of Wave5 in mainline is TI K3 boards, thus there is
+>>       no real need to alter dt-bindings
+>>     * in patch "media: chips-media: wave5: support decoding HEVC Main10 profile"
+>>       add check for flag "support_hevc10bit_dec"
+>>     * in patch "media: chips-media: wave5: support reset lines" move
+>>       reset_control_deassert() out of else branch, add
+>>       reset_control_assert() to probe error path.
+>>     * rework patch "media: chips-media: wave5: drop "sram-size" DT prop"
+>>        - don't move alloc/free form device open/close
+>>        - intead of exact configuration of reserved SRAM memory in DT and
+>> 	 allocating all of it, allocate all available SRAM memory up to
+>> 	 WAVE5_MAX_SRAM_SIZE from whatever pool provided.
+>>     * adjust patch "media: chips-media: wave5: support Wave515 decoder"
+>>       according to changes in patches
+>>       "media: chips-media: wave5: support decoding HEVC Main10 profile" and
+>>       "media: chips-media: wave5: drop "sram-size" DT prop"
+>>   v3:
+>> https://lore.kernel.org/linux-media/20240405164112.24571-1-brnkv.i1@gmail.com/
+>>     * reword patch "media: chips-media: wave5: separate irq setup routine"
+>>       a bit.
+>>     * in patch "media: chips-media: wave5: drop "sram-size" DT prop"
+>>        - move MAX_SRAM_SIZE define into match_data->sram_size
+>>        - add placeholders for validation that allocated SRAM memory is
+>> 	 enough to encode/decode bitstream of given resolution before
+>> 	 setting W5_USE_SEC_AXI and W5_CMD_ENC_PIC_USE_SEC_AXI registers
+>>        - reword accordingly
+>>     * in patch "media: chips-media: wave5: support Wave515 decoder"
+>>        - add comments around SRAM memory allocation/freeing about
+>> 	 Wave515 specifics
+>>        - add comments about BSOPTION_RD_PTR_VALID_FLAG bit in
+>> 	 W5_BS_OPTION register
+>>        - add W[AVE]521_ prefix to defines, for wich there are W[AVE]515_
+>> 	 alternatieves
+>>        - add semi-magic Wave515 specific formulas to estimate SRAM usage
+>>   v4:
+>>     * rebase onto next-20240415, no functional changes
+>>
+>> Ivan Bornyakov (5):
+>>   media: chips-media: wave5: support decoding HEVC Main10 profile
+>>   media: chips-media: wave5: support reset lines
+>>   media: chips-media: wave5: separate irq setup routine
+>>   media: chips-media: wave5: drop "sram-size" DT prop
+>>   media: chips-media: wave5: support Wave515 decoder
+>>
+>>  .../platform/chips-media/wave5/wave5-helper.c |   8 +-
+>>  .../platform/chips-media/wave5/wave5-hw.c     | 395 +++++++++++++-----
+>>  .../chips-media/wave5/wave5-regdefine.h       |   5 +
+>>  .../platform/chips-media/wave5/wave5-vdi.c    |  27 +-
+>>  .../chips-media/wave5/wave5-vpu-dec.c         |  51 ++-
+>>  .../chips-media/wave5/wave5-vpu-enc.c         |   2 +-
+>>  .../platform/chips-media/wave5/wave5-vpu.c    |  35 +-
+>>  .../platform/chips-media/wave5/wave5-vpuapi.h |   3 +
+>>  .../chips-media/wave5/wave5-vpuconfig.h       |  16 +-
+>>  .../media/platform/chips-media/wave5/wave5.h  |   6 +
+>>  10 files changed, 407 insertions(+), 141 deletions(-)
+>>
+>> --
+>> 2.44.0
+>>
 >
-> nitpick: these functions *calculate* the trap values, but do not
-> actually set them up. HCR_EL2 doesn't get written to until further down
-> the line on KVM_RUN.
->
->> +	if (cpus_have_final_cap(ARM64_HAS_STAGE2_FWB)) {
->> +		vcpu->arch.hcr_el2 |= HCR_FWB;
->> +	} else {
->> +		/*
->> +		 * For non-FWB CPUs, we trap VM ops (HCR_EL2.TVM) until M+C
->> +		 * get set in SCTLR_EL1 such that we can detect when the guest
->> +		 * MMU gets turned on and do the necessary cache maintenance
->> +		 * then.
->> +		 */
->> +		vcpu->arch.hcr_el2 |= HCR_TVM;
->> +	}
->
-> It seems to me like calling this once for the lifetime of a vCPU will
-> break non-FWB behavior.
->
-> Like the comment suggests, these traps are needed to catch the moment
-> the S1 MMU is turned on and do cache maintenance to make sure D$ agrees
-> with what the guest was doing before enabling the MMU.
->
-> KVM_ARM_VCPU_INIT resets SCTLR_EL1, but it seems we'd miss setting
-> HCR_TVM in that case.
+>Friendly ping.
 
-Ugh, I didn't think about KVM_ARM_VCPU_INIT being called more than once.
+Sorry again for the delay, I was nearly finished with the patch set last
+week but the time wasn't sufficient. And I sadly have to delay it again
+a bit as I am on vacation until 13.05. I expect finishing it probably
+until 17.05.
 
-But in that case don't we loose the changes done to hcr_el2 in the current
-code? E.g.:
-
-void kvm_init_sysreg(struct kvm_vcpu *vcpu)
-{
-..
- 	if (!kvm_has_feat(kvm, ID_AA64ISAR0_EL1, TLB, OS))
- 		vcpu->arch.hcr_el2 |= HCR_TTLBOS;
-..
-}
-
-static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
-{
- 	vcpu->arch.hcr_el2 = HCR_GUEST_FLAGS;
-..
-}
-
-Thanks,
+Regards,
 Sebastian
-
 
