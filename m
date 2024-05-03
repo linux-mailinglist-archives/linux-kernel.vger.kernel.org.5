@@ -1,219 +1,432 @@
-Return-Path: <linux-kernel+bounces-167436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763C78BA994
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:14:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CADBF8BA99A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D36B281C52
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:14:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE40F1C217DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0555F14F12D;
-	Fri,  3 May 2024 09:14:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9744414F113;
-	Fri,  3 May 2024 09:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C772114F133;
+	Fri,  3 May 2024 09:15:53 +0000 (UTC)
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE9D14F11C;
+	Fri,  3 May 2024 09:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727667; cv=none; b=NyVSRZUGE9Jh6WTT7g10ya1xie/Qw+qIG/OAfcPdgJog1nyyfjf4i+PVtNAWoJr7cC4jjY4ppEYDP6RmHViSb+I/3wdkMMw97SINTIyXgORdXr+dwltIVj45SUrRzi66OwPZ/6l0ARF5giSIR7MQ2C2JTxiCWa3COj9gnrslX0g=
+	t=1714727752; cv=none; b=Av4g+6KasO/UnWsizrpX/tXKN5YYoMVer7qqEJgwJ1UOyBRSFtv6bUv3Et7U4xio0q+qU5QMSY1sq9r5JNVBA7zvwZlHp8TWUDcfiEBJLDS6dhLtXV/45uwKqwNZQPnjZ6lq8GXxIm+Uf8o74POGmPVmlDvFpql3lO0GsGuwx0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727667; c=relaxed/simple;
-	bh=4ra0slbfvRchcptOPIK9YRDh4kjzt5cthlclRiu0G1g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rFEGrJuXKbzZYEYw5hncgn5Q3x5Kh59nnIzr+V8FxNWP5tdr6WMCk9j5jHX6Hs8m2zkG8SQADx/y93VHO/O/OgFjcRn4Of+ABSstmzMz02/poYpVMYF7fCeVERGzIT+BQY2PKTLtZmKYH/W+O8nLungBtect+GrZw02KV9UG5gM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 361482F4;
-	Fri,  3 May 2024 02:14:50 -0700 (PDT)
-Received: from [10.163.34.188] (unknown [10.163.34.188])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD2CE3F73F;
-	Fri,  3 May 2024 02:14:18 -0700 (PDT)
-Message-ID: <312ae9b3-e328-410e-9f2f-02e6dccadff2@arm.com>
-Date: Fri, 3 May 2024 14:44:10 +0530
+	s=arc-20240116; t=1714727752; c=relaxed/simple;
+	bh=1eDZbnr3LkKtHmhMuOKFoHl5V6Nhe0RgRQK75CIcDQI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HtyTAjcy6nJPrzgmjXjbXgMDc4B6lo0789WrptxfOeil6WqrOFRget6uZeZfIfc7RtYVQ/h3WSTsy/SlP3cajJsgwJ071THajE7mAlnPsY4KbmoQ5FDuXWY/d4+Khf3KLKr0DPFX37DHpKPekaHouRqkipkiCU4HSXdSb1ubQoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id A8070520115;
+	Fri,  3 May 2024 11:15:46 +0200 (CEST)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.37; Fri, 3 May
+ 2024 11:15:46 +0200
+Date: Fri, 3 May 2024 11:15:41 +0200
+From: Hardik Gajjar <hgajjar@de.adit-jv.com>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+CC: <gregkh@linuxfoundation.org>, Ferry Toth <fntoth@gmail.com>,
+	<s.hauer@pengutronix.de>, <jonathanh@nvidia.com>,
+	<linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<quic_linyyuan@quicinc.com>, <paul@crapouillou.net>,
+	<quic_eserrao@quicinc.com>, <erosca@de.adit-jv.com>, Andy Shevchenko
+	<andriy.shevchenko@intel.com>, Hardik Gajjar <hgajjar@de.adit-jv.com>
+Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
+ netif_device_detach
+Message-ID: <20240503091541.GA4478@vmlxhi-118.adit-jv.com>
+References: <20240417151342.GA56989@vmlxhi-118.adit-jv.com>
+ <d94f37cf-8140-4f89-aa67-53f9291faff3@gmail.com>
+ <5dae4b62-24d4-4942-934a-38c548a2fdbc@gmail.com>
+ <20240430153243.GA129136@vmlxhi-118.adit-jv.com>
+ <8041106f-0be0-4ed9-990e-1f62902b30e9@gmail.com>
+ <9dab0c4f-cfae-4212-9a27-518454314eef@gmail.com>
+ <20240502152916.GA7995@vmlxhi-118.adit-jv.com>
+ <ZjOx5KZdmBZ0S5CD@smile.fi.intel.com>
+ <20240502161652.GA8362@vmlxhi-118.adit-jv.com>
+ <be13b434-9110-4333-8bd9-3ad85adfa976@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: implement raw_smp_processor_id() using
- thread_info
-Content-Language: en-US
-To: Puranjay Mohan <puranjay@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Sumit Garg <sumit.garg@linaro.org>, Stephen Boyd <swboyd@chromium.org>,
- Douglas Anderson <dianders@chromium.org>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Mark Rutland <mark.rutland@arm.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-References: <20240502123449.2690-1-puranjay@kernel.org>
- <20240502123449.2690-2-puranjay@kernel.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240502123449.2690-2-puranjay@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <be13b434-9110-4333-8bd9-3ad85adfa976@leemhuis.info>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 
+On Fri, May 03, 2024 at 09:24:16AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> Greg, not totally sure, but this might be something where you might need
+> to make a judgement call. See below:
+> 
+> On 02.05.24 18:16, Hardik Gajjar wrote:
+> > On Thu, May 02, 2024 at 06:31:48PM +0300, Andy Shevchenko wrote:
+> >> On Thu, May 02, 2024 at 05:29:16PM +0200, Hardik Gajjar wrote:
+> >>> On Tue, Apr 30, 2024 at 11:12:17PM +0200, Ferry Toth wrote:
+> >>>> Op 30-04-2024 om 21:40 schreef Ferry Toth:
+> >>>>> Op 30-04-2024 om 17:32 schreef Hardik Gajjar:
+> >>>>>> On Sun, Apr 28, 2024 at 11:07:36PM +0200, Ferry Toth wrote:
+> >>>>>>> Op 25-04-2024 om 23:27 schreef Ferry Toth:
+> >>>>>>>> Op 17-04-2024 om 17:13 schreef Hardik Gajjar:
+> >>>>>>>>> On Tue, Apr 16, 2024 at 04:48:32PM +0300, Andy Shevchenko wrote:
+> >>>>>>>>>> On Thu, Apr 11, 2024 at 10:52:36PM +0200, Ferry Toth wrote:
+> >>>>>>>>>>> Op 11-04-2024 om 18:39 schreef Andy Shevchenko:
+> >>>>>>>>>>>> On Thu, Apr 11, 2024 at 04:26:37PM +0200, Hardik Gajjar wrote:
+> >>>>>>>>>>>>> On Wed, Apr 10, 2024 at 08:37:42PM +0300, Andy Shevchenko wrote:
+> >>>>>>>>>>>>>> On Sun, Apr 07, 2024 at 10:51:51PM +0200, Ferry Toth wrote:
+> >>>>>>>>>>>>>>> Op 05-04-2024 om 13:38 schreef Hardik Gajjar:
+> >> 
+> 
+> >> ...
+> >> 
+> >>>>>>>>>>>>>>> Exactly. And this didn't happen before the 2 patches.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> To be precise: /sys/class/net/usb0 is not
+> >>>>>>>>>>>>>>> removed and it is a link, the link
+> >>>>>>>>>>>>>>> target /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/net/usb0
+> >>>>>>>>>>>>>>> no
+> >>>>>>>>>>>>>>> longer exists
+> >>>>>>>>>>>>> So, it means that the /sys/class/net/usb0 is
+> >>>>>>>>>>>>> present, but the symlink is
+> >>>>>>>>>>>>> broken. In that case, the dwc3 driver should
+> >>>>>>>>>>>>> recreate the device, and the
+> >>>>>>>>>>>>> symlink should become active again
+> >>>>>>>>>>>
+> >>>>>>>>>>> Yes, on first enabling gadget (when device mode is activated):
+> >>>>>>>>>>>
+> >>>>>>>>>>> root@yuna:~# ls
+> >>>>>>>>>>> /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+> >>>>>>>>>>> driver  net  power  sound  subsystem  suspended  uevent
+> >>>>>>>>>>>
+> >>>>>>>>>>> Then switching to host mode:
+> >>>>>>>>>>>
+> >>>>>>>>>>> root@yuna:~# ls
+> >>>>>>>>>>> /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+> >>>>>>>>>>> ls: cannot access
+> >>>>>>>>>>> '/sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/':
+> >>>>>>>>>>> No such file
+> >>>>>>>>>>> or directory
+> >>>>>>>>>>>
+> >>>>>>>>>>> Then back to device mode:
+> >>>>>>>>>>>
+> >>>>>>>>>>> root@yuna:~# ls
+> >>>>>>>>>>> /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+> >>>>>>>>>>> driver  power  sound  subsystem  suspended  uevent
+> >>>>>>>>>>>
+> >>>>>>>>>>> net is missing. But, network functions:
+> >>>>>>>>>>>
+> >>>>>>>>>>> root@yuna:~# ping 10.42.0.1
+> >>>>>>>>>>> PING 10.42.0.1 (10.42.0.1): 56 data bytes
+> >>>>>>>>>>>
+> >>>>>>>>>>> Mass storage device is created and removed each time as expected.
+> >>>>>>>>>>
+> >>>>>>>>>> So, what's the conclusion? Shall we move towards revert of those
+> >>>>>>>>>> two changes?
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> As promised, I have the tested the this patch with the dwc3 gadget.
+> >>>>>>>>> I could not reproduce
+> >>>>>>>>> the issue.
+> >>>>>>>>>
+> >>>>>>>>> I can see the usb0 exist all the time and accessible regardless of
+> >>>>>>>>> the role switching of the USB mode (peripheral <-> host)
+> >>>>>>>>>
+> >>>>>>>>> Following are the logs:
+> >>>>>>>>> //Host to device
+> >>>>>>>>>
+> >>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # echo "peripheral"
+> >>>>>>>>>> mode
+> >>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # ls
+> >>>>>>>>> a800000.dwc3/gadget/net/
+> >>>>>>>>> usb0
+> >>>>>>>>>
+> >>>>>>>>> //device to host
+> >>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # echo "host" > mode
+> >>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # ls
+> >>>>>>>>> a800000.dwc3/gadget/net/
+> >>>>>>>>> usb0
+> >>>>>>>>
+> >>>>>>>> That is weird. When I switch to host mode (using the physical switch),
+> >>>>>>>> the whole gadget directory is removed (now testing 6.9.0-rc5)
+> >>>>>>>>
+> >>>>>>>> Switching back to device mode, that gadget directory is recreated. And
+> >>>>>>>> gadget/sound as well, but not gadget/net.
+> >>>>>>>>
+> >>>>>>>>> s a800000.dwc3/gadget/net/usb0
+> >>>>>>>>> <
+> >>>>>>>>> addr_assign_type    duplex             phys_port_name
+> >>>>>>>>> addr_len            flags              phys_switch_id
+> >>>>>>>>> address             gro_flush_timeout  power
+> >>>>>>>>> broadcast           ifalias            proto_down
+> >>>>>>>>> carrier             ifindex            queues
+> >>>>>>>>> carrier_changes     iflink             speed
+> >>>>>>>>> carrier_down_count  link_mode          statistics
+> >>>>>>>>> carrier_up_count    mtu                subsystem
+> >>>>>>>>> dev_id              name_assign_type   tx_queue_len
+> >>>>>>>>> dev_port            netdev_group       type
+> >>>>>>>>> device              operstate          uevent
+> >>>>>>>>> dormant             phys_port_id       waiting_for_supplier
+> >>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # ifconfig -a usb0
+> >>>>>>>>> usb0      Link encap:Ethernet  HWaddr 3a:8b:63:97:1a:9a
+> >>>>>>>>>             BROADCAST MULTICAST  MTU:1500  Metric:1
+> >>>>>>>>>             RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+> >>>>>>>>>             TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+> >>>>>>>>>             collisions:0 txqueuelen:1000
+> >>>>>>>>>             RX bytes:0 TX bytes:0
+> >>>>>>>>>
+> >>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb #
+> >>>>>>>>>
+> >>>>>>>>> I strongly advise against reverting the patch solely based on the
+> >>>>>>>>> observed issue of removing the /sys/class/net/usb0 directory while
+> >>>>>>>>> the usb0 interface remains available.
+> >>>>>>>>
+> >>>>>>>> There's more to it. I also mentioned that switching the role or
+> >>>>>>>> unplugging the cable leaves the usb0 connection.
+> >>>>>>>>
+> >>>>>>>> I have while in host mode:
+> >>>>>>>> root@yuna:~# ifconfig -a usb0
+> >>>>>>>> usb0: flags=-28605<UP,BROADCAST,RUNNING,MULTICAST,DYNAMIC>  mtu 1500
+> >>>>>>>>           inet 10.42.0.221  netmask 255.255.255.0  broadcast
+> >>>>>>>> 10.42.0.255
+> >>>>>>>>           inet6 fe80::a8bb:ccff:fedd:eef1  prefixlen 64 
+> >>>>>>>> scopeid 0x20<link>
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>> You don't see that because you didn't create a connection at all.
+> >>>>>>>>
+> >>>>>>>>> Instead, I recommend enabling FTRACE to trace the functions involved
+> >>>>>>>>> and identify which faulty call is responsible for removing usb0.
+> >>>>>>>>
+> >>>>>>>> Switching from device -> host -> device:
+> >>>>>>>>
+> >>>>>>>> root@yuna:~# trace-cmd record -p function_graph -l *gether_*
+> >>>>>>>>     plugin 'function_graph'
+> >>>>>>>> Hit Ctrl^C to stop recording
+> >>>>>>>> ^CCPU0 data recorded at offset=0x1c8000
+> >>>>>>>>       188 bytes in size (4096 uncompressed)
+> >>>>>>>> CPU1 data recorded at offset=0x1c9000
+> >>>>>>>>       0 bytes in size (0 uncompressed)
+> >>>>>>>> root@yuna:~# trace-cmd report
+> >>>>>>>> cpus=2
+> >>>>>>>>        irq/68-dwc3-725   [000]   514.575337: funcgraph_entry:      #
+> >>>>>>>> 2079.480 us |  gether_disconnect();
+> >>>>>>>>        irq/68-dwc3-946   [000]   524.263731: funcgraph_entry:      +
+> >>>>>>>> 11.640 us  |  gether_disconnect();
+> >>>>>>>>        irq/68-dwc3-946   [000]   524.263743: funcgraph_entry:      !
+> >>>>>>>> 116.520 us |  gether_connect();
+> >>>>>>>>        irq/68-dwc3-946   [000]   524.268029: funcgraph_entry:      #
+> >>>>>>>> 2057.260 us |  gether_disconnect();
+> >>>>>>>>        irq/68-dwc3-946   [000]   524.270089: funcgraph_entry:      !
+> >>>>>>>> 109.000 us |  gether_connect();
+> >>>>>>>
+> >>>>>>> I tried to get a more useful trace:
+> >>>>>>> root@yuna:/sys/kernel/tracing# echo 'gether_*' > set_ftrace_filter
+> >>>>>>> root@yuna:/sys/kernel/tracing# echo 'eem_*' >> set_ftrace_filter
+> >>>>>>> root@yuna:/sys/kernel/tracing# echo function > current_tracer
+> >>>>>>> root@yuna:/sys/kernel/tracing# echo 'reset_config' >> set_ftrace_filter
+> >>>>>>> -> switch to host mode then back to device
+> >>>>>>> root@yuna:/sys/kernel/tracing# cat trace
+> >>>>>>> # tracer: function
+> >>>>>>> #
+> >>>>>>> # entries-in-buffer/entries-written: 53/53   #P:2
+> >>>>>>> #
+> >>>>>>> #                                _-----=> irqs-off/BH-disabled
+> >>>>>>> #                               / _----=> need-resched
+> >>>>>>> #                              | / _---=> hardirq/softirq
+> >>>>>>> #                              || / _--=> preempt-depth
+> >>>>>>> #                              ||| / _-=> migrate-disable
+> >>>>>>> #                              |||| /     delay
+> >>>>>>> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> >>>>>>> #              | |         |   |||||     |         |
+> >>>>>>>       irq/68-dwc3-523     [000] D..3.   133.990254: reset_config
+> >>>>>>> <-__composite_disconnect
+> >>>>>>>       irq/68-dwc3-523     [000] D..3.   133.992274: eem_disable
+> >>>>>>> <-reset_config
+> >>>>>>>       irq/68-dwc3-523     [000] D..3.   133.992276: gether_disconnect
+> >>>>>>> <-reset_config
+> >>>>>>>       kworker/1:3-443     [001] ...1.   134.022453: eem_unbind
+> >>>>>>> <-purge_configs_funcs
+> >>>>>>>
+> >>>>>>> -> to device mode
+> >>>>>>>
+> >>>>>>>       kworker/1:3-443     [001] ...1.   148.630773: eem_bind
+> >>>>>>> <-usb_add_function
+> >>>>>>>       irq/68-dwc3-734     [000] D..3.   149.155209: eem_set_alt
+> >>>>>>> <-composite_setup
+> >>>>>>>       irq/68-dwc3-734     [000] D..3.   149.155215: gether_disconnect
+> >>>>>>> <-eem_set_alt
+> >>>>>>>       irq/68-dwc3-734     [000] D..3.   149.155220: gether_connect
+> >>>>>>> <-eem_set_alt
+> >>>>>>>       irq/68-dwc3-734     [000] D..3.   149.157287: eem_set_alt
+> >>>>>>> <-composite_setup
+> >>>>>>>       irq/68-dwc3-734     [000] D..3.   149.157292: gether_disconnect
+> >>>>>>> <-eem_set_alt
+> >>>>>>>       irq/68-dwc3-734     [000] D..3.   149.159338: gether_connect
+> >>>>>>> <-eem_set_alt
+> >>>>>>>       irq/68-dwc3-734     [000] D..2.   149.239625: eem_unwrap
+> >>>>>>> <-rx_complete
+> >>>>>>> ...
+> >>>>>>>
+> >>>>>>> I don't know where to look exactly. Any hints?
+> >>>>>>
+> >>>>>> do you see anything related to gether_cleanup() after eem_unbind() ?
+> >>>>>
+> >>>>> Nope. It's a pitty that the trace formatting got messed up above. But as
+> >>>>> you can see I traced gether_* and eem_*. After eem_unbind no traced
+> >>>>> function is called, until I flip the switch to device mode.
+> >>>>> The ... at the end is where I cut uninteresting eem_unwrap <-rx_complete
+> >>>>> and eem_wrap <-eth_start_xmit lines.
+> >>>>>
+> >>>>>> If not then, you may try to enable tracing of TCP/IP stack and
+> >>>>>> network side to check who deleting the sysfs entry
+> >>>>>
+> >>>>> Yes, that's a vast amount of functions to trace. And I don't see how
+> >>>>> that would be related to the patch we're discussing here. I was hoping
+> >>>>> for a little more targeted hint.
+> >>>>
+> >>>> Now filtering 'gether_*', 'eem_*', '*configfs_*', 'composite_*', 'usb_fun*',
+> >>>> 'reset_config' and 'device_remove_file' leads me to:
+> >>>>
+> >>>> TIMESTAMP  FUNCTION
+> >>>>    |         |
+> >>>>   49.952477: eem_wrap <-eth_start_xmit
+> >>>>   55.072455: eem_wrap <-eth_start_xmit
+> >>>>   55.072621: eem_unwrap <-rx_complete
+> >>>>   59.011540: configfs_composite_reset <-usb_gadget_udc_reset
+> >>>>   59.011545: composite_reset <-configfs_composite_reset
+> >>>>   59.011548: reset_config <-__composite_disconnect
+> >>>>   59.013565: eem_disable <-reset_config
+> >>>>   59.013567: gether_disconnect <-reset_config
+> >>>>   59.049560: device_remove_file <-device_remove
+> >>>>   59.051185: configfs_composite_disconnect <-usb_gadget_disco
+> >>>>   59.051189: composite_disconnect <-configfs_composite_discon
+> >>>>   59.051195: configfs_composite_unbind <-gadget_unbind_driver
+> >>>>   59.052519: eem_unbind <-purge_configs_funcs
+> >>>>   59.052529: composite_dev_cleanup <-configfs_composite_unbin
+> >>>>   59.052537: device_remove_file <-composite_dev_cleanup
+> >>>>
+> >>>> device_remove_file gets called twice, once by device_remove after
+> >>>> gether_disconnect (that the one). The 2nd time by composite_dev_cleanup
+> >>>> (removing the gadget)
+> >>>
+> >>> I believe that the device_remove_file function is only removing
+> >>> suspend-specific attributes, not the complete gadget.  Typically, when you
+> >>> perform the role switch, the Gadget start/stop function in your UDC driver is
+> >>> called. These functions should not delete the gadget
+> >>>
+> >>> To investigate further, could you please enable the DWC3 functions in ftrace
+> >>> and check who is removing the gadget?  I can also enable this on my system
+> >>> and compare the logs with yours, but I will be in PI planning for 1.5 weeks
+> >>> and may not be able to provide immediate support.
+> >>
+> >> Since we are almost at -rc7, I propose to revert and try again next cycle.
+> > 
+> > Why? There is no problem with this patch!
+> > 
+> > I don't know why you are so excited to revert the patch instead of
+> > investigating the original issue. Even though I have proved that the
+> > problem is caused by usb0 being removed just by role-switching the
+> > port by the UDC driver, this behavior is incorrect.
+> > 
+> > There is no behavior in the Linux kernel that keeps the network
+> > interface and removes the related sysfs entry. THIS IS WRONG and has
+> > been FIXED without reverting any mainline patch.
+> > 
+> > Please don't encourage reverting any mainstream patches to avoid
+> > investigating a (probably) faulty driver. This is not how the
+> > community should work.
+> 
+> I only skimmed the thread and this is not my area of expertise, so
+> correct me if I'm wrong anywhere here:
+> 
+> But from what I see I tend to disagree: the patch mentioned in the
+> subject apparently regressed something. This afaics was reported 16
+> weeks ago during the 6.7 cycle[1]. Due to how we apply the "no
+> regressions" rule[2] the change causing this ideally should have been
+> reverted before 6.8 was release -- it does not matter that it just
+> exposed an existing problem rooted somewhere else. That revert did not
+> happen. Then even a few more weeks went by and this is still not fixed.
+> Then I'd guess reverting this might be the right course of action to
+> motivate someone to fix the exposed problem. Unless of course we know or
+> fear that a revert causes regressions for users of 6.8.y -- is that the
+> case?
+> 
+> [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_ZaQS5x-2DXK08Jre6I-40smile.fi.intel.com_&d=DwIDaQ&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=QAHqX_KD5JuTUUtqftI9GSmckKDKzRyJ5qu0DT0NdpJ7Gxk6vfsvBPrBvJLM0fzb&s=HBokvujOYQdyCxk3eMV6xtwLLNdCxjsnZ4nTzbhbLXM&e=
+> 
+> [2] https://urldefense.proofpoint.com/v2/url?u=https-3A__docs.kernel.org_process_handling-2Dregressions.html&d=DwIDaQ&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=QAHqX_KD5JuTUUtqftI9GSmckKDKzRyJ5qu0DT0NdpJ7Gxk6vfsvBPrBvJLM0fzb&s=lOh1a5Vzu2VNEaspoNgEipxRU9UDDPcibRLoOVrGbIU&e=
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://urldefense.proofpoint.com/v2/url?u=https-3A__linux-2Dregtracking.leemhuis.info_about_-23tldr&d=DwIDaQ&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=QAHqX_KD5JuTUUtqftI9GSmckKDKzRyJ5qu0DT0NdpJ7Gxk6vfsvBPrBvJLM0fzb&s=MuVuulVZqYAjIqCVpNc01ve8yD6DFt2wOZEH4p9khTc&e=
+> If I did something stupid, please tell me, as explained on that page.
 
+I understand your perspective. Do you have documentation or guidelines available to ensure that the existing problem is resolved and the correct patch is reinstated?
 
-On 5/2/24 18:04, Puranjay Mohan wrote:
-> Historically, arm64 implemented raw_smp_processor_id() as a read of
-> current_thread_info()->cpu. This changed when arm64 moved thread_info
-> into task struct, as at the time CONFIG_THREAD_INFO_IN_TASK made core
-> code use thread_struct::cpu for the cpu number, and due to header
-> dependencies prevented using this in raw_smp_processor_id(). As a
-> workaround, we moved to using a percpu variable in commit:
-> 
-> commit 57c82954e77f ("arm64: make cpu number a percpu variable")
-> 
-> Since then, thread_info::cpu was reintroduced, and core code was made to
-> use this in commits:
-> 
-> commit 001430c1910d ("arm64: add CPU field to struct thread_info")
-> commit bcf9033e5449 ("sched: move CPU field back into thread_info if
-> THREAD_INFO_IN_TASK=y")
-> 
-> Consequently it is possible to use current_thread_info()->cpu again.
+As far as I know, the issue is currently only reproducible by the reporter. I also have a similar setup, but I have not been able to reproduce the issue myself (please refer to our previous discussions). This discrepancy could be due to some OEM modifications.
 
-This captures Mark's earlier suggestion on the commit message.
+If the problem is only reproducible by the reporter, how do we motivate others to support and upstream the fix? Isn't it demotivating to revert the correct patch and retain the wrong behavior of the driver?
 
+Additionally, is it possible to determine how many correct patches have been reverted in the past to address this particular problem?
+
+Please correct me if I am wrong ?
 
 > 
-> This decreases the number of emitted instructions like in the following
-> example:
-> 
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffff8000802cd608 <+0>:     nop
->    0xffff8000802cd60c <+4>:     nop
->    0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
->    0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
->    0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
->    0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
->    0xffff8000802cd620 <+24>:    ret
-> 
-> After this patch:
-> 
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffff8000802c9130 <+0>:     nop
->    0xffff8000802c9134 <+4>:     nop
->    0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
->    0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
->    0xffff8000802c9140 <+16>:    ret
-> 
-> A microbenchmark[1] was built to measure the performance improvement
-> provided by this change. It calls the following function given number of
-> times and finds the runtime overhead:
-> 
-> static noinline int get_cpu_id(void)
-> {
-> 	return smp_processor_id();
-> }
-> 
-> Run the benchmark like:
->  modprobe smp_processor_id nr_function_calls=1000000000
-> 
->       +--------------------------+------------------------+
->       |        | Number of Calls |    Time taken          |
->       +--------+-----------------+------------------------+
->       | Before |   1000000000    |   1602888401ns         |
->       +--------+-----------------+------------------------+
->       | After  |   1000000000    |   1206212658ns         |
->       +--------+-----------------+------------------------+
->       |  Difference (decrease)   |   396675743ns (24.74%) |
->       +---------------------------------------------------+
-> 
-> Remove the percpu variable cpu_number as it is used only in
-> set_smp_ipi_range() as a dummy variable to be passed to ipi_handler().
-> Use irq_stat in place of cpu_number here.
-> 
-> [1] https://github.com/puranjaymohan/linux/commit/77d3fdd
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
-> Changes in v1 -> v2:
-> v1: https://lore.kernel.org/all/20240501154236.10236-1-puranjay@kernel.org/
-> - Remove the percpu variable cpu_number
-> - Add more information to the commit message.
-> ---
->  arch/arm64/include/asm/smp.h | 13 +------------
->  arch/arm64/kernel/smp.c      |  9 ++-------
->  2 files changed, 3 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-> index efb13112b408..2510eec026f7 100644
-> --- a/arch/arm64/include/asm/smp.h
-> +++ b/arch/arm64/include/asm/smp.h
-> @@ -25,22 +25,11 @@
->  
->  #ifndef __ASSEMBLY__
->  
-> -#include <asm/percpu.h>
-> -
->  #include <linux/threads.h>
->  #include <linux/cpumask.h>
->  #include <linux/thread_info.h>
->  
-> -DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
-> -
-> -/*
-> - * We don't use this_cpu_read(cpu_number) as that has implicit writes to
-> - * preempt_count, and associated (compiler) barriers, that we'd like to avoid
-> - * the expense of. If we're preemptible, the value can be stale at use anyway.
-> - * And we can't use this_cpu_ptr() either, as that winds up recursing back
-> - * here under CONFIG_DEBUG_PREEMPT=y.
-> - */
-> -#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
-> +#define raw_smp_processor_id() (current_thread_info()->cpu)
->  
->  /*
->   * Logical CPU mapping.
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 4ced34f62dab..98d4e352c3d0 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -55,9 +55,6 @@
->  
->  #include <trace/events/ipi.h>
->  
-> -DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
-> -EXPORT_PER_CPU_SYMBOL(cpu_number);
-> -
->  /*
->   * as from 2.5, kernels no longer have an init_tasks structure
->   * so we need some other way of telling a new secondary core
-> @@ -742,8 +739,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  	 */
->  	for_each_possible_cpu(cpu) {
->  
-> -		per_cpu(cpu_number, cpu) = cpu;
-> -
->  		if (cpu == smp_processor_id())
->  			continue;
->  
-> @@ -1021,12 +1016,12 @@ void __init set_smp_ipi_range(int ipi_base, int n)
->  
->  		if (ipi_should_be_nmi(i)) {
->  			err = request_percpu_nmi(ipi_base + i, ipi_handler,
-> -						 "IPI", &cpu_number);
-> +						 "IPI", &irq_stat);
->  			WARN(err, "Could not request IPI %d as NMI, err=%d\n",
->  			     i, err);
->  		} else {
->  			err = request_percpu_irq(ipi_base + i, ipi_handler,
-> -						 "IPI", &cpu_number);
-> +						 "IPI", &irq_stat);
->  			WARN(err, "Could not request IPI %d as IRQ, err=%d\n",
->  			     i, err);
->  		}
-
-set_smp_ipi_range() now looks similar to what we have on arm32 platform.
-
-Besides the arch/arm64/include/asm/smp.h changes (not sure if is just a
-clean up, then might be a stand alone patch on its own) this patch LGTM.
+> > Also, I'm a bit wondering: the patch has been in the mainline for
+> > some time, and we haven't had any issues except this one, which is
+> > due to the wrong behavior of the UDC driver.
+> >>
+> >>> Additionally, please check if you have any customized DWC patches that may be causing this problem.
+> >>>
+> >>>>> You may recall the whole issue did not occur before this patch got applied.
+> >>>>>
+> >>>>>>>>> According to current kernel architecture of u_ether driver, only
+> >>>>>>>>> gether_cleanup should remove the usb0 interface along with its
+> >>>>>>>>> kobject and sysfs interface.
+> >>>>>>>>> I suggest sharing the analysis here to understand why this practice
+> >>>>>>>>> is not followed in your use case or driver ?
+> >>>>>>>>
+> >>>>>>>> Yes, I'll try to trace where that happens.
+> >>>>>>>>
+> >>>>>>>> Nevertheless, the disappearance of the net/usb0 directory seems
+> >>>>>>>> harmless? But the usb: net device remaining after disconnect or role
+> >>>>>>>> switch is not good, as the route remains.
+> >>>>>>>>
+> >>>>>>>> May be they are 2 separate problems. Could you try to reproduce what
+> >>>>>>>> happens if you make eem connection and then unplug?
+> >>>>>>>>
+> >>>>>>>>> I am curious why the driver was developed without adhering to the
+> >>>>>>>>> kernel's gadget architecture.
+> >>>>>>>
+> >>>>>>> I don't know what you mean here. Which driver do you mean?
+> >>>>>>>
+> >>>>>>>>>>>>> I have the dwc3 IP base usb controller, Let me check
+> >>>>>>>>>>>>> with this patch and
+> >>>>>>>>>>>>> share result here.  May be we need some fix in dwc3
+> >>>>>>>>>>> Would have been nice if someone could test on other
+> >>>>>>>>>>> controller as well. But
+> >>>>>>>>>>> another instance of dwc3 is also very welcome.
+> >>>>>>>>>>>> It's quite possible, please test on your side.
+> >>>>>>>>>>>> We are happy to test any fixes if you come up with.
+> >>
+> >> -- 
+> >> With Best Regards,
+> >> Andy Shevchenko
+> >>
+> >>
 
