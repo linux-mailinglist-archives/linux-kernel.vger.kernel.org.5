@@ -1,64 +1,63 @@
-Return-Path: <linux-kernel+bounces-167222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D85D68BA5E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:02:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 850178BA5E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:08:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B011C21FF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E31BA281AE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E687D225CB;
-	Fri,  3 May 2024 04:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79816224D4;
+	Fri,  3 May 2024 04:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="j3nrADLd"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YZPQPLbp"
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93855208D0
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 04:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F30208D4
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 04:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714708944; cv=none; b=U6da5H8x+IGLimWosqaKVhbBbjvCdvs/i8By+0ein1LbUgNWWKGG4zxuIjThtpJ3WEEpEel6IJg3fMmErlQSu6+wLl0YjoYkjlszepyzJ6WOgXGc3y8yCS58gVf4Jpgz3erxPPAUfiNs6cIHVsfoFgUhbnvJz5AzSUbEuE1xqYs=
+	t=1714709296; cv=none; b=mheHNRgQHxblDE7x+cGSvgt4ei0JXRd9fK+rhWLhwzqn2RkyCSosoIo3SmP8w4att1wrDpqaSiP+6ngdc6bvV1ceDVEHEjJzLKfToPPGDy2z0f1V2SPMPOipMtdNfhC7epjxmqQa+VicHFrKs5c99aDOo75CkaXEcj6th78nKRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714708944; c=relaxed/simple;
-	bh=PumxDRHyHX7yBdHa2tlF1tUV5lC/cGgMQLp3mZF0ufE=;
+	s=arc-20240116; t=1714709296; c=relaxed/simple;
+	bh=SWsxKJEgzvpXcQlXwJrcVy/rjJDeDt64dglUtgj9IUU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tq1Nk6RBazDQ3UrFknEClFtuOWyfGS4Tf1szEWhsQntpzq+ObNelueChAl62SXvuZ8EM+Im0se6BEBHGrGj+ZfoA5fuiyi/BPxlwxmzzA5zPZYVZPMF9EnBSS/WLXGqUppCuaaQt8TE0s3g3Waf49KJxwZVGZ7NvEPk0rgZL8lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=j3nrADLd; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=Xi8+GR1wm4VdBGsQtTIiw/cP8IjxcRBCTg61pvwp8NEc3UZ1D2u0/PLE/O6ETfPrjqPYNnIIvpg0lEiUj2E4Mu9pz5ENujN47aAHEQ4bz1pfGZBAsRnURjPjkNhCOw8VQ5XFTU/eQS71tGPRXpq23TB8HhJUaFN2h4rwX+W0mpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YZPQPLbp; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44341pnQ020174
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44347jF6022592
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 00:01:53 -0400
+	Fri, 3 May 2024 00:07:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714708914; bh=o48wK3kfm/cWNdCnI+3ZfLeQp4GGmXLq5cg2NGf3u+s=;
+	t=1714709268; bh=6W4nY6I7f9qgNvQB4sn4R6qrO7L3wg8HX6T3Kp+J8gs=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=j3nrADLdlY9ZBrzmgUgIeJrjDvgyCOtKqul6jRQy+vkTzNsdczoYzldVoaDBzU+6p
-	 EmbbnG1DK8M3C6RDvqvJsk7D0xJefRYsaOe1U9ktxUqsearzue43fFa+nRsulH9nWu
-	 xnYuq6Ox47Rk+EAFbNDBWvRqFsmj5zJaFXyN9gIQY38USqSrTlVG6XOHY77D6zBn2R
-	 ZZzoWTXcgwRWi4jzFKHhN4TtteY7wuHuoYWGVHzLNoLTon0vdKtIwQ862cb9bHJ2rZ
-	 5fMD5Cw1TJvXm+bX86ZDOpf1gxu5PQVfBa+tN2M4DzqpDLW7WCc82sSwRxXmncAxOA
-	 tmJtIpS0yhjiw==
+	b=YZPQPLbpf74mDXdM+rn2mIT+rSu5A01rigdaQ6qqozJUoEwxKq/T994h/k3EI9HdH
+	 CkD+g98QiL1JVK+YRmFxyO6g6W7kcYoj9S1hiiWAaLTbQ4XeESp4RUTEirQHjPBj7Z
+	 7SYxF9tRtrGn+rmciZL3lnarQ3wbay+Mbca9iV3CFmkYlYA6VdIVo3PzX7fWa3oi08
+	 MeD3Ed4I97ie44F/acz1ffFeHrqEdWj1GewdkkA95hZgC+Sh36gnFrANgKthpQEeDT
+	 j53m3rLbl1m/orgKMCu5/eejtkGngzk1f/C5je8NMRSMw4ajxQHyD/8XHRIoLCHS9n
+	 LRKT/0rsKZGxA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 83D7515C02BD; Fri,  3 May 2024 00:01:51 -0400 (EDT)
+	id A07B215C02BB; Fri,  3 May 2024 00:07:45 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
-        ritesh.list@gmail.com, ojaswin@linux.ibm.com, adobriyan@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: Re: [PATCH v4 0/9] ext4: avoid sysfs variables overflow causing BUG_ON/SOOB
-Date: Fri,  3 May 2024 00:01:48 -0400
-Message-ID: <171470889035.3010818.10968009452859195191.b4-ty@mit.edu>
+To: adilger.kernel@dilger.ca, linux@roeck-us.net,
+        Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: implement filesystem specific alloc_inode in unit test
+Date: Fri,  3 May 2024 00:07:43 -0400
+Message-ID: <171470925416.3028448.14729984123074119208.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240319113325.3110393-1-libaokun1@huawei.com>
-References: <20240319113325.3110393-1-libaokun1@huawei.com>
+In-Reply-To: <20240322165518.8147-1-shikemeng@huaweicloud.com>
+References: <20240322165518.8147-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,37 +68,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 19 Mar 2024 19:33:16 +0800, Baokun Li wrote:
-> This patchset is intended to avoid variables that can be modified via sysfs
-> from overflowing when stored or used and thus causing various problems.
-> 
-> "kvm-xfstests -c ext4/all -g auto" has been executed with no new failures.
-> 
-> V3->V4:
->   Patch 4: Corrects WARN_ON_ONCE added in V3.
+On Sat, 23 Mar 2024 00:55:18 +0800, Kemeng Shi wrote:
+> We expect inode with ext4_info_info type as following:
+> mbt_kunit_init
+>   mbt_mb_init
+>     ext4_mb_init
+>       ext4_mb_init_backend
+>         sbi->s_buddy_cache = new_inode(sb);
+>         EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
 > 
 > [...]
 
 Applied, thanks!
 
-[1/9] ext4: avoid overflow when setting values via sysfs
-      commit: 9e8e819f8f272c4e5dcd0bd6c7450e36481ed139
-[2/9] ext4: refactor out ext4_generic_attr_store()
-      commit: f536808adcc37a546bf9cc819c349bd55a28159b
-[3/9] ext4: refactor out ext4_generic_attr_show()
-      commit: 57341fe3179c7694c92dcf99e7f836cee4c800dd
-[4/9] ext4: fix slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists()
-      commit: 13df4d44a3aaabe61cd01d277b6ee23ead2a5206
-[5/9] ext4: add new attr pointer attr_mb_order
-      commit: b7b2a5799b8fafe95fcd5455c32ba2c643c86f99
-[6/9] ext4: add positive int attr pointer to avoid sysfs variables overflow
-      commit: 63bfe841053f8dda09c9d059d543486d9dc16104
-[7/9] ext4: set type of ac_groups_linear_remaining to __u32 to avoid overflow
-      commit: 9a9f3a9842927e4af7ca10c19c94dad83bebd713
-[8/9] ext4: set the type of max_zeroout to unsigned int to avoid overflow
-      commit: 261341a932d9244cbcd372a3659428c8723e5a49
-[9/9] ext4: clean up s_mb_rb_lock to fix build warnings with C=1
-      commit: e19089dff547c9e1f09712acc3536d7b0aa9ce3d
+[1/1] ext4: implement filesystem specific alloc_inode in unit test
+      commit: a11adf7be9d8baefe798eab49c356ab8e3924f0e
 
 Best regards,
 -- 
