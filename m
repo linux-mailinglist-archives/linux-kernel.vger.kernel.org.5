@@ -1,135 +1,228 @@
-Return-Path: <linux-kernel+bounces-167419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EB418BA94D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:01:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1BA8BA952
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:03:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 546241C21D3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:01:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 649E1B21DD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEA214E2FD;
-	Fri,  3 May 2024 09:01:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3286A14EC7C;
+	Fri,  3 May 2024 09:03:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FOIWqWVl"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qB969JDn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA4A14D446;
-	Fri,  3 May 2024 09:01:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4231367;
+	Fri,  3 May 2024 09:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714726896; cv=none; b=I9RIeEwxmK5SGAEXfxiuLL+Ze55cjW8JZFh2HOGZL4NoOl9j1Ho+wEg36FQoxItZLxy0GAqMtsNezpx7PwnJlU4sPfVQlPUuvI038ucCMDELdMb7YsukUoXj3lvZGcc623yvsRWdbRjUFZ1obgbhk74HyDhCCp8G6S6pOMOToB4=
+	t=1714726990; cv=none; b=Z+iTWtlM73HJpCif/CGp9AfKEWxpWne3kJ+fDR1m9irZgwanwzNuW3BuDLfoftZaEGxt7VYM7s2qKy7S/8nh+qfnfvL66eukwpC3qPstBQB3lzUxBb/ZI9qDP20LtleV7vjlwCDfi1ixInNdO2MDtejkuzIaKXDG70HyZBgK+P4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714726896; c=relaxed/simple;
-	bh=u5aZ5ipEo3sZMpL59dkvKjOGLqG20DnDPQajCwv//Gg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GJK3NOfvGd+2LzP4yIPsfz2WZdf7gaAX3cTZfPG/QfWKPKN41wDBbD5MjNez/YAuJjMizQNNwDL9W0BYwiw5VQnpyouaZtIJrdQeWUa2kRmyNuKst6WRm/1fD9OrZ1GFy7omzqQaFOwLzHpgORYw+T4Hp7ulFANKeZiCf1lKQXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FOIWqWVl; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de46da8ced2so9974376276.0;
-        Fri, 03 May 2024 02:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714726894; x=1715331694; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vkGVDEWe+Eb6TEpNRfPQCdPoBlVyFk9pNDKSkhdvzdM=;
-        b=FOIWqWVlN+7BGAAFHogCPRirMPPK1q6xxO9CXoFzZVdOecXwp5Ejyb5Jn1kXuJ0ibd
-         8F0L8HMYJEPQENaZyyHDZoy2QAIoUMqfUSRlrT/B1FKah17nJRK0EPZq5+72O/rJwRTr
-         wti/O/qmIXBGesysxr+bRZHru3z5lkmT7494AGRyNQw6wnmgpEJWNJM2kp+zCFSbkDoP
-         Aho8W3emiFi6nNk+a5LCPdTJutrHSt42T+09bRZX5v4igkoWYKYhq44wp8QgcwC2tRs6
-         +vTLbhfZTska8tReQycHdI+Q39e7CZ/MXr3xCBp1XJIYWqgne5kwWK7OIKNXdAZ6zXif
-         WGRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714726894; x=1715331694;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vkGVDEWe+Eb6TEpNRfPQCdPoBlVyFk9pNDKSkhdvzdM=;
-        b=bW8W8ShJEDxgKwza+Vkk+zed1vPnS336+Tb3RDb4bDHhCsI4NVJsJL+AWxSYCBLGO7
-         FqhCbxpDjvAhdp3Lc4GjC94HbtiYLZr7VcadQrCC8C4OFNNoOUKezmbl2PImRRXK4LEt
-         4eI53sEAk/9Utu3jSF/FiExt2cT539DYhTQ6O/G7mWzzmCoz9k9bXYZBKDHx0Uj9i1G/
-         ELrol6sf3NgV1lhudJ8/R7/ammH52Ed94/OqykDghPf9fRrKWSo4MLco4wh925BP8AXw
-         gk7JWUHELiGhi5l9ONsAwNJ3+icXFqsji4INjZz74Na/ZMlS+ZhsI594ytYKF7OFgJEz
-         bsDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXlE/nvAnw2jAuvMng+OC69bKFWR9vzHSecfOa6b/5fuApAk5Z22ZdMBGScf/WSI21I++WptG7jaBwCterNskqhAzEZiMDJeuoXd8pGBWONo5KWmjXwoYkFvzR2xrTW6t6C3zfeo2Sr7YtyEcAXM2MAF/rAhuXSXfKjFxG1nnYCfzgogE2TYQ==
-X-Gm-Message-State: AOJu0Yybzr0RMWF9WuFNd7+Kz7cH1STlWHQrFG5WCPe9qt/UEtYK+let
-	xpOd8idZS9WtaRvo0V2q64LrB5viNRXgv5QJrcZjeYAWaYnFcvEl2DDZd2tiy9a/KsqG5uHOvJi
-	z4sU+qEegBcCE8a5SgDE+ZJ/LCDs=
-X-Google-Smtp-Source: AGHT+IFn82EPy+JQW20yMvW5rRI+OPX1TAUiG082KOHrrEp3VW6buI2A7Zzw7E0HNx2IVj6osbOIG0rJKuAhFonyozI=
-X-Received: by 2002:a05:6902:2510:b0:dc8:5e26:f501 with SMTP id
- dt16-20020a056902251000b00dc85e26f501mr2505239ybb.61.1714726894369; Fri, 03
- May 2024 02:01:34 -0700 (PDT)
+	s=arc-20240116; t=1714726990; c=relaxed/simple;
+	bh=Pa9ms/rBsNJu3pSJcnarFZ5cEol78sMnDDgBVhFC6xk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fvv+VT5XgnUNJXwYr3Ndk9k45p2HimzZKHVudDekE+CRSebDCdixWzo32HIc6tMAcQ33LhlBbOe8swzLb+9yR/rIPBH0PjIta9g9B7MBT1dTrZLLgP4sGcVPdKIFjUWh5Jz6GHH9dbAJMz7M1X/TtS7ArY+6QFIe88rdNPVW4HU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qB969JDn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7BB2C116B1;
+	Fri,  3 May 2024 09:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714726988;
+	bh=Pa9ms/rBsNJu3pSJcnarFZ5cEol78sMnDDgBVhFC6xk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qB969JDna8vdDAAup8xKrh+zFSQBwBslcunfOcEOyavNcEJ8bK4lvjj5bUDsNG76O
+	 wZeC5qbvxPfxCzkLem/9IHPFfqzZFZS0+KhJVYiTbAHtDJvmCqTy+HeFPvmCE+Rgm+
+	 5E5Vm6mMHAiSNcFsr3k/9nGy5QquIdnPbWESP8djFxDbIiRe/Iz2l7gEZVFCxn2I3c
+	 /LP+fQqbFZPF8CtcwkbqPYGn0eBgQYGIB0X8n6npBWvvhqocA7MruMF1ttlcwHszgL
+	 +ykGN9tWpVmG8+BagsMenh/9QElipmDT7qPD2WQAkMo2k/IyN6/n39gNCjU0Oc/bjY
+	 0XQ74oBsuGowQ==
+Date: Fri, 3 May 2024 11:02:57 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Jann Horn <jannh@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
+	Zack Rusin <zack.rusin@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, 
+	Andi Shyti <andi.shyti@linux.intel.com>, Lucas De Marchi <lucas.demarchi@intel.com>, 
+	Matt Atwood <matthew.s.atwood@intel.com>, Matthew Auld <matthew.auld@intel.com>, 
+	Nirmoy Das <nirmoy.das@intel.com>, Jonathan Cavitt <jonathan.cavitt@intel.com>, 
+	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	intel-gfx@lists.freedesktop.org, linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 1/5] fs: Do not allow get_file() to resurrect 0 f_count
+Message-ID: <20240503-mitmachen-redakteur-2707ab0cacc3@brauner>
+References: <20240502222252.work.690-kees@kernel.org>
+ <20240502223341.1835070-1-keescook@chromium.org>
+ <CAG48ez0d81xbOHqTUbWcBFWx5WY=RM8MM++ug79wXe0O-NKLig@mail.gmail.com>
+ <202405021600.F5C68084D@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501084110.4165-2-shresthprasad7@gmail.com>
- <f1707254-ec32-4884-275a-c3c85b48d7d5@linux.intel.com> <CAE8VWiJy-2x6sKCAmN69Uq9Kf1cTRnaJezOoLDyZ0SbgPWuHAQ@mail.gmail.com>
- <2024050357-shading-fedora-2d4f@gregkh>
-In-Reply-To: <2024050357-shading-fedora-2d4f@gregkh>
-From: Shresth Prasad <shresthprasad7@gmail.com>
-Date: Fri, 3 May 2024 14:31:22 +0530
-Message-ID: <CAE8VWi+-HVuGo-ojGPwKubpLweBmJ4-L097nh03QkezcsciorA@mail.gmail.com>
-Subject: Re: [PATCH v2][next] tty: sunsu: Simplify device_node cleanup by
- using __free
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	davem@davemloft.net, jirislaby@kernel.org, sparclinux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	javier.carrasco.cruz@gmail.com, skhan@linuxfoundation.org, 
-	Julia Lawall <julia.lawall@inria.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202405021600.F5C68084D@keescook>
 
-On Fri, May 3, 2024 at 11:04=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Thu, May 02, 2024 at 10:21:16PM +0530, Shresth Prasad wrote:
-> > On Thu, May 2, 2024 at 9:35=E2=80=AFPM Ilpo J=C3=A4rvinen
-> > <ilpo.jarvinen@linux.intel.com> wrote:
-> > >
-> > > On Wed, 1 May 2024, Shresth Prasad wrote:
-> > >
-> > > > Add `__free` function attribute to `ap` and `match` pointer
-> > > > initialisations which ensure that the pointers are freed as soon as=
- they
-> > > > go out of scope, thus removing the need to manually free them using
-> > > > `of_node_put`.
-> > > >
-> > > > This also removes the need for the `goto` statement and the `rc`
-> > > > variable.
-> > > >
-> > > > Tested using a qemu x86_64 virtual machine.
-> > >
-> > > Eh, how can you test this with an x86_64 VM ???
-> > >
-> > > config SERIAL_SUNSU
-> > >         tristate "Sun SU serial support"
-> > >         depends on SPARC && PCI
-> > >
-> >
-> > By that, I mean that I compiled the kernel and ran the produced bzImage
-> > on a x86_64 qemu machine.
->
-> But you didn't include the driver you were testing :(
->
-> > I unfortunately don't have the hardware to test it on, but I don't
-> > think the change is complex enough to require testing on real hardware
-> > (unless I'm assuming incorrectly).
->
-> That's why I asked if you had tested this or not...
->
+On Thu, May 02, 2024 at 04:03:24PM -0700, Kees Cook wrote:
+> On Fri, May 03, 2024 at 12:53:56AM +0200, Jann Horn wrote:
+> > On Fri, May 3, 2024 at 12:34 AM Kees Cook <keescook@chromium.org> wrote:
+> > > If f_count reaches 0, calling get_file() should be a failure. Adjust to
+> > > use atomic_long_inc_not_zero() and return NULL on failure. In the future
+> > > get_file() can be annotated with __must_check, though that is not
+> > > currently possible.
+> > [...]
+> > >  static inline struct file *get_file(struct file *f)
+> > >  {
+> > > -       atomic_long_inc(&f->f_count);
+> > > +       if (unlikely(!atomic_long_inc_not_zero(&f->f_count)))
+> > > +               return NULL;
+> > >         return f;
+> > >  }
+> > 
+> > Oh, I really don't like this...
+> > 
+> > In most code, if you call get_file() on a file and see refcount zero,
+> > that basically means you're in a UAF write situation, or that you
+> > could be in such a situation if you had raced differently. It's
+> > basically just like refcount_inc() in that regard.
+> 
+> Shouldn't the system attempt to not make things worse if it encounters
+> an inc-from-0 condition? Yes, we've already lost the race for a UaF
+> condition, but maybe don't continue on.
+> 
+> > And get_file() has semantics just like refcount_inc(): The caller
+> > guarantees that it is already holding a reference to the file; and if
+> 
+> Yes, but if that guarantee is violated, we should do something about it.
+> 
+> > the caller is wrong about that, their subsequent attempt to clean up
+> > the reference that they think they were already holding will likely
+> > lead to UAF too. If get_file() sees a zero refcount, there is no safe
+> > way to continue. And all existing callers of get_file() expect the
+> > return value to be the same as the non-NULL pointer they passed in, so
+> > they'll either ignore the result of this check and barrel on, or oops
+> > with a NULL deref.
+> > 
+> > For callers that want to actually try incrementing file refcounts that
+> > could be zero, which is only possible under specific circumstances, we
+> > have helpers like get_file_rcu() and get_file_active().
+> 
+> So what's going on in here:
+> https://lore.kernel.org/linux-hardening/20240502223341.1835070-2-keescook@chromium.org/
 
-Really sorry about that, I thought compiling and booting would qualify
-as testing. What should I be doing then?
+Afaict, there's dma_buf_export() that allocates a new file and sets:
 
-Regards,
-Shresth
+file->private_data = dmabuf;
+dmabuf->file = file;
+
+The file has f_op->release::dma_buf_file_release() as it's f_op->release
+method. When that's called the file's refcount is already zero but the
+file has not been freed yet. This will remove the dmabuf from some
+public list but it won't free it.
+
+Then we see that any dentry allocated for such a dmabuf file will have
+dma_buf_dentry_ops which in turn has
+dentry->d_release::dma_buf_release() which is where the actual release
+of the dma buffer happens taken from dentry->d_fsdata.
+
+That whole thing calls allocate_file_pseudo() which allocates a new
+dentry specific to that struct file. That dentry is unhashed (no lookup)
+and thus isn't retained so when dput() is called and it's the last
+reference it's immediately followed by
+dentry->d_release::dma_buf_release() which wipes the dmabuf itself.
+
+The lifetime of the dmabuf is managed via fget()/fput(). So the lifetime
+of the dmabuf and the lifetime of the file are almost identical afaict:
+
+__fput()
+-> f_op->release::dma_buf_file_release() // handles file specific freeing
+-> dput()
+   -> d_op->d_release::dma_buf_release() // handles dmabuf freeing
+                                         // including the driver specific stuff.
+
+If you fput() the file then the dmabuf will be freed as well immediately
+after it when the dput() happens in __fput() (I struggle to come up with
+an explanation why the freeing of the dmabuf is moved to
+dentry->d_release instead of f_op->release itself but that's a separate
+matter.).
+
+So on the face of it without looking a little closer
+
+static bool __must_check get_dma_buf_unless_doomed(struct dma_buf *dmabuf)
+{
+        return atomic_long_inc_not_zero(&dmabuf->file->f_count) != 0L;
+}
+
+looks wrong or broken. Because if dmabuf->file->f_count is 0 it implies
+that @dmabuf should have already been freed. So the bug would be in
+accessing @dmabuf. And if @dmabuf is valid then it automatically means
+that dmabuf->file->f_count isn't 0. So it looks like it could just use
+get_file().
+
+_But_ the interesting bits are in ttm_object_device_init(). This steals
+the dma_buf_ops into tdev->ops. It then takes dma_buf_ops->release and
+stores it away into tdev->dma_buf_release. Then it overrides the
+dma_buf_ops->release with ttm_prime_dmabuf_release(). And that's where
+the very questionable magic happens.
+
+So now let's say the dmabuf is freed because of lat fput(). We now get
+f_op->release::dma_buf_file_release(). Then it's followed by dput() and
+ultimately dentry->d_release::dma_buf_release() as mentioned above.
+
+But now when we get:
+
+dentry->d_release::dma_buf_release()
+-> dmabuf->ops->release::ttm_prime_dmabuf_release()
+
+instead of the original dmabuf->ops->release method that was stolen into
+tdev->dmabuf_release. And ttm_prime_dmabuf_release() now calls
+tdev->dma_buf_release() which just frees the data associated with the
+dmabuf not the dmabuf itself.
+
+ttm_prime_dmabuf_release() then takes prime->mutex_lock replacing
+prime->dma_buf with NULL.
+
+The same lock is taken in ttm_prime_handle_to_fd() which is picking that
+dmabuf from prime->dmabuf. So the interesting case is when
+ttm_prime_dma_buf_release() has called tdev->dmabuf_release() and but
+someone else maanged to grab prime->mutex_lock before
+ttm_prime_dma_buf_release() could grab it to NULL prime->dma_buf.
+
+So at that point @dmabuf hasn't been freed yet and is still valid. So
+dereferencing prime->dma_buf is still valid and by extension
+dma_buf->file as their lifetimes are tied.
+
+IOW, that should just use get_file_active() which handles that just
+fine.
+
+And while that get_dma_buf_unless_doomed() thing is safe that whole code
+reeks of a level of complexity that's asking for trouble.
+
+But that has zero to do with get_file() and it is absolutely not a
+reason to mess with it's semantics impacting every caller in the tree.
+
+> 
+> > Can't you throw a CHECK_DATA_CORRUPTION() or something like that in
+> > there instead?
+> 
+> I'm open to suggestions, but given what's happening with struct dma_buf
+> above, it seems like this is a state worth checking for?
+
+No, it's really not. If you use get_file() you better know that you're
+already holding a valid reference that's no reason to make it suddenly
+fail.
 
