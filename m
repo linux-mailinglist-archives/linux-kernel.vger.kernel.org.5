@@ -1,139 +1,122 @@
-Return-Path: <linux-kernel+bounces-167855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D19718BB045
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:50:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D25798BB04B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:51:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 177CBB213F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:50:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D956286A79
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF04154C1D;
-	Fri,  3 May 2024 15:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E5115530B;
+	Fri,  3 May 2024 15:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNK6FH1L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mjYlG1rJ"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE617153BD2;
-	Fri,  3 May 2024 15:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C632E827;
+	Fri,  3 May 2024 15:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714751407; cv=none; b=KUnjAHuV4KdeMLLdc5kH13kVpp439T++RSVkATECh/yt9sjjTfN1HhMCE0vRuZse0/3bgB1nYKqv7qpOHNuTellTW5nbSO4Y+kuvOGweRRQNHOSpfIrwHm1lqjmcInerQ1Wq75jZiuTOhXPldd6Apxtn220Xsj5GRyVAgfEbivo=
+	t=1714751508; cv=none; b=BZoP9t1GvDydVq21rr9u77sAwbtgnCEaEXsen68OAxev570mL71yC/KDGY9K96YHdj14Xf4ei4MG/Lzc+poM7oZhanubGQpzdi09A60hmScfZAEhA2bEJU8SJ0YQWOzByV6uNi2pDQ26yr5uuJC/3e1zM99VtfwjyBJ5s3Fq0Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714751407; c=relaxed/simple;
-	bh=tTf3/I0X6noSsL8gZHpFvXAa4w9S4bunYn6yomXXBdM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mPb9/h4GgE+uCSJLhAfVz0EaylthvutDToS6nyZTI65KVdFtA/um/xAQZzWrPrjXPBAQCGge8xNH/yB881wWcWp+WEbmF6KcaNKEAq/SOtfMeOU5/B0cw3QJrPJmHbt6TUwW5ToCvBu62tYUU8o0DUaekgNJdZCle2o6id6PMas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iNK6FH1L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64500C116B1;
-	Fri,  3 May 2024 15:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714751406;
-	bh=tTf3/I0X6noSsL8gZHpFvXAa4w9S4bunYn6yomXXBdM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iNK6FH1LE+MtkOwLevF0WKa3r6EyZrc8Ksw5D6b4NRT1ACAAKqR0ufV+EkSRC0mXd
-	 ztBvbaYc/d90Dzc4KwJgFMK3LHTOmF8LUS7xKqstuv6CM9mR+M5lvdAgpiUp1jah5G
-	 b61B7Gbn9qh1cvws0ys7zZJo53f3nw026/OffLggc3Tm5J/wfN049wEXax+k7sdRpY
-	 1kriaM0ZBALdQBlrluWDSeJUAEhN6Vh2x408O55lNO9EUhsepqQ6OZQ+vkgyJAT0BC
-	 zKIQ3fah6/mJmGEcSD6EAbnSqcBdPlechsOsx6/3wwN72teRupRvneRPdaSDtj+1B5
-	 uuOLXf6snqzNg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1s2vAi-00AMxN-1J;
-	Fri, 03 May 2024 16:50:04 +0100
-Date: Fri, 03 May 2024 16:50:02 +0100
-Message-ID: <861q6irj2t.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Sebastian Ott <sebott@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 4/6] KVM: arm64: add emulation for CTR_EL0 register
-In-Reply-To: <ZjH6DcedmJsAb6vw@linux.dev>
-References: <20240426104950.7382-1-sebott@redhat.com>
-	<20240426104950.7382-5-sebott@redhat.com>
-	<ZjH6DcedmJsAb6vw@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1714751508; c=relaxed/simple;
+	bh=n3yMyo9Q31PRRTaBYtSASB/x9crJwpu1GMXUJF2qqJM=;
+	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=uu0cy6Tx693eXNtqSURZ5o0kFevruG/GExjBAHPyAlzRtJyJM7G31dh1FAuYHVieJUsSxgGX2/vLSCPH7AFVQurVv7UVorRjZ5HWPOsK0QfUrdwDY3nA0LnQMJZ3z/gPuP3dNhJi1MPzEZ36JMR1huNniuVLKOiaI6yDxy3ti38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mjYlG1rJ; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=w7udNYHhdb0T4xJLrpeD52hVLygOF3GDewL37UF5l7s=; b=mjYlG1rJvhPJZsgtNtWQ3vZbDM
+	Smtt/BJjV50uOZuFoqbyHbZujF5ub006iD5Ze4W0gZWt6AE3DdJxmKGF/wdzUIq5tGSemU8c89F9O
+	Fff2R3Lol8SQSzB86ywqd0vjsk8V2nuGRx/3vJ7MAKC/gF0F+PW46OrbKmk4shsHFoNNm4ZThKdkq
+	A4UbIqkYShAZhPn//jGnVGcbW1qH7Rrr1JWI3A/kBWFItjMmqYgPWchOfplNFUoTbAmFth+mxcJwQ
+	zAOQ+QRljmOiUzfjgILqTXo6DURhmHL6dXlvZw+e2VW6HF3KQain7OvAViCGA/004ZkkdCBtZvoK8
+	QEXAOm/A==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s2vBV-000IhL-Bh; Fri, 03 May 2024 17:51:31 +0200
+Received: from [178.197.249.41] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s2vC6-00057M-0Q;
+	Fri, 03 May 2024 17:51:30 +0200
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a null pointer check for
+ the serial_test_tp_attach_query
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: Kunwu Chan <chentao@kylinos.cn>, ast@kernel.org, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, kunwu.chan@hotmail.com
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240424020444.2375773-1-chentao@kylinos.cn>
+ <20240424020444.2375773-5-chentao@kylinos.cn>
+ <79df3541-5557-05fa-a81e-84728d509bfc@iogearbox.net>
+Message-ID: <57c18a4f-24bb-24fe-b3f3-33b3987fb393@iogearbox.net>
+Date: Fri, 3 May 2024 17:51:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, sebott@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+In-Reply-To: <79df3541-5557-05fa-a81e-84728d509bfc@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27264/Fri May  3 10:24:33 2024)
 
-On Wed, 01 May 2024 09:15:09 +0100,
-Oliver Upton <oliver.upton@linux.dev> wrote:
+On 5/3/24 5:47 PM, Daniel Borkmann wrote:
+> On 4/24/24 4:04 AM, Kunwu Chan wrote:
+>> There is a 'malloc' call, which can be unsuccessful.
+>> Add the malloc failure checking to avoid possible null
+>> dereference.
+>>
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>> ---
+>>   tools/testing/selftests/bpf/prog_tests/tp_attach_query.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+>> index 655d69f0ff0b..302b25408a53 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+>> @@ -39,6 +39,9 @@ void serial_test_tp_attach_query(void)
+>>       attr.wakeup_events = 1;
+>>       query = malloc(sizeof(*query) + sizeof(__u32) * num_progs);
+>> +    if (CHECK(!query, "malloc()", "error:%s\n", strerror(errno)))
 > 
-> On Fri, Apr 26, 2024 at 12:49:48PM +0200, Sebastian Ott wrote:
-> > CTR_EL0 is currently handled as an invariant register, thus
-> > guests will be presented with the host value of that register.
-> > 
-> > Add emulation for CTR_EL0 based on a per VM value. Userspace can
-> > switch off DIC and IDC bits and reduce DminLine and IminLine sizes.
-> > 
-> > When CTR_EL0 is changed validate that against CLIDR_EL1 and CCSIDR_EL1
-> > to make sure we present the guest with consistent register values.
-> > Changes that affect the generated cache topology values are allowed if
-> > they don't clash with previous register writes.
+> Series looks reasonable, small nit on CHECK() : Lets use ASSERT*() macros given they are
+> preferred over the latter :
 > 
-> Sorry I didn't speak up earlier, but I'm not sold on the need to
-> cross-validate userspace values for the cache type registers.
+> if (!ASSERT_OK_PTR(buf, "malloc"))
+
+( Also as a side-note: Fixes tag on all these patches is not needed given this will just
+   end up spamming stable tree. If you indeed end up with NULL then the tests will just
+   segfault & fail. )
+
+>> +        return;
+>> +
+>>       for (i = 0; i < num_progs; i++) {
+>>           err = bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj[i],
+>>                       &prog_fd[i]);
+>>
 > 
-> KVM should only be concerned about whether or not the selected feature
-> set matches what hardware is capable of and what KVM can virtualize. So
-> in the context of the CTR and the cache topology, I feel that they
-> should be _separately_ evaluated against the host's CTR_EL0.
-> 
-> Inconsistencies between fields in userspace values should be out of
-> scope; userspace shares the responsibility of presenting something
-> architectural, especially if it starts modifying ID registers. Otherwise
-> I'm quite worried about the amount of glue required to plumb exhaustive
-> consitency checks for registers, especially considering the lack of
-> ordering.
-> 
-> Marc, I know this goes against what you had suggested earlier, is there
-> something in particular that you think warrants the consistency
-> checks?
 
-The problem is that we have a dependency chain: individual cache
-levels are validated against CLIDR/CCSIDR, which are themselves
-validated against CTR_EL0.
-
-Change one, and everything becomes inconsistent. I absolutely don't
-trust userspace to do a good job on that, and not validating this will
-result in extremely hard to debug issues in the guest. Which is why
-CTR_EL0 was an invariant the first place, and everything derived from
-it.
-
-Take for example CLIDR_EL1.Lo{UU,UIS,C}. Their values depend on
-CTR_EL0.{IDC,DIC}. SW is free to check one or the other. If you don't
-have this dependency, you're in for some serious trouble.
-
-The alternative is to *regenerate* the whole cache hierarchy when
-CTR_EL0 is written, and too bad if it changes behind the guest's
-back. Yes, the latter is a problem on its own...
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
