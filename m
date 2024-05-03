@@ -1,254 +1,143 @@
-Return-Path: <linux-kernel+bounces-167517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 879008BAAB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C7298BAAB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F15B1C2208B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:23:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37AC91C21890
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661891509A7;
-	Fri,  3 May 2024 10:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494771509A7;
+	Fri,  3 May 2024 10:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eHBR2JW9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+IWhWpVd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eHBR2JW9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+IWhWpVd"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVexwY3l"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4082A150981;
-	Fri,  3 May 2024 10:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671FD14BF85;
+	Fri,  3 May 2024 10:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714731817; cv=none; b=JIB5RBEndqfG47m6OEg2ulzK/G0dE7tcTrqzJJ5BWRyqgw8w/vkIbCWg5B2BUjZROqmK6BfAGZ7SZ/b8c+Xx0Io8RxQsjC3dPYwQZOkGEFaPYvfCzZ85ifhbbQH1Fz+vOauabBXfxu3Z7R8+aV1VD+wg4Xh2qtYaIlBDwlUMOeI=
+	t=1714732094; cv=none; b=g6U9v2B13qKiqDKuezJb2bopsScZ8qqaKdumrSMi7kbD4Dc68W2Pe66F7tB8Az8rUuPrQcGRx3JvBXQgt2BETE7BGxYhooXViwVzokMhYfv7gghwbOUicw1W94OPk6RkdubS/H74+0jrBbOoi1KkexmFlfYy61LUsun/R+eWw8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714731817; c=relaxed/simple;
-	bh=fHtHD+g9ZeMccn+bieIn+XHwW1USx6/ejeg+8z6817o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r+xMg/dxYXJ93cLJmJRNULoU/L5NMZbNINp6ecejrvTp3IFCvbyqSziBzSckMAvCB9fH4YiYdQaPYd3iYLePc+P01UyY6iudTuOOi/uxQnJ0aRYtGKkUZSNITIWfLJjwtRkGJdisj4C0VWZd9NBw1xZff9vAF0CIPfIfjYjSpmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eHBR2JW9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+IWhWpVd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eHBR2JW9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+IWhWpVd; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4F6B5337BF;
-	Fri,  3 May 2024 10:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714731813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
-	b=eHBR2JW91Cub5ghh08YZgv0gotBMYgWmUYcxm0nc9ddIdpMtjYHkaYiB/MdBy0g6WtZgj1
-	KZ3g1iVOEgzaZU2saWuY1aBCD3cbRhd4rm9yb1sL0GHhiuWxsFx+COGId8Eoaf8BiZK12n
-	ahBepk7qxjL0DG9Q74e3fsl95DgSY70=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714731813;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
-	b=+IWhWpVd47hr9VNZX2IscVXbEBcjuy7zjRj+/nMQu0vqKOtif3k8gsV8PvkC2ww6YpjlLl
-	QBgO0uEWI3hXBNCQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eHBR2JW9;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+IWhWpVd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714731813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
-	b=eHBR2JW91Cub5ghh08YZgv0gotBMYgWmUYcxm0nc9ddIdpMtjYHkaYiB/MdBy0g6WtZgj1
-	KZ3g1iVOEgzaZU2saWuY1aBCD3cbRhd4rm9yb1sL0GHhiuWxsFx+COGId8Eoaf8BiZK12n
-	ahBepk7qxjL0DG9Q74e3fsl95DgSY70=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714731813;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
-	b=+IWhWpVd47hr9VNZX2IscVXbEBcjuy7zjRj+/nMQu0vqKOtif3k8gsV8PvkC2ww6YpjlLl
-	QBgO0uEWI3hXBNCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 40A2613991;
-	Fri,  3 May 2024 10:23:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8Lm/DyW7NGZeRAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 03 May 2024 10:23:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CF584A0A12; Fri,  3 May 2024 12:23:28 +0200 (CEST)
-Date: Fri, 3 May 2024 12:23:28 +0200
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu,
-	syzbot <syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com>,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-	ritesh.list@gmail.com, syzkaller-bugs@googlegroups.com,
-	trix@redhat.com, yangerkun <yangerkun@huawei.com>
-Subject: Re: [syzbot] [ext4?] WARNING in mb_cache_destroy
-Message-ID: <20240503102328.cstcauc5qakmk2bg@quack3>
-References: <00000000000072c6ba06174b30b7@google.com>
- <0000000000003bf5be061751ae70@google.com>
- <20240502103341.t53u6ya7ujbzkkxo@quack3>
- <dca44ba5-5c33-05ef-d9de-21a84f9d7eaa@huawei.com>
+	s=arc-20240116; t=1714732094; c=relaxed/simple;
+	bh=OntdBaerXi3AJ/zLXyZcNtMvP/PzL6ZafwOb4BeMmI8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PffkdFOFJaZ9ggqMuDg6SwkKmpcyCvwNIkTX4kWEmGCoPj3jkzFfSbfFrOG1S+bf1g6I8T8sU+BE1SCMv/q4kAShqhK2uhHRzxbyUQcs9dT9jSUDRAS2F6EbKLtffiBfU/DpnM4ruK3YvokqISH7QZREkCVYpKOA5XA0h4c6Fe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVexwY3l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C52C116B1;
+	Fri,  3 May 2024 10:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714732094;
+	bh=OntdBaerXi3AJ/zLXyZcNtMvP/PzL6ZafwOb4BeMmI8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CVexwY3lU9pEyrjVDtImt5My3VLqjq0O6pu4tXHAYXra+R/yyivA0NvhfTLZ09e0A
+	 cxbBIdKBwsREn30DGoNQVdBGNnjfuk75/VpipXdN/6ZvWZCfIKVtqVsOxiXD66T88L
+	 3sCcvCfpeYvNOoP9K2/otFr5CSejsUV24l3x7xiLmlJ2OYwtrX4t6Z6ZRbVrQ+yG7x
+	 8TpvvQD0STMgj41jXX4MiXNiccAK0MNa6GSxqKlDQTZ05zw2Bzltst6RLpU6SK1jGx
+	 3MalcpgYNan36bYB7hjf438rPRn0mK7fZRYgacV4KlzCbym7pY6M6KQ7QdGTsVih8M
+	 SjyAg0MIerKAg==
+Date: Fri, 3 May 2024 11:27:58 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Martin Tuma <martin.tuma@digiteqautomotive.com>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>, Hugues Fruchet
+ <hugues.fruchet@foss.st.com>, Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Paul Kocialkowski
+ <paul.kocialkowski@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+ <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Sakari
+ Ailus <sakari.ailus@linux.intel.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>, Luca Ceresoli
+ <luca.ceresoli@bootlin.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Hans
+ Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, Abylay Ospan
+ <aospan@netup.ru>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Dmitry
+ Osipenko <digetx@gmail.com>, Benjamin Mugnier
+ <benjamin.mugnier@foss.st.com>, Sylvain Petinot
+ <sylvain.petinot@foss.st.com>, Stanimir Varbanov
+ <stanimir.k.varbanov@gmail.com>, Vikash Garodia
+ <quic_vgarodia@quicinc.com>, Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
+ <konrad.dybcio@linaro.org>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 26/26] media: dvb-frontends: tda10048: Make the range
+ of z explicit.
+Message-ID: <20240503112758.763d8d31@sal.lan>
+In-Reply-To: <20240429-fix-cocci-v3-26-3c4865f5a4b0@chromium.org>
+References: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
+	<20240429-fix-cocci-v3-26-3c4865f5a4b0@chromium.org>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dca44ba5-5c33-05ef-d9de-21a84f9d7eaa@huawei.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.51
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4F6B5337BF
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[dd43bd0f7474512edc47];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,mit.edu,syzkaller.appspotmail.com,dilger.ca,vger.kernel.org,lists.linux.dev,kernel.org,google.com,gmail.com,googlegroups.com,redhat.com,huawei.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	SUBJECT_HAS_QUESTION(0.00)[]
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi!
+Em Mon, 29 Apr 2024 15:05:05 +0000
+Ricardo Ribalda <ribalda@chromium.org> escreveu:
 
-On Fri 03-05-24 17:51:07, Baokun Li wrote:
-> On 2024/5/2 18:33, Jan Kara wrote:
-> > On Tue 30-04-24 08:04:03, syzbot wrote:
-> > > syzbot has bisected this issue to:
-> > > 
-> > > commit 67d7d8ad99beccd9fe92d585b87f1760dc9018e3
-> > > Author: Baokun Li <libaokun1@huawei.com>
-> > > Date:   Thu Jun 16 02:13:56 2022 +0000
-> > > 
-> > >      ext4: fix use-after-free in ext4_xattr_set_entry
-> > So I'm not sure the bisect is correct since the change is looking harmless.
-> Yes, the root cause of the problem has nothing to do with this patch,
-> and please see the detailed analysis below.
-> > But it is sufficiently related that there indeed may be some relationship.
-> > Anyway, the kernel log has:
-> > 
-> > [   44.932900][ T1063] EXT4-fs warning (device loop0): ext4_evict_inode:297: xattr delete (err -12)
-> > [   44.943316][ T1063] EXT4-fs (loop0): unmounting filesystem.
-> > [   44.949531][ T1063] ------------[ cut here ]------------
-> > [   44.955050][ T1063] WARNING: CPU: 0 PID: 1063 at fs/mbcache.c:409 mb_cache_destroy+0xda/0x110
-> > 
-> > So ext4_xattr_delete_inode() called when removing inode has failed with
-> > ENOMEM and later mb_cache_destroy() was eventually complaining about having
-> > mbcache entry with increased refcount. So likely some error cleanup path is
-> > forgetting to drop mbcache entry reference somewhere but at this point I
-> > cannot find where. We'll likely need to play with the reproducer to debug
-> > that. Baokun, any chance for looking into this?
-> > 
-> > 								Honza
-> As you guessed, when -ENOMEM is returned in ext4_sb_bread(),
-> the reference count of ce is not properly released, as follows.
+> We do not expect the sample_freq to be over 613MHz.
 > 
-> ext4_create
->  __ext4_new_inode
->   security_inode_init_security
->    ext4_initxattrs
->     ext4_xattr_set_handle
->      ext4_xattr_block_find
->      ext4_xattr_block_set
->       ext4_xattr_block_cache_find
->         ce = mb_cache_entry_find_first
->             __entry_find
->             atomic_inc_not_zero(&entry->e_refcnt)
->         bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
->         if (PTR_ERR(bh) == -ENOMEM)
->             return NULL;
+> Found by cocci:
+> drivers/media/dvb-frontends/tda10048.c:345:1-7: WARNING: do_div() does a 64-by-32 division, please consider using div64_u64 instead.
 > 
-> Before merging into commit 67d7d8ad99be("ext4: fix use-after-free
-> in ext4_xattr_set_entry"), it will not return early in
-> ext4_xattr_ibody_find(),
-> so it tries to find it in iboy, fails the check in xattr_check_inode() and
-> returns without executing ext4_xattr_block_find(). Thus it will bisect
-> the patch, but actually has nothing to do with it.
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/dvb-frontends/tda10048.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> ext4_xattr_ibody_get
->  xattr_check_inode
->   __xattr_check_inode
->    check_xattrs
->     if (end - (void *)header < sizeof(*header) + sizeof(u32))
->       "in-inode xattr block too small"
-> 
-> Here's the patch in testing, I'll send it out officially after it is tested.
-> (PS:  I'm not sure if propagating the ext4_xattr_block_cache_find() errors
-> would be better.)
+> diff --git a/drivers/media/dvb-frontends/tda10048.c b/drivers/media/dvb-frontends/tda10048.c
+> index 3e725cdcc66b..1886f733dbbf 100644
+> --- a/drivers/media/dvb-frontends/tda10048.c
+> +++ b/drivers/media/dvb-frontends/tda10048.c
+> @@ -328,7 +328,8 @@ static int tda10048_set_wref(struct dvb_frontend *fe, u32 sample_freq_hz,
+>  			     u32 bw)
+>  {
+>  	struct tda10048_state *state = fe->demodulator_priv;
+> -	u64 t, z;
+> +	u32 z;
+> +	u64 t;
+>  
+>  	dprintk(1, "%s()\n", __func__);
+>  
+> @@ -341,6 +342,7 @@ static int tda10048_set_wref(struct dvb_frontend *fe, u32 sample_freq_hz,
+>  	/* t *= 2147483648 on 32bit platforms */
+>  	t *= (2048 * 1024);
+>  	t *= 1024;
+> +	/* Sample frequency is under 613MHz */
 
-Great! Thanks for debugging this! Some comments to your fix below:
+Are you sure about that? Some DVB devices have very high frequency 
+clocks, specially if they're also used for satellite, so I can't
+be sure by just looking at the driver's code.
 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index b67a176bfcf9..5c9e751915fd 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -3113,11 +3113,10 @@ ext4_xattr_block_cache_find(struct inode *inode,
-> 
->          bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
->          if (IS_ERR(bh)) {
-> -            if (PTR_ERR(bh) == -ENOMEM)
-> -                return NULL;
-> +            if (PTR_ERR(bh) != -ENOMEM)
-> +                EXT4_ERROR_INODE(inode, "block %lu read error",
-> +                         (unsigned long)ce->e_value);
->              bh = NULL;
-> -            EXT4_ERROR_INODE(inode, "block %lu read error",
-> -                     (unsigned long)ce->e_value);
->          } else if (ext4_xattr_cmp(header, BHDR(bh)) == 0) {
->              *pce = ce;
->              return bh;
+Also, we had already a bunch of regressions with "fixes" like this
+that actually broke frontend drivers.
 
-So if we get the ENOMEM error, continuing the iteration seems to be
-pointless as we'll likely get it for the following entries as well. I think
-the original behavior of aborting the iteration in case of ENOMEM is
-actually better. We just have to do mb_cache_entry_put(ea_block_cache, ce)
-before returning...
+If you're sure, please add a note at the description mentioning 
+on what part of the datasheet you got it.
 
-								Honza
+Otherwise, let's stick with the current code and address cocci
+warning on a different way.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Mauro
+
+PS.: I partially applied this patch series. I left a few
+patches out of the merge to let other people review/comment
+(and/or for me to take a deeper look later on).
+
+Regards,
+Mauro
 
