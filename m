@@ -1,181 +1,125 @@
-Return-Path: <linux-kernel+bounces-168386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E848BB7CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:51:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC1F8BB7CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713031F22460
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:51:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7851E286AE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DC212EBED;
-	Fri,  3 May 2024 22:50:37 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2016182D94;
+	Fri,  3 May 2024 22:52:22 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9619885622;
-	Fri,  3 May 2024 22:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A3258AB9;
+	Fri,  3 May 2024 22:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714776635; cv=none; b=aSb7rv340od29xLiONqnlurajNe0H6dzEtD4hoviQEYCqMchJNtoHl05b27ORolqZ9AabXsVUsC+0CrKZfOjhE86yozFHhOLZxbyav5WcileBo+GDr6VcQ3iHiVXA0bo118DPRDAdSNkT/RxVi4ctqk3RadZxhKhJ2iYkB2ugfg=
+	t=1714776741; cv=none; b=VVwPHq3GOujYL/0Cq+lgcFTwHgGNYOc1r9t6N6/EGeIOe8p/kgjiFkTAxvIJMeHm/sLXGiBEAVKVPFh9Sfok+z0y/1JHKXhErMAKZFjD33ny0QuhOtRhQPkcdF0C3832+UdUB5jxZL3PKRmFxrR/wYJnq4Ko3lkWx+GdJUClS5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714776635; c=relaxed/simple;
-	bh=u/EZgVZkDUDhIetTtuhbb5L70RCnlDqupCSWlJU3QQg=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=HUaLO6z8fGBvM4H7R4u3vtqnXZLDo5wGeoWHhMzah3lHMuAyfJxUUSvyZPd4l0Ka5ntQxv9RmZ5kHU/2zFjbG/Epuz+FldTtSzAIpx0s+/wXPVzFjivFR/d5tzhDWhFO+iyCa0xLozK+BPGkFrHCZ6mN8GLH3PHJNO40jxrcHsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DECDC116B1;
-	Fri,  3 May 2024 22:50:35 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1s31jf-00000000NO3-04VZ;
-	Fri, 03 May 2024 18:50:35 -0400
-Message-ID: <20240503225034.883634677@goodmis.org>
-User-Agent: quilt/0.68
-Date: Fri, 03 May 2024 18:50:22 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- stable@vger.kernel.org
-Subject: [for-linus][PATCH 9/9] eventfs: Have "events" directory get permissions from its parent
-References: <20240503225013.519028385@goodmis.org>
+	s=arc-20240116; t=1714776741; c=relaxed/simple;
+	bh=+k7smC01PbURrogCBgEc+38Tqvw0xyJMXL4rJUbsaSA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iP/WLEJSOxgmOLZGTc166ZjVvUoWquatAVDMAvGJC1GeeFcKJprr9IsZrQyuIIZj03DtsfHpjAIvCrGfhDOpc3tf+t7ddP/U2oVnXy8FRS9hiPlarfraLi8xWJCsc28a+aqvaP/DxUalx5SU2IqfHgJUfoo7fe6y465V3iySLcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sat, 4 May
+ 2024 01:52:14 +0300
+Received: from [192.168.211.130] (10.0.253.138) by Ex16-01.fintech.ru
+ (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sat, 4 May 2024
+ 01:52:13 +0300
+Message-ID: <73c24dd7-3cd8-4875-a33d-b546a346a24d@fintech.ru>
+Date: Fri, 3 May 2024 15:52:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: usb: siano: fix endpoint checks in
+ smsusb_init_device()
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+CC: Hans Verkuil <hverkuil-cisco@xs4all.nl>, Dongliang Mu <dzm91@hust.edu.cn>,
+	Andrew Morton <akpm@linux-foundation.org>, Alan Stern
+	<stern@rowland.harvard.edu>, <linux-media@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+	<syzbot+12002a39b8c60510f8fb@syzkaller.appspotmail.com>
+References: <20240409143634.33230-1-n.zhandarovich@fintech.ru>
+ <20240503165833.4781fb4a@sal.lan>
+ <4069e01b-09d1-49e6-b053-3f6b99dd9405@fintech.ru>
+ <20240503222054.45ed636f@sal.lan>
+Content-Language: en-US
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+In-Reply-To: <20240503222054.45ed636f@sal.lan>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi
 
-The events directory gets its permissions from the root inode. But this
-can cause an inconsistency if the instances directory changes its
-permissions, as the permissions of the created directories under it should
-inherit the permissions of the instances directory when directories under
-it are created.
+On 5/3/24 14:20, Mauro Carvalho Chehab wrote:
+> Em Fri, 3 May 2024 09:14:37 -0700
+> Nikita Zhandarovich <n.zhandarovich@fintech.ru> escreveu:
+> 
+>>> Did you test it on what devices? I'm not sure if all siano devices
+>>> are bulk. Why did you decide to use usb_endpoint_is_bulk_(in|out)
+>>> instead of usb_endpoint_dir_(in|out)?  
+>>
+>> I did not have the hardware required to test it properly, I'm afraid.
+>> I made sure to point that out in the patch description.
+>>
+>> As for siano devices possibly having different endpoints type apart from
+>> bulk, I was relying on the rest of the driver code to determine just
+>> that (which is maybe somewhat flawed in this case). 
+> 
+> Most digital TV devices also have ISOC endpoints. I'm not sure about
+> Siano.
+After a quick glance at Siano driver I am not sure about that being true
+specifically for Siano devices just yet, but I understand your point
+nonetheless.
+> 
+>> Since
+>> smsusb_submit_urb() (and some other functions like usb_rcvbulkpipe())
+>> works exclusively with bulk types, I did not feel the need to even
+>> expect int types, for instance.
+> 
+> The problem is not with int endpoints. Most media devices have isoc
+> endpoints. There are even cases that different device models supported
+> by the same driver have some bulk and some isoc endpoints. See em28xx 
+> driver for instance: most devices are isoc only; some have both isoc
+> and bulk; a few have just bulk.
+> 
+> In the specific case of siano, it supports 3 generations of devices
+> (sms1000, sms11xx, sms22xx), each with several submodels. 
+> Those 3 generations have different specs, and sms1000 even have one
+> "boot" USB ID, and one "warm" USB ID, each one with different endpoints.
+> 
+> That's basically why I'm afraid of a patch like this could cause
+> regressions if not properly tested, as it is changing the logic
+> from just detecting the direction to also validate if the endpoint
+> is not isoc.
 
-Currently the behavior is:
+Thank you for being so thorough with your answer. I think I
+overestimated how much I should trust current driver implementation. I
+should be (at least, in this case) looking at what hardware expects of
+the driver.
 
- # cd /sys/kernel/tracing
- # chgrp 1002 instances
- # mkdir instances/foo
- # ls -l instances/foo
-[..]
- -r--r-----  1 root lkp  0 May  1 18:55 buffer_total_size_kb
- -rw-r-----  1 root lkp  0 May  1 18:55 current_tracer
- -rw-r-----  1 root lkp  0 May  1 18:55 error_log
- drwxr-xr-x  1 root root 0 May  1 18:55 events
- --w-------  1 root lkp  0 May  1 18:55 free_buffer
- drwxr-x---  2 root lkp  0 May  1 18:55 options
- drwxr-x--- 10 root lkp  0 May  1 18:55 per_cpu
- -rw-r-----  1 root lkp  0 May  1 18:55 set_event
+Let me try to do a little more research into smsxxxx specs and maybe see
+about getting my hands on some actual devices for testing.
 
-All the files and directories under "foo" has the "lkp" group except the
-"events" directory. That's because its getting its default value from the
-mount point instead of its parent.
+> 
+> Regards,
+> Mauro
 
-Have the "events" directory make its default value based on its parent's
-permissions. That now gives:
-
- # ls -l instances/foo
-[..]
- -rw-r-----  1 root lkp 0 May  1 21:16 buffer_subbuf_size_kb
- -r--r-----  1 root lkp 0 May  1 21:16 buffer_total_size_kb
- -rw-r-----  1 root lkp 0 May  1 21:16 current_tracer
- -rw-r-----  1 root lkp 0 May  1 21:16 error_log
- drwxr-xr-x  1 root lkp 0 May  1 21:16 events
- --w-------  1 root lkp 0 May  1 21:16 free_buffer
- drwxr-x---  2 root lkp 0 May  1 21:16 options
- drwxr-x--- 10 root lkp 0 May  1 21:16 per_cpu
- -rw-r-----  1 root lkp 0 May  1 21:16 set_event
-
-Link: https://lore.kernel.org/linux-trace-kernel/20240502200906.161887248@goodmis.org
-
-Cc: stable@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Fixes: 8186fff7ab649 ("tracefs/eventfs: Use root and instance inodes as default ownership")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 6e08405892ae..a878cea70f4c 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -37,6 +37,7 @@ static DEFINE_MUTEX(eventfs_mutex);
- 
- struct eventfs_root_inode {
- 	struct eventfs_inode		ei;
-+	struct inode			*parent_inode;
- 	struct dentry			*events_dir;
- };
- 
-@@ -226,12 +227,23 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
- 
- static void update_events_attr(struct eventfs_inode *ei, struct super_block *sb)
- {
--	struct inode *root;
-+	struct eventfs_root_inode *rei;
-+	struct inode *parent;
-+
-+	rei = get_root_inode(ei);
-+
-+	/* Use the parent inode permissions unless root set its permissions */
-+	parent = rei->parent_inode;
- 
--	/* Get the tracefs root inode. */
--	root = d_inode(sb->s_root);
--	ei->attr.uid = root->i_uid;
--	ei->attr.gid = root->i_gid;
-+	if (rei->ei.attr.mode & EVENTFS_SAVE_UID)
-+		ei->attr.uid = rei->ei.attr.uid;
-+	else
-+		ei->attr.uid = parent->i_uid;
-+
-+	if (rei->ei.attr.mode & EVENTFS_SAVE_GID)
-+		ei->attr.gid = rei->ei.attr.gid;
-+	else
-+		ei->attr.gid = parent->i_gid;
- }
- 
- static void set_top_events_ownership(struct inode *inode)
-@@ -817,6 +829,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	// Note: we have a ref to the dentry from tracefs_start_creating()
- 	rei = get_root_inode(ei);
- 	rei->events_dir = dentry;
-+	rei->parent_inode = d_inode(dentry->d_sb->s_root);
- 
- 	ei->entries = entries;
- 	ei->nr_entries = size;
-@@ -826,10 +839,15 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	uid = d_inode(dentry->d_parent)->i_uid;
- 	gid = d_inode(dentry->d_parent)->i_gid;
- 
--	/* This is used as the default ownership of the files and directories */
- 	ei->attr.uid = uid;
- 	ei->attr.gid = gid;
- 
-+	/*
-+	 * When the "events" directory is created, it takes on the
-+	 * permissions of its parent. But can be reset on remount.
-+	 */
-+	ei->attr.mode |= EVENTFS_SAVE_UID | EVENTFS_SAVE_GID;
-+
- 	INIT_LIST_HEAD(&ei->children);
- 	INIT_LIST_HEAD(&ei->list);
- 
--- 
-2.43.0
-
-
+With regards,
+Nikita
 
