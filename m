@@ -1,1110 +1,434 @@
-Return-Path: <linux-kernel+bounces-167314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A42528BA7B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:24:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12908BA7BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:24:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585A42818B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:24:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE5D0B215BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A56B1474B8;
-	Fri,  3 May 2024 07:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACA9146D48;
+	Fri,  3 May 2024 07:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XbslZswo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="hw1fScRf"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAEF6146A72;
-	Fri,  3 May 2024 07:23:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDC4146D47;
+	Fri,  3 May 2024 07:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714721036; cv=none; b=P5sEYVbrtd0oKB6A1QXtshx7seMC5JrWJwCvRun6YF8BYNLvntZIcIfAmLN1nbwL6LU9lC/KAVUEo45M6scFeb/QD/WM3mi2ZqtEu7ArVYN7N8YYGrICoepY2f7y1rI/HQf1np1fENAzWrDk/aIp2KfXWAOGONkEiOlBZzoiQoc=
+	t=1714721065; cv=none; b=cHfJSN9WeVVm5edE3rLeJGAKN+gAyGCfWIZYy5y2JJuxMFhpsqUWPgKI34d3cYTHbH2yDMz04rxPYdi+fYBWLL3+NgNY/BKhr3TRP9GQCgWP6Mvdeu6YpgPMdjZJl4LYrP9+w7wX5BXEfIk9jbtud4HARZo5TMNgN97TT8Wf+bA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714721036; c=relaxed/simple;
-	bh=nRl2qsmnzgxyoHMxHdQ/aFhC+bettlNtQvMfBBoRu1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TQiUoJNeY2Y48RraKFfFDc+a7IUICjaJiIQNh8h3iGVDR2lXOzMmoIBO0LZocS/bSVnCiEkyWiIwStFIGmVa0F6L32/JxfFDPZ7h3bom94b7hr7PoNIcP40G1WpPgcNiFHfbP13ox4qbOudS+TsZ5yze4Hi6TnEIKtFE7MjQ4zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XbslZswo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C06C116B1;
-	Fri,  3 May 2024 07:23:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714721035;
-	bh=nRl2qsmnzgxyoHMxHdQ/aFhC+bettlNtQvMfBBoRu1A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XbslZsworOH9JXqf2tKk41ML7GLyCMfFDD9R89o+zI6WGSbh2gWDSHr8PSG9NWT2M
-	 MwEVUqc+fwDqhMv6qkCGYYTZM6gfylvXxUhByZeZZoKTWzex/FJtOduTAjepzbZXbi
-	 l2SzTJoAMRDlUpbmyKgO+SQGZ53YUBUMA5Ch82eZ0dELh8nekO5IgUAKbOhaTadKX3
-	 1xsneRDcHZvhVkJIwmXgnZW8lBFms2ZT87R2/ezEOLDQvBIuqHNHZLuzl8nBlCLV2x
-	 wSV04S/aSWN0zSVi1s5hUaWueBd1cZlkBcSJTEXBQQCI5dWnepk5Fx+6W9CI2/i4IM
-	 2cxY4pFFFwrMw==
-Date: Fri, 3 May 2024 10:23:47 +0300
-From: Zhi Wang <zhiwang@kernel.org>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, Rodrigo Vivi
- <rodrigo.vivi@intel.com>, Joonas Lahtinen
- <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Zhenyu
- Wang <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>,
- intel-gfx@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND
- I915 DRIVERS), intel-xe@lists.freedesktop.org (open list:INTEL DRM DISPLAY
- FOR XE AND I915 DRIVERS), dri-devel@lists.freedesktop.org (open list:DRM
- DRIVERS), linux-kernel@vger.kernel.org (open list),
- intel-gvt-dev@lists.freedesktop.org (open list:INTEL GVT-g DRIVERS (Intel
- GPU Virtualization)), Wolfram Sang <wsa+renesas@sang-engineering.com>,
- amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
- nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
- GEFORCE/QUADRO GPUS), linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM
- HOST DRIVERS), linux-media@vger.kernel.org (open list:BTTV VIDEO4LINUX
- DRIVER), linux-fbdev@vger.kernel.org (open list:FRAMEBUFFER LAYER)
-Subject: Re: [PATCH v1 03/12] drm/i915: Make I2C terminology more inclusive
-Message-ID: <20240503102347.00001877.zhiwang@kernel.org>
-In-Reply-To: <20240430173812.1423757-4-eahariha@linux.microsoft.com>
-References: <20240430173812.1423757-1-eahariha@linux.microsoft.com>
-	<20240430173812.1423757-4-eahariha@linux.microsoft.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714721065; c=relaxed/simple;
+	bh=w1dgZnNTWzg6K0ESt8cvA0WXbPR17h0Mwu1FSLW/6v0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jJ0VywqotCxaMq2UFgo33jwYeDgk5RBtKpisHc/4dGll4A46pw4fVTW2aejgTVfRLGjDVExnsVYGg7KPLH9GSC2P1J+PO1ojkn9MnaAO1aU9zs9a+cqgFtaAGloFkpPDFY6JQE8cTHXg/5IHoNhyrqjfcV0O9XhH50t209qqUGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=hw1fScRf; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=s3vPqZrbMgbnBDmDrDM9tnoB1DevQ2bIAV5vhjWN2YM=;
+	t=1714721062; x=1715153062; b=hw1fScRfZJ67FQPGwdyHIdNWmSmMz47WlgW2Dq/rKN1riO5
+	+ITJW9WkK02SG5nb2CUSCoCpkH/UeH/Om1knxHtGZxDTUBj/l5WRP3OO0PJdyZGyJnRoMB/tX2G86
+	mBW3+nwAkduFl158xonATnDp5YdL7VBhHw5OVb2RrYINgyolCD2A/jQdqc4JBH6Iyxhm/RkI2uVXJ
+	sC7AmUDlWXMbaNNbyLrY10oWusAKJVhnC+n0rUc4poroVQKDxkPYw2O4cdSFiBfIPZeUaalSMQnym
+	lrwIA+iD9vrgc80B3KAWhvGWxntpUMCeAr5USa4Wk6HwD2qXJFoXLp1Kzpj3el/A==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1s2nHF-0007VC-Aj; Fri, 03 May 2024 09:24:17 +0200
+Message-ID: <be13b434-9110-4333-8bd9-3ad85adfa976@leemhuis.info>
+Date: Fri, 3 May 2024 09:24:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
+ netif_device_detach
+To: gregkh@linuxfoundation.org
+Cc: Ferry Toth <fntoth@gmail.com>, s.hauer@pengutronix.de,
+ jonathanh@nvidia.com, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_linyyuan@quicinc.com,
+ paul@crapouillou.net, quic_eserrao@quicinc.com, erosca@de.adit-jv.com,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Andy Shevchenko <andriy.shevchenko@intel.com>,
+ Hardik Gajjar <hgajjar@de.adit-jv.com>
+References: <be8904bd-71ea-4ae1-b0bc-9170461fd0d9@gmail.com>
+ <Zh6BsK8F3gCzGJfE@smile.fi.intel.com>
+ <20240417151342.GA56989@vmlxhi-118.adit-jv.com>
+ <d94f37cf-8140-4f89-aa67-53f9291faff3@gmail.com>
+ <5dae4b62-24d4-4942-934a-38c548a2fdbc@gmail.com>
+ <20240430153243.GA129136@vmlxhi-118.adit-jv.com>
+ <8041106f-0be0-4ed9-990e-1f62902b30e9@gmail.com>
+ <9dab0c4f-cfae-4212-9a27-518454314eef@gmail.com>
+ <20240502152916.GA7995@vmlxhi-118.adit-jv.com>
+ <ZjOx5KZdmBZ0S5CD@smile.fi.intel.com>
+ <20240502161652.GA8362@vmlxhi-118.adit-jv.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <20240502161652.GA8362@vmlxhi-118.adit-jv.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714721062;17a89e1b;
+X-HE-SMSGID: 1s2nHF-0007VC-Aj
 
-On Tue, 30 Apr 2024 17:38:02 +0000
-Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+Greg, not totally sure, but this might be something where you might need
+to make a judgement call. See below:
 
-> I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced
-> "master/slave" with more appropriate terms. Inspired by and following
-> on to Wolfram's series to fix drivers/i2c/[1], fix the terminology
-> for users of I2C_ALGOBIT bitbanging interface, now that the approved
-> verbiage exists in the specification.
+On 02.05.24 18:16, Hardik Gajjar wrote:
+> On Thu, May 02, 2024 at 06:31:48PM +0300, Andy Shevchenko wrote:
+>> On Thu, May 02, 2024 at 05:29:16PM +0200, Hardik Gajjar wrote:
+>>> On Tue, Apr 30, 2024 at 11:12:17PM +0200, Ferry Toth wrote:
+>>>> Op 30-04-2024 om 21:40 schreef Ferry Toth:
+>>>>> Op 30-04-2024 om 17:32 schreef Hardik Gajjar:
+>>>>>> On Sun, Apr 28, 2024 at 11:07:36PM +0200, Ferry Toth wrote:
+>>>>>>> Op 25-04-2024 om 23:27 schreef Ferry Toth:
+>>>>>>>> Op 17-04-2024 om 17:13 schreef Hardik Gajjar:
+>>>>>>>>> On Tue, Apr 16, 2024 at 04:48:32PM +0300, Andy Shevchenko wrote:
+>>>>>>>>>> On Thu, Apr 11, 2024 at 10:52:36PM +0200, Ferry Toth wrote:
+>>>>>>>>>>> Op 11-04-2024 om 18:39 schreef Andy Shevchenko:
+>>>>>>>>>>>> On Thu, Apr 11, 2024 at 04:26:37PM +0200, Hardik Gajjar wrote:
+>>>>>>>>>>>>> On Wed, Apr 10, 2024 at 08:37:42PM +0300, Andy Shevchenko wrote:
+>>>>>>>>>>>>>> On Sun, Apr 07, 2024 at 10:51:51PM +0200, Ferry Toth wrote:
+>>>>>>>>>>>>>>> Op 05-04-2024 om 13:38 schreef Hardik Gajjar:
+>> 
+
+>> ...
+>> 
+>>>>>>>>>>>>>>> Exactly. And this didn't happen before the 2 patches.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> To be precise: /sys/class/net/usb0 is not
+>>>>>>>>>>>>>>> removed and it is a link, the link
+>>>>>>>>>>>>>>> target /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/net/usb0
+>>>>>>>>>>>>>>> no
+>>>>>>>>>>>>>>> longer exists
+>>>>>>>>>>>>> So, it means that the /sys/class/net/usb0 is
+>>>>>>>>>>>>> present, but the symlink is
+>>>>>>>>>>>>> broken. In that case, the dwc3 driver should
+>>>>>>>>>>>>> recreate the device, and the
+>>>>>>>>>>>>> symlink should become active again
+>>>>>>>>>>>
+>>>>>>>>>>> Yes, on first enabling gadget (when device mode is activated):
+>>>>>>>>>>>
+>>>>>>>>>>> root@yuna:~# ls
+>>>>>>>>>>> /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+>>>>>>>>>>> driver  net  power  sound  subsystem  suspended  uevent
+>>>>>>>>>>>
+>>>>>>>>>>> Then switching to host mode:
+>>>>>>>>>>>
+>>>>>>>>>>> root@yuna:~# ls
+>>>>>>>>>>> /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+>>>>>>>>>>> ls: cannot access
+>>>>>>>>>>> '/sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/':
+>>>>>>>>>>> No such file
+>>>>>>>>>>> or directory
+>>>>>>>>>>>
+>>>>>>>>>>> Then back to device mode:
+>>>>>>>>>>>
+>>>>>>>>>>> root@yuna:~# ls
+>>>>>>>>>>> /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+>>>>>>>>>>> driver  power  sound  subsystem  suspended  uevent
+>>>>>>>>>>>
+>>>>>>>>>>> net is missing. But, network functions:
+>>>>>>>>>>>
+>>>>>>>>>>> root@yuna:~# ping 10.42.0.1
+>>>>>>>>>>> PING 10.42.0.1 (10.42.0.1): 56 data bytes
+>>>>>>>>>>>
+>>>>>>>>>>> Mass storage device is created and removed each time as expected.
+>>>>>>>>>>
+>>>>>>>>>> So, what's the conclusion? Shall we move towards revert of those
+>>>>>>>>>> two changes?
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> As promised, I have the tested the this patch with the dwc3 gadget.
+>>>>>>>>> I could not reproduce
+>>>>>>>>> the issue.
+>>>>>>>>>
+>>>>>>>>> I can see the usb0 exist all the time and accessible regardless of
+>>>>>>>>> the role switching of the USB mode (peripheral <-> host)
+>>>>>>>>>
+>>>>>>>>> Following are the logs:
+>>>>>>>>> //Host to device
+>>>>>>>>>
+>>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # echo "peripheral"
+>>>>>>>>>> mode
+>>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # ls
+>>>>>>>>> a800000.dwc3/gadget/net/
+>>>>>>>>> usb0
+>>>>>>>>>
+>>>>>>>>> //device to host
+>>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # echo "host" > mode
+>>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # ls
+>>>>>>>>> a800000.dwc3/gadget/net/
+>>>>>>>>> usb0
+>>>>>>>>
+>>>>>>>> That is weird. When I switch to host mode (using the physical switch),
+>>>>>>>> the whole gadget directory is removed (now testing 6.9.0-rc5)
+>>>>>>>>
+>>>>>>>> Switching back to device mode, that gadget directory is recreated. And
+>>>>>>>> gadget/sound as well, but not gadget/net.
+>>>>>>>>
+>>>>>>>>> s a800000.dwc3/gadget/net/usb0
+>>>>>>>>> <
+>>>>>>>>> addr_assign_type    duplex             phys_port_name
+>>>>>>>>> addr_len            flags              phys_switch_id
+>>>>>>>>> address             gro_flush_timeout  power
+>>>>>>>>> broadcast           ifalias            proto_down
+>>>>>>>>> carrier             ifindex            queues
+>>>>>>>>> carrier_changes     iflink             speed
+>>>>>>>>> carrier_down_count  link_mode          statistics
+>>>>>>>>> carrier_up_count    mtu                subsystem
+>>>>>>>>> dev_id              name_assign_type   tx_queue_len
+>>>>>>>>> dev_port            netdev_group       type
+>>>>>>>>> device              operstate          uevent
+>>>>>>>>> dormant             phys_port_id       waiting_for_supplier
+>>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb # ifconfig -a usb0
+>>>>>>>>> usb0      Link encap:Ethernet  HWaddr 3a:8b:63:97:1a:9a
+>>>>>>>>>             BROADCAST MULTICAST  MTU:1500  Metric:1
+>>>>>>>>>             RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+>>>>>>>>>             TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+>>>>>>>>>             collisions:0 txqueuelen:1000
+>>>>>>>>>             RX bytes:0 TX bytes:0
+>>>>>>>>>
+>>>>>>>>> console:/sys/bus/platform/devices/a800000.ssusb #
+>>>>>>>>>
+>>>>>>>>> I strongly advise against reverting the patch solely based on the
+>>>>>>>>> observed issue of removing the /sys/class/net/usb0 directory while
+>>>>>>>>> the usb0 interface remains available.
+>>>>>>>>
+>>>>>>>> There's more to it. I also mentioned that switching the role or
+>>>>>>>> unplugging the cable leaves the usb0 connection.
+>>>>>>>>
+>>>>>>>> I have while in host mode:
+>>>>>>>> root@yuna:~# ifconfig -a usb0
+>>>>>>>> usb0: flags=-28605<UP,BROADCAST,RUNNING,MULTICAST,DYNAMIC>  mtu 1500
+>>>>>>>>           inet 10.42.0.221  netmask 255.255.255.0  broadcast
+>>>>>>>> 10.42.0.255
+>>>>>>>>           inet6 fe80::a8bb:ccff:fedd:eef1  prefixlen 64 
+>>>>>>>> scopeid 0x20<link>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> You don't see that because you didn't create a connection at all.
+>>>>>>>>
+>>>>>>>>> Instead, I recommend enabling FTRACE to trace the functions involved
+>>>>>>>>> and identify which faulty call is responsible for removing usb0.
+>>>>>>>>
+>>>>>>>> Switching from device -> host -> device:
+>>>>>>>>
+>>>>>>>> root@yuna:~# trace-cmd record -p function_graph -l *gether_*
+>>>>>>>>     plugin 'function_graph'
+>>>>>>>> Hit Ctrl^C to stop recording
+>>>>>>>> ^CCPU0 data recorded at offset=0x1c8000
+>>>>>>>>       188 bytes in size (4096 uncompressed)
+>>>>>>>> CPU1 data recorded at offset=0x1c9000
+>>>>>>>>       0 bytes in size (0 uncompressed)
+>>>>>>>> root@yuna:~# trace-cmd report
+>>>>>>>> cpus=2
+>>>>>>>>        irq/68-dwc3-725   [000]   514.575337: funcgraph_entry:      #
+>>>>>>>> 2079.480 us |  gether_disconnect();
+>>>>>>>>        irq/68-dwc3-946   [000]   524.263731: funcgraph_entry:      +
+>>>>>>>> 11.640 us  |  gether_disconnect();
+>>>>>>>>        irq/68-dwc3-946   [000]   524.263743: funcgraph_entry:      !
+>>>>>>>> 116.520 us |  gether_connect();
+>>>>>>>>        irq/68-dwc3-946   [000]   524.268029: funcgraph_entry:      #
+>>>>>>>> 2057.260 us |  gether_disconnect();
+>>>>>>>>        irq/68-dwc3-946   [000]   524.270089: funcgraph_entry:      !
+>>>>>>>> 109.000 us |  gether_connect();
+>>>>>>>
+>>>>>>> I tried to get a more useful trace:
+>>>>>>> root@yuna:/sys/kernel/tracing# echo 'gether_*' > set_ftrace_filter
+>>>>>>> root@yuna:/sys/kernel/tracing# echo 'eem_*' >> set_ftrace_filter
+>>>>>>> root@yuna:/sys/kernel/tracing# echo function > current_tracer
+>>>>>>> root@yuna:/sys/kernel/tracing# echo 'reset_config' >> set_ftrace_filter
+>>>>>>> -> switch to host mode then back to device
+>>>>>>> root@yuna:/sys/kernel/tracing# cat trace
+>>>>>>> # tracer: function
+>>>>>>> #
+>>>>>>> # entries-in-buffer/entries-written: 53/53   #P:2
+>>>>>>> #
+>>>>>>> #                                _-----=> irqs-off/BH-disabled
+>>>>>>> #                               / _----=> need-resched
+>>>>>>> #                              | / _---=> hardirq/softirq
+>>>>>>> #                              || / _--=> preempt-depth
+>>>>>>> #                              ||| / _-=> migrate-disable
+>>>>>>> #                              |||| /     delay
+>>>>>>> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+>>>>>>> #              | |         |   |||||     |         |
+>>>>>>>       irq/68-dwc3-523     [000] D..3.   133.990254: reset_config
+>>>>>>> <-__composite_disconnect
+>>>>>>>       irq/68-dwc3-523     [000] D..3.   133.992274: eem_disable
+>>>>>>> <-reset_config
+>>>>>>>       irq/68-dwc3-523     [000] D..3.   133.992276: gether_disconnect
+>>>>>>> <-reset_config
+>>>>>>>       kworker/1:3-443     [001] ...1.   134.022453: eem_unbind
+>>>>>>> <-purge_configs_funcs
+>>>>>>>
+>>>>>>> -> to device mode
+>>>>>>>
+>>>>>>>       kworker/1:3-443     [001] ...1.   148.630773: eem_bind
+>>>>>>> <-usb_add_function
+>>>>>>>       irq/68-dwc3-734     [000] D..3.   149.155209: eem_set_alt
+>>>>>>> <-composite_setup
+>>>>>>>       irq/68-dwc3-734     [000] D..3.   149.155215: gether_disconnect
+>>>>>>> <-eem_set_alt
+>>>>>>>       irq/68-dwc3-734     [000] D..3.   149.155220: gether_connect
+>>>>>>> <-eem_set_alt
+>>>>>>>       irq/68-dwc3-734     [000] D..3.   149.157287: eem_set_alt
+>>>>>>> <-composite_setup
+>>>>>>>       irq/68-dwc3-734     [000] D..3.   149.157292: gether_disconnect
+>>>>>>> <-eem_set_alt
+>>>>>>>       irq/68-dwc3-734     [000] D..3.   149.159338: gether_connect
+>>>>>>> <-eem_set_alt
+>>>>>>>       irq/68-dwc3-734     [000] D..2.   149.239625: eem_unwrap
+>>>>>>> <-rx_complete
+>>>>>>> ...
+>>>>>>>
+>>>>>>> I don't know where to look exactly. Any hints?
+>>>>>>
+>>>>>> do you see anything related to gether_cleanup() after eem_unbind() ?
+>>>>>
+>>>>> Nope. It's a pitty that the trace formatting got messed up above. But as
+>>>>> you can see I traced gether_* and eem_*. After eem_unbind no traced
+>>>>> function is called, until I flip the switch to device mode.
+>>>>> The ... at the end is where I cut uninteresting eem_unwrap <-rx_complete
+>>>>> and eem_wrap <-eth_start_xmit lines.
+>>>>>
+>>>>>> If not then, you may try to enable tracing of TCP/IP stack and
+>>>>>> network side to check who deleting the sysfs entry
+>>>>>
+>>>>> Yes, that's a vast amount of functions to trace. And I don't see how
+>>>>> that would be related to the patch we're discussing here. I was hoping
+>>>>> for a little more targeted hint.
+>>>>
+>>>> Now filtering 'gether_*', 'eem_*', '*configfs_*', 'composite_*', 'usb_fun*',
+>>>> 'reset_config' and 'device_remove_file' leads me to:
+>>>>
+>>>> TIMESTAMP  FUNCTION
+>>>>    |         |
+>>>>   49.952477: eem_wrap <-eth_start_xmit
+>>>>   55.072455: eem_wrap <-eth_start_xmit
+>>>>   55.072621: eem_unwrap <-rx_complete
+>>>>   59.011540: configfs_composite_reset <-usb_gadget_udc_reset
+>>>>   59.011545: composite_reset <-configfs_composite_reset
+>>>>   59.011548: reset_config <-__composite_disconnect
+>>>>   59.013565: eem_disable <-reset_config
+>>>>   59.013567: gether_disconnect <-reset_config
+>>>>   59.049560: device_remove_file <-device_remove
+>>>>   59.051185: configfs_composite_disconnect <-usb_gadget_disco
+>>>>   59.051189: composite_disconnect <-configfs_composite_discon
+>>>>   59.051195: configfs_composite_unbind <-gadget_unbind_driver
+>>>>   59.052519: eem_unbind <-purge_configs_funcs
+>>>>   59.052529: composite_dev_cleanup <-configfs_composite_unbin
+>>>>   59.052537: device_remove_file <-composite_dev_cleanup
+>>>>
+>>>> device_remove_file gets called twice, once by device_remove after
+>>>> gether_disconnect (that the one). The 2nd time by composite_dev_cleanup
+>>>> (removing the gadget)
+>>>
+>>> I believe that the device_remove_file function is only removing
+>>> suspend-specific attributes, not the complete gadget.  Typically, when you
+>>> perform the role switch, the Gadget start/stop function in your UDC driver is
+>>> called. These functions should not delete the gadget
+>>>
+>>> To investigate further, could you please enable the DWC3 functions in ftrace
+>>> and check who is removing the gadget?  I can also enable this on my system
+>>> and compare the logs with yours, but I will be in PI planning for 1.5 weeks
+>>> and may not be able to provide immediate support.
+>>
+>> Since we are almost at -rc7, I propose to revert and try again next cycle.
 > 
-> Compile tested, no functionality changes intended
+> Why? There is no problem with this patch!
 > 
-For GVT part,
-
-Acked-by: Zhi Wang <zhiwang@kernel.org>
-
-Thanks,
-Zhi.
-
-> [1]:
-> https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
+> I don't know why you are so excited to revert the patch instead of
+> investigating the original issue. Even though I have proved that the
+> problem is caused by usb0 being removed just by role-switching the
+> port by the UDC driver, this behavior is incorrect.
 > 
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->  drivers/gpu/drm/i915/display/dvo_ch7017.c     | 14 ++++-----
->  drivers/gpu/drm/i915/display/dvo_ch7xxx.c     | 18 +++++------
->  drivers/gpu/drm/i915/display/dvo_ivch.c       | 16 +++++-----
->  drivers/gpu/drm/i915/display/dvo_ns2501.c     | 18 +++++------
->  drivers/gpu/drm/i915/display/dvo_sil164.c     | 18 +++++------
->  drivers/gpu/drm/i915/display/dvo_tfp410.c     | 18 +++++------
->  drivers/gpu/drm/i915/display/intel_bios.c     | 22 +++++++-------
->  drivers/gpu/drm/i915/display/intel_ddi.c      |  2 +-
->  .../gpu/drm/i915/display/intel_display_core.h |  2 +-
->  drivers/gpu/drm/i915/display/intel_dsi.h      |  2 +-
->  drivers/gpu/drm/i915/display/intel_dsi_vbt.c  | 20 ++++++-------
->  drivers/gpu/drm/i915/display/intel_dvo.c      | 14 ++++-----
->  drivers/gpu/drm/i915/display/intel_dvo_dev.h  |  2 +-
->  drivers/gpu/drm/i915/display/intel_gmbus.c    |  4 +--
->  drivers/gpu/drm/i915/display/intel_sdvo.c     | 30
-> +++++++++---------- drivers/gpu/drm/i915/display/intel_vbt_defs.h |
-> 4 +-- drivers/gpu/drm/i915/gvt/edid.c               | 28
-> ++++++++--------- drivers/gpu/drm/i915/gvt/edid.h               |  4
-> +-- drivers/gpu/drm/i915/gvt/opregion.c           |  2 +-
->  19 files changed, 119 insertions(+), 119 deletions(-)
+> There is no behavior in the Linux kernel that keeps the network
+> interface and removes the related sysfs entry. THIS IS WRONG and has
+> been FIXED without reverting any mainline patch.
 > 
-> diff --git a/drivers/gpu/drm/i915/display/dvo_ch7017.c
-> b/drivers/gpu/drm/i915/display/dvo_ch7017.c index
-> d0c3880d7f80..493e730c685b 100644 ---
-> a/drivers/gpu/drm/i915/display/dvo_ch7017.c +++
-> b/drivers/gpu/drm/i915/display/dvo_ch7017.c @@ -170,13 +170,13 @@
-> static bool ch7017_read(struct intel_dvo_device *dvo, u8 addr, u8
-> *val) { struct i2c_msg msgs[] = {
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = 0,
->  			.len = 1,
->  			.buf = &addr,
->  		},
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = I2C_M_RD,
->  			.len = 1,
->  			.buf = val,
-> @@ -189,7 +189,7 @@ static bool ch7017_write(struct intel_dvo_device
-> *dvo, u8 addr, u8 val) {
->  	u8 buf[2] = { addr, val };
->  	struct i2c_msg msg = {
-> -		.addr = dvo->slave_addr,
-> +		.addr = dvo->target_addr,
->  		.flags = 0,
->  		.len = 2,
->  		.buf = buf,
-> @@ -197,7 +197,7 @@ static bool ch7017_write(struct intel_dvo_device
-> *dvo, u8 addr, u8 val) return i2c_transfer(dvo->i2c_bus, &msg, 1) ==
-> 1; }
->  
-> -/** Probes for a CH7017 on the given bus and slave address. */
-> +/** Probes for a CH7017 on the given bus and target address. */
->  static bool ch7017_init(struct intel_dvo_device *dvo,
->  			struct i2c_adapter *adapter)
->  {
-> @@ -227,13 +227,13 @@ static bool ch7017_init(struct intel_dvo_device
-> *dvo, break;
->  	default:
->  		DRM_DEBUG_KMS("ch701x not detected, got %d: from %s "
-> -			      "slave %d.\n",
-> -			      val, adapter->name, dvo->slave_addr);
-> +			      "target %d.\n",
-> +			      val, adapter->name, dvo->target_addr);
->  		goto fail;
->  	}
->  
->  	DRM_DEBUG_KMS("%s detected on %s, addr %d\n",
-> -		      str, adapter->name, dvo->slave_addr);
-> +		      str, adapter->name, dvo->target_addr);
->  	return true;
->  
->  fail:
-> diff --git a/drivers/gpu/drm/i915/display/dvo_ch7xxx.c
-> b/drivers/gpu/drm/i915/display/dvo_ch7xxx.c index
-> 2e8e85da5a40..534b8544e0a4 100644 ---
-> a/drivers/gpu/drm/i915/display/dvo_ch7xxx.c +++
-> b/drivers/gpu/drm/i915/display/dvo_ch7xxx.c @@ -153,13 +153,13 @@
-> static bool ch7xxx_readb(struct intel_dvo_device *dvo, int addr, u8
-> *ch) struct i2c_msg msgs[] = {
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = 0,
->  			.len = 1,
->  			.buf = out_buf,
->  		},
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = I2C_M_RD,
->  			.len = 1,
->  			.buf = in_buf,
-> @@ -176,7 +176,7 @@ static bool ch7xxx_readb(struct intel_dvo_device
-> *dvo, int addr, u8 *ch) 
->  	if (!ch7xxx->quiet) {
->  		DRM_DEBUG_KMS("Unable to read register 0x%02x from
-> %s:%02x.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  	return false;
->  }
-> @@ -188,7 +188,7 @@ static bool ch7xxx_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) struct i2c_adapter *adapter = dvo->i2c_bus;
->  	u8 out_buf[2];
->  	struct i2c_msg msg = {
-> -		.addr = dvo->slave_addr,
-> +		.addr = dvo->target_addr,
->  		.flags = 0,
->  		.len = 2,
->  		.buf = out_buf,
-> @@ -202,7 +202,7 @@ static bool ch7xxx_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) 
->  	if (!ch7xxx->quiet) {
->  		DRM_DEBUG_KMS("Unable to write register 0x%02x to
-> %s:%d.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  
->  	return false;
-> @@ -229,8 +229,8 @@ static bool ch7xxx_init(struct intel_dvo_device
-> *dvo, 
->  	name = ch7xxx_get_id(vendor);
->  	if (!name) {
-> -		DRM_DEBUG_KMS("ch7xxx not detected; got VID 0x%02x
-> from %s slave %d.\n",
-> -			      vendor, adapter->name,
-> dvo->slave_addr);
-> +		DRM_DEBUG_KMS("ch7xxx not detected; got VID 0x%02x
-> from %s target %d.\n",
-> +			      vendor, adapter->name,
-> dvo->target_addr); goto out;
->  	}
->  
-> @@ -240,8 +240,8 @@ static bool ch7xxx_init(struct intel_dvo_device
-> *dvo, 
->  	devid = ch7xxx_get_did(device);
->  	if (!devid) {
-> -		DRM_DEBUG_KMS("ch7xxx not detected; got DID 0x%02x
-> from %s slave %d.\n",
-> -			      device, adapter->name,
-> dvo->slave_addr);
-> +		DRM_DEBUG_KMS("ch7xxx not detected; got DID 0x%02x
-> from %s target %d.\n",
-> +			      device, adapter->name,
-> dvo->target_addr); goto out;
->  	}
->  
-> diff --git a/drivers/gpu/drm/i915/display/dvo_ivch.c
-> b/drivers/gpu/drm/i915/display/dvo_ivch.c index
-> eef72bb3b767..0d5cce6051b1 100644 ---
-> a/drivers/gpu/drm/i915/display/dvo_ivch.c +++
-> b/drivers/gpu/drm/i915/display/dvo_ivch.c @@ -198,7 +198,7 @@ static
-> bool ivch_read(struct intel_dvo_device *dvo, int addr, u16 *data) 
->  	struct i2c_msg msgs[] = {
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = I2C_M_RD,
->  			.len = 0,
->  		},
-> @@ -209,7 +209,7 @@ static bool ivch_read(struct intel_dvo_device
-> *dvo, int addr, u16 *data) .buf = out_buf,
->  		},
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = I2C_M_RD | I2C_M_NOSTART,
->  			.len = 2,
->  			.buf = in_buf,
-> @@ -226,7 +226,7 @@ static bool ivch_read(struct intel_dvo_device
-> *dvo, int addr, u16 *data) if (!priv->quiet) {
->  		DRM_DEBUG_KMS("Unable to read register 0x%02x from "
->  				"%s:%02x.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  	return false;
->  }
-> @@ -238,7 +238,7 @@ static bool ivch_write(struct intel_dvo_device
-> *dvo, int addr, u16 data) struct i2c_adapter *adapter = dvo->i2c_bus;
->  	u8 out_buf[3];
->  	struct i2c_msg msg = {
-> -		.addr = dvo->slave_addr,
-> +		.addr = dvo->target_addr,
->  		.flags = 0,
->  		.len = 3,
->  		.buf = out_buf,
-> @@ -253,13 +253,13 @@ static bool ivch_write(struct intel_dvo_device
-> *dvo, int addr, u16 data) 
->  	if (!priv->quiet) {
->  		DRM_DEBUG_KMS("Unable to write register 0x%02x to
-> %s:%d.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  
->  	return false;
->  }
->  
-> -/* Probes the given bus and slave address for an ivch */
-> +/* Probes the given bus and target address for an ivch */
->  static bool ivch_init(struct intel_dvo_device *dvo,
->  		      struct i2c_adapter *adapter)
->  {
-> @@ -283,10 +283,10 @@ static bool ivch_init(struct intel_dvo_device
-> *dvo,
->  	 * very unique, check that the value in the base address
-> field matches
->  	 * the address it's responding on.
->  	 */
-> -	if ((temp & VR00_BASE_ADDRESS_MASK) != dvo->slave_addr) {
-> +	if ((temp & VR00_BASE_ADDRESS_MASK) != dvo->target_addr) {
->  		DRM_DEBUG_KMS("ivch detect failed due to address
-> mismatch " "(%d vs %d)\n",
-> -			  (temp & VR00_BASE_ADDRESS_MASK),
-> dvo->slave_addr);
-> +			  (temp & VR00_BASE_ADDRESS_MASK),
-> dvo->target_addr); goto out;
->  	}
->  
-> diff --git a/drivers/gpu/drm/i915/display/dvo_ns2501.c
-> b/drivers/gpu/drm/i915/display/dvo_ns2501.c index
-> 1df212fb000e..43fc0374fc7f 100644 ---
-> a/drivers/gpu/drm/i915/display/dvo_ns2501.c +++
-> b/drivers/gpu/drm/i915/display/dvo_ns2501.c @@ -399,13 +399,13 @@
-> static bool ns2501_readb(struct intel_dvo_device *dvo, int addr, u8
-> *ch) struct i2c_msg msgs[] = {
->  		{
-> -		 .addr = dvo->slave_addr,
-> +		 .addr = dvo->target_addr,
->  		 .flags = 0,
->  		 .len = 1,
->  		 .buf = out_buf,
->  		 },
->  		{
-> -		 .addr = dvo->slave_addr,
-> +		 .addr = dvo->target_addr,
->  		 .flags = I2C_M_RD,
->  		 .len = 1,
->  		 .buf = in_buf,
-> @@ -423,7 +423,7 @@ static bool ns2501_readb(struct intel_dvo_device
-> *dvo, int addr, u8 *ch) if (!ns->quiet) {
->  		DRM_DEBUG_KMS
->  		    ("Unable to read register 0x%02x from
-> %s:0x%02x.\n", addr,
-> -		     adapter->name, dvo->slave_addr);
-> +		     adapter->name, dvo->target_addr);
->  	}
->  
->  	return false;
-> @@ -442,7 +442,7 @@ static bool ns2501_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) u8 out_buf[2];
->  
->  	struct i2c_msg msg = {
-> -		.addr = dvo->slave_addr,
-> +		.addr = dvo->target_addr,
->  		.flags = 0,
->  		.len = 2,
->  		.buf = out_buf,
-> @@ -457,7 +457,7 @@ static bool ns2501_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) 
->  	if (!ns->quiet) {
->  		DRM_DEBUG_KMS("Unable to write register 0x%02x to
-> %s:%d\n",
-> -			      addr, adapter->name, dvo->slave_addr);
-> +			      addr, adapter->name, dvo->target_addr);
->  	}
->  
->  	return false;
-> @@ -488,8 +488,8 @@ static bool ns2501_init(struct intel_dvo_device
-> *dvo, goto out;
->  
->  	if (ch != (NS2501_VID & 0xff)) {
-> -		DRM_DEBUG_KMS("ns2501 not detected got %d: from %s
-> Slave %d.\n",
-> -			      ch, adapter->name, dvo->slave_addr);
-> +		DRM_DEBUG_KMS("ns2501 not detected got %d: from %s
-> Target %d.\n",
-> +			      ch, adapter->name, dvo->target_addr);
->  		goto out;
->  	}
->  
-> @@ -497,8 +497,8 @@ static bool ns2501_init(struct intel_dvo_device
-> *dvo, goto out;
->  
->  	if (ch != (NS2501_DID & 0xff)) {
-> -		DRM_DEBUG_KMS("ns2501 not detected got %d: from %s
-> Slave %d.\n",
-> -			      ch, adapter->name, dvo->slave_addr);
-> +		DRM_DEBUG_KMS("ns2501 not detected got %d: from %s
-> Target %d.\n",
-> +			      ch, adapter->name, dvo->target_addr);
->  		goto out;
->  	}
->  	ns->quiet = false;
-> diff --git a/drivers/gpu/drm/i915/display/dvo_sil164.c
-> b/drivers/gpu/drm/i915/display/dvo_sil164.c index
-> 6c461024c8e3..a8dd40c00997 100644 ---
-> a/drivers/gpu/drm/i915/display/dvo_sil164.c +++
-> b/drivers/gpu/drm/i915/display/dvo_sil164.c @@ -79,13 +79,13 @@
-> static bool sil164_readb(struct intel_dvo_device *dvo, int addr, u8
-> *ch) struct i2c_msg msgs[] = {
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = 0,
->  			.len = 1,
->  			.buf = out_buf,
->  		},
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = I2C_M_RD,
->  			.len = 1,
->  			.buf = in_buf,
-> @@ -102,7 +102,7 @@ static bool sil164_readb(struct intel_dvo_device
-> *dvo, int addr, u8 *ch) 
->  	if (!sil->quiet) {
->  		DRM_DEBUG_KMS("Unable to read register 0x%02x from
-> %s:%02x.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  	return false;
->  }
-> @@ -113,7 +113,7 @@ static bool sil164_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) struct i2c_adapter *adapter = dvo->i2c_bus;
->  	u8 out_buf[2];
->  	struct i2c_msg msg = {
-> -		.addr = dvo->slave_addr,
-> +		.addr = dvo->target_addr,
->  		.flags = 0,
->  		.len = 2,
->  		.buf = out_buf,
-> @@ -127,7 +127,7 @@ static bool sil164_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) 
->  	if (!sil->quiet) {
->  		DRM_DEBUG_KMS("Unable to write register 0x%02x to
-> %s:%d.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  
->  	return false;
-> @@ -153,8 +153,8 @@ static bool sil164_init(struct intel_dvo_device
-> *dvo, goto out;
->  
->  	if (ch != (SIL164_VID & 0xff)) {
-> -		DRM_DEBUG_KMS("sil164 not detected got %d: from %s
-> Slave %d.\n",
-> -			  ch, adapter->name, dvo->slave_addr);
-> +		DRM_DEBUG_KMS("sil164 not detected got %d: from %s
-> Target %d.\n",
-> +			  ch, adapter->name, dvo->target_addr);
->  		goto out;
->  	}
->  
-> @@ -162,8 +162,8 @@ static bool sil164_init(struct intel_dvo_device
-> *dvo, goto out;
->  
->  	if (ch != (SIL164_DID & 0xff)) {
-> -		DRM_DEBUG_KMS("sil164 not detected got %d: from %s
-> Slave %d.\n",
-> -			  ch, adapter->name, dvo->slave_addr);
-> +		DRM_DEBUG_KMS("sil164 not detected got %d: from %s
-> Target %d.\n",
-> +			  ch, adapter->name, dvo->target_addr);
->  		goto out;
->  	}
->  	sil->quiet = false;
-> diff --git a/drivers/gpu/drm/i915/display/dvo_tfp410.c
-> b/drivers/gpu/drm/i915/display/dvo_tfp410.c index
-> 0939e097f4f9..d9a0cd753a87 100644 ---
-> a/drivers/gpu/drm/i915/display/dvo_tfp410.c +++
-> b/drivers/gpu/drm/i915/display/dvo_tfp410.c @@ -100,13 +100,13 @@
-> static bool tfp410_readb(struct intel_dvo_device *dvo, int addr, u8
-> *ch) struct i2c_msg msgs[] = {
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = 0,
->  			.len = 1,
->  			.buf = out_buf,
->  		},
->  		{
-> -			.addr = dvo->slave_addr,
-> +			.addr = dvo->target_addr,
->  			.flags = I2C_M_RD,
->  			.len = 1,
->  			.buf = in_buf,
-> @@ -123,7 +123,7 @@ static bool tfp410_readb(struct intel_dvo_device
-> *dvo, int addr, u8 *ch) 
->  	if (!tfp->quiet) {
->  		DRM_DEBUG_KMS("Unable to read register 0x%02x from
-> %s:%02x.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  	return false;
->  }
-> @@ -134,7 +134,7 @@ static bool tfp410_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) struct i2c_adapter *adapter = dvo->i2c_bus;
->  	u8 out_buf[2];
->  	struct i2c_msg msg = {
-> -		.addr = dvo->slave_addr,
-> +		.addr = dvo->target_addr,
->  		.flags = 0,
->  		.len = 2,
->  		.buf = out_buf,
-> @@ -148,7 +148,7 @@ static bool tfp410_writeb(struct intel_dvo_device
-> *dvo, int addr, u8 ch) 
->  	if (!tfp->quiet) {
->  		DRM_DEBUG_KMS("Unable to write register 0x%02x to
-> %s:%d.\n",
-> -			  addr, adapter->name, dvo->slave_addr);
-> +			  addr, adapter->name, dvo->target_addr);
->  	}
->  
->  	return false;
-> @@ -183,15 +183,15 @@ static bool tfp410_init(struct intel_dvo_device
-> *dvo, 
->  	if ((id = tfp410_getid(dvo, TFP410_VID_LO)) != TFP410_VID) {
->  		DRM_DEBUG_KMS("tfp410 not detected got VID %X: from
-> %s "
-> -				"Slave %d.\n",
-> -			  id, adapter->name, dvo->slave_addr);
-> +				"Target %d.\n",
-> +			  id, adapter->name, dvo->target_addr);
->  		goto out;
->  	}
->  
->  	if ((id = tfp410_getid(dvo, TFP410_DID_LO)) != TFP410_DID) {
->  		DRM_DEBUG_KMS("tfp410 not detected got DID %X: from
-> %s "
-> -				"Slave %d.\n",
-> -			  id, adapter->name, dvo->slave_addr);
-> +				"Target %d.\n",
-> +			  id, adapter->name, dvo->target_addr);
->  		goto out;
->  	}
->  	tfp->quiet = false;
-> diff --git a/drivers/gpu/drm/i915/display/intel_bios.c
-> b/drivers/gpu/drm/i915/display/intel_bios.c index
-> fe52c06271ef..35f48fbd9e3e 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_bios.c +++
-> b/drivers/gpu/drm/i915/display/intel_bios.c @@ -69,8 +69,8 @@ struct
-> intel_bios_encoder_data { struct list_head node;
->  };
->  
-> -#define	SLAVE_ADDR1	0x70
-> -#define	SLAVE_ADDR2	0x72
-> +#define	TARGET_ADDR1	0x70
-> +#define	TARGET_ADDR2	0x72
->  
->  /* Get BDB block size given a pointer to Block ID. */
->  static u32 _get_blocksize(const u8 *block_base)
-> @@ -1231,10 +1231,10 @@ parse_sdvo_device_mapping(struct
-> drm_i915_private *i915) const struct child_device_config *child =
-> &devdata->child; struct sdvo_device_mapping *mapping;
->  
-> -		if (child->slave_addr != SLAVE_ADDR1 &&
-> -		    child->slave_addr != SLAVE_ADDR2) {
-> +		if (child->target_addr != TARGET_ADDR1 &&
-> +		    child->target_addr != TARGET_ADDR2) {
->  			/*
-> -			 * If the slave address is neither 0x70 nor
-> 0x72,
-> +			 * If the target address is neither 0x70 nor
-> 0x72,
->  			 * it is not a SDVO device. Skip it.
->  			 */
->  			continue;
-> @@ -1247,22 +1247,22 @@ parse_sdvo_device_mapping(struct
-> drm_i915_private *i915) continue;
->  		}
->  		drm_dbg_kms(&i915->drm,
-> -			    "the SDVO device with slave addr %2x is
-> found on"
-> +			    "the SDVO device with target addr %2x is
-> found on" " %s port\n",
-> -			    child->slave_addr,
-> +			    child->target_addr,
->  			    (child->dvo_port == DEVICE_PORT_DVOB) ?
->  			    "SDVOB" : "SDVOC");
->  		mapping =
-> &i915->display.vbt.sdvo_mappings[child->dvo_port - 1]; if
-> (!mapping->initialized) { mapping->dvo_port = child->dvo_port;
-> -			mapping->slave_addr = child->slave_addr;
-> +			mapping->target_addr = child->target_addr;
->  			mapping->dvo_wiring = child->dvo_wiring;
->  			mapping->ddc_pin = child->ddc_pin;
->  			mapping->i2c_pin = child->i2c_pin;
->  			mapping->initialized = 1;
->  			drm_dbg_kms(&i915->drm,
->  				    "SDVO device: dvo=%x, addr=%x,
-> wiring=%d, ddc_pin=%d, i2c_pin=%d\n",
-> -				    mapping->dvo_port,
-> mapping->slave_addr,
-> +				    mapping->dvo_port,
-> mapping->target_addr, mapping->dvo_wiring, mapping->ddc_pin,
->  				    mapping->i2c_pin);
->  		} else {
-> @@ -1270,11 +1270,11 @@ parse_sdvo_device_mapping(struct
-> drm_i915_private *i915) "Maybe one SDVO port is shared by "
->  				    "two SDVO device.\n");
->  		}
-> -		if (child->slave2_addr) {
-> +		if (child->target2_addr) {
->  			/* Maybe this is a SDVO device with multiple
-> inputs */ /* And the mapping info is not added */
->  			drm_dbg_kms(&i915->drm,
-> -				    "there exists the slave2_addr.
-> Maybe this"
-> +				    "there exists the target2_addr.
-> Maybe this" " is a SDVO device with multiple inputs.\n");
->  		}
->  		count++;
-> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c
-> b/drivers/gpu/drm/i915/display/intel_ddi.c index
-> c587a8efeafc..c408daee412a 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_ddi.c +++
-> b/drivers/gpu/drm/i915/display/intel_ddi.c @@ -4327,7 +4327,7 @@
-> static int intel_ddi_compute_config_late(struct intel_encoder
-> *encoder, connector->tile_group->id); 
->  	/*
-> -	 * EDP Transcoders cannot be ensalved
-> +	 * EDP Transcoders cannot be slaves
->  	 * make them a master always when present
->  	 */
->  	if (port_sync_transcoders & BIT(TRANSCODER_EDP))
-> diff --git a/drivers/gpu/drm/i915/display/intel_display_core.h
-> b/drivers/gpu/drm/i915/display/intel_display_core.h index
-> 2167dbee5eea..5bfc91f0b563 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_display_core.h +++
-> b/drivers/gpu/drm/i915/display/intel_display_core.h @@ -236,7 +236,7
-> @@ struct intel_vbt_data { struct sdvo_device_mapping {
->  		u8 initialized;
->  		u8 dvo_port;
-> -		u8 slave_addr;
-> +		u8 target_addr;
->  		u8 dvo_wiring;
->  		u8 i2c_pin;
->  		u8 ddc_pin;
-> diff --git a/drivers/gpu/drm/i915/display/intel_dsi.h
-> b/drivers/gpu/drm/i915/display/intel_dsi.h index
-> e99c94edfaae..e8ba4ccd99d3 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_dsi.h +++
-> b/drivers/gpu/drm/i915/display/intel_dsi.h @@ -66,7 +66,7 @@ struct
-> intel_dsi { /* number of DSI lanes */
->  	unsigned int lane_count;
->  
-> -	/* i2c bus associated with the slave device */
-> +	/* i2c bus associated with the target device */
->  	int i2c_bus_num;
->  
->  	/*
-> diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-> b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c index
-> a5d7fc8418c9..fb0b02e30c8b 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c +++
-> b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c @@ -56,7 +56,7 @@
->  #define MIPI_PORT_SHIFT			3
->  
->  struct i2c_adapter_lookup {
-> -	u16 slave_addr;
-> +	u16 target_addr;
->  	struct intel_dsi *intel_dsi;
->  	acpi_handle dev_handle;
->  };
-> @@ -443,7 +443,7 @@ static int i2c_adapter_lookup(struct
-> acpi_resource *ares, void *data) if (!i2c_acpi_get_i2c_resource(ares,
-> &sb)) return 1;
->  
-> -	if (lookup->slave_addr != sb->slave_address)
-> +	if (lookup->target_addr != sb->slave_address)
->  		return 1;
->  
->  	status = acpi_get_handle(lookup->dev_handle,
-> @@ -460,12 +460,12 @@ static int i2c_adapter_lookup(struct
-> acpi_resource *ares, void *data) }
->  
->  static void i2c_acpi_find_adapter(struct intel_dsi *intel_dsi,
-> -				  const u16 slave_addr)
-> +				  const u16 target_addr)
->  {
->  	struct drm_device *drm_dev = intel_dsi->base.base.dev;
->  	struct acpi_device *adev = ACPI_COMPANION(drm_dev->dev);
->  	struct i2c_adapter_lookup lookup = {
-> -		.slave_addr = slave_addr,
-> +		.target_addr = target_addr,
->  		.intel_dsi = intel_dsi,
->  		.dev_handle = acpi_device_handle(adev),
->  	};
-> @@ -476,7 +476,7 @@ static void i2c_acpi_find_adapter(struct
-> intel_dsi *intel_dsi, }
->  #else
->  static inline void i2c_acpi_find_adapter(struct intel_dsi *intel_dsi,
-> -					 const u16 slave_addr)
-> +					 const u16 target_addr)
->  {
->  }
->  #endif
-> @@ -488,17 +488,17 @@ static const u8 *mipi_exec_i2c(struct intel_dsi
-> *intel_dsi, const u8 *data) struct i2c_msg msg;
->  	int ret;
->  	u8 vbt_i2c_bus_num = *(data + 2);
-> -	u16 slave_addr = *(u16 *)(data + 3);
-> +	u16 target_addr = *(u16 *)(data + 3);
->  	u8 reg_offset = *(data + 5);
->  	u8 payload_size = *(data + 6);
->  	u8 *payload_data;
->  
-> -	drm_dbg_kms(&i915->drm, "bus %d client-addr 0x%02x reg
-> 0x%02x data %*ph\n",
-> -		    vbt_i2c_bus_num, slave_addr, reg_offset,
-> payload_size, data + 7);
-> +	drm_dbg_kms(&i915->drm, "bus %d target-addr 0x%02x reg
-> 0x%02x data %*ph\n",
-> +		    vbt_i2c_bus_num, target_addr, reg_offset,
-> payload_size, data + 7); 
->  	if (intel_dsi->i2c_bus_num < 0) {
->  		intel_dsi->i2c_bus_num = vbt_i2c_bus_num;
-> -		i2c_acpi_find_adapter(intel_dsi, slave_addr);
-> +		i2c_acpi_find_adapter(intel_dsi, target_addr);
->  	}
->  
->  	adapter = i2c_get_adapter(intel_dsi->i2c_bus_num);
-> @@ -514,7 +514,7 @@ static const u8 *mipi_exec_i2c(struct intel_dsi
-> *intel_dsi, const u8 *data) payload_data[0] = reg_offset;
->  	memcpy(&payload_data[1], (data + 7), payload_size);
->  
-> -	msg.addr = slave_addr;
-> +	msg.addr = target_addr;
->  	msg.flags = 0;
->  	msg.len = payload_size + 1;
->  	msg.buf = payload_data;
-> diff --git a/drivers/gpu/drm/i915/display/intel_dvo.c
-> b/drivers/gpu/drm/i915/display/intel_dvo.c index
-> c076da75b066..8d4c8f33f776 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_dvo.c +++
-> b/drivers/gpu/drm/i915/display/intel_dvo.c @@ -60,42 +60,42 @@ static
-> const struct intel_dvo_device intel_dvo_devices[] = { .type =
-> INTEL_DVO_CHIP_TMDS, .name = "sil164",
->  		.port = PORT_C,
-> -		.slave_addr = SIL164_ADDR,
-> +		.target_addr = SIL164_ADDR,
->  		.dev_ops = &sil164_ops,
->  	},
->  	{
->  		.type = INTEL_DVO_CHIP_TMDS,
->  		.name = "ch7xxx",
->  		.port = PORT_C,
-> -		.slave_addr = CH7xxx_ADDR,
-> +		.target_addr = CH7xxx_ADDR,
->  		.dev_ops = &ch7xxx_ops,
->  	},
->  	{
->  		.type = INTEL_DVO_CHIP_TMDS,
->  		.name = "ch7xxx",
->  		.port = PORT_C,
-> -		.slave_addr = 0x75, /* For some ch7010 */
-> +		.target_addr = 0x75, /* For some ch7010 */
->  		.dev_ops = &ch7xxx_ops,
->  	},
->  	{
->  		.type = INTEL_DVO_CHIP_LVDS,
->  		.name = "ivch",
->  		.port = PORT_A,
-> -		.slave_addr = 0x02, /* Might also be 0x44, 0x84,
-> 0xc4 */
-> +		.target_addr = 0x02, /* Might also be 0x44, 0x84,
-> 0xc4 */ .dev_ops = &ivch_ops,
->  	},
->  	{
->  		.type = INTEL_DVO_CHIP_TMDS,
->  		.name = "tfp410",
->  		.port = PORT_C,
-> -		.slave_addr = TFP410_ADDR,
-> +		.target_addr = TFP410_ADDR,
->  		.dev_ops = &tfp410_ops,
->  	},
->  	{
->  		.type = INTEL_DVO_CHIP_LVDS,
->  		.name = "ch7017",
->  		.port = PORT_C,
-> -		.slave_addr = 0x75,
-> +		.target_addr = 0x75,
->  		.gpio = GMBUS_PIN_DPB,
->  		.dev_ops = &ch7017_ops,
->  	},
-> @@ -103,7 +103,7 @@ static const struct intel_dvo_device
-> intel_dvo_devices[] = { .type = INTEL_DVO_CHIP_LVDS_NO_FIXED,
->  		.name = "ns2501",
->  		.port = PORT_B,
-> -		.slave_addr = NS2501_ADDR,
-> +		.target_addr = NS2501_ADDR,
->  		.dev_ops = &ns2501_ops,
->  	},
->  };
-> diff --git a/drivers/gpu/drm/i915/display/intel_dvo_dev.h
-> b/drivers/gpu/drm/i915/display/intel_dvo_dev.h index
-> af7b04539b93..4bf476656b8c 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_dvo_dev.h +++
-> b/drivers/gpu/drm/i915/display/intel_dvo_dev.h @@ -38,7 +38,7 @@
-> struct intel_dvo_device { enum port port;
->  	/* GPIO register used for i2c bus to control this device */
->  	u32 gpio;
-> -	int slave_addr;
-> +	int target_addr;
->  
->  	const struct intel_dvo_dev_ops *dev_ops;
->  	void *dev_priv;
-> diff --git a/drivers/gpu/drm/i915/display/intel_gmbus.c
-> b/drivers/gpu/drm/i915/display/intel_gmbus.c index
-> d3e03ed5b79c..fe9a3c1f0072 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_gmbus.c +++
-> b/drivers/gpu/drm/i915/display/intel_gmbus.c @@ -478,7 +478,7 @@
-> gmbus_xfer_read_chunk(struct drm_i915_private *i915, /*
->   * HW spec says that 512Bytes in Burst read need special treatment.
->   * But it doesn't talk about other multiple of 256Bytes. And
-> couldn't locate
-> - * an I2C slave, which supports such a lengthy burst read too for
-> experiments.
-> + * an I2C target, which supports such a lengthy burst read too for
-> experiments. *
->   * So until things get clarified on HW support, to avoid the burst
-> read length
->   * in fold of 256Bytes except 512, max burst read length is fixed at
-> 767Bytes. @@ -701,7 +701,7 @@ do_gmbus_xfer(struct i2c_adapter
-> *adapter, struct i2c_msg *msgs, int num, 
->  	/* Toggle the Software Clear Interrupt bit. This has the
-> effect
->  	 * of resetting the GMBUS controller and so clearing the
-> -	 * BUS_ERROR raised by the slave's NAK.
-> +	 * BUS_ERROR raised by the target's NAK.
->  	 */
->  	intel_de_write_fw(i915, GMBUS1(i915), GMBUS_SW_CLR_INT);
->  	intel_de_write_fw(i915, GMBUS1(i915), 0);
-> diff --git a/drivers/gpu/drm/i915/display/intel_sdvo.c
-> b/drivers/gpu/drm/i915/display/intel_sdvo.c index
-> 5f9e748adc89..87052bd1c554 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_sdvo.c +++
-> b/drivers/gpu/drm/i915/display/intel_sdvo.c @@ -95,7 +95,7 @@ struct
-> intel_sdvo { struct intel_encoder base;
->  
->  	struct i2c_adapter *i2c;
-> -	u8 slave_addr;
-> +	u8 target_addr;
->  
->  	struct intel_sdvo_ddc ddc[3];
->  
-> @@ -255,13 +255,13 @@ static bool intel_sdvo_read_byte(struct
-> intel_sdvo *intel_sdvo, u8 addr, u8 *ch) struct drm_i915_private
-> *i915 = to_i915(intel_sdvo->base.base.dev); struct i2c_msg msgs[] = {
->  		{
-> -			.addr = intel_sdvo->slave_addr,
-> +			.addr = intel_sdvo->target_addr,
->  			.flags = 0,
->  			.len = 1,
->  			.buf = &addr,
->  		},
->  		{
-> -			.addr = intel_sdvo->slave_addr,
-> +			.addr = intel_sdvo->target_addr,
->  			.flags = I2C_M_RD,
->  			.len = 1,
->  			.buf = ch,
-> @@ -483,14 +483,14 @@ static bool __intel_sdvo_write_cmd(struct
-> intel_sdvo *intel_sdvo, u8 cmd, intel_sdvo_debug_write(intel_sdvo,
-> cmd, args, args_len); 
->  	for (i = 0; i < args_len; i++) {
-> -		msgs[i].addr = intel_sdvo->slave_addr;
-> +		msgs[i].addr = intel_sdvo->target_addr;
->  		msgs[i].flags = 0;
->  		msgs[i].len = 2;
->  		msgs[i].buf = buf + 2 *i;
->  		buf[2*i + 0] = SDVO_I2C_ARG_0 - i;
->  		buf[2*i + 1] = ((u8*)args)[i];
->  	}
-> -	msgs[i].addr = intel_sdvo->slave_addr;
-> +	msgs[i].addr = intel_sdvo->target_addr;
->  	msgs[i].flags = 0;
->  	msgs[i].len = 2;
->  	msgs[i].buf = buf + 2*i;
-> @@ -499,12 +499,12 @@ static bool __intel_sdvo_write_cmd(struct
-> intel_sdvo *intel_sdvo, u8 cmd, 
->  	/* the following two are to read the response */
->  	status = SDVO_I2C_CMD_STATUS;
-> -	msgs[i+1].addr = intel_sdvo->slave_addr;
-> +	msgs[i+1].addr = intel_sdvo->target_addr;
->  	msgs[i+1].flags = 0;
->  	msgs[i+1].len = 1;
->  	msgs[i+1].buf = &status;
->  
-> -	msgs[i+2].addr = intel_sdvo->slave_addr;
-> +	msgs[i+2].addr = intel_sdvo->target_addr;
->  	msgs[i+2].flags = I2C_M_RD;
->  	msgs[i+2].len = 1;
->  	msgs[i+2].buf = &status;
-> @@ -2659,9 +2659,9 @@ intel_sdvo_select_i2c_bus(struct intel_sdvo
-> *sdvo) else
->  		pin = GMBUS_PIN_DPB;
->  
-> -	drm_dbg_kms(&dev_priv->drm, "[ENCODER:%d:%s] I2C pin %d,
-> slave addr 0x%x\n",
-> +	drm_dbg_kms(&dev_priv->drm, "[ENCODER:%d:%s] I2C pin %d,
-> target addr 0x%x\n", sdvo->base.base.base.id, sdvo->base.base.name,
-> -		    pin, sdvo->slave_addr);
-> +		    pin, sdvo->target_addr);
->  
->  	sdvo->i2c = intel_gmbus_get_adapter(dev_priv, pin);
->  
-> @@ -2687,7 +2687,7 @@ intel_sdvo_is_hdmi_connector(struct intel_sdvo
-> *intel_sdvo) }
->  
->  static u8
-> -intel_sdvo_get_slave_addr(struct intel_sdvo *sdvo)
-> +intel_sdvo_get_target_addr(struct intel_sdvo *sdvo)
->  {
->  	struct drm_i915_private *dev_priv =
-> to_i915(sdvo->base.base.dev); const struct sdvo_device_mapping
-> *my_mapping, *other_mapping; @@ -2701,15 +2701,15 @@
-> intel_sdvo_get_slave_addr(struct intel_sdvo *sdvo) }
->  
->  	/* If the BIOS described our SDVO device, take advantage of
-> it. */
-> -	if (my_mapping->slave_addr)
-> -		return my_mapping->slave_addr;
-> +	if (my_mapping->target_addr)
-> +		return my_mapping->target_addr;
->  
->  	/*
->  	 * If the BIOS only described a different SDVO device, use
-> the
->  	 * address that it isn't using.
->  	 */
-> -	if (other_mapping->slave_addr) {
-> -		if (other_mapping->slave_addr == 0x70)
-> +	if (other_mapping->target_addr) {
-> +		if (other_mapping->target_addr == 0x70)
->  			return 0x72;
->  		else
->  			return 0x70;
-> @@ -3412,7 +3412,7 @@ bool intel_sdvo_init(struct drm_i915_private
-> *dev_priv, "SDVO %c", port_name(port));
->  
->  	intel_sdvo->sdvo_reg = sdvo_reg;
-> -	intel_sdvo->slave_addr =
-> intel_sdvo_get_slave_addr(intel_sdvo) >> 1;
-> +	intel_sdvo->target_addr =
-> intel_sdvo_get_target_addr(intel_sdvo) >> 1; 
->  	intel_sdvo_select_i2c_bus(intel_sdvo);
->  
-> diff --git a/drivers/gpu/drm/i915/display/intel_vbt_defs.h
-> b/drivers/gpu/drm/i915/display/intel_vbt_defs.h index
-> a9f44abfc9fc..c0d5aae980a8 100644 ---
-> a/drivers/gpu/drm/i915/display/intel_vbt_defs.h +++
-> b/drivers/gpu/drm/i915/display/intel_vbt_defs.h @@ -432,7 +432,7 @@
-> struct child_device_config { u16 addin_offset;
->  	u8 dvo_port; /* See DEVICE_PORT_* and DVO_PORT_* above */
->  	u8 i2c_pin;
-> -	u8 slave_addr;
-> +	u8 target_addr;
->  	u8 ddc_pin;
->  	u16 edid_ptr;
->  	u8 dvo_cfg; /* See DEVICE_CFG_* above */
-> @@ -441,7 +441,7 @@ struct child_device_config {
->  		struct {
->  			u8 dvo2_port;
->  			u8 i2c2_pin;
-> -			u8 slave2_addr;
-> +			u8 target2_addr;
->  			u8 ddc2_pin;
->  		} __packed;
->  		struct {
-> diff --git a/drivers/gpu/drm/i915/gvt/edid.c
-> b/drivers/gpu/drm/i915/gvt/edid.c index af9afdb53c7f..c022dc736045
-> 100644 --- a/drivers/gpu/drm/i915/gvt/edid.c
-> +++ b/drivers/gpu/drm/i915/gvt/edid.c
-> @@ -42,8 +42,8 @@
->  #define GMBUS1_TOTAL_BYTES_MASK 0x1ff
->  #define gmbus1_total_byte_count(v) (((v) >> \
->  	GMBUS1_TOTAL_BYTES_SHIFT) & GMBUS1_TOTAL_BYTES_MASK)
-> -#define gmbus1_slave_addr(v) (((v) & 0xff) >> 1)
-> -#define gmbus1_slave_index(v) (((v) >> 8) & 0xff)
-> +#define gmbus1_target_addr(v) (((v) & 0xff) >> 1)
-> +#define gmbus1_target_index(v) (((v) >> 8) & 0xff)
->  #define gmbus1_bus_cycle(v) (((v) >> 25) & 0x7)
->  
->  /* GMBUS0 bits definitions */
-> @@ -54,7 +54,7 @@ static unsigned char edid_get_byte(struct
-> intel_vgpu *vgpu) struct intel_vgpu_i2c_edid *edid =
-> &vgpu->display.i2c_edid; unsigned char chr = 0;
->  
-> -	if (edid->state == I2C_NOT_SPECIFIED ||
-> !edid->slave_selected) {
-> +	if (edid->state == I2C_NOT_SPECIFIED ||
-> !edid->target_selected) { gvt_vgpu_err("Driver tries to read EDID
-> without proper sequence!\n"); return 0;
->  	}
-> @@ -179,7 +179,7 @@ static int gmbus1_mmio_write(struct intel_vgpu
-> *vgpu, unsigned int offset, void *p_data, unsigned int bytes)
->  {
->  	struct intel_vgpu_i2c_edid *i2c_edid =
-> &vgpu->display.i2c_edid;
-> -	u32 slave_addr;
-> +	u32 target_addr;
->  	u32 wvalue = *(u32 *)p_data;
->  
->  	if (vgpu_vreg(vgpu, offset) & GMBUS_SW_CLR_INT) {
-> @@ -210,21 +210,21 @@ static int gmbus1_mmio_write(struct intel_vgpu
-> *vgpu, unsigned int offset, 
->  		i2c_edid->gmbus.total_byte_count =
->  			gmbus1_total_byte_count(wvalue);
-> -		slave_addr = gmbus1_slave_addr(wvalue);
-> +		target_addr = gmbus1_target_addr(wvalue);
->  
->  		/* vgpu gmbus only support EDID */
-> -		if (slave_addr == EDID_ADDR) {
-> -			i2c_edid->slave_selected = true;
-> -		} else if (slave_addr != 0) {
-> +		if (target_addr == EDID_ADDR) {
-> +			i2c_edid->target_selected = true;
-> +		} else if (target_addr != 0) {
->  			gvt_dbg_dpy(
-> -				"vgpu%d: unsupported gmbus slave
-> addr(0x%x)\n"
-> +				"vgpu%d: unsupported gmbus target
-> addr(0x%x)\n" "	gmbus operations will be ignored.\n",
-> -					vgpu->id, slave_addr);
-> +					vgpu->id, target_addr);
->  		}
->  
->  		if (wvalue & GMBUS_CYCLE_INDEX)
->  			i2c_edid->current_edid_read =
-> -				gmbus1_slave_index(wvalue);
-> +				gmbus1_target_index(wvalue);
->  
->  		i2c_edid->gmbus.cycle_type =
-> gmbus1_bus_cycle(wvalue); switch (gmbus1_bus_cycle(wvalue)) {
-> @@ -523,7 +523,7 @@ void intel_gvt_i2c_handle_aux_ch_write(struct
-> intel_vgpu *vgpu, } else if (addr == EDID_ADDR) {
->  				i2c_edid->state = I2C_AUX_CH;
->  				i2c_edid->port = port_idx;
-> -				i2c_edid->slave_selected = true;
-> +				i2c_edid->target_selected = true;
->  				if
-> (intel_vgpu_has_monitor_on_port(vgpu, port_idx) &&
->  					intel_vgpu_port_is_dp(vgpu,
-> port_idx)) @@ -542,7 +542,7 @@ void
-> intel_gvt_i2c_handle_aux_ch_write(struct intel_vgpu *vgpu, return;
->  		if (drm_WARN_ON(&i915->drm, msg_length != 4))
->  			return;
-> -		if (i2c_edid->edid_available &&
-> i2c_edid->slave_selected) {
-> +		if (i2c_edid->edid_available &&
-> i2c_edid->target_selected) { unsigned char val = edid_get_byte(vgpu);
->  
->  			aux_data_for_write = (val << 16);
-> @@ -571,7 +571,7 @@ void intel_vgpu_init_i2c_edid(struct intel_vgpu
-> *vgpu) edid->state = I2C_NOT_SPECIFIED;
->  
->  	edid->port = -1;
-> -	edid->slave_selected = false;
-> +	edid->target_selected = false;
->  	edid->edid_available = false;
->  	edid->current_edid_read = 0;
->  
-> diff --git a/drivers/gpu/drm/i915/gvt/edid.h
-> b/drivers/gpu/drm/i915/gvt/edid.h index dfe0cbc6aad8..c3b5a55aecb3
-> 100644 --- a/drivers/gpu/drm/i915/gvt/edid.h
-> +++ b/drivers/gpu/drm/i915/gvt/edid.h
-> @@ -80,7 +80,7 @@ enum gmbus_cycle_type {
->   *      R/W Protect
->   *      Command and Status.
->   *      bit0 is the direction bit: 1 is read; 0 is write.
-> - *      bit1 - bit7 is slave 7-bit address.
-> + *      bit1 - bit7 is target 7-bit address.
->   *      bit16 - bit24 total byte count (ignore?)
->   *
->   * GMBUS2:
-> @@ -130,7 +130,7 @@ struct intel_vgpu_i2c_edid {
->  	enum i2c_state state;
->  
->  	unsigned int port;
-> -	bool slave_selected;
-> +	bool target_selected;
->  	bool edid_available;
->  	unsigned int current_edid_read;
->  
-> diff --git a/drivers/gpu/drm/i915/gvt/opregion.c
-> b/drivers/gpu/drm/i915/gvt/opregion.c index
-> d2bed466540a..908f910420c2 100644 ---
-> a/drivers/gpu/drm/i915/gvt/opregion.c +++
-> b/drivers/gpu/drm/i915/gvt/opregion.c @@ -86,7 +86,7 @@ struct
-> efp_child_device_config { u8 skip2;
->  	u8 dvo_port;
->  	u8 i2c_pin; /* for add-in card */
-> -	u8 slave_addr; /* for add-in card */
-> +	u8 target_addr; /* for add-in card */
->  	u8 ddc_pin;
->  	u16 edid_ptr;
->  	u8 dvo_config;
+> Please don't encourage reverting any mainstream patches to avoid
+> investigating a (probably) faulty driver. This is not how the
+> community should work.
 
+I only skimmed the thread and this is not my area of expertise, so
+correct me if I'm wrong anywhere here:
+
+But from what I see I tend to disagree: the patch mentioned in the
+subject apparently regressed something. This afaics was reported 16
+weeks ago during the 6.7 cycle[1]. Due to how we apply the "no
+regressions" rule[2] the change causing this ideally should have been
+reverted before 6.8 was release -- it does not matter that it just
+exposed an existing problem rooted somewhere else. That revert did not
+happen. Then even a few more weeks went by and this is still not fixed.
+Then I'd guess reverting this might be the right course of action to
+motivate someone to fix the exposed problem. Unless of course we know or
+fear that a revert causes regressions for users of 6.8.y -- is that the
+case?
+
+[1] https://lore.kernel.org/all/ZaQS5x-XK08Jre6I@smile.fi.intel.com/
+
+[2] https://docs.kernel.org/process/handling-regressions.html
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+> Also, I'm a bit wondering: the patch has been in the mainline for
+> some time, and we haven't had any issues except this one, which is
+> due to the wrong behavior of the UDC driver.
+>>
+>>> Additionally, please check if you have any customized DWC patches that may be causing this problem.
+>>>
+>>>>> You may recall the whole issue did not occur before this patch got applied.
+>>>>>
+>>>>>>>>> According to current kernel architecture of u_ether driver, only
+>>>>>>>>> gether_cleanup should remove the usb0 interface along with its
+>>>>>>>>> kobject and sysfs interface.
+>>>>>>>>> I suggest sharing the analysis here to understand why this practice
+>>>>>>>>> is not followed in your use case or driver ?
+>>>>>>>>
+>>>>>>>> Yes, I'll try to trace where that happens.
+>>>>>>>>
+>>>>>>>> Nevertheless, the disappearance of the net/usb0 directory seems
+>>>>>>>> harmless? But the usb: net device remaining after disconnect or role
+>>>>>>>> switch is not good, as the route remains.
+>>>>>>>>
+>>>>>>>> May be they are 2 separate problems. Could you try to reproduce what
+>>>>>>>> happens if you make eem connection and then unplug?
+>>>>>>>>
+>>>>>>>>> I am curious why the driver was developed without adhering to the
+>>>>>>>>> kernel's gadget architecture.
+>>>>>>>
+>>>>>>> I don't know what you mean here. Which driver do you mean?
+>>>>>>>
+>>>>>>>>>>>>> I have the dwc3 IP base usb controller, Let me check
+>>>>>>>>>>>>> with this patch and
+>>>>>>>>>>>>> share result here.  May be we need some fix in dwc3
+>>>>>>>>>>> Would have been nice if someone could test on other
+>>>>>>>>>>> controller as well. But
+>>>>>>>>>>> another instance of dwc3 is also very welcome.
+>>>>>>>>>>>> It's quite possible, please test on your side.
+>>>>>>>>>>>> We are happy to test any fixes if you come up with.
+>>
+>> -- 
+>> With Best Regards,
+>> Andy Shevchenko
+>>
+>>
 
