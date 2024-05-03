@@ -1,108 +1,100 @@
-Return-Path: <linux-kernel+bounces-167340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A4A8BA82A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:56:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17DA38BA82F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:58:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CAF3B217AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:56:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB5161F2238A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAE5148319;
-	Fri,  3 May 2024 07:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A3F1474CF;
+	Fri,  3 May 2024 07:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="r/XIi942"
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K5JhXjhu"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769C6146A66
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D7B12B89
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714722995; cv=none; b=MkxY2qO+ivke05HkrPG12+5gbaW6Qinsd5HuQZsWriVkNefwEiBIcLNB//QA8ucJZ7DzxOHdBy3cYkvwH0l7sfZbFrFfnyINmP15F1IkNAw2nGhezerBzUVyftNdtkpeQG9AKcOsKpahulD5VFtdgtrAlE503ZNIWq+UttN7hic=
+	t=1714723086; cv=none; b=UVbF0427AQqIYvJc12dM2v/dIYdXgOy+P49/LUIRya/j+Yt62cyBQLOAlG+TGgi5nk4jClfUX+8x8MFqgpK2sQX4uK+AsCACxF2dZ1bqQykHKZA+bUHG8Q5P3ggUb4Pgu4XTzJkvpywS7HJPb+vfIFHBkGmzDiXrrO8a86vs9W0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714722995; c=relaxed/simple;
-	bh=ahhzW9dnhyFxRLPS4I3nFGCbkRfNCSQ4XiAAz1KsG3Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IO9IBIZeRVqGKx+T62queMSSdbTmcrbdcgHNb4S0SNo/HjBazGw43jc0b9DyGBfmlBZRAfMzuIPclSRYFdVeYhMhnbeOy03s1BdQG1BM1uan9VgOa9gj/jbmeIedwe4UNXsorVPiHcBaZsAVqN8SZ+zXEj2PIGvAIbOy0EObQwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=r/XIi942; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1714722991;
-	bh=Xb4uZcBO3ovCjGUGsxkoEGWYJ/aNPwvO8oVcR3qqzIw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r/XIi94277McCWwhdAjYT+0VYIGkuxJC1N9kJtqfpmvQk3+SScslZAbQFACFSYeI6
-	 NB3gIgPmNKbphACVaJRlSjMBDJAzBN2S1KPYM97FuN00hnwsU2cBdRYPxhYOj8QELX
-	 OWR0SM7hphCpZAF+pG4qLmi3kREc6tWjYwwoGmy+AEgVSvWGJ18xPvG6Qyzcp23c0I
-	 u+Ge4fn+FBi0ad4ocsY132MiYDsnz5YfILVXbokV/qmHprZ9GO6zw5S+OantsqnlYs
-	 eaotmD5tKFbm01PNj2OrOhQ/doOad++5HFX1LR0MwtCj3P9Gl1Rc7brRubF70gyGRl
-	 CTixMm84cHeQA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VW36765XRz4x0v;
-	Fri,  3 May 2024 17:56:31 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: <linuxppc-dev@lists.ozlabs.org>
-Cc: <arnd@arndb.de>,
-	naresh.kamboju@linaro.org,
-	<linux-kernel@vger.kernel.org>,
-	<nathan@kernel.org>
-Subject: [PATCH v2 2/2] powerpc/64: Set _IO_BASE to POISON_POINTER_DELTA not 0 for CONFIG_PCI=n
-Date: Fri,  3 May 2024 17:56:19 +1000
-Message-ID: <20240503075619.394467-2-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240503075619.394467-1-mpe@ellerman.id.au>
-References: <20240503075619.394467-1-mpe@ellerman.id.au>
+	s=arc-20240116; t=1714723086; c=relaxed/simple;
+	bh=9lds1dTNJm20KO2gDxu3lgrciPV698y5y+f6AzLSwyE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dzjopa3guE/isZCtgbbg13Ggshaj4yX6uBvqo70oYnex3uM/ZMVdNAlCmGjtc2c6MOB8VDg5AJx+apCL4YIgYFXyXD+hqSx1j6UqaLRlImT7Etv6yPXMdN/pLG77UZd8jqWKyPJ/bRebNXnYbkm8mVdIWMxhibUSoKzg+LoSR7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K5JhXjhu; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-de6074a464aso4849337276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 00:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714723084; x=1715327884; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9lds1dTNJm20KO2gDxu3lgrciPV698y5y+f6AzLSwyE=;
+        b=K5JhXjhucB4znLF+uB/FGtrBnpkQ6Ed1SqK6TBeAL/h9zDvnt3Ht35b5qknF/ut0Lz
+         Egr0k1YMgX4ZyYmbJSeSczilgscglEImgPLM175CZ+on0CiQrtiC95KJRFWRSylzk/bO
+         pMopCT3MEWyq5DbQLX6b6mSfeyqmvUDJsorft1j4otZ18uyCSmvkE3/E0/rxc1i+Y/J4
+         WAPAmcypM76lvsEn0mBU5LyGMS2rYkuJDOE0xevaEOjzEk0rD3/se15RzZMktNWGu+wv
+         lhQKCHW7Uy7DSVBHx7lqWF47lgoQUFP5CCXO5Hr+EI3LhMBozgQLtc36O8HIWmgaM3rX
+         1flw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714723084; x=1715327884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9lds1dTNJm20KO2gDxu3lgrciPV698y5y+f6AzLSwyE=;
+        b=cnB5PHD+EtrsXUZxjUxnO8SdoNA8fvf9BdI0x3npQpXUtc6G8EqJ1Pp1c7QTezJvUY
+         Zk22jXUT24ltwF6Q1HZr6nFjc2xucJM24JzukAHkP9+oaua7EY4IDrvtrGmKrpqtKSM3
+         nFczmIjDAHZM6BenrDVCOhPZCgbaejRs+BvKA/VzDXA+hA/87Naz/VDW26RPWRbswlSR
+         HGJsBPaXb2S+AOl5j1oEvzQHq3STRiQRIfW/Im0lVha2NhUgzfTldQ2SubFhzUhsFXAA
+         fwooI6d8VrbiWdKbgwr3EZLj6A5iXm9KbqIZG28dodKAtzzokUlPVj6QjoCxR3nh5gMX
+         651A==
+X-Forwarded-Encrypted: i=1; AJvYcCV9gAE4ZTq5h5q4B9ei2q0lHC0RTez+jJ3WcUFhvsxOCH5jKBD8HfhR3issK7diHVNxwBpAxKn6B86Q7//jUiOpPPrZa1liOUpdVXca
+X-Gm-Message-State: AOJu0Yxsx4RBjV4fvngiWvlQcKG9iJOT0RmJAXfCoAzUzfE0G/v50obf
+	hyCRA7l4pJ8PeK9vGIQwIjP/b9uZ2dQAOsgcLlwIxIbU8MezhdzKaWc2luszob6KnrC/uK2Qu0a
+	+MdqoQMPlbovgfNNE5lzpkpGvW7dSeakT9KlClw==
+X-Google-Smtp-Source: AGHT+IEG4nOciPICYFkjWxdsB7yxrB7cRVj6SjUMBpSK0kxFtgIH4MKqI3NxijFyX2wkk8IVPl+GECzNHLPUJ6D97IM=
+X-Received: by 2002:a25:cec5:0:b0:de5:6a82:49dd with SMTP id
+ x188-20020a25cec5000000b00de56a8249ddmr2210883ybe.13.1714723083855; Fri, 03
+ May 2024 00:58:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240424185039.1707812-1-opendmb@gmail.com> <20240424185039.1707812-2-opendmb@gmail.com>
+In-Reply-To: <20240424185039.1707812-2-opendmb@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 3 May 2024 09:57:53 +0200
+Message-ID: <CACRpkdZKdnDqDMnWFaZwwVW1BqcOMa8qFiu-aUbQa7UnXFtcnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: gpio: brcmstb: add gpio-ranges
+To: Doug Berger <opendmb@gmail.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Phil Elwell <phil@raspberrypi.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is code that builds with calls to IO accessors even when
-CONFIG_PCI=n, but the actual calls are guarded by runtime checks.
+On Wed, Apr 24, 2024 at 8:51=E2=80=AFPM Doug Berger <opendmb@gmail.com> wro=
+te:
 
-If not those calls would be faulting, because the page at virtual
-address zero is (usually) not mapped into the kernel. As Arnd pointed
-out, it is possible a large port value could cause the address to be
-above mmap_min_addr which would then access userspace, which would be
-a bug.
+> Add optional gpio-ranges device-tree property to the Broadcom
+> Set-Top-Box GPIO controller.
+>
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
 
-To avoid any such issues, set _IO_BASE to POISON_POINTER_DELTA. That
-is a value chosen to point into unmapped space between the kernel and
-userspace, so any access will always fault.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Note that on 32-bit POISON_POINTER_DELTA is 0, so the patch only has an
-effect on 64-bit.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- arch/powerpc/include/asm/io.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-v2: Patch unchanged, changelog updated to reflect patch 1.
-
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index ba2e13bb879d..048e3705af20 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -37,7 +37,7 @@ extern struct pci_dev *isa_bridge_pcidev;
-  * define properly based on the platform
-  */
- #ifndef CONFIG_PCI
--#define _IO_BASE	0
-+#define _IO_BASE	POISON_POINTER_DELTA
- #define _ISA_MEM_BASE	0
- #define PCI_DRAM_OFFSET 0
- #elif defined(CONFIG_PPC32)
--- 
-2.44.0
-
+Yours,
+Linus Walleij
 
