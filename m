@@ -1,185 +1,122 @@
-Return-Path: <linux-kernel+bounces-167852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D268BB03D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:46:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7870D8BB03F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:46:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 472381F2343E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:46:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA48EB22406
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530DD154441;
-	Fri,  3 May 2024 15:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E769D154BF3;
+	Fri,  3 May 2024 15:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bKTYnEB3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="uJgIVgtN"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4622E827
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96DF6FCC
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714751170; cv=none; b=DtYG15z8QKwhV15NY9oUKqz1fhVe6nPlVaofrMaTOQDBZzS6sOctKzyfYivWieb3zqfZKWV7WXYA8pP2acrCLIeb8uev1QiXQiuiU5gp2vlSYuWWtsvjvTwSqSxYjW4IA0In02DV8R08jvWlWhPFvmhmLXaaIsckeJ+ArSWV6G0=
+	t=1714751196; cv=none; b=lnsku3iiUJCp/F9akMc2yjEaVYJE39gzzCxIbKQFDdLGou4ngs8zLP5jt1PR6barNuB9Jqde/rvsl4degEINZv5/MAj6IOvUUiPPley+wdjglPzuPRqu51OxQvASZEOrk9D8gu5QOa3c5gKX2KO67LXDn085+AYaKYO0XL8/1EY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714751170; c=relaxed/simple;
-	bh=6qkIQL5v3S2njbRTTPohfz7nDTUUHJuFC7dc+uHtgaA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rY+eX+X63xTNkEH86V8eAPocnr6HqGJVtFv8ChY1BGj2V+yiZs5BVyyvpFhbnIY+Qw8whRBj0n1cQQ3Ck/gtxUNfSgC/LSJ5wBq/tp574CGlbVOsJ21wHBc08pm++2z7rxJmApibmVVg9kffP20EGr+EVbzFCv+sSWqnlwi7Vq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bKTYnEB3; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714751167; x=1746287167;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6qkIQL5v3S2njbRTTPohfz7nDTUUHJuFC7dc+uHtgaA=;
-  b=bKTYnEB3v+avEaST6PUQp75tRMCB75m7rr53d1vSd81xI2MOxFcgix/q
-   C3HkKSrLVvJ5CknASk1ukWzUKCaPZaAoxepfVVToL8aMAL4ytbx+PmHOr
-   aYXxl7h8yRCZKD+k/t18PzPv51oUfXtI0TuRsBmXpjV6VVtyBdmE/yfLB
-   l/c9FCNTh3v76mdERfVCwjLwFtQHWxuSNkXfBZ8EAO8XrPavb2NTb81Hy
-   fJmTkSeOEc4bR+OLnqrPzYE+PqaKxyPuYUyopOdhfk/qVJh9l/El99LQ2
-   HzqGfWNGnRDzXAJlp6tw9m+cG3jQOFE8I6XEzVJL1RdLHf59coZuQIzmp
-   A==;
-X-CSE-ConnectionGUID: 26ELPrnBRu6PZPvY+WRCkA==
-X-CSE-MsgGUID: Ha/8/z9tSxGzhR3TOI4U/w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="28038407"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="28038407"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:46:07 -0700
-X-CSE-ConnectionGUID: fqWA1A5EQmupe0GZIVoW4A==
-X-CSE-MsgGUID: YaTUMS4MSHC/Y6O07af/sA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="58681897"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:46:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s2v6m-00000003h0l-36ft;
-	Fri, 03 May 2024 18:46:00 +0300
-Date: Fri, 3 May 2024 18:46:00 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-Message-ID: <ZjUGuKGm7IdtwKgg@smile.fi.intel.com>
-References: <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
- <ZiqrLfezhns4UycR@smile.fi.intel.com>
- <b5ffd984-4031-4a8a-adbc-75a1e1dfe765@linux.dev>
- <ZjD8eoO3TmuCUj-a@smile.fi.intel.com>
- <9e69b129-7539-4403-a621-bf3775aab995@linux.dev>
- <ZjNPiBvLF3WcBftn@smile.fi.intel.com>
- <e1d01191-fd96-4b17-b223-7147eb427315@linux.dev>
- <ZjPNU24ZJIzGFDNg@smile.fi.intel.com>
- <a8509e96-bfe2-4c50-8624-8f418c88edfa@linux.dev>
+	s=arc-20240116; t=1714751196; c=relaxed/simple;
+	bh=ZbkeRSrkCPNwDcLhX1qJ1sjDEzYFshDiprBjhPwS3Lw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=CxgGnUFD2s9bKTSjzPXY/sQ8BjvDIg7PeFdgBx0jGfFIxc77lkb4XCj3KA5ws/56ni6MwJ+8nm4D/Jafo6H1GORzLycCA3xyR88QuT/wj0U770BvOZDQ1xpv6rPvkfeK1DBp2vnGeh7f6MRDT/YAI34/9jtWuCifIPqsnFL3jYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=uJgIVgtN; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-43c5c5496a3so19347991cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 08:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714751193; x=1715355993; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DD3fGBfG9/zPLRqWphhAvLBiOO/6wCBUgxf5dozP1a8=;
+        b=uJgIVgtNU1GTc3ydKfGZuINqMF6LvaqfNZb2a+xn/P3kFf7WZNGz5Cnbi/J88oC4h0
+         FvHtdJf4zVGwYKfSmAlWDqOYAhpga7XliewbAddRvavO9+QqS8RmvSMgPgl5r1DxBFU+
+         OVlJx72xcmJOvxWof6/UFHW0XJRALm9HZMB4aAraqjns2g+bFqDZoKWZxOVYmyRUJWLI
+         +hvg2LhIdBA4WJfHqmQ2GT6QA6gGTqMP7f1gecV2lCymKRwsMKK31TVOFhEVbjWBUeQs
+         Ep7qxttAZhqCDOHW1gL7bPoe4Eva7s+SkFs7I79wNz3rTADF913qB9PBCYsQupovy64c
+         pAEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714751193; x=1715355993;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DD3fGBfG9/zPLRqWphhAvLBiOO/6wCBUgxf5dozP1a8=;
+        b=nA5V0vono1xOzWwnveqySno35yqGnSjFl9gYfMAABGpD7oUsC5LYy1/0RoZH9+sjSr
+         sT2rqF7exAvW7RvtVCofTY/M3HIwwx/hHTwoDj2qLqkajk0a6zgwB39xf0jhH7RRikfE
+         Qef19kZK0TYae7APnJ2MXl03JtpWc7Su+fo1nyNvwe+otUPDJVabvzN8/5NRGWQaPLT8
+         t8GLEJ2NKdr9OtGjNWVPCabHf/owC2/TIKJcZJvdP2kOpW3CCG7+RmnQRNUUvEzYIhaq
+         yNXog2rc+tSqdtre3DhqZE1Q6RLl2yJ3aBx+mD+ksRZ7b1rdLN06N3e3RZlKy//NSRX4
+         AxyA==
+X-Forwarded-Encrypted: i=1; AJvYcCVQsLhUCjvh2gMOCy4y9pYwuJWhpNuf3rjnK/Q1r/gs6/xhLjwPPTMmNWc2ERzyG/2JOUpGYQ4mmoytn2uhTd4KXy+qHuedKF1N3Ob6
+X-Gm-Message-State: AOJu0YyfFL1HidvRswICiIJ9L1AjNBJz9S5rrHk1/ecPLt5OJaGq7Sjy
+	OCwdu+WycyPu9wSie1HY8uZtSvb+DE2gceGIkwBCbd2hw/QveK0XHxTdYfKVaGwI8mJuPNcSs++
+	vLaA=
+X-Google-Smtp-Source: AGHT+IHvorLKVldcwPuXub3vxQ9aDpAAyxM3M6JDKLRxX/G+y4VOONQbkGOltiMGMq6o1FuWaPwO5Q==
+X-Received: by 2002:ac8:7f01:0:b0:437:87f9:5ad2 with SMTP id f1-20020ac87f01000000b0043787f95ad2mr2820051qtk.45.1714751193620;
+        Fri, 03 May 2024 08:46:33 -0700 (PDT)
+Received: from xanadu (modemcable018.15-162-184.mc.videotron.ca. [184.162.15.18])
+        by smtp.gmail.com with ESMTPSA id dr12-20020a05622a528c00b0043c58b6d941sm1703704qtb.42.2024.05.03.08.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 08:46:33 -0700 (PDT)
+Date: Fri, 3 May 2024 11:46:32 -0400 (EDT)
+From: Nicolas Pitre <npitre@baylibre.com>
+To: Julien Panis <jpanis@baylibre.com>
+cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+    Daniel Lezcano <daniel.lezcano@linaro.org>, 
+    Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+    Matthias Brugger <matthias.bgg@gmail.com>, 
+    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+    linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] thermal/drivers/mediatek/lvts_thermal: Remove unused
+ members from struct lvts_ctrl_data
+In-Reply-To: <20240503-mtk-thermal-lvts-ctrl-idx-fix-v1-1-f605c50ca117@baylibre.com>
+Message-ID: <n7os6420-s4n1-1874-6qs4-409818807pnq@onlyvoer.pbz>
+References: <20240503-mtk-thermal-lvts-ctrl-idx-fix-v1-0-f605c50ca117@baylibre.com> <20240503-mtk-thermal-lvts-ctrl-idx-fix-v1-1-f605c50ca117@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8509e96-bfe2-4c50-8624-8f418c88edfa@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
 
-On Fri, May 03, 2024 at 12:57:33PM +0800, Sui Jingfeng wrote:
-> On 2024/5/3 01:28, Andy Shevchenko wrote:
-> > On Fri, May 03, 2024 at 12:25:17AM +0800, Sui Jingfeng wrote:
-> > > On 2024/5/2 16:32, Andy Shevchenko wrote:
-> > > > On Wed, May 01, 2024 at 12:27:14AM +0800, Sui Jingfeng wrote:
-> > > > > On 2024/4/30 22:13, Andy Shevchenko wrote:
-> > > > > > On Fri, Apr 26, 2024 at 05:13:43AM +0800, Sui Jingfeng wrote:
+On Fri, 3 May 2024, Julien Panis wrote:
 
-..
-
-> > > > > > the former might be subdivided to "is it swnode backed or real fwnode one?"
-> > > > > > 
-> > > > > Yeah,
-> > > > > On non-DT cases, it can be subdivided to swnode backed case and ACPI fwnode backed case.
-> > > > > 
-> > > > >    - For swnode backed case: the device_get_match_data() don't has a implemented backend.
-> > > > >    - For ACPI fwnode backed case: the device_get_match_data() has a implemented backend.
-> > > > > 
-> > > > > But the driver has *neither* software node support
-> > > > True.
-> > > > 
-> > > > > nor ACPI support,
-> > > > Not true.
-> > > Why this is not true? Are you means that the panel-ilitek-ili9341 driver has ACPI support?
-> > That's the idea (as far as I see the copy of the code from tinyDRM),
-> > but broken over the copy'n'paste. This patch rectifies that to be
-> > in align with the original code, which *does* support ACPI.
-> > 
-> > > I'm asking because I don't see struct acpi_device_id related stuff in that source file,
-> > > am I miss something?
-> > Yes, you are. I leave it for you to research.
+> In struct lvts_ctrl_data, num_lvts_sensor and cal_offset[] are not used.
 > 
-> After researching a few hours I still don't understand how does
-> the panel-ilitek-ili9341 driver has the ACPI support and be able
-> to ACPI probed when compiled as module.
+> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+
+Reviewed-by: Nicolas Pitre <npitre@baylibre.com>
+
+
+> ---
+>  drivers/thermal/mediatek/lvts_thermal.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> As far as I know, drivers that has the ACPI support *must* has the
-> .acpi_match_table hooked, so that be able to be probed when the
-> driver is compiled as a module.
-
-No, and this is the thing. Hint: there is a glue code to reuse compatible
-strings from OF, that's why dependency to OF prevents *some* systems from
-being able to use that. But it's easy to fix by enabling OF in the
-configuration, however the ID tables are orthogonal to the environment.
-That's why all those ACPI_PTR() and of_match_ptr() are design mistakes
-that are going to be removed eventually (the work is ongoing, btw,
-as well as killing specific *_device_get_match_data() calls).
-
-> For example, see commit 75a1b44a54bd9 ("spi: tegra210-quad: add acpi support")
-> to get a feel what a SPI device with *real* ACPI support looks like.
-
-If under *real* you assume the allocated _HID in use, yes, that's how it's
-done. But there is the other tricky way of achieving similar effect w/o
-allocating a new / custom ACPI _HID.
-
-Hint: it's all documented in kernel under firmware-guide/acpi/.
-
-> I have double checked the panel-ilitek-ili9341 driver, it doesn't
-> has acpi_match_table hooked, which means that this driver won't
-> even be able probed. And probed as pure SPI device still out of
-> the scope of "correct use of device property APIs". Because SPI
-> device specific method don't belong to the device property API.
-> I don't really know what's we are missing, but we already intend
-> to let it go, thanks.
+> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
+> index 86b2f44355ac..18a796386cd0 100644
+> --- a/drivers/thermal/mediatek/lvts_thermal.c
+> +++ b/drivers/thermal/mediatek/lvts_thermal.c
+> @@ -105,8 +105,6 @@ struct lvts_sensor_data {
+>  
+>  struct lvts_ctrl_data {
+>  	struct lvts_sensor_data lvts_sensor[LVTS_SENSOR_MAX];
+> -	int cal_offset[LVTS_SENSOR_MAX];
+> -	int num_lvts_sensor;
+>  	u8 valid_sensor_mask;
+>  	int offset;
+>  	int mode;
 > 
-> > > > So, slow down and take your time to get into the code and understand how it works.
-> > > > 
-> > > > > so that the rotation property can not get and ili9341_dpi_probe() will fails.
-> > > > > So in total, this is not a 100% correct use of device property APIs.
-> > > > > 
-> > > > > But I'm fine that if you want to leave(ignore) those less frequent use cases temporarily,
-> > > > > there may have programmers want to post patches, to complete the missing in the future.
-> > > > > 
-> > > > > So, there do have some gains on non-DT cases.
-> > > > > 
-> > > > >    - As you make it be able to compiled on X86 with the drm-misc-defconfig.
-> > > > >    - You cleanup the code up (at least patch 2 in this series is no obvious problem).
-> > > > >    - You allow people to modprobe it, and maybe half right and half undefined.
-> > > > > 
-> > > > > But you do helps moving something forward, so congratulations for the wake up.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> -- 
+> 2.37.3
+> 
+> 
 
