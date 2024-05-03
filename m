@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-167990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB948BB1F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 043188BB1F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:54:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25AE7288499
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:54:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B74C72889C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D030815820E;
-	Fri,  3 May 2024 17:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8410158210;
+	Fri,  3 May 2024 17:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZctGSkb/"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w3LHePTe"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DDC158205
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B197B15533D
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714758847; cv=none; b=o+LEm7roQAG1GSdimGaR/5wlOzey3WMP3af/hTwRNe+7jpWKayg+QKDfRHxFTeCJ0LTCJG8uou/kikwwWVy6tXwrhMAVeiwnYNft8Aw22g4ZCelMd77XsLrbjg+yfB0d6JaEPpNcggkHS4EL/4HGnVmb6groeNk2kF5ISQYOaOk=
+	t=1714758886; cv=none; b=SE0nrDXaINB5l1hNZIJnV7S3wSkH0kYE8cqr8pJt2e3B7/TTEQfDDa5Lam9NwCsM5fAjgfUjVLwm2J0FUy/ETrW0WE92BQd0c1Vv0rMQrwweJ1/mPrvNJNdKF5w4WYhjR0Um8Ksaz1c2pEi/reAHxXj21lXXAODxIlvLHcO2NMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714758847; c=relaxed/simple;
-	bh=MmDr3BQCMFU+IxtuacVnHLexHCTvPtzyWCTkicg3BgI=;
+	s=arc-20240116; t=1714758886; c=relaxed/simple;
+	bh=lypo2M4qo87JGtdc3hDkTp3pEo6t7MvTelzTkGrBKlU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=omES7LBbvsZVGEVqqp5QQxK5e6GnKWumFnhNgCPNps7tYSj4KG6OTzDrs2poLbouHmf2bKVYvfCoM5DObze9810q4gEhvjYh6+f/BU41gJjnwjp6lnB/XLRf2NucZzYglc2OK5rB0H8UeZecjW95NtP1064maBXlFayyAxczX1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZctGSkb/; arc=none smtp.client-ip=91.218.175.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=hSLimCFE/VyqAvMgz9B1SUQYRgSvlldwstolbvBPnQXT6FJ/3p5GFzJ5iif6E6Je+28UN9M0rhbxCEtV7ReCJdsbdifgeEohAmXYFtqr7N1xHsj73rLXjMZCPXw9EUyOPTfK0uFkFLSN0Ytm1bVw9vtOS+8IkX5L9S5sKH4ZvtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w3LHePTe; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 3 May 2024 10:53:52 -0700
+Date: Fri, 3 May 2024 10:54:36 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714758840;
+	t=1714758882;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=x0XQCMnsbYkYwtaS+30vq6EUAn0n4Ulc3+8JbTfZjrU=;
-	b=ZctGSkb/BdmDJ3EmsYgUjqlACWFjy+wtUCPB5wpK9c5hQuQEhXvroesiWdCKe01cerZhl4
-	lZc2TSh3k0fCMjFNX3qYzv8AV5+b9Uo1RSM+OJL5ZuEQ1aSTBZwiQmRr7UjKQO5J6VIddu
-	GriUkbStsO1LOxVEf7YwERAckrj4XkM=
+	bh=viaLAewCzGtCTKetlsX4e8AVwuJyrmIUfGHPX1vb/sw=;
+	b=w3LHePTeLz2K9FRYMUNxS0jF0kYOiNeduwQD8+4Y7GA9YHHWJydFV5bJtZBGuhwbEHjcGY
+	NjvQKoPD+odFWT6rzgaNHNzKFO2j5VP/PsjME0UqhJMJEDtZLeAP+Am9BJ9V7/D4A3/68r
+	rJOxx5DkCTOJOpWB87WtS80/G6IA2UA=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: John Hubbard <jhubbard@nvidia.com>
@@ -56,11 +56,11 @@ Cc: Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
 	linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
 	linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
 	llvm@lists.linux.dev
-Subject: Re: [PATCH 1/4] selftests/cgroup: fix clang build failures for abs()
- calls
-Message-ID: <ZjUksIIiiZX_1P06@P9FQF9L96D>
+Subject: Re: [PATCH 2/4] selftests/cgroup: fix clang warnings: uninitialized
+ fd variable
+Message-ID: <ZjUk3JxrKYQ1vgNv@P9FQF9L96D>
 References: <20240503035105.93280-1-jhubbard@nvidia.com>
- <20240503035105.93280-2-jhubbard@nvidia.com>
+ <20240503035105.93280-3-jhubbard@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,35 +69,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240503035105.93280-2-jhubbard@nvidia.com>
+In-Reply-To: <20240503035105.93280-3-jhubbard@nvidia.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 02, 2024 at 08:51:02PM -0700, John Hubbard wrote:
+On Thu, May 02, 2024 at 08:51:03PM -0700, John Hubbard wrote:
 > First of all, in order to build with clang at all, one must first apply
 > Valentin Obst's build fix for LLVM [1]. Once that is done, then when
 > building with clang, via:
 > 
 >     make LLVM=1 -C tools/testing/selftests
 > 
-> ...clang is pickier than gcc, about which version of abs(3) to call,
-> depending on the argument type:
+> ...clang warns about fd being used uninitialized, in
+> test_memcg_reclaim()'s error handling path.
 > 
->    int abs(int j);
->    long labs(long j);
->    long long llabs(long long j);
-> 
-> ...and this is causing both build failures and warnings, when running:
-> 
->     make LLVM=1 -C tools/testing/selftests
-> 
-> Fix this by calling labs() in value_close(), because the arguments are
-> unambiguously "long" type.
+> Fix this by initializing fd to -1.
 > 
 > [1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f9ed7d1c49f@valentinobst.de/
 > 
 > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-
-Thanks!
 
