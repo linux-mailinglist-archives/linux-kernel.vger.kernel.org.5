@@ -1,83 +1,141 @@
-Return-Path: <linux-kernel+bounces-168083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E098BB36F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 998538BB374
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:49:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 859311F22D7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:46:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394A31F24207
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6036412F38E;
-	Fri,  3 May 2024 18:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C09D153803;
+	Fri,  3 May 2024 18:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LZui5+Gb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Q+sjMUO8"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB96D51A;
-	Fri,  3 May 2024 18:46:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A280112F38E
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714761991; cv=none; b=KlbJcVIHleOILW7QydbSryKmfEnk+ziHdlnRI8n5oDgZynZblv6ixBFFXMtH8I2DyYrsAdedakCZXibRtzkgpIvPIIGF4j79qi6N2gjszxKcVz+BdIg2igUxUDw1EYHxvelmhY00zPW1wmyVD6iFn/txlKs30XBp1YmzpxmuwtY=
+	t=1714762156; cv=none; b=EzRVvZtXwDTY1GsayaqisE+dK94BTGZMhy1RmnVXlij/a0Da4e1XuSdzMTEA7C22mDomB6ma/UQQANQSCUYNGKpVsSAUlGTNBL8Gx7qyO0dnOfy7OyqGyoke6RdGJBbnqGkGv+0XqnZNqfDsv2gn4dCDLFkAFH0pH1OCq0GZvNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714761991; c=relaxed/simple;
-	bh=JN/gs0/Qe33+SX0hwKyUGA39LsR6bkgl+VsLQ+TeMBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RcUnq1nvop8SvGbwAcQpOefrw+X/3csXM0sUurNsW7TbRrxTQ4yIqxZT/4P6XYpgXHXIU3oc+P9r38lvjS2o4eydhzdn5NSziTdiTvEmjViXe+f3/0gC6EJPVTjowWzeQxu3jC4jiZVJ21H/x4wx8m7Goet9nB7rJc1GQ6XDagU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LZui5+Gb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C8FEC116B1;
-	Fri,  3 May 2024 18:46:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714761990;
-	bh=JN/gs0/Qe33+SX0hwKyUGA39LsR6bkgl+VsLQ+TeMBM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LZui5+GbD4E6SzA1y3Rj0d+mgSc6mcKRqNsfjUgLa3ya/JUK6skEln68/qwBiLwDn
-	 3WeUeo+tQJXVCHBZzg4ckdRgG3NCDRphrBAcutUFa500Msf+cCUW1AnX2pwf/TnKms
-	 UiKJ5ffQ6xUeO5B3WQzXsPSa0nkfgTHIwA53KRzgFKmQSE8QUolj/t/VwcTibU8Y8r
-	 oWj0kyc436SFTRWdSxxPJms90FmsXG9ihqfHW41Dz2pCyz4r1jkvn1spXw3uu/Fl8W
-	 RbMtXm18PhuVaR7oXgkIAf8mqT1DhOSh0y/JpkQu9Dmm2Uxiu1UeM4tyehKlXXAfut
-	 k9rSGZE4TF6Bg==
-Date: Fri, 3 May 2024 20:46:26 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH v2] i2c: cadence: Avoid fifo clear after start
-Message-ID: <c6knga4tuouxir67pzisf64oxfhcy53utunvxz53sbfg2zxfva@cj3r26sfudzb>
-References: <20240503094208.296834-1-sai.pavan.boddu@amd.com>
+	s=arc-20240116; t=1714762156; c=relaxed/simple;
+	bh=lgWvD3PbcoJjHAvCMG758qd7evw4OjG5rRe4FiYHJto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PPRQ1CF3h+GLfKN3mqSYQ6eNHq3IhGHZaMKDxH2vTrAYy9ypvKiqORgSSdhp6DPZsq1qU8XCKKlNdVSeTipKhYtafzxmgZYrJ0gEH0WkqLP2crfCoTad/fXHbY+Rfi/g5IHGFh+pTmox85sD509OCFQEZSWCkB488BPrPFj7+W4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Q+sjMUO8; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2b360096cc4so11716a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1714762154; x=1715366954; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R6sVd1TZfxbwE7hyL107cZLQAt+SkbJAdkmwm2tiV/I=;
+        b=Q+sjMUO8PZGIDVJ0sjVlnFmWGpW5R5dlmERHPvlPSEgdnsq3kfGv5jMIh8dKmX0s98
+         55l/T8RNk4BIBcXN1q6pKWw6uuYeXpBNbpujDJo0vAGYt5to/QPaEvJY+Pv7CqXPEvSk
+         H5aAdeV+RLRdkTgbzC/57IY46AMqXAIBqIdiYxjm+wgCAkpkOnbuJKGhbJO7MpX/ZqwA
+         KGET9W94fI79Ft8sVoxncNhFUB9S2Fpd+n9iiwwkviVamygQOE2wH34UjJiR/ffuxdQ7
+         lnxJaxwKdS6TrJYHcUk2OFbYTeSKff9lDRGexXPAofquyNDp/z7CHN3IrRXcTC0ybJC+
+         8jEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714762154; x=1715366954;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6sVd1TZfxbwE7hyL107cZLQAt+SkbJAdkmwm2tiV/I=;
+        b=jvTfeTG/b7JV+kWiLEgi+lN6YPymhJANxDQ3iu/alx7quR16gD/VWjiHYdK+HEzekV
+         ZM0D6CgETrbZGrwXbCxoWMGABuyMsAHv5l4ZV7QC+uTvBcvNSxMlWB0vuDSkAY2RvLbE
+         8Yi6lr9nrUKIhuGAvmxXLiCmVWWO12Nh+d5Ymtd8D0FY7pIi25/C9jFrQ+0QYNoYu6yG
+         Q5YH4oBqUii0PFg18k/Bs/ZGlknu//5q+RmPcFT0hUT1Mk8+Ih2uELYWYJRyqm72l1nn
+         002ybwQqusQ8Kv80P7YRye65zgeUtQDcLUoZJhFxEAJDTvJ/QUwsCHZj2HBDjbXiuMKG
+         ceCg==
+X-Forwarded-Encrypted: i=1; AJvYcCU2tTtp1AG0jBPgiTYRXgpTxR+Vqou4l/sNamRdbFeeoZApZq1SHbCsFH6tO0Rl8nGkgTYf5EIFxwnDOkrx1Cg2XxgEBuCB0OA9830v
+X-Gm-Message-State: AOJu0YzjHcMhXxqYTJW7Ln+M7ATPOjcfw3TfuaIftp0HgBryCRMoZWiE
+	ScNjGFSJBZ3IY+bu0tziXymiJ2a0I62J5+ueVLrco/ppHz8/qKcWtPo7se2hopA=
+X-Google-Smtp-Source: AGHT+IG3+qjTWapc+Q+wN/PJnBYud4dggeONIpdmMvZWXIbQyfbY8nF72QViuq38TDN9fCmFOCrwSg==
+X-Received: by 2002:aa7:8617:0:b0:6ea:6f18:887a with SMTP id p23-20020aa78617000000b006ea6f18887amr3538580pfn.1.1714762153806;
+        Fri, 03 May 2024 11:49:13 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id b8-20020a056a000cc800b006f0ba75b6b7sm3374417pfv.208.2024.05.03.11.49.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 11:49:13 -0700 (PDT)
+Message-ID: <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
+Date: Fri, 3 May 2024 12:49:11 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240503094208.296834-1-sai.pavan.boddu@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?] [io-uring?]
+ general protection fault in __ep_remove)
+To: Kees Cook <keescook@chromium.org>,
+ Bui Quang Minh <minhquangbui99@gmail.com>, Al Viro
+ <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+Cc: syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
+ io-uring@vger.kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
+References: <0000000000002d631f0615918f1e@google.com>
+ <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
+ <202405031110.6F47982593@keescook>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <202405031110.6F47982593@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Sai Pavan,
-
-On Fri, May 03, 2024 at 03:12:08PM +0530, Sai Pavan Boddu wrote:
-> The Driver unintentionally programs ctrl reg to clear the fifo, which
-> happens after the start of transaction. Previously, this was not an issue
-> as it involved read-modified-write. However, this issue breaks i2c reads
-> on QEMU, as i2c-read is executed before guest starts programming control
-> register.
+On 5/3/24 12:26 PM, Kees Cook wrote:
+> Thanks for doing this analysis! I suspect at least a start of a fix
+> would be this:
 > 
-> Fixes: ff0cf7bca630 ("i2c: cadence: Remove unnecessary register reads")
-> Signed-off-by: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
-> Acked-by: Michal Simek <michal.simek@amd.com>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 8fe5aa67b167..15e8f74ee0f2 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -267,9 +267,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+>  
+>  		if (events & EPOLLOUT) {
+>  			/* Paired with fput in dma_buf_poll_cb */
+> -			get_file(dmabuf->file);
+> -
+> -			if (!dma_buf_poll_add_cb(resv, true, dcb))
+> +			if (!atomic_long_inc_not_zero(&dmabuf->file) &&
+> +			    !dma_buf_poll_add_cb(resv, true, dcb))
+>  				/* No callback queued, wake up any other waiters */
 
-pushed to i2c/i2c-host-fixes.
+Don't think this is sane at all. I'm assuming you meant:
 
-I will send it for pull request next week as this week is already
-too late and I want to see a few rounds of tests before asking
-Wolfram to take it.
+	atomic_long_inc_not_zero(&dmabuf->file->f_count);
 
-Thanks,
-Andi
+but won't fly as you're not under RCU in the first place. And what
+protects it from being long gone before you attempt this anyway? This is
+sane way to attempt to fix it, it's completely opposite of what sane ref
+handling should look like.
+
+Not sure what the best fix is here, seems like dma-buf should hold an
+actual reference to the file upfront rather than just stash a pointer
+and then later _hope_ that it can just grab a reference. That seems
+pretty horrible, and the real source of the issue.
+
+> Due to this issue I've proposed fixing get_file() to detect pathological states:
+> https://lore.kernel.org/lkml/20240502222252.work.690-kees@kernel.org/
+
+I don't think this would catch this case, as the memory could just be
+garbage at this point.
+
+-- 
+Jens Axboe
+
 
