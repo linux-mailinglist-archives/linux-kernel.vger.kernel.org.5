@@ -1,133 +1,196 @@
-Return-Path: <linux-kernel+bounces-168330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E998BB6D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:01:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1FF28BB6CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:00:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5241F241F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:01:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5151C23AE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA4025915A;
-	Fri,  3 May 2024 22:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D02658AC3;
+	Fri,  3 May 2024 22:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HAzJeiXl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RWlyIXHI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9724C57333
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13629537E9
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714773683; cv=none; b=LKW8X/Md4/JZ9ZcfokOwWR/6qfubntKxcnD5r//BNsXdXf4h9vS8fPApQzBSf57eC4lkm2fWGxcro/UMZ9A1Z0yX4kDzDQygLhzaxfmtEAe7wtZ3/YaCjB71qvnjm3DO5UGpIiK0Po7MTK8S8Q28tSprmU9zDRuwiSrQsSRbP6I=
+	t=1714773619; cv=none; b=CoGw8LJd2W7KR64dPV8PDn5q+5lG1TjGhWeCHPdK5Ph1BrDeMBhRJUPSwmsmlcaMVNFgU8/HS7od6u+HS8PYzYwTd/3PgHzX2Ro+yQf/zyXtXe+W3DT3kMCB4T/nXwLnhg2WMJEl9E+ojo7bGLli/yM/PVz/O6R+1iqlcBLOXH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714773683; c=relaxed/simple;
-	bh=pUxq7jUksP4Q+cMJXZOkqnA/K+QpYMgfwqOUdO4C2e0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D91a+pogRDj+qf+P1OzDMJHhq6N4elx5ELhDYA2v0X9cm2lF450oazHGc1ePDYwgIyisWkz7e2PbA2wgBnDvghv+0rNlCPCr88bigbqXCsrPysU/Q6S4/FjiZEjVmhb/CldQs46LXjC8JFmobzKRDPofbbf+56yUrxQOq3MtR6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HAzJeiXl; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1714773619; c=relaxed/simple;
+	bh=XQiU0er//ycreNecj07YnExhQLfQPkzMxtFyfmDgfLs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=PWMfpV4p0qhGlO5YN95G2T501CN+MQZOcuBa6llOgz3Vf4SJsqFro+1MHYXTn3BjcGQJWrR/QrQ5Nsvvq3oKJl/0yEYck3JjlzY54mU8r9FUtUjGA94lbyVIibd2UZ4LPyDXpE8yACcpfFK6I0pRbOgCevZ63zvUMCZvzGV70CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RWlyIXHI; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714773680;
+	s=mimecast20190719; t=1714773617;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=0sjv9T+egk2i7mbNVwnFuef2h+PLNLCnFrs/sJ5ral0=;
-	b=HAzJeiXlLy2R/Clb4B2WvYd2TcvYdl/reDnVPcmDDNknteMF3Bo7oa63Ili4m8EfGHc4Oq
-	807ZK25bce04BiPt6OBSLtAX1XVROanc6fA6wGia1u7xlIb7jddxcp3aZOptzVZzu+I9sJ
-	ktmX7kax8q9guN73GI7HM5IOpx5y9xQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-451-48_ZKH75MNSAPskrKHvgoA-1; Fri,
- 03 May 2024 18:01:17 -0400
-X-MC-Unique: 48_ZKH75MNSAPskrKHvgoA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 14C713C000B5;
-	Fri,  3 May 2024 22:01:17 +0000 (UTC)
-Received: from llong.com (unknown [10.22.34.156])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 757C340C6CC0;
-	Fri,  3 May 2024 22:01:16 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Vernon Lovejoy <vlovejoy@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] locking/qspinlock: Save qspinlock owner CPU into mcs_spinlock
-Date: Fri,  3 May 2024 17:59:18 -0400
-Message-Id: <20240503215918.639519-1-longman@redhat.com>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qkMTmfCnwe1TLRVSdXDuN09++cK3MORgect0bHY89+U=;
+	b=RWlyIXHIQrssGdyGc/NCLeCyr02EOWsrPfX5ynzv25YDpt2wr5DeWNx8b5CyM2oS4PNHhl
+	9Du/i/TJCweS4s8WDqFXaixD8Nqnt4VAvWEPvs8JjHDDjE14Q2N7HEzc9zV9CWAsieKRqQ
+	oQ4DsU4sNovMv6QurkE0ISeRn/EusB4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-T3diWYVFMf25n9P-27uv2w-1; Fri, 03 May 2024 18:00:15 -0400
+X-MC-Unique: T3diWYVFMf25n9P-27uv2w-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-43478c4884bso1739511cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 15:00:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714773615; x=1715378415;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qkMTmfCnwe1TLRVSdXDuN09++cK3MORgect0bHY89+U=;
+        b=mcIqqrUcLGnTXMr9n6h7EJskmLViXSOl3rAFNVFfrX0/aexA5kOVcfuV+0ILwUAB61
+         Vuu/B391NP1YH6gc0ByX+W4fL5lFUPxdTwu9iGky4FpfzA+/tir3PuSRhXNAI2HBYriF
+         W+tCWUu+WvE7Fx7TpcBkjBqAmTNarmnhjbsk4O6QY9TKNXGlSEKw3Sw/sj4mS2owtP6D
+         PE40HDHJmtojk0sNvlMSSKkOCzmL6uxygAJaXuxR2jD9bUw94Qzun+PVReSXHkx1OkD8
+         pbq0bHmCqAzSAhVRz/JwdnV9beFyjCXVpbN5jPFCjkHnehqc2V/GzrPXCAATWZ4KLlam
+         cq1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUuAYXAPWoeD2u+FfxFGG08VDvW17KCO4StS4fKK8LFmj+sBtXgZJwccWIa9G0YH9vrPEVsgao7n5H6u2/g7oYWYAgqPVMw7SJvK54p
+X-Gm-Message-State: AOJu0Yz/dTNOrDwn938XgorLEm/T3VsoNAVNKh5GMuNZrGE6pm3nl8gx
+	XnMscsTEE66qEh+8+mRp6LrhriNjeBcvCXkSksyP2bNqkLhIZYhR34ZdP1Um18KO4W8DXqOUeh4
+	Qdb1Kiph0zqq/oWHxSGgaEZQZu5xZTQiOly6ok3GNvbveGibiNc7MFadys7vIFA==
+X-Received: by 2002:a05:622a:64a:b0:43a:c04c:e3d3 with SMTP id a10-20020a05622a064a00b0043ac04ce3d3mr4760618qtb.34.1714773615126;
+        Fri, 03 May 2024 15:00:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGtvMvUlssNS/lZYNWfxREqByMmGZElBz+i7SUORBFfOFK20m+exUSKpKGv8DylZ/jEex73aw==
+X-Received: by 2002:a05:622a:64a:b0:43a:c04c:e3d3 with SMTP id a10-20020a05622a064a00b0043ac04ce3d3mr4760547qtb.34.1714773614409;
+        Fri, 03 May 2024 15:00:14 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a800:4b0a:b7a4:5eb9:b8a9:508d])
+        by smtp.gmail.com with ESMTPSA id cb6-20020a05622a1f8600b0043c7d293f9fsm1986488qtb.67.2024.05.03.15.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 15:00:11 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Date: Fri,  3 May 2024 19:00:01 -0300
+Message-ID: <ZjVeYVQm1iU-y7JF@LeoBras>
+X-Mailer: git-send-email 2.45.0
+In-Reply-To: <ZjVXVc2e_V8NiMy3@google.com>
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com> <ZjUwHvyvkM3lj80Q@LeoBras> <ZjVXVc2e_V8NiMy3@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-When examining a contended spinlock in a crash dump, we can trace out the
-list of lock waiter CPUs waiting for the lock by following the linked
-list of mcs_spinlock structures. However, the actual owner of the lock
-is not there making it hard to figure out who the current lock owner is.
+On Fri, May 03, 2024 at 02:29:57PM -0700, Sean Christopherson wrote:
+> On Fri, May 03, 2024, Leonardo Bras wrote:
+> > > KVM can provide that information with much better precision, e.g. KVM
+> > > knows when when it's in the core vCPU run loop.
+> > 
+> > That would not be enough.
+> > I need to present the application/problem to make a point:
+> > 
+> > - There is multiple  isolated physical CPU (nohz_full) on which we want to 
+> >   run KVM_RT vcpus, which will be running a real-time (low latency) task.
+> > - This task should not miss deadlines (RT), so we test the VM to make sure 
+> >   the maximum latency on a long run does not exceed the latency requirement
+> > - This vcpu will run on SCHED_FIFO, but has to run on lower priority than
+> >   rcuc, so we can avoid stalling other cpus.
+> > - There may be some scenarios where the vcpu will go back to userspace
+> >   (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
+> >   this to run other stuff (like rcuc).
+> >
+> > Now, I understand it will cover most of our issues if we have a context 
+> > tracking around the vcpu_run loop, since we can use that to decide not to 
+> > run rcuc on the cpu if the interruption hapenned inside the loop.
+> > 
+> > But IIUC we can have a thread that "just got out of the loop" getting 
+> > interrupted by the timer, and asked to run rcu_core which will be bad for 
+> > latency.
+> > 
+> > I understand that the chance may be statistically low, but happening once 
+> > may be enough to crush the latency numbers.
+> > 
+> > Now, I can't think on a place to put this context trackers in kvm code that 
+> > would avoid the chance of rcuc running improperly, that's why the suggested 
+> > timeout, even though its ugly.
+> > 
+> > About the false-positive, IIUC we could reduce it if we reset the per-cpu 
+> > last_guest_exit on kvm_put.
+> 
+> Which then opens up the window that you're trying to avoid (IRQ arriving just
+> after the vCPU is put, before the CPU exits to userspace).
+> 
+> If you want the "entry to guest is imminent" status to be preserved across an exit
+> to userspace, then it seems liek the flag really should be a property of the task,
+> not a property of the physical CPU.  Similar to how rcu_is_cpu_rrupt_from_idle()
+> detects that an idle task was interrupted, that goal is to detect if a vCPU task
+> was interrupted.
+> 
+> PF_VCPU is already "taken" for similar tracking, but if we want to track "this
+> task will soon enter an extended quiescent state", I don't see any reason to make
+> it specific to vCPU tasks.  Unless the kernel/KVM dynamically manages the flag,
+> which as above will create windows for false negatives, the kernel needs to
+> trust userspace to a certaine extent no matter what.  E.g. even if KVM sets a
+> PF_xxx flag on the first KVM_RUN, nothing would prevent userspace from calling
+> into KVM to get KVM to set the flag, and then doing something else entirely with
+> the task.
+> 
+> So if we're comfortable relying on the 1 second timeout to guard against a
+> misbehaving userspace, IMO we might as well fully rely on that guardrail.  I.e.
+> add a generic PF_xxx flag (or whatever flag location is most appropriate) to let
+> userspace communicate to the kernel that it's a real-time task that spends the
+> overwhelming majority of its time in userspace or guest context, i.e. should be
+> given extra leniency with respect to rcuc if the task happens to be interrupted
+> while it's in kernel context.
+> 
 
-Make it easier to figure out this information by saving the lock owner
-CPU into the mcs_spinlock structure of new MCS lock owner, if available,
-when acquiring the lock in the qspinlock slowpath. We can then follow
-the linked list of mcs_spinlock structures to the end to get an encoded
-CPU number of the lock owner, if set.
 
-This owner information is still not available when the lock is acquired
-directly in the fast path or in the pending code path. There is no easy
-way around that.
+I think I understand what you propose here.
 
-The additional cost to get the current CPU number in the slowpath should
-be minimal as it should be in a hot cacheline.
+But I am not sure what would happen in this case:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/mcs_spinlock.h | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+- RT guest task calls short HLT
+- Host schedule another kernel thread (other task)
+- Timer interruption, rcu_pending will() check the task which is not set 
+  with above flag.
+- rcuc runs, introducing latency
+- Goes back to previous kernel thread, finishes running with rcuc latency
+- Goes back to vcpu thread
 
-diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
-index 85251d8771d9..ac0ed0a8f028 100644
---- a/kernel/locking/mcs_spinlock.h
-+++ b/kernel/locking/mcs_spinlock.h
-@@ -13,11 +13,17 @@
- #ifndef __LINUX_MCS_SPINLOCK_H
- #define __LINUX_MCS_SPINLOCK_H
- 
-+/*
-+ * Save an encoded version of the current MCS lock owner CPU to the
-+ * mcs_spinlock structure of the next lock owner.
-+ */
-+#define MCS_LOCKED	(smp_processor_id() + 1)
-+
- #include <asm/mcs_spinlock.h>
- 
- struct mcs_spinlock {
- 	struct mcs_spinlock *next;
--	int locked; /* 1 if lock acquired */
-+	int locked; /* non-zero if lock acquired */
- 	int count;  /* nesting count, see qspinlock.c */
- };
- 
-@@ -42,7 +48,7 @@ do {									\
-  * unlocking.
-  */
- #define arch_mcs_spin_unlock_contended(l)				\
--	smp_store_release((l), 1)
-+	smp_store_release((l), MCS_LOCKED)
- #endif
- 
- /*
--- 
-2.39.3
+Isn't there any chance that, on an short guest HLT, the latency previously 
+introduced by rcuc preempting another kernel thread gets to introduce a 
+latency to the RT task running in the vcpu?
+
+Thanks!
+Leo
+
+
+
+- 
 
 
