@@ -1,366 +1,301 @@
-Return-Path: <linux-kernel+bounces-167129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005508BA4C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:04:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F8F8BA4CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:10:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEEF1B21BCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:04:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7EB71C21DB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362E7DDD7;
-	Fri,  3 May 2024 01:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1960E556;
+	Fri,  3 May 2024 01:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AnSEQHyT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZuFOdcV1"
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182818F47;
-	Fri,  3 May 2024 01:03:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40361BE6C;
+	Fri,  3 May 2024 01:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714698240; cv=none; b=NUoob3SoqVvLw88VJbcBtpocxJbnmtUri7yGD/QM/M/dNOsH9QktF4vi+4OmITXPU5xSOpAov56C9W278NYHenXGK3y0TeOwpGm4uNPbBTyT8QdnnVlecmq03L/o41CaWg0SjvfH3sATKXiG9NdWShpzL9cQ/CKqL+iv2d8mWZk=
+	t=1714698614; cv=none; b=t1lB63ArvcpvjtutqkSX0DlStxxLP1yK69v1kBuw3w0F8MuRBT4BIZYHAFRfiwbaXH0esXsQJYXtpj1IRgzcgK7V+udqHWWHK/J0ukPxbCpKM5bBsaPU59wogIWz5mNdowSfCQC2QVPcWbCd7vAbzd57mLu5iFAPbhfEvGXwiHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714698240; c=relaxed/simple;
-	bh=FGn9Nc/maQsdZyOrXW+2uXst/XbmpaxL7uMg4iUh4zU=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=Vfqf3ZUMA1kbax+oSQVWz3C9J42pDEuXb8grHz0pyC+mb+zYTtr6GY80ZNXeA0TGgpKC/8PJs4ijIUHen+3XwnQ6wbke+9PNFB2LB+yCGnh9PXqOGPuDl6SzjtPogs6DyGEwuPBaW/H7PLJWJxOMyPo3A3N7vnx4Hir2bEouH3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AnSEQHyT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71828C113CC;
-	Fri,  3 May 2024 01:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714698239;
-	bh=FGn9Nc/maQsdZyOrXW+2uXst/XbmpaxL7uMg4iUh4zU=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=AnSEQHyTTCGHh7q/8NojpB8iXu+pmFD3q8+Qt5iDoSxU44CaD9uP7HES+rqAfHtOj
-	 D+FGPt62oX9GyAGpLUoEwvJcndLS2sn8wqGwAT5A8OOxhsiWCPn5E82SWqQee/z7te
-	 15Fqb7S6RL5Kwyrths1IyL4Vkkmn6ku7y9sRQBf3rEj8AM/jUSOuNgwV8w7iwTS8l8
-	 /wMtvPmyBk0nc3ZGf2onYV3qeNKpRw/0uxJlLZC7N/2JhwAo56BKf/lRnC2TuLyfQY
-	 FDKjH+/W4XsZIPvpdsd/wS3Z9eU4QeifoPxi0bX4KsEtkuTttJFEGvL0SmvlnaeY5Y
-	 OxZQySt3ibrpw==
-Message-ID: <431171223433496db0a85072be5c83ba.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714698614; c=relaxed/simple;
+	bh=bllATCqOkezyCUUmIt1YXRRfWvmtRkwcPpnrWbVJDuc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ibdjP5r9iG72yWga8icD4JZ2/M/gbFJMVks2IuyqqN0EMY6xFEWwj2NmiCbz0BLYzmZwZTd8NDy2zBzRxvBBCgMBDoPRyjDi4gXJ4nwcBVLDmRSiXe9usXK7ZWITfB2NiVbLtT5+5d4rlz3huXGPyanwTv8WB14J+Ntkq8VECH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZuFOdcV1; arc=none smtp.client-ip=209.85.222.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7f17efe79a1so1066773241.2;
+        Thu, 02 May 2024 18:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714698612; x=1715303412; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jcivoYXjhNV3GkTXLRXF43T/wLWOG6MyPhRAIhBIkA4=;
+        b=ZuFOdcV1sh+NfUB2hAmS4ohiYOzxJ9QDvLqDa4bNw42zfv4Ugc4l1qnvoNh/J53/QC
+         gLyysAxli7C4R3ns+dcn4C5tFQ7H4leTaWRuOGEjYmfEhLApgGeePT5Kq0G6qSb91qM0
+         XM+GGKZzHZU51NkujGDOz3DpKZhDsUppaMXFJFoE+ge0u4HTVmcToq28vsi3/zeBinpN
+         vjA1jq9UwHxCdyQGhKswpCDXY3D+hu3WWXSYZPvn273rkNF3P1D99YUAadXaMKNRGUae
+         Oih4iW3+uLDn9fKYF9TDaKX6+T3715LEZplyHe62thOgjDFLZX0nEXWYEqHY/6BMbzty
+         zdzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714698612; x=1715303412;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jcivoYXjhNV3GkTXLRXF43T/wLWOG6MyPhRAIhBIkA4=;
+        b=PPhp1ZD8mmRbG6aDXP0a7mH3g/FpcXPUrIlDbADyk1FSPBiz9L25HhVSeuEgRH/QpJ
+         2b2OS6VKw5+1MYMq/Sd6FY3wbksblViw9Wge/SweYnK6yYSyJdkdhbVU/KGrd7p/0PtD
+         5odomngF86M3atfSuoqFQl36QguIzkvx1XjIFYfrhuDzFZNAsgm1ec3XWmsVaPnw5fA9
+         QIzrRjpukm5WGE3JElSsi62JXanQBlf2H/QQkA4REuc/FvOBAc0+hcfo8DT6MyEZRt8w
+         fFlKPg+vq4UE/tybeu80+RIoY8+IrKkIb/fvuDDIhV6cAO9Pv2vhmFqM8iJbLBljeaLg
+         80ig==
+X-Forwarded-Encrypted: i=1; AJvYcCWSgFpV3upOuH8t2lKD1/ZQXSMxWI0fvSXBZ5gpk0pq9xv7LXwscjwQwceTHfV9cG0iNHtNBCXWuZuvnJVIay+67SDifuDfpCrtEBHMg/3gY163BgImW+ptPIchfpov0HU5zcvpVE2R+8Gc7Q==
+X-Gm-Message-State: AOJu0YxQCfQD5rWoazTkBfm1IALhLbYOkAnWuTQ2W6aOexbwkFL50f6V
+	q7wsZLUq5z340WN+iamDhCAwi3sSIb41IKqkW2Pv2FFk8TcO8uB2NpcG7c+AXr34yKPPYvdEody
+	Y08KrDm+SrHRjPGewwlBzqG2IO1c=
+X-Google-Smtp-Source: AGHT+IGQuUbN3qIwl8Y0J9GY/pX9vDj5/9GMce0s9P+xLlRsaNlRD6am8i0nfaOWGEBADNEEsGR+8lUuXCazrT+nr6U=
+X-Received: by 2002:a05:6122:546:b0:4df:1ef7:ac92 with SMTP id
+ y6-20020a056122054600b004df1ef7ac92mr1457417vko.6.1714698611929; Thu, 02 May
+ 2024 18:10:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CABVgOSk=jGzj55v+YWzOBCsG7Wdk68pyZr0VdAYftybv+5X67A@mail.gmail.com>
-References: <20240422232404.213174-1-sboyd@kernel.org> <20240422232404.213174-6-sboyd@kernel.org> <CABVgOSk=jGzj55v+YWzOBCsG7Wdk68pyZr0VdAYftybv+5X67A@mail.gmail.com>
-Subject: Re: [PATCH v4 05/10] platform: Add test managed platform_device/driver APIs
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Brendan Higgins <brendan.higgins@linux.dev>, Rae Moar <rmoar@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rafael J . Wysocki <rafael@kernel.org>, Rob Herring <robh@kernel.org>, Saravana Kannan <saravanak@google.com>, Daniel Latypov <dlatypov@google.com>, Christian Marangi <ansuelsmth@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Maxime Ripard <maxime@cerno.tech>
-To: David Gow <davidgow@google.com>
-Date: Thu, 02 May 2024 18:03:57 -0700
-User-Agent: alot/0.10
+References: <20240502235603.19290-1-apais@linux.microsoft.com> <202405021743.D06C96516@keescook>
+In-Reply-To: <202405021743.D06C96516@keescook>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 2 May 2024 18:10:00 -0700
+Message-ID: <CAOMdWSLa-dp34aq3RepQABpnGs-TnyQgUxFm--MHVHFuVYTgFg@mail.gmail.com>
+Subject: Re: [PATCH v3] fs/coredump: Enable dynamic configuration of max file
+ note size
+To: Kees Cook <keescook@chromium.org>
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, ebiederm@xmission.com, mcgrof@kernel.org, 
+	j.granados@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 
-Quoting David Gow (2024-05-01 00:55:46)
-> On Tue, 23 Apr 2024 at 07:24, Stephen Boyd <sboyd@kernel.org> wrote:
-> > diff --git a/Documentation/dev-tools/kunit/api/platformdevice.rst b/Doc=
-umentation/dev-tools/kunit/api/platformdevice.rst
-> > new file mode 100644
-> > index 000000000000..b228fb6558c2
-> > --- /dev/null
-> > +++ b/Documentation/dev-tools/kunit/api/platformdevice.rst
-> > @@ -0,0 +1,10 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +Platform Device API
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +The KUnit platform device API is used to test platform devices.
-> > +
-> > +.. kernel-doc:: drivers/base/test/platform_kunit.c
-> > +   :export:
-> > diff --git a/drivers/base/test/Makefile b/drivers/base/test/Makefile
-> > index e321dfc7e922..740aef267fbe 100644
-> > --- a/drivers/base/test/Makefile
-> > +++ b/drivers/base/test/Makefile
-> > @@ -1,8 +1,11 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  obj-$(CONFIG_TEST_ASYNC_DRIVER_PROBE)  +=3D test_async_driver_probe.o
+> > Introduce the capability to dynamically configure the maximum file
+> > note size for ELF core dumps via sysctl. This enhancement removes
+> > the previous static limit of 4MB, allowing system administrators to
+> > adjust the size based on system-specific requirements or constraints.
 > >
-> > +obj-$(CONFIG_KUNIT) +=3D platform_kunit.o
-> > +
->=20
-> Do we want this to be part of the kunit.ko module (and hence,
-> probably, under lib/kunit), or to keep this as a separate module.
-> I'm tempted, personally, to treat this as a part of KUnit, and have it
-> be part of the same module. There are a couple of reasons for this:
-> - It's nice to have CONFIG_KUNIT produce only one module. If we want
-> this to be separate, I'd be tempted to put it behind its own kconfig
-> entry.
-> - The name platform_kunit.ko suggests (to me, at least) that this is
-> the test for platform devices, not the implementation of the helper.
+> > - Remove hardcoded `MAX_FILE_NOTE_SIZE` from `fs/binfmt_elf.c`.
+> > - Define `max_file_note_size` in `fs/coredump.c` with an initial value
+> >   set to 4MB.
+> > - Declare `max_file_note_size` as an external variable in
+> >   `include/linux/coredump.h`.
+> > - Add a new sysctl entry in `kernel/sysctl.c` to manage this setting
+> >   at runtime.
+>
+> The above bullet points should be clear from the patch itself. The
+> commit is really more about rationale and examples (which you have
+> below). I'd remove the bullets.
 
-I was following *_kunit as "helpers" and *_test as the test. Only
-loosely based on the documentation that mentions to use _test or _kunit
-for test files. Maybe it should have _kunit_helpers postfix?
+Sure, I have it modified to:
 
-Following the single module design should I merge the tests for this
-code into kunit-test.c? And do the same sort of thing for clk helpers?
-That sounds like it won't scale very well if everything is in one module.
+fs/coredump: Enable dynamic configuration of max file note size
 
-Shouldn't the wrapper code for subsystems live in those subsystems like
-drm_kunit_helpers.c does? Maybe the struct device kunit wrappers should
-be moved out to drivers/base/? lib/kunit can stay focused on providing
-pure kunit code then.
+    Introduce the capability to dynamically configure the maximum file
+    note size for ELF core dumps via sysctl.
 
->=20
-> I probably can be persuaded otherwise if you've got a strong
-> preference for it to stay as-is, though.
->=20
-> > diff --git a/drivers/base/test/platform_kunit.c b/drivers/base/test/pla=
-tform_kunit.c
-> > new file mode 100644
-> > index 000000000000..54af6db2a6d8
-> > --- /dev/null
-> > +++ b/drivers/base/test/platform_kunit.c
-> > @@ -0,0 +1,174 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Test managed platform driver
-> > + */
-> > +
-> > +#include <linux/device/driver.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#include <kunit/platform_device.h>
-> > +#include <kunit/resource.h>
-> > +
-> > +/**
-> > + * platform_device_alloc_kunit() - Allocate a KUnit test managed platf=
-orm device
-> > + * @test: test context
-> > + * @name: device name of platform device to alloc
-> > + * @id: identifier of platform device to alloc.
-> > + *
-> > + * Allocate a test managed platform device. The device is put when the=
- test completes.
-> > + *
-> > + * Return: Allocated platform device on success, NULL on failure.
-> > + */
-> > +struct platform_device *
-> > +platform_device_alloc_kunit(struct kunit *test, const char *name, int =
-id)
->=20
-> I'd prefer, personally, this be named something like
-> kunit_platform_device_alloc(), to match the existing
-> kunit_device_register() functions.
->=20
->=20
-> > +{
-> > +       struct platform_device *pdev;
-> > +
-> > +       pdev =3D platform_device_alloc(name, id);
-> > +       if (!pdev)
-> > +               return NULL;
-> > +
-> > +       if (kunit_add_action_or_reset(test, (kunit_action_t *)&platform=
-_device_put, pdev))
->=20
-> Alas, casting function pointers to kunit_action_t* breaks CFI. It's
-> worth using a wrapper, which can be created with the
-> KUNIT_DEFINE_ACTION_WRAPPER() macro, e.g.
->=20
-> KUNIT_DEFINE_ACTION_WRAPPER(platform_device_put_wrapper,
-> platform_device_put, struct platform_device *);
+    Why is this being done?
+    We have observed that during a crash when there are more than 65k mmaps
+    in memory, the existing fixed limit on the size of the ELF notes section
+    becomes a bottleneck. The notes section quickly reaches its capacity,
+    leading to incomplete memory segment information in the resulting coredump.
+    This truncation compromises the utility of the coredumps, as crucial
+    information about the memory state at the time of the crash might be
+    omitted.
 
-Thanks. I missed that.
+    This enhancement removes the previous static limit of 4MB, allowing
+    system administrators to adjust the size based on system-specific
+    requirements or constraints.
 
->=20
-> > +               return NULL;
-> > +
-> > +       return pdev;
-> > +}
-> > +EXPORT_SYMBOL_GPL(platform_device_alloc_kunit);
-> > +
-> > +static void platform_device_add_kunit_exit(struct kunit_resource *res)
-> > +{
-> > +       struct platform_device *pdev =3D res->data;
-> > +
-> > +       platform_device_unregister(pdev);
-> > +}
-> > +
-> > +static bool
-> > +platform_device_alloc_kunit_match(struct kunit *test,
-> > +                                 struct kunit_resource *res, void *mat=
-ch_data)
-> > +{
-> > +       struct platform_device *pdev =3D match_data;
-> > +
-> > +       return res->data =3D=3D pdev;
-> > +}
-> > +
-> > +/**
-> > + * platform_device_add_kunit() - Register a KUnit test managed platfor=
-m device
-> > + * @test: test context
-> > + * @pdev: platform device to add
-> > + *
-> > + * Register a test managed platform device. The device is unregistered=
- when the
-> > + * test completes.
-> > + *
-> > + * Return: 0 on success, negative errno on failure.
-> > + */
-> > +int platform_device_add_kunit(struct kunit *test, struct platform_devi=
-ce *pdev)
->=20
-> As above, I'd lean towards naming this kunit_platform_device_add() for
-> consistency with the other KUnit device helpers.
->=20
-> > +{
-> > +       struct kunit_resource *res;
-> > +       int ret;
-> > +
-> > +       ret =3D platform_device_add(pdev);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       res =3D kunit_find_resource(test, platform_device_alloc_kunit_m=
-atch, pdev);
-> > +       if (res) {
-> > +               /*
-> > +                * Transfer the reference count of the platform device =
-if it was
-> > +                * allocated with platform_device_alloc_kunit(). In tha=
-t case,
-> > +                * calling platform_device_put() leads to reference cou=
-nt
-> > +                * underflow because platform_device_unregister() does =
-it for
-> > +                * us and we call platform_device_unregister() from
-> > +                * platform_device_add_kunit_exit().
-> > +                *
-> > +                * Usually callers transfer the refcount from
-> > +                * platform_device_alloc() to platform_device_add() and=
- simply
-> > +                * call platform_device_unregister() when done, but wit=
-h kunit
-> > +                * we have to keep this straight by redirecting the free
-> > +                * routine for the resource.
-> > +                */
-> > +               res->free =3D platform_device_add_kunit_exit;
-> > +               kunit_put_resource(res);
-> > +       } else if (kunit_add_action_or_reset(test,
-> > +                                            (kunit_action_t *)&platfor=
-m_device_unregister,
-> > +                                            pdev)) {
->=20
-> Nit: We don't want to cast directly to kunit_action_t *, as that
-> breaks CFI. Can we use KUNIT_DEFINE_ACTION_WRAPPER()?
->=20
-> > +               return -ENOMEM;
->=20
-> Nit: This is fine, as kunit_add_action_or_reset() only returns 0 or
-> -ENOMEM at the moment, but it could cause problems down the line if we
-> ever want to return a different error. I don't think that's
-> particularly likely, but it might be nicer to properly propagate the
-> error.
+    Eg:
+    $ sysctl -a | grep core_file_note_size_max
+    kernel.core_file_note_size_max = 4194304
+......
+>
+> >
+> > $ sysctl -a | grep core_file_note_size_max
+> > kernel.core_file_note_size_max = 4194304
+> >
+> > $ sysctl -n kernel.core_file_note_size_max
+> > 4194304
+> >
+> > $echo 519304 > /proc/sys/kernel/core_file_note_size_max
+> >
+> > $sysctl -n kernel.core_file_note_size_max
+> > 519304
+> >
+> > Attempting to write beyond the ceiling value of 16MB
+> > $echo 17194304 > /proc/sys/kernel/core_file_note_size_max
+> > bash: echo: write error: Invalid argument
+> >
+> > Why is this being done?
+> > We have observed that during a crash when there are more than 65k mmaps
+> > in memory, the existing fixed limit on the size of the ELF notes section
+> > becomes a bottleneck. The notes section quickly reaches its capacity,
+> > leading to incomplete memory segment information in the resulting coredump.
+> > This truncation compromises the utility of the coredumps, as crucial
+> > information about the memory state at the time of the crash might be
+> > omitted.
+>
+> I'd make this the first paragraph of the commit log. "We have this
+> problem" goes first, then "Here's what we did to deal with it", then you
+> examples. :)
+>
+ Done.
 
-I will propagate the return value.
+> >
+> > Signed-off-by: Vijay Nag <nagvijay@microsoft.com>
+> > Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> >
+> > ---
+> > Chagnes in v3:
+> >    - Fix commit message to reflect the correct sysctl knob [Kees]
+> >    - Add a ceiling for maximum pssible note size(16M) [Allen]
+> >    - Add a pr_warn_once() [Kees]
+> > Changes in v2:
+> >    - Move new sysctl to fs/coredump.c [Luis & Kees]
+> >    - rename max_file_note_size to core_file_note_size_max [kees]
+> >    - Capture "why this is being done?" int he commit message [Luis & Kees]
+> > ---
+> >  fs/binfmt_elf.c          |  8 ++++++--
+> >  fs/coredump.c            | 15 +++++++++++++++
+> >  include/linux/coredump.h |  1 +
+> >  3 files changed, 22 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> > index 5397b552fbeb..5294f8f3a9a8 100644
+> > --- a/fs/binfmt_elf.c
+> > +++ b/fs/binfmt_elf.c
+> > @@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote *note, user_siginfo_t *csigdata,
+> >       fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
+> >  }
+> >
+> > -#define MAX_FILE_NOTE_SIZE (4*1024*1024)
+> >  /*
+> >   * Format of NT_FILE note:
+> >   *
+> > @@ -1592,8 +1591,13 @@ static int fill_files_note(struct memelfnote *note, struct coredump_params *cprm
+> >
+> >       names_ofs = (2 + 3 * count) * sizeof(data[0]);
+> >   alloc:
+> > -     if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
+> > +     /* paranoia check */
+> > +     if (size >= core_file_note_size_max) {
+> > +             pr_warn_once("coredump Note size too large: %u "
+> > +             "(does kernel.core_file_note_size_max sysctl need adjustment?)\n",
+>
+> The string can be on a single line (I think scripts/check_patch.pl will
+> warn about this, as well as the indentation of "size" below...
 
->=20
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(platform_device_add_kunit);
-> > +
-> > +/**
-> > + * platform_driver_register_kunit() - Register a KUnit test managed pl=
-atform driver
-> > + * @test: test context
-> > + * @drv: platform driver to register
-> > + *
-> > + * Register a test managed platform driver. This allows callers to emb=
-ed the
-> > + * @drv in a container structure and use container_of() in the probe f=
-unction
-> > + * to pass information to KUnit tests. It can be assumed that the driv=
-er has
-> > + * probed when this function returns.
-> > + *
-> > + * Example
-> > + *
-> > + * .. code-block:: c
-> > + *
-> > + *     struct kunit_test_context {
-> > + *             struct platform_driver pdrv;
-> > + *             const char *data;
-> > + *     };
-> > + *
-> > + *     static inline struct kunit_test_context *
-> > + *     to_test_context(struct platform_device *pdev)
-> > + *     {
-> > + *             return container_of(to_platform_driver(pdev->dev.driver=
-),
-> > + *                                 struct kunit_test_context,
-> > + *                                 pdrv);
-> > + *     }
-> > + *
-> > + *     static int kunit_platform_driver_probe(struct platform_device *=
-pdev)
-> > + *     {
-> > + *             struct kunit_test_context *ctx;
-> > + *
-> > + *             ctx =3D to_test_context(pdev);
-> > + *             ctx->data =3D "test data";
-> > + *
-> > + *             return 0;
-> > + *     }
-> > + *
-> > + *     static void kunit_platform_driver_test(struct kunit *test)
-> > + *     {
-> > + *             struct kunit_test_context *ctx;
-> > + *
-> > + *             ctx =3D kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-> > + *             KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-> > + *
-> > + *             ctx->pdrv.probe =3D kunit_platform_driver_probe;
-> > + *             ctx->pdrv.driver.name =3D "kunit-platform";
-> > + *             ctx->pdrv.driver.owner =3D THIS_MODULE;
-> > + *
-> > + *             KUNIT_EXPECT_EQ(test, 0, platform_driver_register_kunit=
-(test, &ctx->pdrv));
-> > + *             KUNIT_EXPECT_STREQ(test, ctx->data, "test data");
-> > + *     }
-> > + *
-> > + * Return: 0 on success, negative errno on failure.
-> > + */
-> > +int platform_driver_register_kunit(struct kunit *test,
-> > +                                  struct platform_driver *drv)
->=20
-> As above, I'd prefer kunit_platform_driver_register()
->=20
-> > +{
-> > +       int ret;
-> > +
-> > +       ret =3D platform_driver_register(drv);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /*
-> > +        * Wait for the driver to probe (or at least flush out of the d=
-eferred
-> > +        * workqueue)
-> > +        */
-> > +       wait_for_device_probe();
->=20
-> Personally, I don't mind if this wrapper waits here (even if it makes
-> it less of a 'pure' wrapper), so long as we document it. Can you think
-> of any cases where we explicitly want _not_ to wait in a test?
->=20
+ It does warn, but if I leave it as a single line, there's still a warning:
+WARNING: line length of 135 exceeds 100 columns, which is why I
+split it into multiple lines.
 
-I don't like it because it's not deterministic. The function doesn't
-take any struct device to wait for. I've already written the code to use
-a completion, and it works well enough so I'll just do that. Then we
-don't have to worry if this API goes away, or that it doesn't actually
-determine if the driver has probed the device.
+>
+> > +             size);
+> >               return -EINVAL;
+> > +     }
+> >       size = round_up(size, PAGE_SIZE);
+> >       /*
+> >        * "size" can be 0 here legitimately.
+> > diff --git a/fs/coredump.c b/fs/coredump.c
+> > index be6403b4b14b..ffaed8c1b3b0 100644
+> > --- a/fs/coredump.c
+> > +++ b/fs/coredump.c
+> > @@ -56,10 +56,16 @@
+> >  static bool dump_vma_snapshot(struct coredump_params *cprm);
+> >  static void free_vma_snapshot(struct coredump_params *cprm);
+> >
+> > +#define MAX_FILE_NOTE_SIZE (4*1024*1024)
+> > +/* Define a reasonable max cap */
+> > +#define MAX_ALLOWED_NOTE_SIZE (16*1024*1024)
+>
+> Let's call this CORE_FILE_NOTE_SIZE_DEFAULT and
+> CORE_FILE_NOTE_SIZE_MAX to match the sysctl.
+>
+
+ Sure, will update it in v4.
+
+> > +
+> >  static int core_uses_pid;
+> >  static unsigned int core_pipe_limit;
+> >  static char core_pattern[CORENAME_MAX_SIZE] = "core";
+> >  static int core_name_size = CORENAME_MAX_SIZE;
+> > +unsigned int core_file_note_size_max = MAX_FILE_NOTE_SIZE;
+> > +unsigned int core_file_note_size_allowed = MAX_ALLOWED_NOTE_SIZE;
+>
+> The latter can be static and const.
+>
+> For the note below, perhaps add:
+>
+> static const unsigned int core_file_note_size_min = CORE_FILE_NOTE_SIZE_DEFAULT;
+>
+
+ core_file_note_size_min will be used in fs/binfmt_elf.c at:
+
+    if (size >= core_file_note_size_min) ,
+did you mean
+static const unsigned int core_file_note_size_allowed =
+CORE_FILE_NOTE_SIZE_MAX;??
+> >
+> >  struct core_name {
+> >       char *corename;
+> > @@ -1020,6 +1026,15 @@ static struct ctl_table coredump_sysctls[] = {
+> >               .mode           = 0644,
+> >               .proc_handler   = proc_dointvec,
+> >       },
+> > +     {
+> > +             .procname       = "core_file_note_size_max",
+> > +             .data           = &core_file_note_size_max,
+> > +             .maxlen         = sizeof(unsigned int),
+> > +             .mode           = 0644,
+> > +             .proc_handler   = proc_douintvec_minmax,
+> > +             .extra1         = &core_file_note_size_max,
+>
+> This means you can never shrink it if you raise it from the default.
+> Let's use the core_file_note_size_min above.
+
+Sure, will fix it in v4.
+>
+> > +             .extra2         = &core_file_note_size_allowed,
+> > +     },
+> >  };
+> >
+> >  static int __init init_fs_coredump_sysctls(void)
+> > diff --git a/include/linux/coredump.h b/include/linux/coredump.h
+> > index d3eba4360150..14c057643e7f 100644
+> > --- a/include/linux/coredump.h
+> > +++ b/include/linux/coredump.h
+> > @@ -46,6 +46,7 @@ static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
+> >  #endif
+> >
+> >  #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
+> > +extern unsigned int core_file_note_size_max;
+> >  extern void validate_coredump_safety(void);
+> >  #else
+> >  static inline void validate_coredump_safety(void) {}
+> > --
+> > 2.17.1
+> >
+>
+> I think v4 will be all good to go, assuming no one else pops up. :)
+> Thanks for the changes!
+
+Thank you for the reviews. Will send out v4 soon.
+
+-- 
+       - Allen
 
