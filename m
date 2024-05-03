@@ -1,117 +1,218 @@
-Return-Path: <linux-kernel+bounces-167403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74F788BA912
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:43:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 843CD8BA915
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A67B11C20AA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:43:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117301F219FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226C214F9C4;
-	Fri,  3 May 2024 08:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C68E14F9F2;
+	Fri,  3 May 2024 08:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIt7IELV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MBTX9sZz"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606B214E2CB;
-	Fri,  3 May 2024 08:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DAD14A4C4
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 08:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714725754; cv=none; b=l6kU4aR1HQis4sCaiPdZ1IXK9RVgia0EN2IEwk8hW7SJV5Hv4snq6ZhYlQEJJ0XV8vP7b+GNweDTTmjtZG4Nz+8FH/KVN8cwiRs8RtEw32NHdIDA3VodT1DvHS7vKCo0c4q1nOXbP/k4lWWq2N3ihzdtXSSRdRPj/kY0ZzC31+Y=
+	t=1714725764; cv=none; b=V8oJ3iyWiYVH3c9ScbmKhabEEXOMT4m6RQyvu1Cjc5XMw5Y2fkPeAen0wCnkM8plp8dOoctkl+jilrMu7kFnNYi/IKg4uNyxTwpdjJnKU67cvZHWu7eyLgcO/TMd4PguvlvbSXKGGEUnyIJK0ioa+7r4l1SRVg6Y0Oqtx5eNvxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714725754; c=relaxed/simple;
-	bh=MET1Qlb3RINT8Dmpmt3ZV/bGlWPZcEfr50B9DIeHIIU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Bc0oUQ4VhyHdGFfTPbsfKxmPEOauiYbUCPfLXGeyjpM2E1HKkiGHhkuvttQkGLGbwiCgmJYq8vx0UyWhHazmWZrfYv4DBi7Qp8CpPQ/kbshn5jrNwpYAJwofBeR5fZmPh5FQe3S5LHw6PnPYKutBow5me2wK7I4M6DEONah1FI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JIt7IELV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14B42C116B1;
-	Fri,  3 May 2024 08:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714725753;
-	bh=MET1Qlb3RINT8Dmpmt3ZV/bGlWPZcEfr50B9DIeHIIU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JIt7IELVzP41blGAllJ9i8j/HS//Q/20ZO9vPGBh8jb46CD6lFpzHqh6QbE6VgOY2
-	 rJ0dQ5I+IE0MHPV9U+hn8BD4+lTOpcGpli29Gue6Q+GNcsz3a7uW5wTQIFIANNh+Ih
-	 c90B5GxcJU4Cen1jbpOB4Zq19rfVUU6XKR22jYI1ONTpok0fBVYIjBsIR3QRN0ahOE
-	 EVgqqfIW5tpxj3/tw0fzx3mKx7ybFh3xANShJf3fLXLHHirdNjAi6igogfygNFNiq/
-	 SpV2vQXcG/lvkopazpgf9f7UFEovF26N5XMXxRn63f9Z9ZxfaOK5OjI2Mh6NBcdWM8
-	 01uL84MAgn/gw==
-Date: Fri, 3 May 2024 09:42:25 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Sebastian Fricke
- <sebastian.fricke@collabora.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
- m.szyprowski@samsung.com, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v15 00/16] Add audio support in v4l2 framework
-Message-ID: <20240503094225.47fe4836@sal.lan>
-In-Reply-To: <ZjRCJ2ZcmKOIo7_p@finisterre.sirena.org.uk>
-References: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
-	<20240430082112.jrovosb6lgblgpfg@basti-XPS-13-9310>
-	<ZjEEKyvb02CWz3l4@finisterre.sirena.org.uk>
-	<20240430172752.20ffcd56@sal.lan>
-	<ZjGhPz-bokg6ZbDJ@finisterre.sirena.org.uk>
-	<87sez0k661.wl-tiwai@suse.de>
-	<20240502095956.0a8c5b26@sal.lan>
-	<20240502102643.4ee7f6c2@sal.lan>
-	<ZjRCJ2ZcmKOIo7_p@finisterre.sirena.org.uk>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714725764; c=relaxed/simple;
+	bh=JNcUw8MOjSlYXlUooTzde8EjE/c+ogbldSVJi4xWwZg=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=X5c9fKi9kFjlwO3uiihrxA0y4x3kKt48zQwWGRcHeZZnPla9hwj7i8/6TV2TPtElGjujNSVg9fmJOnjGU6fGgbPJBHDtg5uDqRBhB2cL2Uldl983ASsBeBuqo3Q0tpsu5RQNadxmNf1Xxbgsrtha267s2rc590TQtHkj7O7lwdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MBTX9sZz; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51f2ebbd8a7so1834065e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 01:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714725760; x=1715330560; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mYoRu527Djh8ZG1yR7a+brPHoHQwejy0Kxn14NxRy3M=;
+        b=MBTX9sZzp0epYgU2W3oraFzgo4veYvAOlMGgQd+SfQRXb8zHT2+IxH+7a7+xwzc/2v
+         8PAlW150ZaSjsGZXHKPF0LvvMpTuvKZWuLGMAJw3gqHX5g0duau9RiiUvowUjA7ncVNM
+         y6n+erWImB+AEafDdkdXZaCqpaBngS0rZad+ZI9azThVxAwpWSyuLs+t3ceaHvNKjeRt
+         fQEgsr/c3onVPm3OVZV2+AxBP3eNlDWlte99es27zrZORm5/kt1Gp8e0LQCx8pDr+bCj
+         /mWGKr5YeFLc1rLjMuaZ3b0CUdg3U0XItXdjKTpvEzMqg9FSKHocyZV9E4Jb0kOk3uW2
+         SV/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714725760; x=1715330560;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mYoRu527Djh8ZG1yR7a+brPHoHQwejy0Kxn14NxRy3M=;
+        b=DiXySJXlQ9aRXttoVqbCPwZMKcSrzavkgbkVJbBMLJnSaSCpGHlIw7wMgvu7FE7XYY
+         7uokAFkNRZQoQA4RlnWMmWvMZpsh0xo1wl6xal8nMsMNrSVByrbsB86eeEVXKWr5zHlk
+         0yTyU8aNrVq6ywH1QFL8QryuuEp8yFcWdaZ/rT5MkVAMI7gARPow85odUSoDqKirdksI
+         5W5KzZYfK+Z8fwYkYJ2Ih6+Ac+5/Lyg9X8iwjBVHRnLvGz1U3aqUcLEV1F8oKwO7cKGa
+         3X8zx8JPRURTph4CYcM0xDfa4xbyJH/SAenktAoAriz30PLnuwEe9zlp7hY0Wq+eYZXw
+         E7IA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIt6eXhWtd7TMxodZr+PJo1bIkgYfDGUmXp95O4LhbPh8KDzQcJVVNEX4W+BccuLVtWcR0SuYqiGt39nQUqZu1iNdIQfEJT8BcUULB
+X-Gm-Message-State: AOJu0YzVASk9osdRQtL52Z1pa7NAN5HRihkgapGaFAMg+4esmGVIIvgX
+	TUGPaKqCUEO6cuutiyxR3RN612BHAPQ3lf2o0Nc/DBKh2NLqaNVXyxASPcuWB9g=
+X-Google-Smtp-Source: AGHT+IFjj2VXVI4GYTa+9MVFooqDbutk3qTYh1g2xyD+WgAXrK00lZRLsFkT67EwWybHsADpYViXGg==
+X-Received: by 2002:ac2:5e29:0:b0:51e:15d1:b2d6 with SMTP id o9-20020ac25e29000000b0051e15d1b2d6mr1100584lfg.50.1714725760440;
+        Fri, 03 May 2024 01:42:40 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:cad:2140:e481:a79a:a1d8:3ad2? ([2a01:e0a:cad:2140:e481:a79a:a1d8:3ad2])
+        by smtp.gmail.com with ESMTPSA id s3-20020adfe003000000b0034e8a10039esm177867wrh.10.2024.05.03.01.42.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 01:42:40 -0700 (PDT)
+Message-ID: <bc8523bb-8d51-46c6-a011-7c46bb62acfa@linaro.org>
+Date: Fri, 3 May 2024 10:42:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 1/2] drm/meson: dw-hdmi: power up phy on device init
+To: Jerome Brunet <jbrunet@baylibre.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240426160256.3089978-1-jbrunet@baylibre.com>
+ <20240426160256.3089978-2-jbrunet@baylibre.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240426160256.3089978-2-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Em Fri, 3 May 2024 10:47:19 +0900
-Mark Brown <broonie@kernel.org> escreveu:
-
-> On Thu, May 02, 2024 at 10:26:43AM +0100, Mauro Carvalho Chehab wrote:
-> > Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:  
+On 26/04/2024 18:02, Jerome Brunet wrote:
+> The phy is not in a useful state right after init. It will become useful,
+> including for auxiliary function such as CEC or ARC, after the first mode
+> is set. This is a problem on systems where the display is using another
+> interface like DSI or CVBS.
 > 
-> > > There are still time control associated with it, as audio and video
-> > > needs to be in sync. This is done by controlling the buffers size 
-> > > and could be fine-tuned by checking when the buffer transfer is done.  
+> This change refactor the init and mode change callback to power up the PHY
+> on init and leave only what is necessary for mode changes in the related
+> function. This is enough to fix CEC operation when HDMI display is not
+> enabled.
 > 
-> ...
+> Fixes: 3f68be7d8e96 ("drm/meson: Add support for HDMI encoder and DW-HDMI bridge + PHY")
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>   drivers/gpu/drm/meson/meson_dw_hdmi.c | 51 +++++++++------------------
+>   1 file changed, 17 insertions(+), 34 deletions(-)
 > 
-> > Just complementing: on media, we do this per video buffer (or
-> > per half video buffer). A typical use case on cameras is to have
-> > buffers transferred 30 times per second, if the video was streamed 
-> > at 30 frames per second.   
-> 
-> IIRC some big use case for this hardware was transcoding so there was a
-> desire to just go at whatever rate the hardware could support as there
-> is no interactive user consuming the output as it is generated.
+> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> index 5a9538bc0e26..a83d93078537 100644
+> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> @@ -384,26 +384,6 @@ static int dw_hdmi_phy_init(struct dw_hdmi *hdmi, void *data,
+>   	    dw_hdmi_bus_fmt_is_420(hdmi))
+>   		mode_is_420 = true;
+>   
+> -	/* Enable clocks */
+> -	regmap_update_bits(priv->hhi, HHI_HDMI_CLK_CNTL, 0xffff, 0x100);
+> -
+> -	/* Bring HDMITX MEM output of power down */
+> -	regmap_update_bits(priv->hhi, HHI_MEM_PD_REG0, 0xff << 8, 0);
+> -
+> -	/* Bring out of reset */
+> -	dw_hdmi->data->top_write(dw_hdmi, HDMITX_TOP_SW_RESET,  0);
+> -
+> -	/* Enable internal pixclk, tmds_clk, spdif_clk, i2s_clk, cecclk */
+> -	dw_hdmi_top_write_bits(dw_hdmi, HDMITX_TOP_CLK_CNTL,
+> -			       0x3, 0x3);
+> -
+> -	/* Enable cec_clk and hdcp22_tmdsclk_en */
+> -	dw_hdmi_top_write_bits(dw_hdmi, HDMITX_TOP_CLK_CNTL,
+> -			       0x3 << 4, 0x3 << 4);
+> -
+> -	/* Enable normal output to PHY */
+> -	dw_hdmi->data->top_write(dw_hdmi, HDMITX_TOP_BIST_CNTL, BIT(12));
+> -
+>   	/* TMDS pattern setup */
+>   	if (mode->clock > 340000 && !mode_is_420) {
+>   		dw_hdmi->data->top_write(dw_hdmi, HDMITX_TOP_TMDS_CLK_PTTN_01,
+> @@ -425,20 +405,6 @@ static int dw_hdmi_phy_init(struct dw_hdmi *hdmi, void *data,
+>   	/* Setup PHY parameters */
+>   	meson_hdmi_phy_setup_mode(dw_hdmi, mode, mode_is_420);
+>   
+> -	/* Setup PHY */
+> -	regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
+> -			   0xffff << 16, 0x0390 << 16);
+> -
+> -	/* BIT_INVERT */
+> -	if (dw_hdmi_is_compatible(dw_hdmi, "amlogic,meson-gxl-dw-hdmi") ||
+> -	    dw_hdmi_is_compatible(dw_hdmi, "amlogic,meson-gxm-dw-hdmi") ||
+> -	    dw_hdmi_is_compatible(dw_hdmi, "amlogic,meson-g12a-dw-hdmi"))
+> -		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
+> -				   BIT(17), 0);
+> -	else
+> -		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
+> -				   BIT(17), BIT(17));
+> -
+>   	/* Disable clock, fifo, fifo_wr */
+>   	regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1, 0xf, 0);
+>   
+> @@ -656,6 +622,23 @@ static void meson_dw_hdmi_init(struct meson_dw_hdmi *meson_dw_hdmi)
+>   	meson_dw_hdmi->data->top_write(meson_dw_hdmi,
+>   				       HDMITX_TOP_CLK_CNTL, 0xff);
+>   
+> +	/* Enable normal output to PHY */
+> +	meson_dw_hdmi->data->top_write(meson_dw_hdmi, HDMITX_TOP_BIST_CNTL, BIT(12));
+> +
+> +	/* Setup PHY */
+> +	regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
+> +			   0xffff << 16, 0x0390 << 16);
+> +
+> +	/* BIT_INVERT */
+> +	if (dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxl-dw-hdmi") ||
+> +	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxm-dw-hdmi") ||
+> +	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-g12a-dw-hdmi"))
+> +		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
+> +				   BIT(17), 0);
+> +	else
+> +		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
+> +				   BIT(17), BIT(17));
+> +
+>   	/* Enable HDMI-TX Interrupt */
+>   	meson_dw_hdmi->data->top_write(meson_dw_hdmi, HDMITX_TOP_INTR_STAT_CLR,
+>   				       HDMITX_TOP_INTR_CORE);
 
-Indeed, codecs could be used to just do transcoding, but I would
-expect it to be a border use case. See, as the chipsets implementing 
-codecs are typically the ones used on mobiles, I would expect that
-the major use cases to be to watch audio and video and to participate
-on audio/video conferences.
-
-Going further, the codec API may end supporting not only transcoding
-(which is something that CPU can usually handle without too much
-processing) but also audio processing that may require more 
-complex algorithms - even deep learning ones - like background noise
-removal, echo detection/removal, volume auto-gain, audio enhancement
-and such.
-
-On other words, the typical use cases will either have input
-or output being a physical hardware (microphone or speaker).
-
-> > I would assume that, on an audio/video stream, the audio data
-> > transfer will be programmed to also happen on a regular interval.  
-> 
-> With audio the API is very much "wake userspace every Xms".
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
