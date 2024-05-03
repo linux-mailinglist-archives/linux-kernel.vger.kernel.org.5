@@ -1,108 +1,91 @@
-Return-Path: <linux-kernel+bounces-168114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 030018BB3E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:23:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20AD48BB3F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:24:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B301E284178
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:23:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D00D0285C9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC31158D65;
-	Fri,  3 May 2024 19:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8127214F121;
+	Fri,  3 May 2024 19:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="x3OXucSj";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="egJquNjH"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="gp895mwi"
+Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9251F1586C2;
-	Fri,  3 May 2024 19:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF43C158873;
+	Fri,  3 May 2024 19:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714764209; cv=none; b=ZoXnrQq0pDyqA093M9mp9DXT2/1a/7aXw78DU4qxvCBiwMljoJX10u4+TKpEAjKpYIx5auTN8CYWyM34wCbS5qJ3pSDOqj+3zy3V/keOB84MMu8nojSQazXVLpuESTw7EMjtx7xdUfRYX4o53oUuk71a2WEeHKVugNq6+dJrXSk=
+	t=1714764282; cv=none; b=T1BGUtEfKtPC/Mb99suigfhRrQp45S3eHnvOERDZJnihQtn6R31TeRnin45kRPpISrWUudT3wDNWgS4E9LKOxjqqfZViutCxQsO3STME91rkV6tmbKRFfUsKPAGaC1wb8x6YGGGaaOXz46vzzPvlY6HVFb/0Bkmk4BoG02WMRY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714764209; c=relaxed/simple;
-	bh=fdxlFgTRTET902YIdVAvYcHjayn5OtsB/DYOOVfVLXQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eXSis/sbr9F/wS6D/0NNXJqE/AUtZca1wfVlbgqx0cVKJrA2slZdMrl+DY6JL2R9MnQxBuRWh6xhvoFvNUCPUvS5wJoMCT778LFRxwz0l2FK2NR+8DHwKXArLxEtL7yuuqHfwYnYHy79MM1MtrOzOZ+RC9AqhX2+TiM0yxQNaqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=x3OXucSj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=egJquNjH; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Nam Cao <namcao@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714764207;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+vorNXOmdM0ttzVHsmrotgcJ5HNUuVfx/TFGSwS7Dqc=;
-	b=x3OXucSjFFabheDOKU6WBdJiz+USprJaSXBm9/8KBAsJOyZssUPzW/J1R2fjdN8mq0NKMC
-	npiJmM9F/9Buqmr4+Bir32YMkNV2jT3KEZj2lN1S7Obxyfb2O7yb2ys1eVzpeSCXAyuw9P
-	90TVpPMKIcOGDYGHQTFBnnuO2g11U1ODP4wqBQHevPLLCtLXeamG9omuFbAYhzS+9Y1/as
-	PrAcek9oR1sfv5LrWG4jUhUCMdZ3l9Ef6lWB1kmhAjz5YZvTIDlwTywiO0t68ZdhuWKCtl
-	miHrweDKtyjGtE9fyIt/4IBac09z+X4hFKaWuHYgGysg7cntfoXbBoBkZoUzqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714764207;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+vorNXOmdM0ttzVHsmrotgcJ5HNUuVfx/TFGSwS7Dqc=;
-	b=egJquNjH+SeW0ams1HGH9vOqn6vFQDAJ1fvDYlw4QPJurOUxtMy7nwKjSBTY0C2livlA1E
-	9tAQ0K+qaCJ+4nDQ==
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Yinghai Lu <yinghai@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rajesh Shah <rajesh.shah@intel.com>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Nam Cao <namcao@linutronix.de>
-Subject: [PATCH 4/4] PCI: hotplug: remove TODO notes for sgi_hotplug
-Date: Fri,  3 May 2024 21:23:22 +0200
-Message-Id: <26784ee39fbb3fbd0fe96508158d74419018e6ad.1714762038.git.namcao@linutronix.de>
-In-Reply-To: <cover.1714762038.git.namcao@linutronix.de>
-References: <cover.1714762038.git.namcao@linutronix.de>
+	s=arc-20240116; t=1714764282; c=relaxed/simple;
+	bh=zZ2FUv8UH3f3a2CJtgWcnJhZ/rfuVISsRtOo/kp2UWE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oSApzknRFwrwu129Fy9b3TIVlBQHqKaOjFyZX9sM1iqmLgjjTE9nLd5Z3K87SFU4/MppIAppT3DdWfF7L1o93oeWdal56m+gM9+6O8uX7rWRXww6vSGiIFre5OF/lZXwsl2SvBvJu2LGwziwQc6PoLvFhOWrjGP122nxHgpxxZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=gp895mwi; arc=none smtp.client-ip=80.12.242.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.37] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id 2yWEsvHebHa8W2yWEs2JbH; Fri, 03 May 2024 21:24:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1714764272;
+	bh=Res4pHMGCSsBjpzueSYAGK/V8Lb4XzdEaIsnSoWhc3Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=gp895mwi1U7sT9E0ch/3qTMi7Ne8IJKV2ziOUP9XRPigPLXdmNk9Slzh9jvh3IRS7
+	 njmnc47DhexbOoSUw1fj1nNcgErhvhpmwndH2eOEhgKvd9rn/wHbImhrtZd+ZOUJky
+	 9aE7AUlgEN8jN4SgP9/UFFooe/0hjEk2X+E1VdASxZ6AzBzl5OemDI8obWIt2sOe5w
+	 OrL+NinyAMygQ8/LkRXBlvlXlOaEcO7n9cvGX/ZKqXxjUcMfBLGEgppnJGt2DtHchQ
+	 lcHw67cakEm3PzloyaroS5Rbj+TJ6ft9rMlQNnEhd3XEdNr15Pwz9eN7zWzgYuyBaW
+	 +1B7TrU2VsxUw==
+X-ME-Helo: [192.168.1.37]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 03 May 2024 21:24:32 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <75ae8634-72ad-4c6f-92af-76eaa1d3b1d9@wanadoo.fr>
+Date: Fri, 3 May 2024 21:24:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] io_uring/io-wq: Use set_bit() and test_bit() at
+ worker->flags
+To: Jens Axboe <axboe@kernel.dk>, Breno Leitao <leitao@debian.org>,
+ Pavel Begunkov <asml.silence@gmail.com>
+Cc: leit@meta.com, "open list:IO_URING" <io-uring@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240503173711.2211911-1-leitao@debian.org>
+ <b5f7b99c-053d-4df5-9b2b-aaca48e6f7bd@kernel.dk>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <b5f7b99c-053d-4df5-9b2b-aaca48e6f7bd@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Commit c7532b601e77 ("PCI/hotplug: remove the sgi_hotplug driver")
-deleted the driver.
+Le 03/05/2024 à 20:41, Jens Axboe a écrit :
+> On 5/3/24 11:37 AM, Breno Leitao wrote:
+>> @@ -631,7 +631,8 @@ static int io_wq_worker(void *data)
+>>   	bool exit_mask = false, last_timeout = false;
+>>   	char buf[TASK_COMM_LEN];
+>>   
+>> -	worker->flags |= (IO_WORKER_F_UP | IO_WORKER_F_RUNNING);
+>> +	set_bit(IO_WORKER_F_UP, &worker->flags);
+>> +	set_bit(IO_WORKER_F_RUNNING, &worker->flags);
+> 
+> You could probably just use WRITE_ONCE() here with the mask, as it's
+> setup side.
+> 
 
-Remove the remaining TODO notes as well.
+Or simply:
+    set_mask_bits(&worker->flags, 0, IO_WORKER_F_UP | IO_WORKER_F_RUNNING);
 
-Signed-off-by: Nam Cao <namcao@linutronix.de>
----
- drivers/pci/hotplug/TODO | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/drivers/pci/hotplug/TODO b/drivers/pci/hotplug/TODO
-index f0a1746c3c88..9d428b0ea524 100644
---- a/drivers/pci/hotplug/TODO
-+++ b/drivers/pci/hotplug/TODO
-@@ -49,14 +49,6 @@ ibmphp:
- 
- * Returned code from pci_hp_add_bridge() is not checked.
- 
--sgi_hotplug:
--
--* Several functions access the pci_slot member in struct hotplug_slot even
--  though pci_hotplug.h declares it private.  See sn_hp_destroy() for an
--  example.  Either the pci_slot member should no longer be declared private
--  or sgi_hotplug should store a pointer to it in struct slot.  Probably the
--  former.
--
- shpchp:
- 
- * There is only a single implementation of struct hpc_ops.  Can the struct be
--- 
-2.39.2
-
+CJ
 
