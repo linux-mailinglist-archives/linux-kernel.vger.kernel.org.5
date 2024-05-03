@@ -1,96 +1,241 @@
-Return-Path: <linux-kernel+bounces-167981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103DA8BB1D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:33:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C70D48BB1DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40DCD1C211AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:33:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDD29B20AB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D4A15820C;
-	Fri,  3 May 2024 17:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLeQbgEl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30E61581E4;
+	Fri,  3 May 2024 17:37:18 +0000 (UTC)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9EB158200
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA061EA87;
+	Fri,  3 May 2024 17:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714757586; cv=none; b=Hf965/0VHztGebSM40IQp3jJJvBbRTuGlg1XrD8k1DNKhp7RrFL6RWjXhtGq3mvf46lo9XV2toJcTLa8pZS1/nMCAczmB57S+dArbu4EL3PadyYOtU6Oyixr0fchfm3fnkMvD/foJObe/wcGHmurvYSZ1SRkxEIvtWCciFtQaGA=
+	t=1714757838; cv=none; b=MtAMXTtr9VoICg+go8fnHlqeWobnv9eH1AFBC9E/+5a1iL058VCzPUTdtJseaSLv2uxHzWlyxJWJl4ajdav+PruvhPKQxtqo7LT0L69UY9uXmTVsDnnNge7P3bVHPJHSphvsPKmopP0dbDC+SBf1nFRagFpAEeZZ5BNBz9XXPGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714757586; c=relaxed/simple;
-	bh=ivUf0YHwPrVFlk2SOzJDvBwivlo23YyIa4VrFwPBDEQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XIZL8CDb48ICTZFOvUkPKwciu/vDyUHUVedlesGlYesWsUJkrahHC0Rc6kLE/QQ4Ok7K7gjrklOMlKBOXAMD+WZX/I293XV7RGT+qEtyZtgoBrUs0wk1KRpXq59aXuKVXhnrA+WRvNBEtdIiEuVZYgNNk6TfWeYaDZe+8CgXqDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLeQbgEl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F6BC4AF14;
-	Fri,  3 May 2024 17:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714757586;
-	bh=ivUf0YHwPrVFlk2SOzJDvBwivlo23YyIa4VrFwPBDEQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MLeQbgElhsj2RIOlErTUvVgbZCmql4j0DNrKHvhiGsPlog+1gYqERx0Slyq204o/f
-	 SuYhadOnJViQne0PLgm15gF9VQVMjwWw86B/72S9JXUjoYbVkuPcqOqQ1cp810wAXe
-	 TNfZOSXSt/uQ+qWSupEfCaWL7P4Au7ckSyvqhQ0Y8BdRIvNuJrDfwjNK0wMYGIFt4V
-	 kq3/Fzp24mxcPj2JfVTCjzASM14OegWs2IYjE+SnBof6QD5bmmzcVIsZcxhUxvDy0a
-	 J3Jmw24IIIvaWqLCINLevJjxwKk3bkvCh7LVsHYT0YC1qlMNyPymw993Pv2p1PAMDX
-	 FS5z5rMT5IMow==
-From: Will Deacon <will@kernel.org>
-To: mark.rutland@arm.com,
-	George Guo <dongtai.guo@linux.dev>
-Cc: catalin.marinas@arm.com,
-	kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	ardb@kernel.org,
-	guodongtai@kylinos.cn,
-	jbaron@akamai.com,
-	jpoimboe@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	peterz@infradead.org,
-	rostedt@goodmis.org
-Subject: Re: [PATCH v3 0/1] cleanup arch_static_branch/_jump
-Date: Fri,  3 May 2024 18:32:57 +0100
-Message-Id: <171474219706.3292579.15222046072610530568.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240430085655.2798551-1-dongtai.guo@linux.dev>
-References: <ZiYs3itsmdOmuPq4@FVFF77S0Q05N> <20240430085655.2798551-1-dongtai.guo@linux.dev>
+	s=arc-20240116; t=1714757838; c=relaxed/simple;
+	bh=ffYdlFU2N5khAncz7FuZgYdmuPobYWJIuub4Tfx5sHo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ozhDSE7UvFzpk/N+51j4BZYCgqlvfG+EFS6dWuhiXIL0lJoGk8XSH8kDpPAjU7GW5txj8+eVn/E2CN+1cxNA3M6iKqiFo02zjm/qQ1A1+Ma9h0BD4zFaYoQZe4s3wbkXaYci087FcKab2nHxrA2Uaz/aWIzZKiLP5DDnlVAlGxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a597de5a715so375339466b.2;
+        Fri, 03 May 2024 10:37:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714757835; x=1715362635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oNeVP55/tYBUCC+buHTeImb1VCQfKz88JDpcLuFeZ/o=;
+        b=GgamD9GHYH+/7G27RE62qZr6Ap3baVNTX7KuH9FOzXW9tEOOC6q70S4Zo6ovtdBUkE
+         dWbIUacqk4cbHGAWY99qzXXIO0X1jLV/R6e8sJSKl4xZgPZqTdxwc4cW4qmGWdDrDlQc
+         3XV9jnG2NzdMKZvB+rbAng7d6xWhRE6fH5vikCusHdMdFelVSxxouW3CifrImVk18tpA
+         pvG/3jgRnU8qYtpu54fT4gZRIbouLEHCnoy9Wu29sqNg9SMdf1mfw3lhoqBS75Zy4rg7
+         1HTDwH57+oWjx5jZKvG3ocH2DX/H11J7oQ4+eX1Tw3Qkw6IbaO6lhxsGplsF7WxOJpuA
+         NwLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUcxCIkpD8bvy3BrV3b0I3BnazsgYiLRqm3QDVu+rcKk1DbEoGSe0GSJHQTprUd0C81AfW70vtFo89NiHERDzobKRnTnBdQIqG+/y3VR73bDAWhrZR+UkbYR4fF7q+9Ptx/vGVWCOA=
+X-Gm-Message-State: AOJu0YwSFkbL1MtMet/cOJlecRQqQ/NHARmcyZ+IUeyp392Xt+HoCAte
+	/HsOzP+TE+EBAg+uqYD59J2dz8fFU72JF/j26gKGlp76A5ZXYohQ
+X-Google-Smtp-Source: AGHT+IGxbYhbo2Veue9D5d8wb+mVQIddhXM7E8yN0+5L7O2LS65Hy3dC8giBiuBD49/EIHMSDMVpTQ==
+X-Received: by 2002:a50:9b55:0:b0:572:a123:5ed0 with SMTP id a21-20020a509b55000000b00572a1235ed0mr2039453edj.21.1714757834740;
+        Fri, 03 May 2024 10:37:14 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ec43-20020a0564020d6b00b00572dea90dabsm242515edb.63.2024.05.03.10.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 10:37:14 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>
+Cc: leit@meta.com,
+	io-uring@vger.kernel.org (open list:IO_URING),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] io_uring/io-wq: Use set_bit() and test_bit() at worker->flags
+Date: Fri,  3 May 2024 10:37:11 -0700
+Message-ID: <20240503173711.2211911-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Tue, 30 Apr 2024 16:56:54 +0800, George Guo wrote:
-> I have tried to define macro with key and lable in v3.
-> What do you think on v3 patch?
-> 
-> George Guo (1):
->   arm64: simplify arch_static_branch/_jump function
-> 
-> arch/arm64/include/asm/jump_label.h | 28 +++++++++++++++-------------
->  1 file changed, 15 insertions(+), 13 deletions(-)
-> 
-> [...]
+Utilize set_bit() and test_bit() on worker->flags within io_uring/io-wq
+to address potential data races.
 
-Applied to arm64 (for-next/misc), thanks!
+The structure io_worker->flags may be accessed through parallel data
+paths, leading to concurrency issues. When KCSAN is enabled, it reveals
+data races occurring in io_worker_handle_work and
+io_wq_activate_free_worker functions.
 
-[1/1] arm64: simplify arch_static_branch/_jump function
-      https://git.kernel.org/arm64/c/588de8c6d362
+	 BUG: KCSAN: data-race in io_worker_handle_work / io_wq_activate_free_worker
+	 write to 0xffff8885c4246404 of 4 bytes by task 49071 on cpu 28:
+	 io_worker_handle_work (io_uring/io-wq.c:434 io_uring/io-wq.c:569)
+	 io_wq_worker (io_uring/io-wq.c:?)
+<snip>
 
-Cheers,
+	 read to 0xffff8885c4246404 of 4 bytes by task 49024 on cpu 5:
+	 io_wq_activate_free_worker (io_uring/io-wq.c:? io_uring/io-wq.c:285)
+	 io_wq_enqueue (io_uring/io-wq.c:947)
+	 io_queue_iowq (io_uring/io_uring.c:524)
+	 io_req_task_submit (io_uring/io_uring.c:1511)
+	 io_handle_tw_list (io_uring/io_uring.c:1198)
+
+Line numbers against commit 18daea77cca6 ("Merge tag 'for-linus' of
+git://git.kernel.org/pub/scm/virt/kvm/kvm").
+
+These races involve writes and reads to the same memory location by
+different tasks running on different CPUs. To mitigate this, refactor
+the code to use atomic operations such as set_bit(), test_bit(), and
+clear_bit() instead of basic "and" and "or" operations. This ensures
+thread-safe manipulation of worker flags.
+
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ io_uring/io-wq.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/io_uring/io-wq.c b/io_uring/io-wq.c
+index 522196dfb0ff..6712d70d1f18 100644
+--- a/io_uring/io-wq.c
++++ b/io_uring/io-wq.c
+@@ -44,7 +44,7 @@ enum {
+  */
+ struct io_worker {
+ 	refcount_t ref;
+-	unsigned flags;
++	unsigned long flags;
+ 	struct hlist_nulls_node nulls_node;
+ 	struct list_head all_list;
+ 	struct task_struct *task;
+@@ -165,7 +165,7 @@ static inline struct io_wq_acct *io_work_get_acct(struct io_wq *wq,
+ 
+ static inline struct io_wq_acct *io_wq_get_acct(struct io_worker *worker)
+ {
+-	return io_get_acct(worker->wq, worker->flags & IO_WORKER_F_BOUND);
++	return io_get_acct(worker->wq, test_bit(IO_WORKER_F_BOUND, &worker->flags));
+ }
+ 
+ static void io_worker_ref_put(struct io_wq *wq)
+@@ -225,7 +225,7 @@ static void io_worker_exit(struct io_worker *worker)
+ 	wait_for_completion(&worker->ref_done);
+ 
+ 	raw_spin_lock(&wq->lock);
+-	if (worker->flags & IO_WORKER_F_FREE)
++	if (test_bit(IO_WORKER_F_FREE, &worker->flags))
+ 		hlist_nulls_del_rcu(&worker->nulls_node);
+ 	list_del_rcu(&worker->all_list);
+ 	raw_spin_unlock(&wq->lock);
+@@ -410,7 +410,7 @@ static void io_wq_dec_running(struct io_worker *worker)
+ 	struct io_wq_acct *acct = io_wq_get_acct(worker);
+ 	struct io_wq *wq = worker->wq;
+ 
+-	if (!(worker->flags & IO_WORKER_F_UP))
++	if (!test_bit(IO_WORKER_F_UP, &worker->flags))
+ 		return;
+ 
+ 	if (!atomic_dec_and_test(&acct->nr_running))
+@@ -430,8 +430,8 @@ static void io_wq_dec_running(struct io_worker *worker)
+  */
+ static void __io_worker_busy(struct io_wq *wq, struct io_worker *worker)
+ {
+-	if (worker->flags & IO_WORKER_F_FREE) {
+-		worker->flags &= ~IO_WORKER_F_FREE;
++	if (test_bit(IO_WORKER_F_FREE, &worker->flags)) {
++		clear_bit(IO_WORKER_F_FREE, &worker->flags);
+ 		raw_spin_lock(&wq->lock);
+ 		hlist_nulls_del_init_rcu(&worker->nulls_node);
+ 		raw_spin_unlock(&wq->lock);
+@@ -444,8 +444,8 @@ static void __io_worker_busy(struct io_wq *wq, struct io_worker *worker)
+ static void __io_worker_idle(struct io_wq *wq, struct io_worker *worker)
+ 	__must_hold(wq->lock)
+ {
+-	if (!(worker->flags & IO_WORKER_F_FREE)) {
+-		worker->flags |= IO_WORKER_F_FREE;
++	if (!test_bit(IO_WORKER_F_FREE, &worker->flags)) {
++		set_bit(IO_WORKER_F_FREE, &worker->flags);
+ 		hlist_nulls_add_head_rcu(&worker->nulls_node, &wq->free_list);
+ 	}
+ }
+@@ -631,7 +631,8 @@ static int io_wq_worker(void *data)
+ 	bool exit_mask = false, last_timeout = false;
+ 	char buf[TASK_COMM_LEN];
+ 
+-	worker->flags |= (IO_WORKER_F_UP | IO_WORKER_F_RUNNING);
++	set_bit(IO_WORKER_F_UP, &worker->flags);
++	set_bit(IO_WORKER_F_RUNNING, &worker->flags);
+ 
+ 	snprintf(buf, sizeof(buf), "iou-wrk-%d", wq->task->pid);
+ 	set_task_comm(current, buf);
+@@ -695,11 +696,11 @@ void io_wq_worker_running(struct task_struct *tsk)
+ 
+ 	if (!worker)
+ 		return;
+-	if (!(worker->flags & IO_WORKER_F_UP))
++	if (!test_bit(IO_WORKER_F_UP, &worker->flags))
+ 		return;
+-	if (worker->flags & IO_WORKER_F_RUNNING)
++	if (test_bit(IO_WORKER_F_RUNNING, &worker->flags))
+ 		return;
+-	worker->flags |= IO_WORKER_F_RUNNING;
++	set_bit(IO_WORKER_F_RUNNING, &worker->flags);
+ 	io_wq_inc_running(worker);
+ }
+ 
+@@ -713,12 +714,12 @@ void io_wq_worker_sleeping(struct task_struct *tsk)
+ 
+ 	if (!worker)
+ 		return;
+-	if (!(worker->flags & IO_WORKER_F_UP))
++	if (!test_bit(IO_WORKER_F_UP, &worker->flags))
+ 		return;
+-	if (!(worker->flags & IO_WORKER_F_RUNNING))
++	if (!test_bit(IO_WORKER_F_RUNNING, &worker->flags))
+ 		return;
+ 
+-	worker->flags &= ~IO_WORKER_F_RUNNING;
++	clear_bit(IO_WORKER_F_RUNNING, &worker->flags);
+ 	io_wq_dec_running(worker);
+ }
+ 
+@@ -732,7 +733,7 @@ static void io_init_new_worker(struct io_wq *wq, struct io_worker *worker,
+ 	raw_spin_lock(&wq->lock);
+ 	hlist_nulls_add_head_rcu(&worker->nulls_node, &wq->free_list);
+ 	list_add_tail_rcu(&worker->all_list, &wq->all_list);
+-	worker->flags |= IO_WORKER_F_FREE;
++	set_bit(IO_WORKER_F_FREE, &worker->flags);
+ 	raw_spin_unlock(&wq->lock);
+ 	wake_up_new_task(tsk);
+ }
+@@ -838,7 +839,7 @@ static bool create_io_worker(struct io_wq *wq, int index)
+ 	init_completion(&worker->ref_done);
+ 
+ 	if (index == IO_WQ_ACCT_BOUND)
+-		worker->flags |= IO_WORKER_F_BOUND;
++		set_bit(IO_WORKER_F_BOUND, &worker->flags);
+ 
+ 	tsk = create_io_thread(io_wq_worker, worker, NUMA_NO_NODE);
+ 	if (!IS_ERR(tsk)) {
+@@ -924,8 +925,8 @@ static bool io_wq_work_match_item(struct io_wq_work *work, void *data)
+ void io_wq_enqueue(struct io_wq *wq, struct io_wq_work *work)
+ {
+ 	struct io_wq_acct *acct = io_work_get_acct(wq, work);
++	unsigned long work_flags = work->flags;
+ 	struct io_cb_cancel_data match;
+-	unsigned work_flags = work->flags;
+ 	bool do_create;
+ 
+ 	/*
 -- 
-Will
+2.43.0
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
 
