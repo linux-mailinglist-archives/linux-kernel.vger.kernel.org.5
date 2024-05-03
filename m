@@ -1,117 +1,244 @@
-Return-Path: <linux-kernel+bounces-167133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC6898BA4D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:12:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 889E18BA4D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:13:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22E1B1C21BF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:12:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E250A281F13
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9D2C8E9;
-	Fri,  3 May 2024 01:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="dV3na+13"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8E4DDC0;
+	Fri,  3 May 2024 01:13:30 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271E657C91
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 01:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCA957C91
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 01:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714698753; cv=none; b=qIQb66cT5KYIDzlL8zGpQB4+IGe4ZcI6NVOTKQpCc7u8EMIfCOpwOnXMiUiL4mLaSVLcD4U8abp8YtlTOjEsWGSRutQSfYLQ2Ez2ilveZO6dBD2xjzURI30OQFP8HqZjputJKLzGUXWv6JxhL1yXcSaGUqalaxzX+jI/22CoNus=
+	t=1714698809; cv=none; b=jr/1dNOBx3YSM/Rmg2LCTWKDlfCC6y+b0mMpBXx/XaaMY6mo644zMoYGU7VdJ8KuldJMB3dLDfSo//f/h9kJQOwcSmXErd9585MQJh9YYQySdPLFWU2Dluj4580WbaZL6hFuI7/l/TpyKf5oXuV/waKf+Lnk6gyzC/It/uJ+VEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714698753; c=relaxed/simple;
-	bh=/EHAbUmEnismHqHCnrEdu/RGlnUctWo1thXm7yBHE/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=babYTmaxk9beMFAJ1kbCeiIxd+267aXZObkemQQT6xXOyA8gHkVAjFmm/+qfD8dC3mq7glPWz4Y/u0BcijuNa6o6/Hyk3I0mpqYRvsYYUxqIFbcNtDrh1wkagYvdVY4pbMx/VMU8SEXemVxzZ3mJQcGLkr/GtBjrTKxRrr5koms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=dV3na+13; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a595c61553cso324878366b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 18:12:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714698750; x=1715303550; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0aAvYct7sRTxmrD1qX3Fgt4t7pw7u1PQBkmfH1Ekq6Y=;
-        b=dV3na+13Xtuu4ptqC7o3jt/aAA7zDNQHxBlverXmXDag8iw4AXJWC+Q2xRBUOynWcA
-         K3e18yFC9Aqu+3uUHQ+DPhEW7cYCgky2fkmF9WRelmPyutCeYoeNpJZyBsm2Mta8n3xx
-         E83YXbfARtxQAw1sLN6WAvEpRe17Vn418hykk=
+	s=arc-20240116; t=1714698809; c=relaxed/simple;
+	bh=C5bSRaeRDhdqUn8Eyq97XaM94mB0BRh2hZG55oEnB1c=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BFMWhDdWCMFFYvWFncvv2Kaf+BsFVypMNhfJxbLc+OVS5Q438mAGogL78Bd1cPVljuaXeqm2AFZp2QP62ieQBbvDr/00fUfDphNcP/0qw5mVXqQN4Xkvqy0DVuY8jfnx69GAQC5hGBsQ7PlZL07xS2ieJlpPdO8WaXzK6cw+CNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36b28210f43so86239435ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 18:13:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714698750; x=1715303550;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0aAvYct7sRTxmrD1qX3Fgt4t7pw7u1PQBkmfH1Ekq6Y=;
-        b=Db5BSaOnNa8DtStFGIE3zZhpeN+gW57XiCSi5geRJyA3t07aTNMXFJX6tO4io93MYS
-         UB/CWYLugKLi2+fpDeu2WxFFaabZ0yczhurINMWCKRWBRcXWSGUihuwQFtTO7+DbkCDF
-         f/+MmUlZurF9OUaYdbXjzCTVM2PptPPVdB8JJqKiwJBOP3D9+RHtGk4y7dos+GQz2VUr
-         FkLGJufgNdjHXhIKUVG0OpYzlA1fXsmXC2b2rcXqM8qSEoswSNtSlUYCfU9o/d5pGphs
-         Ws/CgXpEm4ek3tkxFoSclyTRNcKk7vNuuJBWo13at8J4tMLp2OL9D6QI2rcNw41WD7Fi
-         wXKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzShNMz3VTE9iRi1jFTA9ofKX+emjmINlpNPdRuIWLahxJiZa6/FqCDLkAD+SwdPuDTYTdkRrgmJEj92znIkWsCAzCFcGdHopl3fHl
-X-Gm-Message-State: AOJu0YxgwbttWRrkL/EnitSEVaJrJldWDq6f4BVvQezhvseUqWr092v0
-	IpdBBPKh8ANnZdrCkPBQArQCYe3+lupkTtec3RXEdU/GRop2QecGIPvY7mMz/28hlRx9VASZObn
-	8SRhdrw==
-X-Google-Smtp-Source: AGHT+IGU7tFYFwb1eUkm4oWJL2k2BV1Zlc7Q/C6pNJ8pudFLm+KZk/2nPWTRXWEcl39D4aSBd+FRXA==
-X-Received: by 2002:a17:906:fc20:b0:a55:b487:5676 with SMTP id ov32-20020a170906fc2000b00a55b4875676mr574112ejb.72.1714698750369;
-        Thu, 02 May 2024 18:12:30 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id qc11-20020a170906d8ab00b00a51e9b299b9sm1122993ejb.55.2024.05.02.18.12.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 18:12:29 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a55911bff66so1133945866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 18:12:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWyxdWiTyuwTdqGH+zJ1lvZlLC5HHILo1zIKDjd9zhFg6X3zZBcjOhd1LWzLcjQ857rg1SLbIbYxuvvbWE4EmsZIwdLCq4iCr80PRh3
-X-Received: by 2002:a17:906:2553:b0:a58:8d37:a5d2 with SMTP id
- j19-20020a170906255300b00a588d37a5d2mr614192ejb.42.1714698748982; Thu, 02 May
- 2024 18:12:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714698807; x=1715303607;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BI+N+YTIPKWBJA/+tz2ysyW5Rmp7atv30zsEUaJ9g84=;
+        b=rQD2oNSd8M2qXI7D2r64cQWH/DJYPzwjPKkRQjjG6Lw5KAMQxofVCKvyI2VyUqYQzl
+         V4O9kejK8sLXck3liq5oQM0q4Q3kz45L8NOJ+YPplt58+r6f7YkKeEWe39IDaE1R26ZH
+         /u7LQb+vN0FVz3pDAriTDRtIQVCuS5yl6U/TlID1QF5KD1zu6uNsX8zdRuwMH+O9mbRz
+         UyvKHYlkqYbpEIvQJoOm6IagXMfrpOduF/xJGYkaBNK2IAC/RHMpKg4tvjxOkIJ3A4oj
+         okPCv7lbSptSno+EaUgc1R+oq9Z9xmiZr5twlExJPkGqozM4BdujNDO4wibbJqwwtrTN
+         ctoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/xldT3azsqPtlCs/Q96jFL2B54LvmzrefW+49C8EKYKuJ2l2zACHE4tS/dIDThwh6OpVGYAcvRdTodOVZ6Y2QJbxmiLeBbXYut4rE
+X-Gm-Message-State: AOJu0Yw503XLj1eWCAv10eqmODSdbWrKM81P0ibavrXmrLc+AERSx8Im
+	cG5YjuyWAT4PGeXP9/+jn84hw7Urx3KbQChLYrmf6Q0XHDqUr19iMepN2CAa77QMVHlz7hxxhyD
+	aLDgID+7l4iitKImi+zwB6PhcZcdYTvdGDXds30steiues7hmNXFHoG0=
+X-Google-Smtp-Source: AGHT+IES9A1UdTW+vYOe1Fl+a15fG3/lmyS+0i3SjzHTVRmE3Od40m+9ycqSwx0HdNgXwL4D5Cn4pVdB28bl85uaJ0RUW94BQgb0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop> <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop> <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com>
- <b13ab60e-503a-4c11-8a99-0ccccce33c6c@I-love.SAKURA.ne.jp>
- <CAHk-=wi_QBG68QshO1e-xK-jt0ZFsMpZczEJe4nQMu+U7q_7EQ@mail.gmail.com> <5125d9ac-32d5-476d-82cc-b57d4e5d0807@I-love.SAKURA.ne.jp>
-In-Reply-To: <5125d9ac-32d5-476d-82cc-b57d4e5d0807@I-love.SAKURA.ne.jp>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 2 May 2024 18:12:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh33VL0v-fymirrB+i4pyqQoK0==4j2FW0=mLW2B_kpsg@mail.gmail.com>
-Message-ID: <CAHk-=wh33VL0v-fymirrB+i4pyqQoK0==4j2FW0=mLW2B_kpsg@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Marco Elver <elver@google.com>, paulmck@kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>
+X-Received: by 2002:a05:6e02:216a:b0:368:efa4:be00 with SMTP id
+ s10-20020a056e02216a00b00368efa4be00mr46945ilv.3.1714698807390; Thu, 02 May
+ 2024 18:13:27 -0700 (PDT)
+Date: Thu, 02 May 2024 18:13:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004fc49a0617826da3@google.com>
+Subject: [syzbot] [bluetooth?] possible deadlock in mgmt_remove_adv_monitor_complete
+From: syzbot <syzbot+e8651419c44dbc2b8768@syzkaller.appspotmail.com>
+To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 2 May 2024 at 16:54, Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> debugfs (or maybe any filesystems that wraps f_op) caches filp->f_op into
-> private data
+Hello,
 
-That's just for debugfs uses. If you somehow try to do that on a tty,
-you are quite welcome to keep both broken pieces.
+syzbot found the following issue on:
 
-               Linus
+HEAD commit:    245c8e81741b Merge tag 'sched-urgent-2024-04-28' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13442937180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6116da4b97be0ef9
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8651419c44dbc2b8768
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-245c8e81.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2d0aae04fb14/vmlinux-245c8e81.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/352fcab192b7/bzImage-245c8e81.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e8651419c44dbc2b8768@syzkaller.appspotmail.com
+
+read_mapping_page failed!
+diRead: read_metapage failed
+jfs_lookup: iget failed on inum 32
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc5-syzkaller-00370-g245c8e81741b #0 Not tainted
+------------------------------------------------------
+syz-executor.1/7334 is trying to acquire lock:
+ffff888065ad4078 (&hdev->lock){+.+.}-{3:3}, at: mgmt_remove_adv_monitor_complete+0x9e/0x2e0 net/bluetooth/mgmt.c:5438
+
+but task is already holding lock:
+ffff888065ad4970 (&hdev->cmd_sync_work_lock){+.+.}-{3:3}, at: hci_cmd_sync_clear+0x4a/0x100 net/bluetooth/hci_sync.c:591
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&hdev->cmd_sync_work_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+       hci_cmd_sync_lookup_entry net/bluetooth/hci_sync.c:733 [inline]
+       hci_cmd_sync_queue_once net/bluetooth/hci_sync.c:715 [inline]
+       hci_update_passive_scan+0x206/0x380 net/bluetooth/hci_sync.c:3085
+       le_conn_complete_evt+0x1d2/0x1de0 net/bluetooth/hci_event.c:5911
+       hci_le_conn_complete_evt+0x23c/0x370 net/bluetooth/hci_event.c:5922
+       hci_le_meta_evt+0x2e2/0x5d0 net/bluetooth/hci_event.c:7231
+       hci_event_func net/bluetooth/hci_event.c:7542 [inline]
+       hci_event_packet+0x664/0x1190 net/bluetooth/hci_event.c:7597
+       hci_rx_work+0x2c4/0x1610 net/bluetooth/hci_core.c:4171
+       process_one_work+0x902/0x1a30 kernel/workqueue.c:3254
+       process_scheduled_works kernel/workqueue.c:3335 [inline]
+       worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+       kthread+0x2c1/0x3a0 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+-> #0 (&hdev->lock){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+       mgmt_remove_adv_monitor_complete+0x9e/0x2e0 net/bluetooth/mgmt.c:5438
+       _hci_cmd_sync_cancel_entry.constprop.0+0x6c/0x1d0 net/bluetooth/hci_sync.c:578
+       hci_cmd_sync_clear+0xac/0x100 net/bluetooth/hci_sync.c:593
+       hci_unregister_dev+0x188/0x600 net/bluetooth/hci_core.c:2767
+       vhci_release+0x7f/0x100 drivers/bluetooth/hci_vhci.c:674
+       __fput+0x270/0xb80 fs/file_table.c:422
+       task_work_run+0x14e/0x250 kernel/task_work.c:180
+       exit_task_work include/linux/task_work.h:38 [inline]
+       do_exit+0xa7d/0x2c10 kernel/exit.c:878
+       do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+       __do_sys_exit_group kernel/exit.c:1038 [inline]
+       __se_sys_exit_group kernel/exit.c:1036 [inline]
+       __ia32_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:386
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&hdev->cmd_sync_work_lock);
+                               lock(&hdev->lock);
+                               lock(&hdev->cmd_sync_work_lock);
+  lock(&hdev->lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.1/7334:
+ #0: ffff888065ad4970 (&hdev->cmd_sync_work_lock){+.+.}-{3:3}, at: hci_cmd_sync_clear+0x4a/0x100 net/bluetooth/hci_sync.c:591
+
+stack backtrace:
+CPU: 2 PID: 7334 Comm: syz-executor.1 Not tainted 6.9.0-rc5-syzkaller-00370-g245c8e81741b #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+ mgmt_remove_adv_monitor_complete+0x9e/0x2e0 net/bluetooth/mgmt.c:5438
+ _hci_cmd_sync_cancel_entry.constprop.0+0x6c/0x1d0 net/bluetooth/hci_sync.c:578
+ hci_cmd_sync_clear+0xac/0x100 net/bluetooth/hci_sync.c:593
+ hci_unregister_dev+0x188/0x600 net/bluetooth/hci_core.c:2767
+ vhci_release+0x7f/0x100 drivers/bluetooth/hci_vhci.c:674
+ __fput+0x270/0xb80 fs/file_table.c:422
+ task_work_run+0x14e/0x250 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa7d/0x2c10 kernel/exit.c:878
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __ia32_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:386
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+RIP: 0023:0xf72e7579
+Code: Unable to access opcode bytes at 0xf72e754f.
+RSP: 002b:00000000ffa973cc EFLAGS: 00000282 ORIG_RAX: 00000000000000fc
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000ffa974d0
+RDX: 00000000f73130c7 RSI: 0000000000000000 RDI: 00000000f738e1b5
+RBP: 00000000ffa97428 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+metapage_write_end_io: I/O error
+metapage_write_end_io: I/O error
+metapage_write_end_io: I/O error
+metapage_write_end_io: I/O error
+metapage_write_end_io: I/O error
+lbmIODone: I/O error in JFS log
+lbmIODone: I/O error in JFS log
+lbmIODone: I/O error in JFS log
+lmLogShutdown: exit(-5)
+jfs_umount failed with return code -5
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
