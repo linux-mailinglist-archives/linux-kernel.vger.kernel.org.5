@@ -1,122 +1,116 @@
-Return-Path: <linux-kernel+bounces-167853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7870D8BB03F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:46:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D9E98BB042
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA48EB22406
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:46:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2561B2864EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E769D154BF3;
-	Fri,  3 May 2024 15:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34DA1552FC;
+	Fri,  3 May 2024 15:48:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="uJgIVgtN"
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Lb9f9vCE"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96DF6FCC
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F81C153BD2;
+	Fri,  3 May 2024 15:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714751196; cv=none; b=lnsku3iiUJCp/F9akMc2yjEaVYJE39gzzCxIbKQFDdLGou4ngs8zLP5jt1PR6barNuB9Jqde/rvsl4degEINZv5/MAj6IOvUUiPPley+wdjglPzuPRqu51OxQvASZEOrk9D8gu5QOa3c5gKX2KO67LXDn085+AYaKYO0XL8/1EY=
+	t=1714751293; cv=none; b=ezflZhv9Rmko6z5my0cQ0auDt9U4ye++jc924TSm9DPcOJqmEumjzvgheS7Ho8NQQC7P/t7dwhUcSZqAtCJVjKq3snr28lhgAuvta4k8oc8lAxr8EiLVjuI+I3US8Qp9ww0R/nGtsCSPEX/cIHVMAdtJAqXpnUM85qBweSuIoSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714751196; c=relaxed/simple;
-	bh=ZbkeRSrkCPNwDcLhX1qJ1sjDEzYFshDiprBjhPwS3Lw=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=CxgGnUFD2s9bKTSjzPXY/sQ8BjvDIg7PeFdgBx0jGfFIxc77lkb4XCj3KA5ws/56ni6MwJ+8nm4D/Jafo6H1GORzLycCA3xyR88QuT/wj0U770BvOZDQ1xpv6rPvkfeK1DBp2vnGeh7f6MRDT/YAI34/9jtWuCifIPqsnFL3jYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=uJgIVgtN; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-43c5c5496a3so19347991cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 08:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714751193; x=1715355993; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DD3fGBfG9/zPLRqWphhAvLBiOO/6wCBUgxf5dozP1a8=;
-        b=uJgIVgtNU1GTc3ydKfGZuINqMF6LvaqfNZb2a+xn/P3kFf7WZNGz5Cnbi/J88oC4h0
-         FvHtdJf4zVGwYKfSmAlWDqOYAhpga7XliewbAddRvavO9+QqS8RmvSMgPgl5r1DxBFU+
-         OVlJx72xcmJOvxWof6/UFHW0XJRALm9HZMB4aAraqjns2g+bFqDZoKWZxOVYmyRUJWLI
-         +hvg2LhIdBA4WJfHqmQ2GT6QA6gGTqMP7f1gecV2lCymKRwsMKK31TVOFhEVbjWBUeQs
-         Ep7qxttAZhqCDOHW1gL7bPoe4Eva7s+SkFs7I79wNz3rTADF913qB9PBCYsQupovy64c
-         pAEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714751193; x=1715355993;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DD3fGBfG9/zPLRqWphhAvLBiOO/6wCBUgxf5dozP1a8=;
-        b=nA5V0vono1xOzWwnveqySno35yqGnSjFl9gYfMAABGpD7oUsC5LYy1/0RoZH9+sjSr
-         sT2rqF7exAvW7RvtVCofTY/M3HIwwx/hHTwoDj2qLqkajk0a6zgwB39xf0jhH7RRikfE
-         Qef19kZK0TYae7APnJ2MXl03JtpWc7Su+fo1nyNvwe+otUPDJVabvzN8/5NRGWQaPLT8
-         t8GLEJ2NKdr9OtGjNWVPCabHf/owC2/TIKJcZJvdP2kOpW3CCG7+RmnQRNUUvEzYIhaq
-         yNXog2rc+tSqdtre3DhqZE1Q6RLl2yJ3aBx+mD+ksRZ7b1rdLN06N3e3RZlKy//NSRX4
-         AxyA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQsLhUCjvh2gMOCy4y9pYwuJWhpNuf3rjnK/Q1r/gs6/xhLjwPPTMmNWc2ERzyG/2JOUpGYQ4mmoytn2uhTd4KXy+qHuedKF1N3Ob6
-X-Gm-Message-State: AOJu0YyfFL1HidvRswICiIJ9L1AjNBJz9S5rrHk1/ecPLt5OJaGq7Sjy
-	OCwdu+WycyPu9wSie1HY8uZtSvb+DE2gceGIkwBCbd2hw/QveK0XHxTdYfKVaGwI8mJuPNcSs++
-	vLaA=
-X-Google-Smtp-Source: AGHT+IHvorLKVldcwPuXub3vxQ9aDpAAyxM3M6JDKLRxX/G+y4VOONQbkGOltiMGMq6o1FuWaPwO5Q==
-X-Received: by 2002:ac8:7f01:0:b0:437:87f9:5ad2 with SMTP id f1-20020ac87f01000000b0043787f95ad2mr2820051qtk.45.1714751193620;
-        Fri, 03 May 2024 08:46:33 -0700 (PDT)
-Received: from xanadu (modemcable018.15-162-184.mc.videotron.ca. [184.162.15.18])
-        by smtp.gmail.com with ESMTPSA id dr12-20020a05622a528c00b0043c58b6d941sm1703704qtb.42.2024.05.03.08.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 08:46:33 -0700 (PDT)
-Date: Fri, 3 May 2024 11:46:32 -0400 (EDT)
-From: Nicolas Pitre <npitre@baylibre.com>
-To: Julien Panis <jpanis@baylibre.com>
-cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
-    Daniel Lezcano <daniel.lezcano@linaro.org>, 
-    Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-    Matthias Brugger <matthias.bgg@gmail.com>, 
-    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-    linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] thermal/drivers/mediatek/lvts_thermal: Remove unused
- members from struct lvts_ctrl_data
-In-Reply-To: <20240503-mtk-thermal-lvts-ctrl-idx-fix-v1-1-f605c50ca117@baylibre.com>
-Message-ID: <n7os6420-s4n1-1874-6qs4-409818807pnq@onlyvoer.pbz>
-References: <20240503-mtk-thermal-lvts-ctrl-idx-fix-v1-0-f605c50ca117@baylibre.com> <20240503-mtk-thermal-lvts-ctrl-idx-fix-v1-1-f605c50ca117@baylibre.com>
+	s=arc-20240116; t=1714751293; c=relaxed/simple;
+	bh=Gi57PnaSyxj86AO7nfWeJDnXmY0LCGAjn3DvnN/WWVk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=lfF0U2tL6icsxfmWSFNu6MCj64KTiFYLw4Qa+E4FhW6ZXrTaAzaHvXPpOr/+kyBqPCBSH/McIfeyrIxKZ776JPCkVPYwr58nzk5TQn6T16blyvZAp7odzFmroNlfYAdKjFfo3GUpQekf7xeMmu1sKBzpdwBhg9m4gia56OSqe+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Lb9f9vCE; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=1Mms1nJYekqnIQG20iD+aIhue9+zCOecetn66x4QcBQ=; b=Lb9f9vCE6m+/eqCCO1fEr9PmjU
+	p6wRQEOrA04SblKdyydwNzKv5HdE5h+4ErxYxulFkG6Q56DuIt7wzrDwgaC+ouOh4w5ep9RDnLPXL
+	jlfoS1qNWp4JADAyPXv/j501H4peMwDA0DW50RCdEXFwcLug02R6zTm/SsxqWUdmKnWMEenAqMMW1
+	PqIPsU9SYeLoPgtXQK7F/bDkfeDzQKVNFZVdmY2h6+3Qx+xk/JkGxnOQUTDk3JfehgzrpdaBfdZ+D
+	Po0HMTAT+wXhIknDOCTah0JZcQ/LiwceH4/pq8S4XS/ORjjFQHzRpumoNMapkh706nvk1pLC23KBm
+	/KXK46jw==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s2v7f-000IQM-0M; Fri, 03 May 2024 17:47:32 +0200
+Received: from [178.197.249.41] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s2v8F-0006tI-2S;
+	Fri, 03 May 2024 17:47:31 +0200
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a null pointer check for
+ the serial_test_tp_attach_query
+To: Kunwu Chan <chentao@kylinos.cn>, ast@kernel.org, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, kunwu.chan@hotmail.com
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240424020444.2375773-1-chentao@kylinos.cn>
+ <20240424020444.2375773-5-chentao@kylinos.cn>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <79df3541-5557-05fa-a81e-84728d509bfc@iogearbox.net>
+Date: Fri, 3 May 2024 17:47:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20240424020444.2375773-5-chentao@kylinos.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27264/Fri May  3 10:24:33 2024)
 
-On Fri, 3 May 2024, Julien Panis wrote:
-
-> In struct lvts_ctrl_data, num_lvts_sensor and cal_offset[] are not used.
+On 4/24/24 4:04 AM, Kunwu Chan wrote:
+> There is a 'malloc' call, which can be unsuccessful.
+> Add the malloc failure checking to avoid possible null
+> dereference.
 > 
-> Signed-off-by: Julien Panis <jpanis@baylibre.com>
-
-Reviewed-by: Nicolas Pitre <npitre@baylibre.com>
-
-
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 > ---
->  drivers/thermal/mediatek/lvts_thermal.c | 2 --
->  1 file changed, 2 deletions(-)
+>   tools/testing/selftests/bpf/prog_tests/tp_attach_query.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> index 86b2f44355ac..18a796386cd0 100644
-> --- a/drivers/thermal/mediatek/lvts_thermal.c
-> +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> @@ -105,8 +105,6 @@ struct lvts_sensor_data {
->  
->  struct lvts_ctrl_data {
->  	struct lvts_sensor_data lvts_sensor[LVTS_SENSOR_MAX];
-> -	int cal_offset[LVTS_SENSOR_MAX];
-> -	int num_lvts_sensor;
->  	u8 valid_sensor_mask;
->  	int offset;
->  	int mode;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+> index 655d69f0ff0b..302b25408a53 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+> @@ -39,6 +39,9 @@ void serial_test_tp_attach_query(void)
+>   	attr.wakeup_events = 1;
+>   
+>   	query = malloc(sizeof(*query) + sizeof(__u32) * num_progs);
+> +	if (CHECK(!query, "malloc()", "error:%s\n", strerror(errno)))
+
+Series looks reasonable, small nit on CHECK() : Lets use ASSERT*() macros given they are
+preferred over the latter :
+
+if (!ASSERT_OK_PTR(buf, "malloc"))
+
+> +		return;
+> +
+>   	for (i = 0; i < num_progs; i++) {
+>   		err = bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj[i],
+>   				    &prog_fd[i]);
 > 
-> -- 
-> 2.37.3
-> 
-> 
+
 
