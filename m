@@ -1,155 +1,173 @@
-Return-Path: <linux-kernel+bounces-167721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880348BAE00
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:47:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51AAC8BAE03
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:48:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CD731F232B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:47:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 690361C2264A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:48:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B12153BF4;
-	Fri,  3 May 2024 13:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6949C153584;
+	Fri,  3 May 2024 13:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iTcfm/EW"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="moxrLXde";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LZ9LVyuZ"
+Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE451153BD1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A448153BD1;
+	Fri,  3 May 2024 13:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714744059; cv=none; b=ZhAlkNN/L1Je5RfcjGYBPypDVLyc1QWcILBr3Bkw4JhJnM5p1uAtz+zXl0yANtqW2YVpD+zdVMmXz8CgS59919+UeWAXPyRb7/WQX53sPtcek/cfs/UH6e12DVb564jSwbnAg0A6nMfs2k+iWtkpFUxSje+ryk292Fdlp5sMpRQ=
+	t=1714744080; cv=none; b=Xd5QHpPNr1Rd+TZ7qzCFcIpnBlK07nEMxgfKNtma6nGDLDHrWaThU2tCQmfI0rUfuHOawGGJ28B3cwOhdhN1D5sdNd943wSpeozmP1Ca90ZTGOnezl8/oJMg6fS8TzmWaJIzqCHF4I4UEooDsX8dCT+sN08IEy78jvTQjyD9/ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714744059; c=relaxed/simple;
-	bh=iFzFySdvqYlfRl4Ui4A1b/pniHe923+mjxQ/LLLWxVI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZIpN6c8eDnCIw/Dd9lameLqj8cwZv2a84dTHapuwWDx6KFDTaPkAA9qWYlQQK/Q8yB9mZ0I9y0TfEYcey5e5KvOFOZtDR8NVwLglxXxE6IbtHfLJzEyYEM8wGJtaWcmgnzAAma9W3BqVTohLv8KU0mQTl0YbfZr6sum9VNJQLuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iTcfm/EW; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de5acdb3838so8468104276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714744057; x=1715348857; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g3ua50wpq46PgdKK2kII6t9P1G0JXIDxe02SWFIKB2s=;
-        b=iTcfm/EWONRaWgxXUYZLWSvI4LJjuT4abW2ZWKdJ7Fz0y89iGRA/54mqH5NJxGy0W7
-         nTy6RMjZGVFOnnWpj726Ux+N0tnzvY1y5wxKql9zmPojdO4AuHxiWf1os/SpoMoEK0nY
-         LYagLYhJAbkz7e+yuNqgxgCzJ74UB3diCbY1zUYI5GCrlNbfWK2FW8izIujLn8zTnw2b
-         BtnW6pIZKZjDOd2r+XhMk42zFR0OcWUIfY6fZaj5lINX1RR8Eg0QnUsLMibRfGLCEQ6a
-         hBtRC0fNEoLAgqgfWPetFKqelRExkAMGpDtutDtQi9C3ke21adx4FLgK90TtVsYb5cIn
-         +kZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714744057; x=1715348857;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g3ua50wpq46PgdKK2kII6t9P1G0JXIDxe02SWFIKB2s=;
-        b=P0SMDZRPiOx5oUlqGiRQJtQJqTNLSXPJFcmmkF89Rkq4oYHMRWa80dMuX5CH9rn1lX
-         6THN1edf2vIcNyHxgo8+h7vAAKkfFuF/SZxwzwiDl9XBJJlroD73Zw1MaeHgC7UM7S7g
-         FuAzq+7PHJ9fjPPm2AKJLwhj5rJ56ef0B5EVGVQteDODbLM0/BtCa6RTvMCyGpS1CRrM
-         zC/UPfoWe06i0KLIKuCVuOaL07dPFeAYZqc/gvs2QFwcdY2aTP/fAPEOngDwhNsQg68h
-         gWIrXEKy+4Zketea5llpwGFEKB7P+k+6K/pDomRKS8h+LfRd71PrdI8CaeXmXj55iHZt
-         IxDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWaVeM6RdYq/p+uVvnwSooZ+K5T7ATAlwrHxnzPKIz5vMosciS82kn7tlVFLShAxCZTFiXa+s8Zm5u6HsZH/a8MSYib6PYrocryxJNr
-X-Gm-Message-State: AOJu0YzWu+WF1sFOYXjx+Kj++WAhQv4Lkc3NGbvG02U7m2RAkS5J5Ah/
-	91wq4drvf0bAS+qmcPmUxtK+Y/5B+0dBkyytkT5Muq/jP6zVmJqgbQmQwuAxe7sMxQ/SQp1Xh1b
-	YG30FZ+MRWh60ksPwRFHw8QGsBxf0OImNLAGT2g8+AoK4vzrI
-X-Google-Smtp-Source: AGHT+IFCuW+7abwZEByNtAeiagPvZZDoW1SqybjOPgHEIkI9MFnN7S85ZcrViqmJw/BY7SH5+t9n6nJVkwGDYTNHIL8=
-X-Received: by 2002:a25:b115:0:b0:dda:a7a9:7b59 with SMTP id
- g21-20020a25b115000000b00ddaa7a97b59mr2785467ybj.50.1714744056830; Fri, 03
- May 2024 06:47:36 -0700 (PDT)
+	s=arc-20240116; t=1714744080; c=relaxed/simple;
+	bh=qJnuwtkeDuO1dEGZ+XpbtLgDbxS73SvTU0QT3E/p+rs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nt1/w6yzPTLY2rpQc8avF+c/kGZlcYCGvlQE5mHXoAH8zy6ll8KAeRYsN36lNabT11iOFEMl/kKvu3IM/jqYdE56/DYH+I/5XqzI39tDeY5ZgDqTEb6eqyV9g/jiPXj73hLo5Hac5OZID7lNP7dvOdLryDbcXKOwC/9xkERS+Mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=moxrLXde; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LZ9LVyuZ; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 69076138030D;
+	Fri,  3 May 2024 09:47:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Fri, 03 May 2024 09:47:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1714744077; x=
+	1714830477; bh=SLlrQkd2iXanI/kW9JruqRjjOcTmn5fEnvoJmg8IxSo=; b=m
+	oxrLXde+RKZOxlvRz5sgWr7U5Xz/Ad5b8nMisWLAYXrFsuZZV0WUE4+Zt+pLrT7W
+	CdnJ3DaQeIAU3OVN+0UdV8y0CtiYT+QjcfkcNbBpbBiRKso8aaGssrvDEKZ12mwB
+	/NGjzhEZjW04+4MhCmXkXhmDL7bdrbYvKbsIDI9BSfCCVPi3fPELlIhuwTK8uhUS
+	hVxhKADGsZIgwKZrs0jWAURPsG1+7adr9zHNdJGC2vXedx7dClKDostUM0QI+Vhf
+	crrerf8p97cVjp306Ytj9c4RoBpUZ+rYls/KLYFxa9gkOqexbtdu8ihVbvlJYwDz
+	uSt2awGcs2z+cZ0Q2XUlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714744077; x=1714830477; bh=SLlrQkd2iXanI/kW9JruqRjjOcTm
+	n5fEnvoJmg8IxSo=; b=LZ9LVyuZy3LNrPSCtehVDg0g4ltr0vsaceDJ/Zrf2VOP
+	CBpySNhT7JNkZMM5jhnmy44rM1HReoQF05f1vOq/GshzwrA7pSYmVwuacyUAngka
+	PAI113fYJTZrjiL/B5gGMT5wlSAWzzEmAMqCRo5dHMIOLPkAHnW2M+l48XSzAMqo
+	b3v50aTIclbQjA2B4d9qBKQ2hVQ7tGf9YPmJRY+b92Rf4vhZSPbVlXVbTATzN3oL
+	7r5jT5mHRw2U/GdBtoqg2iP3tP2dMaNjMHdsUvrex5ExjywzdBGgQ2sSFZ8rm0un
+	rs/SMEa7y9+paTsAuYRzejiHXswOqAvxNQNLPXV4uw==
+X-ME-Sender: <xms:DOs0ZrJTD76rpk3SF6C0wqVDoZAq0Kea4xniv3j2mvgX7DqQwKBs-w>
+    <xme:DOs0ZvKqxn2TC58Y09bwhwkWWlNmJXrstDe-y7piVX2Fqp7FRjHsTn42TyugTWy70
+    0yGeBpYVFN7boLRQYc>
+X-ME-Received: <xmr:DOs0ZjuNpHWImZtnuzW_mgkaX_Fus56JPNUBENkK-r1mOG5NL4pPPWlEO87aOV37CIBBXw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvtddgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvdenucfhrhhomhepfdfmihhr
+    ihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlsehshhhuthgvmhhovhdrnh
+    grmhgvqeenucggtffrrghtthgvrhhnpeffvdevueetudfhhfffveelhfetfeevveekleev
+    jeduudevvdduvdelteduvefhkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhvrdhnrghmvg
+X-ME-Proxy: <xmx:Des0ZkaQOo8W2IRL2Zk2dAuTyg_mhi7p6ixxjGFMFVEIfRGXepVv1Q>
+    <xmx:Des0ZiYWWoqb8Fj9HZeJbwQW8ydWajhBVVbpdZaQZcLICM4q-xPNmg>
+    <xmx:Des0ZoAuMLiDlPebpjEJ5lpEYgYUm6kLssP7PZjuPCJ6CsNi52MFtg>
+    <xmx:Des0ZgZe6AbRvmnclxA-3vKNMZ2mtyUHuXfn9gKDCQ49ZuobK4wmuw>
+    <xmx:Des0ZolOzI8aCBC_vqmsyTZ7TIPSHxtrkCpHZ0QAZ-GWA0MGDkcJZuid>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 May 2024 09:47:53 -0400 (EDT)
+Date: Fri, 3 May 2024 16:47:49 +0300
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Chen Yu <yu.c.chen@intel.com>, linux-efi@vger.kernel.org, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Nikolay Borisov <nik.borisov@suse.com>, Chao Gao <chao.gao@intel.com>, linux-kernel@vger.kernel.org, 
+	"Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
+Subject: Re: [PATCH v2] efi/unaccepted: touch soft lockup during memory accept
+Message-ID: <53exjhamp57x7brn2b5jxdpbzc3amv5i646gmgitnvwjgdwfrd@5v5qifom5tez>
+References: <20240411004907.649394-1-yu.c.chen@intel.com>
+ <ZiZ2yUI09QIrYr/4@chenyu5-mobl2>
+ <CAMj1kXGdRkiLh+3DePZuejaqEphyP=gN6bnK6v08ueP3MP40EA@mail.gmail.com>
+ <CAMj1kXHLGMXtD-Ad_1TKPmkrvppeNNtKUn-G5q4jr8ZKOab18Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415-ti-sci-pd-v1-0-a0e56b8ad897@ideasonboard.com> <20240415-ti-sci-pd-v1-1-a0e56b8ad897@ideasonboard.com>
-In-Reply-To: <20240415-ti-sci-pd-v1-1-a0e56b8ad897@ideasonboard.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 3 May 2024 15:47:01 +0200
-Message-ID: <CAPDyKFrGJFy87STpBcdUKaVCRg+PKDKKSZHMkbeSHsVGe6urQw@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] pmdomain: ti-sci: Fix duplicate PD referrals
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>, 
-	Santosh Shilimkar <ssantosh@kernel.org>, Dave Gerlach <d-gerlach@ti.com>, J Keerthy <j-keerthy@ti.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Santosh Shilimkar <santosh.shilimkar@oracle.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHLGMXtD-Ad_1TKPmkrvppeNNtKUn-G5q4jr8ZKOab18Q@mail.gmail.com>
 
-On Mon, 15 Apr 2024 at 18:00, Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
->
-> When the dts file has multiple referrers to a single PD (e.g.
-> simple-framebuffer and dss nodes both point to the DSS power-domain) the
-> ti-sci driver will create two power domains, both with the same ID, and
-> that will cause problems as one of the power domains will hide the other
-> one.
->
-> Fix this checking if a PD with the ID has already been created, and only
-> create a PD for new IDs.
->
-> Fixes: efa5c01cd7ee ("soc: ti: ti_sci_pm_domains: switch to use multiple genpds instead of one")
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+On Fri, May 03, 2024 at 12:31:12PM +0200, Ard Biesheuvel wrote:
+> On Wed, 24 Apr 2024 at 19:12, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Mon, 22 Apr 2024 at 16:40, Chen Yu <yu.c.chen@intel.com> wrote:
+> > >
+> > > On 2024-04-11 at 08:49:07 +0800, Chen Yu wrote:
+> > > > Commit 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused
+> > > > by parallel memory acceptance") has released the spinlock so
+> > > > other CPUs can do memory acceptance in parallel and not
+> > > > triggers softlockup on other CPUs.
+> > > >
+> > > > However the softlock up was intermittent shown up if the memory
+> > > > of the TD guest is large, and the timeout of softlockup is set
+> > > > to 1 second.
+> > > >
+> > > > The symptom is:
+> > > > When the local irq is enabled at the end of accept_memory(),
+> > > > the softlockup detects that the watchdog on single CPU has
+> > > > not been fed for a while. That is to say, even other CPUs
+> > > > will not be blocked by spinlock, the current CPU might be
+> > > > stunk with local irq disabled for a while, which hurts not
+> > > > only nmi watchdog but also softlockup.
+> > > >
+> > > > Chao Gao pointed out that the memory accept could be time
+> > > > costly and there was similar report before. Thus to avoid
+> > > > any softlocup detection during this stage, give the
+> > > > softlockup a flag to skip the timeout check at the end of
+> > > > accept_memory(), by invoking touch_softlockup_watchdog().
+> > > >
+> > > > Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
+> > > > Reported-by: "Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
+> > > > Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > > ---
+> > > > v1 -> v2:
+> > > >        Refine the commit log and add fixes tag/reviewed-by tag from Kirill.
+> > >
+> > > Gently pinging about this patch.
+> > >
+> >
+> > Queued up in efi/urgent now, thanks.
+> 
+> OK, I was about to send this patch to Linus (and I am still going to).
+> 
+> However, I do wonder if sprinkling touch_softlockup_watchdog() left
+> and right is really the right solution here.
+> 
+> Looking at the backtrace, this is a page fault originating in user
+> space. So why do we end up calling into the hypervisor to accept a
+> chunk of memory large enough to trigger the softlockup watchdog? Or is
+> the hypercall simply taking a disproportionate amount of time?
 
-Applied for fixes and by adding a stable tag, thanks!
+Note that softlockup timeout was set to 1 second to trigger this. So this
+is exaggerated case.
 
-Kind regards
-Uffe
+> And AIUI, touch_softlockup_watchdog() hides the fact that we are
+> hogging the CPU for way too long - is there any way we can at least
+> yield the CPU on this condition?
 
+Not really. There's no magic entity that handles accept. It is done by
+CPU.
 
-> ---
->  drivers/pmdomain/ti/ti_sci_pm_domains.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/pmdomain/ti/ti_sci_pm_domains.c b/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> index 9dddf227a3a6..1510d5ddae3d 100644
-> --- a/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> +++ b/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> @@ -114,6 +114,18 @@ static const struct of_device_id ti_sci_pm_domain_matches[] = {
->  };
->  MODULE_DEVICE_TABLE(of, ti_sci_pm_domain_matches);
->
-> +static bool ti_sci_pm_idx_exists(struct ti_sci_genpd_provider *pd_provider, u32 idx)
-> +{
-> +       struct ti_sci_pm_domain *pd;
-> +
-> +       list_for_each_entry(pd, &pd_provider->pd_list, node) {
-> +               if (pd->idx == idx)
-> +                       return true;
-> +       }
-> +
-> +       return false;
-> +}
-> +
->  static int ti_sci_pm_domain_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> @@ -149,8 +161,14 @@ static int ti_sci_pm_domain_probe(struct platform_device *pdev)
->                                 break;
->
->                         if (args.args_count >= 1 && args.np == dev->of_node) {
-> -                               if (args.args[0] > max_id)
-> +                               if (args.args[0] > max_id) {
->                                         max_id = args.args[0];
-> +                               } else {
-> +                                       if (ti_sci_pm_idx_exists(pd_provider, args.args[0])) {
-> +                                               index++;
-> +                                               continue;
-> +                                       }
-> +                               }
->
->                                 pd = devm_kzalloc(dev, sizeof(*pd), GFP_KERNEL);
->                                 if (!pd) {
->
-> --
-> 2.34.1
->
+There's a feature in pipeline that makes page accept interruptable in TDX
+guest. It can help some cases. But if ended up in this codepath from
+non-preemptable context, it won't help.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
