@@ -1,210 +1,286 @@
-Return-Path: <linux-kernel+bounces-167219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39CEC8BA5D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 05:52:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA328BA5D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 05:53:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A75431F21952
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:52:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C601B1F224ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAB55A4FD;
-	Fri,  3 May 2024 03:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73F11F951;
+	Fri,  3 May 2024 03:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Yk3uGBVN"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2076.outbound.protection.outlook.com [40.107.94.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hv7Tww9u"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99B6D29E;
-	Fri,  3 May 2024 03:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.76
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714708278; cv=fail; b=LL/Zv1Ox9JycfmM7I+j3fzLiNiP/8xNfq4zQlosE2RF8cwBTNmuapXd1gcstebXMtIrOoXm/5cwR0F6vHX7qYJ4lYucjYMe2WsRDG+Y1/yaatQwOkFifceWFqSIt0yRu5voJiKgr4tsCT+xY48k91YBX3R5jQBSxVsYVBl6Jwh8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714708278; c=relaxed/simple;
-	bh=BDHLtMEIEzZMGw3MmdXRT433IYCSaFZA9hzavxG62BY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UMZB2CEA2K1Vb7woh/wiaxEHAmUYcUnrnpwwa7S+xSw/SeYM59tWIc5ANZXrQQ4gMEE8tomwYbedi3ih7EkwSUqW8UFJ+a2yUnsVM8PGGFHRRIKSWBfkMmfE4Tb2GBn0iVDFoFpjjmnjs/pA0pA+h8dc7vctmwrlo1l/EnId6l8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Yk3uGBVN; arc=fail smtp.client-ip=40.107.94.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KGONHHzWBWqkI1SEm+3gK7UxfNAO9NqGarkuCpUYgS8OMy6ZxF2HOSbeMzqtmLqe19RUY8Le3UqoZCQyjd77OeAv5luXWUN8zaX9IaWiVxw8UMzqFZ+NjlfSoxgmXqCjIqU6VOWl9yt5NPpeEd/hQ8OCwVMnruShJ2GiizhmdGrBe4rlxfbSK6HIOfzkhvKxOEjWgfh6/w+hDSjiNSYreDKe41rK2C7hDwVb2xEXSTs6pcX5uC4kphIVwJcTtjcgTifjRooCUAyYO8liwwPVC93nTNV28ak0ToRPNjfWDhf4Gypj+57CTQ4WJcwAkbQUwFRPXY3ay/1OgaucLM0WHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g9WR5gBtXv5RhOqz26Rn5f7ugl+K5+DGwc1J+hEvwes=;
- b=Ll3CZIY1gMUC48rNUQQ5rjmVTrNWWNRdeL56f1l+gjSNawDj+od3Kzns8/qmPBQYjiyjutMbi4RuZBSIKq/mdbWLEQBi0wLU1D/Dl1Vu3tw+jZA2ePXkUH11ragCt2PwAKLHsUROBTkM/yEEkTnJi20CAjjz4j7dJBwZUlHwLmguUQFTMyGyX4k8CozbTFs59GwSt93lhUODRECvpT7KEOnU6lFECxE8XpVY8q6dXQvn1m/EIb1PFkM+OfpWrS1W9/Gubm/9PD3eAL1ypdboJLWV/lY8aqbU9LYXsO4AdWRhIvTxLEhbcyUwS+1R62ilXJ71ubW390sIehTOJNYPZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9WR5gBtXv5RhOqz26Rn5f7ugl+K5+DGwc1J+hEvwes=;
- b=Yk3uGBVNIMfHmMQ5t1wFZTxIH83eq3VYcXLgKOIRSTR7PZg5PpU/vU2BV8LGLalDZmPtFSiswE9GlvEcHdQY/vpSsMmDgvKqmI6XnURfr8UXtkrDaqrymoLEwTwJqcNMhs4kvI108Bvil1mHkxPY8XFrISztJZOEUVfBBeeLN6Gut6R9V+yhRXYjZOnNFGWe/lq874IdYDyySrN9wH5yzQ7C2gO2Ulv0MjpI4x7U1Mb4fdS6gwoMcRxISuJJpLXFIbaxhlriyPzHM+U9v2OroMoQA2r2gd2Ws/o+oS/LE7qGE3fmtQudDuhOrA7jaNRvKVuFPKIEKwQPel+9dfsSCA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by LV2PR12MB5941.namprd12.prod.outlook.com (2603:10b6:408:172::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Fri, 3 May
- 2024 03:51:10 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::2cf4:5198:354a:cd07]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::2cf4:5198:354a:cd07%4]) with mapi id 15.20.7519.035; Fri, 3 May 2024
- 03:51:10 +0000
-From: John Hubbard <jhubbard@nvidia.com>
-To: Shuah Khan <shuah@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Waiman Long <longman@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Valentin Obst <kernel@valentinobst.de>,
-	linux-kselftest@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	llvm@lists.linux.dev,
-	John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 4/4] selftests/cgroup: fix uninitialized variables in test_zswap.c
-Date: Thu,  2 May 2024 20:51:05 -0700
-Message-ID: <20240503035105.93280-5-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20240503035105.93280-1-jhubbard@nvidia.com>
-References: <20240503035105.93280-1-jhubbard@nvidia.com>
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0066.namprd03.prod.outlook.com
- (2603:10b6:a03:331::11) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEE21CD24
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 03:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714708378; cv=none; b=BjHU8F4JxthntPKQ6hf58/pgo8e4jFQQVj5OAKAgGDVdNZi3jMQXYd2PtNjdOd4fqxTAwbxvetxGz5Z8GLfLrM6cptOMSBvLmrfowM0ajR4glhZJI1A5NKIjbwxQFgDVjmQkLBz/GMjUCYvU/TO0zN6rpmMqtf4+RY67EiC/KjE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714708378; c=relaxed/simple;
+	bh=K3NxHbNH2ft4WoOJmQoPLsuG2f7rEusfhMLBNGOsqJg=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=P1dWaDoC7tCviKiXMd0R6yHkS4kJcMz9KYT01N1sZQ6nMCa3Ka48LwwvEYrqgwKcvi5YV46rZ2J3XDc8eXigiMMD6HTr7dpfnxf6HyrtuWqPczGf2+2LufXUwoGc59Ja4ovIZb57ZaTLXtdj0XElOtebWI9v3OZtst+YFsJlvI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hv7Tww9u; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a58fc650f8fso740728366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 20:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714708375; x=1715313175; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iy4Fc+Is3/f7DsGtTqeBrCfKRHTo9HAk7taFS9ybm40=;
+        b=hv7Tww9u2upvF2xP6zRuSZkNjuHDIPsMG9aAWuIhSkiLXfA68KI03wJfoJjpJB0pWf
+         4s4I+tIwZS+rK8MDy7HdDOy9OfkXUyXdB8Lx90/xgWI3d6DnLTok+e03IKll1DsYbLN2
+         mSd6cUEYbw86iT8GjvOrqgdnNNL36Uwq9tuI/BrqaHDVKb6ZYKMyzHSjHreRwwqEbJ3y
+         YojlvTsjWldlOZQZjrzVYQA0AIySN4Q7fIeiWusezblfj17c7AxXqp3wB2K8sJuwBvcx
+         HAGHdMe18WFQ+E7pkre6gj4es7ZOMCHPJVDGslzpFpTJnr8HJ/mWvGF6OI0LvpKnfOrM
+         mQRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714708375; x=1715313175;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iy4Fc+Is3/f7DsGtTqeBrCfKRHTo9HAk7taFS9ybm40=;
+        b=as/QkFpWp2ZzBJQI03Lk+ND37iVeoY9bdm+SCjEgoDc7PglKs7pBQa2GHOc2GVi0VM
+         CUeBXsJ5nMLNPIBKXAoAl6hrfMb31qCjyGJeQNO/Eg6Y8X9jHna9iHXtFdEgc/Kq6s1X
+         OecVT8xIQ9pDS8kkuKsyV80C1qwHKSavETljXv2ZcTRsyKL2fMaDT9RIurpqymA2NIVO
+         +SZEfkFcn/5LOFb1O/IWufjCnf8X6LWhaRiXWCZNmyxhaNVP2CbrhfqvbD7czYeRfVF8
+         zv51iy+LD1k80Qn/xYtNQcG3eiTpSW0faEE8mAQr/+kWvJdNGZVWlifqPio6e1niqsKy
+         c50g==
+X-Forwarded-Encrypted: i=1; AJvYcCU31fn5c4adsiaK+ZsLR+FCkgiPnTYFBBWsUIi0JzictHKrRyHWjkhudup5nQw4VwDCysB7VJnE/zHsqgj4szocMg6oHC3jPDhH/qVE
+X-Gm-Message-State: AOJu0Yzle4NhagGZz6ue1qQASrhAcsKQOJj6v4sIXTUUEXHfEBsn/p1G
+	UMHddgkyGdIKkRahStsfyKlSi3T7MNWIaeTkusleM03b5TQkQyotTi1TTM8VSamaR0jFai9BZQX
+	x2CWq1oK87HgxaRe1wtJG/ZHjh4s=
+X-Google-Smtp-Source: AGHT+IHGWMY7wl/zE8XeCsE0g+Zrazhy7xVmSU3nOJqYRmJvCWUTcKzS2GMAJj1HlF+JqPwQr1xf8r3VWBROJwHDXOM=
+X-Received: by 2002:a17:906:fa0c:b0:a58:7ce0:8ebd with SMTP id
+ lo12-20020a170906fa0c00b00a587ce08ebdmr742405ejb.19.1714708375060; Thu, 02
+ May 2024 20:52:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|LV2PR12MB5941:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6f64795-4aba-4d09-1df1-08dc6b24454e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|1800799015|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?qpMz3QmN7eLRPcMERVe6qgqYo1f0dz/W1jEWmdEHTW02fp79KTBcOYfyDPBS?=
- =?us-ascii?Q?xNHVrlqgOUoutaTyj2fXFjbRjiqQ9ART/BGssEqcHsbQNQsEYEL0Vtxmryq9?=
- =?us-ascii?Q?b3pAtKzKJ8C2DLiD52NrWFdb9zffXRb7BF4dcEyRxmB0mu4fwvkHG+yDUC73?=
- =?us-ascii?Q?JQGUkpC1FJo8P48UJtaDEUEK+Kkg+Hn1dK2Coj5w4QQxWCwKc9hQnvkxFeGI?=
- =?us-ascii?Q?TW9STro2pLnZfoTh/58HQiLFXdWGm2xIiIzoo9Op64C99dKBeZigLra9gNaJ?=
- =?us-ascii?Q?FmzEaXsw+k3DB4H2OMkwmO/2+jjGAjNYdXsajnjIpXfxu2SmyUD6Zumfe3PC?=
- =?us-ascii?Q?pKW7+WbYb2uvUkhrrCIAPmzO9+Lb2Y9jqRRQaIZGQe6tFy6ZCnbYSXOKLexf?=
- =?us-ascii?Q?eVDxi1PENWR1S7psHmLAI86kS1sHKDMf0EJUxy/qgx31W5CWRWmPeWMhXDTy?=
- =?us-ascii?Q?2BzX/d1/pz+XoJW9QyAPUCWv07MMG2f8lZGgnJuEhgqlUVCfg5wy7sjl0PL5?=
- =?us-ascii?Q?MHSdwNWsADiYpYV6Gu9IFtN5KgcFr6HgE616hlI6HE0N3vieCbxTXi7Go31b?=
- =?us-ascii?Q?cDNY1sycrxPa7pFugDG+oLYT7zJJyejj6hGhp6zQGceMyawKmqR3AjO1ZBI5?=
- =?us-ascii?Q?Y0DGRf1BY4GLFLXy7mQ2QAHBl/7ekNC+7osze0j47lNXDaVYCqTPDETPoGJA?=
- =?us-ascii?Q?hgob7S+jIrkbALGJypw/bjgNKCk1SNLA3IAdntPlqsDWCxXsVZeGuXyQUDq/?=
- =?us-ascii?Q?+FUQ0vN0WL2qLZ/rZ0UzeltnuEJqTxPLxZpcdilPtn3j1yRVt9W3t1hIDqee?=
- =?us-ascii?Q?XOdGABuJ3FKRqUqs4YbiMeeRwlwAIZNBWsLZsNfaPkuQe7tm1umx6vWBFkWL?=
- =?us-ascii?Q?klhBgbT8V61bDlHll17q0na3Sm7iTywEd5pIItl+O4FFruacC07EZbDtIpYd?=
- =?us-ascii?Q?+MZBSQt1k7JQYG2iMXuT+HpwfdfSyX9vpyVRY2azfgsYCfoA4o+C2mnj0pdX?=
- =?us-ascii?Q?BMVzmGI19HQTglJsF0CHf1bnD/K26zqiAhBbyfZ/r16UY9gT0jCAgGBvpW33?=
- =?us-ascii?Q?0nS1shmEwYw8fNWpFjL/o9xJLDJBwqsbMraFsEV3OeO07vjIhlMAFQ4ADhAR?=
- =?us-ascii?Q?ZfJLnSfyjqyHkEtDd449EKFNxZr/SCnLW6iAT2rgxjUSqVLWKu+L28PaeaMT?=
- =?us-ascii?Q?ZuYmxN4/7aEo+jkTuy6lb/03GlOQUYa9ULoR2sBtVNOKfdkKOoNBODUBzRmb?=
- =?us-ascii?Q?IqRXohUt3/vFRl+ewBkGCg0n/FbQJGOmdh1dqVL8Wg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?avnkGjO8HoCCrykirEHUS+UmO20eAbBTCFn1MrRuhw9kPgyTjaVGZb8BiKoX?=
- =?us-ascii?Q?FvgFibPdesHYUsFmEMTnQqXQwg98El7OrkbR2+TXjPNy7LgWZo10oiQDagvH?=
- =?us-ascii?Q?8yeFRxNB1Oq3zsjFpp6iamXfjG8CZQOg2SeXJ/kK4+mtt6Xl9V96WF/Quall?=
- =?us-ascii?Q?UkVWivlgc7cyODo4hvCCuUjOyT0A68P3kBgUlu9vHTBk+w8ESeVdwrD7caw9?=
- =?us-ascii?Q?XAPJlT25vhgf95y9x5epYk48jhCH5x2FZ4gTzN9oEcmUdvnUszaHcWVo9L1S?=
- =?us-ascii?Q?ajioikE4KN+oHfILHxbhJs0EBt7NxCFpxF3M4RjWLFN8mUlpeEAZzUWaxs5E?=
- =?us-ascii?Q?i02i5VcWCtsdh7IYSrbho7LI9ADecnADHWot1/cAxafvb/Zoc/X4fo6oM+Fe?=
- =?us-ascii?Q?5nT58/fnZhLUqizjyFU5mM1qnwH75hwzzVD7Pyw+9rzqBVzqaThdVmHH+0Qs?=
- =?us-ascii?Q?TVTeqlmkU/mjx2QRFewzuZT+XiM2DFMPTeOzl1GmTRT3Q2L6tEm6rzPpNqj/?=
- =?us-ascii?Q?mRJIOt6X24CHMWQiQD0pDKWvkcZ4bouZ9k0ctMmJML0gjsjqm0aLUWbOTTNc?=
- =?us-ascii?Q?h+k+wIqpsHk5wlgzWhm5yxaz1CibC01PB6sqizizBFoTih/KTWamKW5pppuH?=
- =?us-ascii?Q?lEAP6mOtV1AAknBw5/G7edPVD+Q7qFtc5SP3RWusHqLE/+7GBkM+1IWTxm8d?=
- =?us-ascii?Q?4+zeWSyQd6pdv0dTDDJ3fp+3C/CKOl64VJGXR+zdf/qf3Quopi+q1mYZlQG6?=
- =?us-ascii?Q?Q6TI8KoPXNtjH35wJL20xbzUTwFUNZa5LgoUahY7Squ6FDKAxas4Xb4+MYeX?=
- =?us-ascii?Q?VeSO24+SB9RTqI6smIm4ckZeXGuLDphbXYhB6w58e5Z0GurSUSMR0rppFcRF?=
- =?us-ascii?Q?FAI4ZHFSHOcw/jaw5IH4UsaD73HDfXF63o1CnY/q5FoQKwvejG/YJjVd4Qpd?=
- =?us-ascii?Q?ttcq9YA4wJinxIdkrxQwNyyHJK2WGNjVbyzEvZ7IDpMdWzQ4Gc+UlfXxE2KE?=
- =?us-ascii?Q?TgQKWTIGkaPgaE/qV3+3k8TslYiiKm5C0b2MsMV0bRJrORDWXvJR2sQIecHq?=
- =?us-ascii?Q?YM7c1n4kOBcY6/HcCoi4djdaeTMX72I+rXFSEPFjqD5hhEkzB5IgtQMr3kXB?=
- =?us-ascii?Q?eXUi46vaSHurb7pdwdNpg9nA4z98hC0UD8Ydj0yf7T1yZcbTlP50W8AAD3MA?=
- =?us-ascii?Q?aP1lQqzLb7LyNXOFVt2Y5JQKYcowY3JvVIO+ifNMWGz4f4xAS40AmS1RntDK?=
- =?us-ascii?Q?bNJ+tU2AtY+3lOMrxHbDv+svZi+vbkfSIjh+zYsuQLU3pQVCIqjDByxKZtVo?=
- =?us-ascii?Q?vBk3Z7oEjfSfqb6oQS9Kc5hoN4+DV58KTT/0EJFnisvG4Syb2ty6jaxmnIIP?=
- =?us-ascii?Q?DL1UTnEpLhsNPb84yG/wLZHK9brf6JVK1UfsfzScTma2K7ZobYvm0PnwnAiF?=
- =?us-ascii?Q?vtmVzhmNnfePK9qJlPvfWNO2GEuscT6eBu55+bXj0DaDwIfDE/T1eJARcQXJ?=
- =?us-ascii?Q?nlBRjxfSX6MwtksUv9w1HhekK7rKbKQZ4A3OjGm0CNnj2/Dzc5am6bZ5/SQm?=
- =?us-ascii?Q?Es1nOWmC+q/UKyRD2fwB+XW66xDlbDeHmxg/so51?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6f64795-4aba-4d09-1df1-08dc6b24454e
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 03:51:10.6566
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qzSnx0lCpzoXUcIapPFYR8xB+3Yu2Ak3eEWST3lH/p5cBA6cRK0sWrJnWhtvEOjWuqJ7IjQkReFcYGV/d+DddA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5941
+From: Dave Airlie <airlied@gmail.com>
+Date: Fri, 3 May 2024 13:52:43 +1000
+Message-ID: <CAPM=9ty6LzXnyr5J1RrR8xRdiRcooTkoPuq9m108mUEsF7R98g@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.9-rc7
+To: Linus Torvalds <torvalds@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: dri-devel <dri-devel@lists.freedesktop.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-First of all, in order to build with clang at all, one must first apply
-Valentin Obst's build fix for LLVM [1]. Once that is done, then when
-building with clang, via:
+Hi Linus,
 
-    make LLVM=1 -C tools/testing/selftests
+Weekly fixes, mostly made up from amdgpu and some panel changes.
+Otherwise xe, nouveau, vmwgfx and a couple of others, all seems pretty
+on track.
 
-..clang finds and warning about some uninitialized variables. Fix these
-by initializing them.
+Dave.
 
-[1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f9ed7d1c49f@valentinobst.de/
+drm-fixes-2024-05-03:
+drm fixes for 6.9-rc7
 
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+amdgpu:
+- Fix VRAM memory accounting
+- DCN 3.1 fixes
+- DCN 2.0 fix
+- DCN 3.1.5 fix
+- DCN 3.5 fix
+- DCN 3.2.1 fix
+- DP fixes
+- Seamless boot fix
+- Fix call order in amdgpu_ttm_move()
+- Fix doorbell regression
+- Disable panel replay temporarily
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index f0e488ed90d8..6aac80eadc5d 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -257,7 +257,7 @@ static int test_no_invasive_cgroup_shrink(const char *root)
- {
- 	int ret = KSFT_FAIL;
- 	size_t control_allocation_size = MB(10);
--	char *control_allocation, *wb_group = NULL, *control_group = NULL;
-+	char *control_allocation = NULL, *wb_group = NULL, *control_group = NULL;
- 
- 	wb_group = setup_test_group_1M(root, "per_memcg_wb_test1");
- 	if (!wb_group)
-@@ -342,7 +342,7 @@ static int test_no_kmem_bypass(const char *root)
- 	struct sysinfo sys_info;
- 	int ret = KSFT_FAIL;
- 	int child_status;
--	char *test_group;
-+	char *test_group = NULL;
- 	pid_t child_pid;
- 
- 	/* Read sys info and compute test values accordingly */
--- 
-2.45.0
+amdkfd:
+- Flush wq before creating kfd process
 
+xe:
+- Fix UAF on rebind worker
+- Fix ADL-N display integration
+
+imagination:
+- fix page-count macro
+
+nouveau:
+- avoid page-table allocation failures
+- fix firmware memory allocation
+
+panel:
+- ili9341: avoid OF for device properties; respect deferred probe; fix
+  usage of errno codes
+
+ttm:
+- fix status output
+
+vmwgfx:
+- fix legacy display unit
+- fix read length in fence signalling
+The following changes since commit e67572cd2204894179d89bd7b984072f19313b03=
+:
+
+  Linux 6.9-rc6 (2024-04-28 13:47:24 -0700)
+
+are available in the Git repository at:
+
+  https://gitlab.freedesktop.org/drm/kernel.git tags/drm-fixes-2024-05-03
+
+for you to fetch changes up to 09e10499ee6a5a89fc352f25881276398a49596a:
+
+  Merge tag 'drm-misc-fixes-2024-05-02' of
+https://gitlab.freedesktop.org/drm/misc/kernel into drm-fixes
+(2024-05-03 11:16:40 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.9-rc7
+
+amdgpu:
+- Fix VRAM memory accounting
+- DCN 3.1 fixes
+- DCN 2.0 fix
+- DCN 3.1.5 fix
+- DCN 3.5 fix
+- DCN 3.2.1 fix
+- DP fixes
+- Seamless boot fix
+- Fix call order in amdgpu_ttm_move()
+- Fix doorbell regression
+- Disable panel replay temporarily
+
+amdkfd:
+- Flush wq before creating kfd process
+
+xe:
+- Fix UAF on rebind worker
+- Fix ADL-N display integration
+
+imagination:
+- fix page-count macro
+
+nouveau:
+- avoid page-table allocation failures
+- fix firmware memory allocation
+
+panel:
+- ili9341: avoid OF for device properties; respect deferred probe; fix
+  usage of errno codes
+
+ttm:
+- fix status output
+
+vmwgfx:
+- fix legacy display unit
+- fix read length in fence signalling
+
+----------------------------------------------------------------
+Andy Shevchenko (3):
+      drm/panel: ili9341: Correct use of device property APIs
+      drm/panel: ili9341: Respect deferred probe
+      drm/panel: ili9341: Use predefined error codes
+
+Christian K=C3=B6nig (1):
+      drm/amdgpu: once more fix the call oder in amdgpu_ttm_move() v2
+
+Dave Airlie (3):
+      Merge tag 'amd-drm-fixes-6.9-2024-05-01' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-xe-fixes-2024-05-02' of
+https://gitlab.freedesktop.org/drm/xe/kernel into drm-fixes
+      Merge tag 'drm-misc-fixes-2024-05-02' of
+https://gitlab.freedesktop.org/drm/misc/kernel into drm-fixes
+
+Gabe Teeger (1):
+      drm/amd/display: Atom Integrated System Info v2_2 for DCN35
+
+George Shen (1):
+      drm/amd/display: Handle Y carry-over in VCP X.Y calculation
+
+Hersen Wu (1):
+      drm/amd/display: Fix incorrect DSC instance for MST
+
+Ian Forbes (1):
+      drm/vmwgfx: Fix Legacy Display Unit
+
+Lancelot SIX (1):
+      drm/amdkfd: Flush the process wq before creating a kfd_process
+
+Leo Ma (1):
+      drm/amd/display: Fix DC mode screen flickering on DCN321
+
+Lucas De Marchi (1):
+      drm/xe/display: Fix ADL-N detection
+
+Lyude Paul (2):
+      drm/nouveau/firmware: Fix SG_DEBUG error with nvkm_firmware_ctor()
+      drm/nouveau/gsp: Use the sg allocator for level 2 of radix3
+
+Mario Limonciello (1):
+      drm/amd/display: Disable panel replay by default for now
+
+Matt Coster (1):
+      drm/imagination: Ensure PVR_MIPS_PT_PAGE_COUNT is never zero
+
+Matthew Auld (1):
+      drm/xe/vm: prevent UAF in rebind_work_func()
+
+Meenakshikumar Somasundaram (1):
+      drm/amd/display: Allocate zero bw after bw alloc enable
+
+Mukul Joshi (1):
+      drm/amdgpu: Fix VRAM memory accounting
+
+Rodrigo Siqueira (2):
+      drm/amd/display: Ensure that dmcub support flag is set for DCN20
+      drm/amd/display: Add VCO speed parameter for DCN31 FPU
+
+Shashank Sharma (1):
+      drm/amdgpu: fix doorbell regression
+
+Sung Joon Kim (1):
+      drm/amd/display: Disable seamless boot on 128b/132b encoding
+
+Swapnil Patel (1):
+      drm/amd/display: Add dtbclk access to dcn315
+
+Zack Rusin (2):
+      drm/ttm: Print the memory decryption status just once
+      drm/vmwgfx: Fix invalid reads in fence signaled events
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c         | 14 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.h         |  4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            | 50 +++++++-------
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           |  8 +++
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 21 +++---
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c  | 48 ++++++++++----
+ drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c |  1 +
+ .../amd/display/dc/clk_mgr/dcn315/dcn315_clk_mgr.c |  8 +++
+ .../amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c   | 15 ++++-
+ drivers/gpu/drm/amd/display/dc/core/dc.c           |  3 +
+ .../display/dc/dcn31/dcn31_hpo_dp_link_encoder.c   |  6 ++
+ .../gpu/drm/amd/display/dc/dml/dcn31/dcn31_fpu.c   |  2 +
+ .../display/dc/link/protocols/link_dp_dpia_bw.c    | 10 ++-
+ .../amd/display/dc/resource/dcn20/dcn20_resource.c |  1 +
+ drivers/gpu/drm/imagination/pvr_fw_mips.h          |  5 +-
+ drivers/gpu/drm/nouveau/include/nvkm/subdev/gsp.h  |  4 +-
+ drivers/gpu/drm/nouveau/nvkm/core/firmware.c       | 19 ++++--
+ drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c     | 77 ++++++++++++++----=
+----
+ drivers/gpu/drm/panel/Kconfig                      |  2 +-
+ drivers/gpu/drm/panel/panel-ilitek-ili9341.c       | 13 ++--
+ drivers/gpu/drm/ttm/ttm_tt.c                       |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.c                 |  1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c              |  2 +-
+ drivers/gpu/drm/xe/compat-i915-headers/i915_drv.h  |  3 +-
+ drivers/gpu/drm/xe/xe_vm.c                         |  3 +
+ 26 files changed, 223 insertions(+), 101 deletions(-)
 
