@@ -1,100 +1,92 @@
-Return-Path: <linux-kernel+bounces-168445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626B08BB8B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:26:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC8A78BB8B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:29:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D67FB214C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:26:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 153D5B20D51
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD0F139E;
-	Sat,  4 May 2024 00:26:07 +0000 (UTC)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA58A50;
+	Sat,  4 May 2024 00:29:07 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FB8A21;
-	Sat,  4 May 2024 00:26:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A6B629
+	for <linux-kernel@vger.kernel.org>; Sat,  4 May 2024 00:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714782366; cv=none; b=PZz5dAXAduhJrCPbD0h6Aq8z0v2LLg5cbIiCyL8YdKg9dUqlCyvLCyb/JwwHZpEp+xFujQ+v+/cD0ol+UgM4giIVELCr/6F7T0731eOQpUFAhvsB7Vu0B6d23pvxfgYc7JoamBFOvhwluRnyEwvchqc/WEheFh+Ig+b9IkoBL40=
+	t=1714782547; cv=none; b=iv3T0/RPDUQ3XER1BWzDXw7zqz7hJaASHlb3xrXtiiQGAfJDEPlC1z0wkWgh9/z4t6XTrDgVln/4s+/X5838fkE/MOi/icJKXv1k6RbsWYT09liHsNJPUh7/wOC3yvjOi772gYcdfeu4pfuxjxresvsyQT6uF9cb/u72MHkyncA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714782366; c=relaxed/simple;
-	bh=MafHGzBt7sHBW52cHcX1MvDfWRB49BMtHDwyiMLLT7o=;
-	h=From:To:CC:Subject:In-Reply-To:References:MIME-Version:
-	 Content-Type:Message-ID:Date; b=FvnYOhSvO1kdtJ7suqjK6Rj80g7fGLK6VnIdBH1Yf09g41eMFY625QNMBH5nRZBu9DdEjCn8cWgvNGV0fj0ayivFblzREpGfjNagdz+wscBU7sfjJocMQUdkC1n32Zw+8oeXrbCWLU/0RhQHLwtrH0T8c5rC44Mqfjjw9o09lIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 4440PveoE4012706, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 4440PveoE4012706
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 4 May 2024 08:25:57 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 4 May 2024 08:25:58 +0800
-Received: from [127.0.1.1] (172.16.16.175) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sat, 4 May
- 2024 08:25:57 +0800
-From: Ping-Ke Shih <pkshih@realtek.com>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ping-Ke Shih
-	<pkshih@realtek.com>, Kalle Valo <kvalo@kernel.org>
-CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Gustavo
- A. R. Silva" <gustavoars@kernel.org>,
-        <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH][next] wifi: rtlwifi: Remove unused structs and avoid multiple -Wfamnae warnings
-In-Reply-To: <ZjLFIa31BGPVCGh1@neat>
-References: <ZjLFIa31BGPVCGh1@neat>
+	s=arc-20240116; t=1714782547; c=relaxed/simple;
+	bh=PSu/U2rEr9Crn+mdTayQQje4O/D+NQcQSkn5x554Ggg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=qdzcljKZKPjXqAeA7DXioG1ktPpK/5HGZOHkH5zxq/z9yZPiIp8zkrNBZhXCCQdQzKNwwvErpN3WCTPvZ7OuHtW7IiHTmE3xYj+09U9dMQmojOV5kB6vsYXXC1lJBLwoCJdedX5OqAMgn1AZyPhPPKDHVymsUl6zoqWOdPAZJnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7dece1fa472so19777839f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 17:29:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714782545; x=1715387345;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=asD/7hCmqzKw0GIMHRL0JAdUwek+LTvD3ZFoISBMKCU=;
+        b=tpiyueE8jRu8og12MgCcDYEQmIioFNvUAh15ZJ9PUtoPRgbvoSi77V3T7mbpVrBrRa
+         mhpxCEoBzY8+sCQXiteAadAwJ3+FZwj7AgnKDlXGQpxtEsPD3b4JZUBks3MvHFjg4qf2
+         eQqEnp00Iu3ilk9AE5Eor2DI/RwYm85Fwwc1UPlTateYMArkfWB6uaOVczRH+GXMNB3T
+         9opbGww1mOztPcEnIajx2FbgQ53VoIPWW9ppWcAlYpRLUSLXe9fG7XZ6gPYv/4EPhF10
+         sCTPdrOW6cSO0hsfzHQjrz2dbGh2sExpPCTJXVjgU8O71KckuwG5v+uY0ihMZ+JZOcPt
+         lHJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTCigM7wFbKfVwXtXsl3FrZ8kjx9NzvUotiRHh9NPAb817uHfuxkuJX72Tige10xXkREF/CxsnhLdaibm95WSyaJY8T4pwqnH5cDAm
+X-Gm-Message-State: AOJu0Yw36aUDxaS4YsE1fIvDCRxiXVgesPXHQtJ3s4BKTT+dqJWdTCnX
+	4MeTpzOc9nVSZa+xGD7UG4pNRHZwowdLKc/yY9VsAPVgltnH+3HfkRHinO6tT1nwuBPg1Qo9l88
+	m2yHWA/a6qke4m5gT3FAXtEHwXbdMdsUYNi+o3ODSIWBG8QMn4NNCQkw=
+X-Google-Smtp-Source: AGHT+IFUwj5spljY2Iwert/KmKUdCcRSfzV4oog2DeoNjyjIG8PlI/59PayICbggpDfu1obeBgkmG1QeiTxDIT2A1jG9EXs9UE/1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID: <9558c2de-8d43-44bd-a9f6-b557391fd1c7@RTEXMBS04.realtek.com.tw>
-Date: Sat, 4 May 2024 08:25:57 +0800
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-Received: by 2002:a05:6638:8c18:b0:487:5aca:1a49 with SMTP id
+ jl24-20020a0566388c1800b004875aca1a49mr139772jab.1.1714782545529; Fri, 03 May
+ 2024 17:29:05 -0700 (PDT)
+Date: Fri, 03 May 2024 17:29:05 -0700
+In-Reply-To: <000000000000367c770617901bba@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e6133061795ec44@google.com>
+Subject: Re: [syzbot] [bcachefs?] INFO: task hung in __closure_sync
+From: syzbot <syzbot+7bf808f7fe4a6549f36e@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+syzbot has bisected this issue to:
 
-> Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-> ready to enable it globally.
-> 
-> So, remove unused structs and fix the following
-> -Wflex-array-member-not-at-end warnings:
-> 
-> drivers/net/wireless/realtek/rtlwifi/btcoexist/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8188ee/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8192c/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8192ce/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8192cu/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8192de/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8192ee/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8723ae/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8723be/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8723com/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/rtl8821ae/../wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> drivers/net/wireless/realtek/rtlwifi/wifi.h:1063:30: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
+Author: Kent Overstreet <kent.overstreet@linux.dev>
+Date:   Sat Sep 23 22:41:51 2023 +0000
 
-1 patch(es) applied to rtw-next branch of rtw.git, thanks.
+    bcachefs: Ignore unknown mount options
 
-b3e11ee3b97e wifi: rtlwifi: Remove unused structs and avoid multiple -Wfamnae warnings
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15745bc4980000
+start commit:   f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.kern..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17745bc4980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13745bc4980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
+dashboard link: https://syzkaller.appspot.com/bug?extid=7bf808f7fe4a6549f36e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a7c31f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16109450980000
 
----
-https://github.com/pkshih/rtw.git
+Reported-by: syzbot+7bf808f7fe4a6549f36e@syzkaller.appspotmail.com
+Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
