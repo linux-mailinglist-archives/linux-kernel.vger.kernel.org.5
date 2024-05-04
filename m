@@ -1,90 +1,123 @@
-Return-Path: <linux-kernel+bounces-168458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 421E28BB8D5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:37:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B968BB8FE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:48:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FECB1C22B2D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:37:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62FE6B210BE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7BD17F0;
-	Sat,  4 May 2024 00:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4E015C0;
+	Sat,  4 May 2024 00:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMe2/prL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bDyqP1LK"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221B8A34;
-	Sat,  4 May 2024 00:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E045A3D
+	for <linux-kernel@vger.kernel.org>; Sat,  4 May 2024 00:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714783021; cv=none; b=SpHlFtP8RXjtzFryGl7PUQu27J/aAvEpwbnKR6S5xrdgKYu3oRLFYI7NKrxdRc8+5Nfv27zWLUWD9oFELErWmfoSavQNUZ5f25g9BxR11WQHX+hkcIfXEmKcJHNNGmtStAomUcqF9w5wTGxrP/oSA91pKmjpzu4q3ulBOO4gD2Q=
+	t=1714783707; cv=none; b=sTlLo+YB1yh6CNWfKKeAcR0qwSFZOnPvbiW+7RqMIqoz1aeMGHvQAmHBkBeGBhecOCwuwB865bV3Y04wPD3RNltnAKOm9RtLsKEyZldJIO9vSWOtzWH23YEZ3QuJq1Zx+5Rv4xsB/u1nuVrXDKITORNBeO3+qmXmdh7N/PhGTVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714783021; c=relaxed/simple;
-	bh=RVhCUb8j6bIvl5Nrd+AUuRpCyrt+Ya63YaRYyLEZCjY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mc6I90kVovYJ54so0HH+Wsdu7RQgFot/5g8dYvpLeZI9X2Kp8o95aFW9pru7rxl7lz5S/ObyABHC+9t76nux5C4uGzjiuwj3Jn1um8qfx98UPKWvU1x/oh4C/kllkpby8nzQkOXfevtAq/l9dP2zP6dkP9R+lIKazwGy86hNWv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sMe2/prL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1768EC116B1;
-	Sat,  4 May 2024 00:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714783020;
-	bh=RVhCUb8j6bIvl5Nrd+AUuRpCyrt+Ya63YaRYyLEZCjY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=sMe2/prLxeKpiEOOIQ1hnal/SmAhWd8kLVcREHrf16p57BJtrCdtL1dQoB6wxaxOD
-	 xzm8EdzxbAlx84/zT78D138SXBoqt38Jxc6D3I/HSHELpUglXBfZfHbZ9m9/EgL2Gw
-	 b3C/uKUqjo6g2iJiy8undxT2+dOZX4cARq44ATlnj2w5/RTDK2sdarLUwARqIqWX4k
-	 v3SLEOmyB29RuAsNiuhCLE2BnlmK7hWdgEIv269tIqqV6Eunu8Y6iHODD5N7GmwaGZ
-	 iIdkg21WNr416PWQrpBRzK2d+ls5bgZdWsQNg/X91m/imjarKiw6wJ4qQ3HuSP0Zfm
-	 8ntlFGn9kozLA==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Ye Bin <yebin10@huawei.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mhiramat@kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH for-next] selftests/ftrace: Fix required features for VFS type test case
-Date: Sat,  4 May 2024 09:36:56 +0900
-Message-Id: <171478301645.110267.464634740467398506.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1714783707; c=relaxed/simple;
+	bh=Xeq84x7+deG4MGSpV1ZaAGqd0aBLNe6JdPAMeW2diSM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=L2V4V+2LLzycOW5aWVTrwabzRmVGWxH1PLVdnQiBkMb/TzUkDI6Fj/M0f4dQTEfECXmu1xJGG3dE31DNpIGtYbiuaaxFXntZ0gSNgDm7t3E94H4x/itZqsiu+NQ3Q4Xp7Q95ZECEiDVdpLjXbxwN4hFLuxyguf6ZXuLdwUjVoIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bDyqP1LK; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4440lEm6006859;
+	Fri, 3 May 2024 19:47:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714783634;
+	bh=PZECwmsiSKdaFLHYPMeTePxshIgNJPnCOw9ZMej35Tw=;
+	h=From:To:CC:Subject:Date;
+	b=bDyqP1LKqVzvEnaO5d2J7AiuMXWqjDqDtNPY0YGjia/It9WnaVGRFJbTCqVCmY3W9
+	 x6SFZ70dC315oL6KSEfFQsU2AF2HBxk/Gu1Qyq5F5lDce+mB5emGiubkav+JNUDdH+
+	 YRLPvNPaQKpjlZH6ZqC1vK8DuZIFM6UQbzcyxm7w=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4440lEEa026856
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 3 May 2024 19:47:14 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 3
+ May 2024 19:47:13 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 3 May 2024 19:47:13 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.109])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4440l8pY076839;
+	Fri, 3 May 2024 19:47:08 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
+        <kevin-lu@ti.com>, <cameron.berkenpas@gmail.com>, <tiwai@suse.de>,
+        <baojun.xu@ti.com>, <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v1] ALSA: ASoc/tas2781: Fix an issue reported by robot kernel test
+Date: Sat, 4 May 2024 08:47:03 +0800
+Message-ID: <20240504004704.1738-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fix an issue reported by robot kernel test and two harmless changes.
 
-Since the VFS type argument test case uses fprobe events, it must
-check the availablity of dynamic_events file and fprobe events syntax
-in README. Without this fix, the test fails if CONFIG_FPROBE_EVENTS=n.
+Fixes: ef3bcde75d06 ("ASoc: tas2781: Add tas2781 driver")
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-Fixes: ee97e5e135c6 ("selftests/ftrace: add fprobe test cases for VFS type "%pd" and "%pD"")
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- .../ftrace/test.d/dynevent/fprobe_args_vfs.tc      |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v1:
+ - Changed the copyright year to 2024
+ - tasdevice-fmw.c --> tas2781-fmwlib.c
+ - | Reported-by: kernel test robot <lkp@intel.com>
+   | Closes: https://lore.kernel.org/oe-kbuild-all/202405021200.YHInjV43-lkp@intel.com/
+---
+ sound/soc/codecs/tas2781-fmwlib.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc
-index 49a833bf334c..c6a9d2466a71 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc
-@@ -1,7 +1,8 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # description: Fprobe event VFS type argument
--# requires: kprobe_events "%pd/%pD":README
-+# requires: dynamic_events "%pd/%pD":README "f[:[<group>/][<event>]] <func-name>[%return] [<args>]":README
-+
+diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
+index 45760fe19523..a6be81adcb83 100644
+--- a/sound/soc/codecs/tas2781-fmwlib.c
++++ b/sound/soc/codecs/tas2781-fmwlib.c
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ //
+-// tasdevice-fmw.c -- TASDEVICE firmware support
++// tas2781-fmwlib.c -- TASDEVICE firmware support
+ //
+-// Copyright 2023 Texas Instruments, Inc.
++// Copyright 2023 - 2024 Texas Instruments, Inc.
+ //
+ // Author: Shenghao Ding <shenghao-ding@ti.com>
  
- : "Test argument %pd with name for fprobe"
- echo 'f:testprobe dput name=$arg1:%pd' > dynamic_events
+@@ -1878,7 +1878,7 @@ int tas2781_load_calibration(void *context, char *file_name,
+ {
+ 	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *)context;
+ 	struct tasdevice *tasdev = &(tas_priv->tasdevice[i]);
+-	const struct firmware *fw_entry;
++	const struct firmware *fw_entry = NULL;
+ 	struct tasdevice_fw *tas_fmw;
+ 	struct firmware fmw;
+ 	int offset = 0;
+-- 
+2.34.1
 
 
