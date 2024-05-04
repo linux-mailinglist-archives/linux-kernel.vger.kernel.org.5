@@ -1,174 +1,111 @@
-Return-Path: <linux-kernel+bounces-168500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599198BB94F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 04:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A05D8BB951
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 04:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E816E1F22930
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:41:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E7E91F234B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAEEBDDBD;
-	Sat,  4 May 2024 02:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A496CEEBB;
+	Sat,  4 May 2024 02:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VsBXRvFb"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hqs5/ltv"
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F890800
-	for <linux-kernel@vger.kernel.org>; Sat,  4 May 2024 02:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF82AD2D
+	for <linux-kernel@vger.kernel.org>; Sat,  4 May 2024 02:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714790487; cv=none; b=tlPyt9UDRDxBnfRORBcj7eguRbCP4/OpuqzoxOdDFffX36sEvqmKXMsaYcL0kHl3219bXxUYS8ov6LjNbo2UInohjb1CfRKMbiw+fG3yxtGTZyd+L6IlSZ3SSAetvRfPxCJxpgnpwqAqE4Z4Lw4UnhAm1FkZFUGMHuFqoEYMVrs=
+	t=1714790877; cv=none; b=knTT83ILUePt5UFhfpv7eKvKfeNLUqv93b4pDEhtr3Z80PkzMu21BisFInP6l6xj9q83PrWbt6nm1Wu0jj0wsmZ2VF9kZzIu/vcmGryQhZ/CO+nQP/I1jRQtWXOnVe4Rh/ktMC12Uuy0qShapZDucYIj7Qzvb58653EDXOOL78M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714790487; c=relaxed/simple;
-	bh=88aSH8UKZ+oL6fRMxDzNmWphr1Yok04vGnfaLMMXDWE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R4T9WnFVZaUDdI6gOiiv/JQpkflSSxs+gGIRM5r7xRviKrnJVyTbsmgDqax75iZrNyc36qdLQfri15KfEhjnl88VvFB3DYm10RPuYW1Yh6qwDVXp8423cFOXlzM9vmYB0GQnIBk1V+rI42ZJdcXs9ZBLnyUMmKpKva7/FaJ+4RU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VsBXRvFb; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714790484;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Azdpb/tVe/GmjV0sQ+hMb85pe6gM1L0HYDRX17QqCkQ=;
-	b=VsBXRvFbJcN4FMAnkWCIXOTHG0xJl6UgxKsYlOPeZ9OfKrgfOjaUMhFiZ4N+5g+pnmn4j1
-	pNz25N/N02IW4mjR4WzZHoKaY4YblmHUELyoQxQ38GF4W/mllQ8vRx9nfHuzujur7RQ0AP
-	JhXBKulCeYZYPeTHT7kHCpm9VvmrZps=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-508-iDoBQxZbMO-NKgQrCZv9nw-1; Fri,
- 03 May 2024 22:41:20 -0400
-X-MC-Unique: iDoBQxZbMO-NKgQrCZv9nw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 16B941C07F20;
-	Sat,  4 May 2024 02:41:20 +0000 (UTC)
-Received: from llong.com (unknown [10.22.34.156])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6A96B40C140B;
-	Sat,  4 May 2024 02:41:19 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>,
+	s=arc-20240116; t=1714790877; c=relaxed/simple;
+	bh=5JQ+PciXGBfqr3585pp1l+Yf2bSgp0V0fbsYUs9AeeU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QIJAJdL6me1vAAkyJAd+37WCQr9ymUoduFdWm2LN45tAIj/5QyDa4zcdt6Xppi8JxfovXUHaZGVoALDEtwMXKGIr4lVzwLmEs3Hr0zefCGJq5LGjY8c44MA7Z1zCXffmqle7D2HHMFq4ggoRe9oMZWFX40xixbVq6MMVUiRyAxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hqs5/ltv; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5acfba298d5so131179eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 19:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714790874; x=1715395674; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BpviiK45PfH9lm5OyL0Rvy5gReR5EB5K2kEbT4EwRMw=;
+        b=hqs5/ltvG/yyD4YNNbbZx8u0K85yo6fMZg/6ZdcG3wCGXq3AqFFSKXBsEAIMLADdLp
+         7kGSi5sXe9ugUoChd+yti6vsI2RsJgNzAK4yD9rtPBGgkpqWsDwccFvsEcfmrGp0+HcC
+         5O2JLyDz/dFTx9FEH/iduFKa2ql+LJ7klfA2luF5rJ3hCRBS1u0ET45f+nyILgyTmUTc
+         b8To22U01DQwzlvUYrKpeTJmdJz3fJ9d2e8UfWL57bEO6dSS5egAtvv/QUGw2GVnS8Os
+         9n7xgFF5B1KPKlbJJUhc9coAlUdKQYTL7JmdZZp8DOvAXn6I3oEEsXl+BMPi1sGnsxe5
+         XcKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714790874; x=1715395674;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BpviiK45PfH9lm5OyL0Rvy5gReR5EB5K2kEbT4EwRMw=;
+        b=Jy1Cregwys3oeLnAj/xAIaxMrs40OHNYih/2i/eeVgVjPJseZx3yNX5qTKCBOuB4MW
+         +EEHRfBxgy3C7MwUYhYLtfBOFNzJKPRJRxDZ2nR+SblacsGa+4OC7DhE3cttRdWqgMyu
+         Y4pWcb7hmV7cIrm1kNwYLWY0qEKIOW4UFSRF4H/RAvOkZqcypO6xJj+X9T4sAOBJPyep
+         gXot8VynTzb7sC64AMgzHtpe/bRBqci9iE27z5oOkPlzFYEcff22+fvyBzfcCStd7Ire
+         HBVAqoLZBTk+fRnCbTeSnHicTbSasWtgx1ZLkKD8/FklVzVHxshun+zpfWmINdER/Z4e
+         GObQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWoIxl2EbwTDJy67BboteVXZQfu2qiWv9z4a6TSAHwuvg7gKMZA1Wb+NnKyeITT6hjMB8KgTbMNZ++As1mH0M/Yk3tQ/BF5QFqDrLxf
+X-Gm-Message-State: AOJu0Yy+x5/IxEF8+VbWXSJfPcvfHoythOZL1xhmIwFxkn3ytNDjFyya
+	jIVkJv0zuWbk/E57fx87YeMW0l5o9NpIpgG85nLFSkw3DAfthOLpV9IgfPoF
+X-Google-Smtp-Source: AGHT+IHI8kVeY1mEGCxJqdVjBf2N8secormTFKCCCAp0IUM8AWDigGZoNpLC2S6L88eHZDrmLu7pWA==
+X-Received: by 2002:a05:6358:9149:b0:183:a0ac:b5c2 with SMTP id r9-20020a056358914900b00183a0acb5c2mr4505424rwr.11.1714790873866;
+        Fri, 03 May 2024 19:47:53 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id qa3-20020a17090b4fc300b002affd099d22sm5795901pjb.40.2024.05.03.19.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 19:47:53 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 3 May 2024 16:47:52 -1000
+From: Tejun Heo <tj@kernel.org>
+To: John Stultz <jstultz@google.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, Will Deacon <will@kernel.org>,
 	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Vernon Lovejoy <vlovejoy@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] locking/qspinlock: Save previous node & owner CPU into mcs_spinlock
-Date: Fri,  3 May 2024 22:41:06 -0400
-Message-Id: <20240504024106.654319-1-longman@redhat.com>
+	Peter Zijlstra <peterz@infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>, kernel-team@android.com
+Subject: Re: WW_MUTEX_SELFTEST hangs w/ 6.9-rc workqueue changes
+Message-ID: <ZjWh2MbDs1CF8PUB@slm.duckdns.org>
+References: <CANDhNCq2n2HVUnVi0K+cw_7MUd1h49BzTxLEk6V3G2c=BBUYBw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANDhNCq2n2HVUnVi0K+cw_7MUd1h49BzTxLEk6V3G2c=BBUYBw@mail.gmail.com>
 
-When examining a contended spinlock in a crash dump, we can only find
-out the tail CPU in the MCS wait queue. There is no simple way to find
-out what other CPUs are waiting for the spinlock and which CPU is the
-lock owner.
+Hello, John.
 
-Make it easier to figure out these information by saving previous node
-data into the mcs_spinlock structure. This will allow us to reconstruct
-the MCS wait queue from tail to head. In order not to expand the size
-of mcs_spinlock, the original count field is split into two 16-bit
-chunks. The first chunk is for count and the second one is the new
-prev_node value.
+On Fri, May 03, 2024 at 06:01:49PM -0700, John Stultz wrote:
+> Hey All,
+>    In doing some local testing, I noticed I've started to see boot
+> stalls with CONFIG_WW_MUTEX_SELFTEST with 6.9-rc on a 64cpu qemu
+> environment.
+> 
+> I've bisected the problem down to:
+>   5797b1c18919 (workqueue: Implement system-wide nr_active enforcement
+> for unbound workqueues)
+> + the fix needed for that change:
+>   15930da42f89 (workqueue: Don't call cpumask_test_cpu() with -1 CPU
+> in wq_update_node_max_active())
 
-  bits 0-1 : qnode index
-  bits 2-15: CPU number + 1
+This should be fixed by d40f92020c7a ("workqueue: The default node_nr_active
+should have its max set to max_active"). Can you please confirm the fix?
+Thanks and sorry about the hassle.
 
-This prev_node value may be truncated if there are 16k or more CPUs in
-the system.
-
-The locked value in the queue head is also repurposed to hold an encoded
-qspinlock owner CPU number when acquiring the lock in the qspinlock
-slowpath of an contended lock.
-
-This lock owner information will not be available when the lock is
-acquired directly in the fast path or in the pending code path. There
-is no easy way around that.
-
-These changes should make analysis of a contended spinlock in a crash
-dump easier.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/mcs_spinlock.h | 13 ++++++++++---
- kernel/locking/qspinlock.c    |  8 ++++++++
- 2 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
-index 85251d8771d9..cbe6f07dff2e 100644
---- a/kernel/locking/mcs_spinlock.h
-+++ b/kernel/locking/mcs_spinlock.h
-@@ -13,12 +13,19 @@
- #ifndef __LINUX_MCS_SPINLOCK_H
- #define __LINUX_MCS_SPINLOCK_H
- 
-+/*
-+ * Save an encoded version of the current MCS lock owner CPU to the
-+ * mcs_spinlock structure of the next lock owner.
-+ */
-+#define MCS_LOCKED	(smp_processor_id() + 1)
-+
- #include <asm/mcs_spinlock.h>
- 
- struct mcs_spinlock {
- 	struct mcs_spinlock *next;
--	int locked; /* 1 if lock acquired */
--	int count;  /* nesting count, see qspinlock.c */
-+	int locked;	 /* non-zero if lock acquired */
-+	short count;	 /* nesting count, see qspinlock.c */
-+	short prev_node; /* encoded previous node value */
- };
- 
- #ifndef arch_mcs_spin_lock_contended
-@@ -42,7 +49,7 @@ do {									\
-  * unlocking.
-  */
- #define arch_mcs_spin_unlock_contended(l)				\
--	smp_store_release((l), 1)
-+	smp_store_release((l), MCS_LOCKED)
- #endif
- 
- /*
-diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
-index ebe6b8ec7cb3..df78d13efa3d 100644
---- a/kernel/locking/qspinlock.c
-+++ b/kernel/locking/qspinlock.c
-@@ -436,6 +436,7 @@ void __lockfunc queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
- 
- 	node->locked = 0;
- 	node->next = NULL;
-+	node->prev_node = 0;
- 	pv_init_node(node);
- 
- 	/*
-@@ -463,6 +464,13 @@ void __lockfunc queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
- 	old = xchg_tail(lock, tail);
- 	next = NULL;
- 
-+	/*
-+	 * The prev_node value is saved for crash dump analysis purpose only,
-+	 * it is not used within the qspinlock code. The encoded node value
-+	 * may be truncated if there are 16k or more CPUs in the system.
-+	 */
-+	node->prev_node = old >> _Q_TAIL_IDX_OFFSET;
-+
- 	/*
- 	 * if there was a previous node; link it and wait until reaching the
- 	 * head of the waitqueue.
 -- 
-2.39.3
-
+tejun
 
