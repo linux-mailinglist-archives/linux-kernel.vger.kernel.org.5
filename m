@@ -1,150 +1,110 @@
-Return-Path: <linux-kernel+bounces-168435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 290CF8BB890
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:59:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E08DC8BB893
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6A641F2358A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:59:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F51CB231AA
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0111A84E05;
-	Fri,  3 May 2024 23:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DC0A34;
+	Sat,  4 May 2024 00:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ahp/jcO7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FEwrd4G6"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411275CDE6
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E442218D
+	for <linux-kernel@vger.kernel.org>; Sat,  4 May 2024 00:01:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714780753; cv=none; b=d3RsFXf+zKmdEZlRyY/bq9CqS6Hen+XmxSWKBuSYdS9Xxcq7gHED6ebJT0ipBtLuHVqk2+ymf1hyXKyM9kMRSHDOf8gtmCvi6XnD50c9gwhbjUG72DTaXJMNMisoPNutZpL1IN4LKvUrFkSbUF6B+i+6ouh1rP9xELzy9KNJM7E=
+	t=1714780888; cv=none; b=ew9TPCSxdjAWvB2ne+sRit6vz0RDBNZqC7KNgdv9Z+PQcZw5ww0PGTkcH7AC9/Q/TdoFqmWx4o2LnaWVPmB4vND2myeiKS9kNTpPp+CsMWILF+DqrSusl+LQZ1L/UIYJjIfgImESyCpIL+60K7wR+0s3xKTKjsJENA8IXO+rQYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714780753; c=relaxed/simple;
-	bh=NL0WiPs/jhkLItIYOWa0RRUZ6Qr80md6Wk/uzeebyAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gIeE/lxJ1dl39xBGbNVBXi9FHpgVtBWfuDyDq38Hh6WnY/cXR2lj1RQZBgKD6gwUvG7AWF74zqWMnro56id9T8dDoj+1n389viQgSE+/XitesnjzLhmATZyQeCJvlatjTm1+QOnUObqXvHtG9208/cABnWxvcRxfUVoUiO6Ymfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ahp/jcO7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A845AC116B1;
-	Fri,  3 May 2024 23:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714780752;
-	bh=NL0WiPs/jhkLItIYOWa0RRUZ6Qr80md6Wk/uzeebyAw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Ahp/jcO73gw1ELQN0e+CLvHEDzQSMCIFEh5UocYY763udZwbUA7gxpE2WJZBWjJiK
-	 U2/+knE9m7VyP0KDxaMgjb4j+D3z2qFtU92srNhrSDPPFucrrmlkCNbWnyDy2V/r86
-	 FC6eUnHf1STvqN5bFtZs6l1/E5uAaZVHYpPDtuusPFH82pSG+BsM2osezwyyv75hSD
-	 Xtf5z3kbA+DLbNFHmAYnWW9xUCGNI5SB8EXDeVUEEmmnbXb2yugtUlDHK2NonmTS96
-	 wJ0oA6CAbPowYxmY/KR2rCaC279d49433XUPQ+lFq67DU31PLHQs5AAS04XxvjCtkH
-	 EpLcfHgB6DsoQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 46210CE09B5; Fri,  3 May 2024 16:59:12 -0700 (PDT)
-Date: Fri, 3 May 2024 16:59:12 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Marco Elver <elver@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-Message-ID: <2beaba9f-6f83-4a7c-8835-fe5fe88a006c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
- <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
- <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
- <1c886023-ae61-46ba-bb3c-b460c30de937@paulmck-laptop>
- <b3b81374-a19d-4bf5-abb3-15e48c72f01a@paulmck-laptop>
- <ZjPBPWSSdE_VcH_V@boqun-archlinux>
+	s=arc-20240116; t=1714780888; c=relaxed/simple;
+	bh=JOnUs/cDkvCsfrqxpv24/4mkhYVMsG8hK3M4zrenr3w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RFNNJiV+THyrMs84552wf/L+HVjWHRs9frfeFSCg7kSget2mWSIjQUulhK9rfbbuAv6LcY1TrlI50aeIT+Q88srcPaiJQ5AnjESWTXoI8wE7TKEIghBBXiHx5XYEF3Bs+ONDDdy+N+2kzNspBmDDj0+GWx/5U/roRdBQ8LNJwNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FEwrd4G6; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a55bf737cecso28065866b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 17:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1714780885; x=1715385685; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3S2pPJAcdgcUXZnUGJB4Or55d9W10bkJHNjzVKONxZo=;
+        b=FEwrd4G6NET1J6G++pfnBElmVNTypUdOV4fGEgW2E878FxYZ0a1l5fcJWIabORi7qx
+         riieBRCsnfawb0qVjLKlSJLh96Hu49Xwmmaz9DYFpF5kw+zwU14wHZUpY73f+YVGxVIf
+         +/mP1++nnOTpZfW13oMODvnpUyVjXWdm/B0/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714780885; x=1715385685;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3S2pPJAcdgcUXZnUGJB4Or55d9W10bkJHNjzVKONxZo=;
+        b=kzBmjSiypdTT/0YDrdwpwakjRbQn04zfFqxLzi0hQElZ/Soo5LuhY7SG6TDpSDPRP3
+         YLGS97PjVfveibj+Krwn/sNKQmY9uvM6odhCqKMXzZt35rPen6bBMx/t6Q3opbp/SXAS
+         13b8+UJl4jbLBsQL49qBwddPrjivMfqy7t9TUANs8f4YI7IWtUjOXMzdVj6W+lLdAb5D
+         ohVasHhtuPMM3yDRXRfYpCcdx4+LvQuHWrO2Bts8KNwn/2TAjuxywDinv6DgNbA7/+A7
+         w2ppud9w/4Oz+qev/ufOjD1RDpIILAOvkTojP6czQhw47tECR4m2jtiWPW2wBgV5CnsK
+         QnsA==
+X-Gm-Message-State: AOJu0YwZYKg7WyiqVh+urEMqMkVXrYMYsgP0Cr/kI6lMUUPWIxQ2C3rM
+	V72uHAzbXZZ6l6IL2q2VBHFzgKlCcC3ODvloJ3mmmRb0/pXxIEKYmdIi94Xa7YDK2zF2e7aFqrr
+	nhVOdtg==
+X-Google-Smtp-Source: AGHT+IFDyJxdleBOmXo95x29aTqFHeaDBLKsim4qNwCNGRZcXGB4rdryKzjGpHMECtGy30JctrTy/A==
+X-Received: by 2002:a50:d4dd:0:b0:572:6ae4:a9ac with SMTP id e29-20020a50d4dd000000b005726ae4a9acmr2277820edj.21.1714780885112;
+        Fri, 03 May 2024 17:01:25 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id j8-20020a50ed08000000b0056e718795f8sm2265928eds.36.2024.05.03.17.01.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 17:01:24 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a599eedc8eeso30196866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 17:01:24 -0700 (PDT)
+X-Received: by 2002:a17:906:714d:b0:a59:a2c0:3252 with SMTP id
+ z13-20020a170906714d00b00a59a2c03252mr457386ejj.76.1714780884173; Fri, 03 May
+ 2024 17:01:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjPBPWSSdE_VcH_V@boqun-archlinux>
+References: <20240503190728.7510af9a@gandalf.local.home>
+In-Reply-To: <20240503190728.7510af9a@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 3 May 2024 17:01:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgMSaivGRNk55fd8F3yODqOYUtY=d+vnXmY2buUKewd8Q@mail.gmail.com>
+Message-ID: <CAHk-=wgMSaivGRNk55fd8F3yODqOYUtY=d+vnXmY2buUKewd8Q@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing/tracefs: Fixes for v6.9
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Beau Belgrave <beaub@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, May 02, 2024 at 09:37:17AM -0700, Boqun Feng wrote:
-> On Wed, May 01, 2024 at 03:32:34PM -0700, Paul E. McKenney wrote:
-> > On Wed, May 01, 2024 at 02:49:17PM -0700, Paul E. McKenney wrote:
-> > > On Wed, May 01, 2024 at 02:20:35PM -0700, Linus Torvalds wrote:
-> > > > On Wed, 1 May 2024 at 14:06, Linus Torvalds
-> > > > <torvalds@linux-foundation.org> wrote:
-> > 
-> > [ . . . ]
-> > 
-> > > > I'd love to see an extension where "const volatile" basically means
-> > > > exactly that: the volatile tells the compiler that it can't
-> > > > rematerialize by doing the load multiple times, but the "const" would
-> > > > say that if the compiler sees two or more accesses, it can still CSE
-> > > > them.
-> > 
-> > Except that "const volatile" already means "you cannot write to it,
-> > and reads will not be fused".  :-/
-> > 
-> > > No promises, other than that if we don't ask, they won't say "yes".
-> > > 
-> > > Let me see what can be done.
-> > 
-> > >From a semantics viewpoint __atomic_load_n(&x, __ATOMIC_RELAXED) would
-> > work for loading from x.  The compilers that I tried currently do not
-> > fuse loads, but they are allowed to do so.
-> 
-> Yeah, I wonder the same, from what I read, "const volatile" seems to
-> be just a (non-volatile) relaxed atomic load.
+On Fri, 3 May 2024 at 16:07, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> - Minor fix for user_events interface
+>   The ABI of creating a user event states that the fields
+>   are separated by semicolons, and spaces should be ignored.
+>   But the parsing expected at least one space to be there (which was incorrect).
+>   Fix the reading of the string to handle fields separated by
+>   semicolons but no space between them.
 
-Hmmm...  Maybe something like this very lightly tested patch?
+This is the opposite of a fix.
 
-(I did not immediately see a use case for WRITE_ONCE_MERGEABLE(),
-but that is likely a failure of imagination on my part.)
+A fix would have fixed the documentation to match reality.
 
-------------------------------------------------------------------------
+Instead, this relaxes our existing parsing. Are there any old kernels
+that had that relaxed parsing? Is there any actual reason to not just
+fix documentation to match reality?
 
-diff --git a/include/asm-generic/rwonce.h b/include/asm-generic/rwonce.h
-index 8d0a6280e9824..55e87a8aec56f 100644
---- a/include/asm-generic/rwonce.h
-+++ b/include/asm-generic/rwonce.h
-@@ -79,6 +79,15 @@ unsigned long __read_once_word_nocheck(const void *addr)
- 	(typeof(x))__read_once_word_nocheck(&(x));			\
- })
- 
-+/*
-+ * Use READ_ONCE_MERGEABLE() and WRITE_ONCE_MERGEABLE() when you need to
-+ * avoid duplicating or tearing a load or store, respectively, but when
-+ * it is OK to merge nearby loads and stores.  It must also be OK for a
-+ * later nearby load to take its value directly from a prior store.
-+ */
-+#define READ_ONCE_MERGEABLE(x) __atomic_load_n(&x, __ATOMIC_RELAXED)
-+#define WRITE_ONCE_MERGEABLE(x, val) __atomic_store_n(&x, val, __ATOMIC_RELAXED)
-+
- static __no_kasan_or_inline
- unsigned long read_word_at_a_time(const void *addr)
- {
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d5507ac1bbf19..b37c0dbde8cde 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -459,7 +459,7 @@ static void adjust_jiffies_till_sched_qs(void)
- 		return;
- 	}
- 	/* Otherwise, set to third fqs scan, but bound below on large system. */
--	j = READ_ONCE(jiffies_till_first_fqs) +
-+	j = READ_ONCE_MERGEABLE(jiffies_till_first_fqs) +
- 		      2 * READ_ONCE(jiffies_till_next_fqs);
- 	if (j < HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV)
- 		j = HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV;
+Because when reality and documentation do not match, it is not
+*REALITY* that is buggy.
+
+               Linus
 
