@@ -1,99 +1,82 @@
-Return-Path: <linux-kernel+bounces-168453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71A0D8BB8CA
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF2838BB8CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 122031F23884
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:32:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F1A51F22F11
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0477B1EB5B;
-	Sat,  4 May 2024 00:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E6D15B3;
+	Sat,  4 May 2024 00:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BiAZ+JyP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AyWGyDeP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E2322612;
-	Sat,  4 May 2024 00:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7038D7FF;
+	Sat,  4 May 2024 00:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714782630; cv=none; b=Z+DpmYCq3+IqLfL5UzCeYWlTEaJ/Vk1/LNXQoThcUeRox9dUi6Y4zfCR+ZSo//rDOHIqU2UxPTe3XMKMe4wn/uuNwE7zWlrfeWG+w6nNr7r311BdQDKf03u/DxwdZ7qUokW31JU7w4FZfo02Eu0ZHYlbi4whWEi7HQrn2rvdyb0=
+	t=1714782785; cv=none; b=Mqv1WzCexBBBFKEtB4OWqlu5UPhjw9Ig/e8QK9/QPwwO2CWoy7o+AZBXfVeOKv0D5JVLAFhYKYVyvX+feD6SItVvMs1XXeAY8HjGqZM3Cyl2Y6PcrpWNCA10p0aOkIV8zbygTHbWOUsy7nKVxa+qKpEfr+YQQRgStW3t4i1l3xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714782630; c=relaxed/simple;
-	bh=pZ6zcEY25nwGF9/B+NzjHkiKdVzmaaBaPXGGoBI9U4E=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=PWUDJUjJdik59XVWtwOKjQuEC4m+fugdfnryxbIcpDPpfFZmd6uKhwR9qPKE8TV1BZAl3k5KHwR8mdbKGcOIBl4UQwNKvdKETtNQC16XF+yQuoG40s5li9WYMPux5SrbzY7+OKaNUuoBDUEGm1irNoTJyXnuUaCfDZs2r5vzcJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BiAZ+JyP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E5CCEC4AF1D;
-	Sat,  4 May 2024 00:30:29 +0000 (UTC)
+	s=arc-20240116; t=1714782785; c=relaxed/simple;
+	bh=dpWHdf4Lt2qh5ayzdY4gmrM1LxVv8Xrq9e3MVXxRmOY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ThWXkGpYaGW4NwlKxhedzsWkSW6ekffMvyY4hn4r4j8mTu1yZPbzbO+anXyvvcv7OYPimlB5qrZZ2sz8Qf5306t9OuENgemoxboD7KhoNVR2oEPA44yTkYnLSWc235FwwKIHTQI6L/8kgrApxppc9EkYM5pPV5hNb1Kl1jfjSPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AyWGyDeP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 023DEC116B1;
+	Sat,  4 May 2024 00:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714782629;
-	bh=pZ6zcEY25nwGF9/B+NzjHkiKdVzmaaBaPXGGoBI9U4E=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BiAZ+JyPb88j3zTLxWy7gKEpPwO6S25+SMDHwavBOWtr0pkF0MMYdo5N+O8q34bNa
-	 1SbgGLeCbxLbF8aplHso7bLLhehVEMKwYKes0YMuzae7Ee2GjmuwwJFg42d6gyGIez
-	 2sg4PBb/8D5hEmd4emr4CrX3KDnb7uPK3Oo3EL32Mj2uJR5pffkjOAg/zbD4SNafHT
-	 yIsnW89wtiZ1mbWkM9+SoWVwHBLfwy1z3gr0rTq8jmcyRzNk+ULIlSTcEj80Tu2RcF
-	 6KR9lRKWqY1Y9I6em1f3mnT8efUfr/BY3zr/NEgEA48QL2H/AHUq7a1TKKh5MGbgvW
-	 PthIc4LnOGGSg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D4D29C43336;
-	Sat,  4 May 2024 00:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1714782785;
+	bh=dpWHdf4Lt2qh5ayzdY4gmrM1LxVv8Xrq9e3MVXxRmOY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AyWGyDePNZdxf2QmO3ycbQDZ8aq17SLAx915yM+hq6bof50If3TJG+3cw7F8NJCZB
+	 3wlCAnO6Fs1oFL3NekW+8HlfVqSJ4V1XOyvNxIkntqr4FF5Zl/dSU79Xud1uJFFTZL
+	 PdKSbtASXioFDMy2tzWxP21+tTLD36qQTAIhru+ODHfnMfcjTqeQ+vXikmNlCEJmuf
+	 /K2+aWNUmTIZskmSkPpzL6NOdHGxB3w+VtO8DcTX0ZKr/vRA9jAqVve57ZHX9Wqx9C
+	 Td1jYbrNKh1ucg1e4nKciGrMun55k9JCUvHCTnObg6Zi92iOdc+70oMPDq4bx/YRan
+	 A+mAtHavm5Cgw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mhiramat@kernel.org,
+	Jiri Olsa <jolsa@kernel.org>,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH 0/2] selftests/ftrace: Fix some errors
+Date: Sat,  4 May 2024 09:32:58 +0900
+Message-Id: <171478277880.109670.10932081511777701353.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v1] Revert "net: mirror skb frag ref/unref helpers"
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171478262986.21471.5306831974379816981.git-patchwork-notify@kernel.org>
-Date: Sat, 04 May 2024 00:30:29 +0000
-References: <20240502175423.2456544-1-almasrymina@google.com>
-In-Reply-To: <20240502175423.2456544-1-almasrymina@google.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- ayush.sawal@chelsio.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, borisp@nvidia.com,
- john.fastabend@gmail.com, dtatulea@nvidia.com, jianbol@nvidia.com,
- jacob.e.keller@intel.com
 
-Hello:
+Here is a couple of patches for fixing errors on ftracetest.
+Shuah, can you pick these to your fixes branch? Or I also can push it.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Thank you,
+---
 
-On Thu,  2 May 2024 10:54:22 -0700 you wrote:
-> This reverts commit a580ea994fd37f4105028f5a85c38ff6508a2b25.
-> 
-> This revert is to resolve Dragos's report of page_pool leak here:
-> https://lore.kernel.org/lkml/20240424165646.1625690-2-dtatulea@nvidia.com/
-> 
-> The reverted patch interacts very badly with commit 2cc3aeb5eccc ("skbuff:
-> Fix a potential race while recycling page_pool packets"). The reverted
-> commit hopes that the pp_recycle + is_pp_page variables do not change
-> between the skb_frag_ref and skb_frag_unref operation. If such a change
-> occurs, the skb_frag_ref/unref will not operate on the same reference type.
-> In the case of Dragos's report, the grabbed ref was a pp ref, but the unref
-> was a page ref, because the pp_recycle setting on the skb was changed.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v1] Revert "net: mirror skb frag ref/unref helpers"
-    https://git.kernel.org/netdev/net-next/c/173e7622ccb3
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Masami Hiramatsu (Google) (2):
+      selftests/ftrace: Fix BTFARG testcase to check fprobe is enabled correctly
+      selftests/ftrace: Fix checkbashisms errors
 
 
+ .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |    2 +-
+ .../ftrace/test.d/dynevent/fprobe_entry_arg.tc     |    2 +-
+ .../ftrace/test.d/kprobe/kretprobe_entry_arg.tc    |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
