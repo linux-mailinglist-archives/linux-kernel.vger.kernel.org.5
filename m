@@ -1,170 +1,193 @@
-Return-Path: <linux-kernel+bounces-168438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF4C68BB899
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:06:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1D7E8BB89F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 02:08:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3FDC285B94
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:06:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AF531F2383F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C4BA38;
-	Sat,  4 May 2024 00:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30359A21;
+	Sat,  4 May 2024 00:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mDb8/mhD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BdfeVsGg"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1873336D;
-	Sat,  4 May 2024 00:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B525A36D;
+	Sat,  4 May 2024 00:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714781172; cv=none; b=m4ZHOtVXmchGmKYa2kjXC9L/rPQzKVHcMfd0hZowh2yncNIt5Pmyh+ZeQ4z4+UalEnOcCnm16To0ClBKzD0thFYCgjCLr3u+Z0rjGQrXb/R9MPTPkYRtQPbDKYPXfK39FRILP0fBppl4jAcfpbPskfLL3Fa6IrzGjy64SC9t908=
+	t=1714781286; cv=none; b=RmFuQJOzrix0a3K7+WOZtNJBMd9aHYil3OZ/CzrJqBYMFaSQAKJKboiiIBKEcX3TmNJYwW90+YwbJPMoGxuAZnH/iy2DGnW52YZIInuAgZ8M5XAHZrBWros1ivu07INjnMjIXFEGagvaS9nhk9OVWlQUYcYcyy/47T3IHZkrBhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714781172; c=relaxed/simple;
-	bh=n2SZEuocUgy6py23Dq0fblkTnaWOTleAfvkXP/zWG4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZcbMGs+CXcvlw4hg2vub965fH5bnb0CQMOEXe0aVom5h+hIzTwnDOvfId5RMr87uQKjstAbfrg1he223o7Rvx6UgTEuLOHLNl2HEorDo4YPa36BVzQM3htXQWkZFrX7L+UOpwipdofLYj1R4l3LDcFJ414uvA8AEkVbwlxUzi1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mDb8/mhD; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714781169; x=1746317169;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=n2SZEuocUgy6py23Dq0fblkTnaWOTleAfvkXP/zWG4w=;
-  b=mDb8/mhDeQTzq1YyotxCVAuH4HUk8rnVAg93GOUceRH3wZYmtleLC+OX
-   HRd+Zdgzpuz60QbZUxaMsxd/rq3ItCC4mu968kOm+B3qLiEo9Q8ForWzQ
-   gxFvLPVx4ACyFJXp9oD6hF3qRt/JrSQV70XCehppwCsNz9wCCNJhAuRBa
-   HwvVWIHy8v3plbzk7unlYhuViN6ipyFxAjpAOQeYBop4K73TUMz12rBD3
-   3ttt/rJTqILVm7PJ8V/GdlQrosZaNz4QqvObqMmU7BQQzJ2+JvxTKQyq8
-   3yzi0WMUhydQ/IV7k8xpb8CNHVX0s0gUSLAoCLlZ54oErXpvmg5/f2DjR
-   A==;
-X-CSE-ConnectionGUID: kI8li5/RQxyFqC5vvpokng==
-X-CSE-MsgGUID: mC/DL4+pQ2Gcn8szgbM3yQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10484738"
-X-IronPort-AV: E=Sophos;i="6.07,252,1708416000"; 
-   d="scan'208";a="10484738"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 17:06:08 -0700
-X-CSE-ConnectionGUID: p034Rb+aRSuA6Wp5F0QbcA==
-X-CSE-MsgGUID: GO5xY0pnR9+AFPmMFE9Y+Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,252,1708416000"; 
-   d="scan'208";a="65027667"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 03 May 2024 17:06:06 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s32uh-000CE0-0t;
-	Sat, 04 May 2024 00:06:03 +0000
-Date: Sat, 4 May 2024 08:05:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kamil =?iso-8859-1?Q?Hor=E1k?= - 2N <kamilh@axis.com>,
-	florian.fainelli@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com, andrew@lunn.ch,
-	hkallweit1@gmail.com
-Cc: oe-kbuild-all@lists.linux.dev, kamilh@axis.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] net: phy: bcm-phy-lib: Implement BroadR-Reach
- link modes
-Message-ID: <202405040748.9mCHwtzA-lkp@intel.com>
-References: <20240503083719.899312-4-kamilh@axis.com>
+	s=arc-20240116; t=1714781286; c=relaxed/simple;
+	bh=4FRRARZaWQXthGDOxg7wzzYkWKjg1wiIOfmDSN4kUMw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=n3apzVyjuQ6201FLiqzp2hyjzzMkP/qpGnCErm5wj/YGJOJ6+5nvvCQ4MAKb66Sco7/++Fqd5UfRCkrKhvuQfFj+JsMiepNWbjygwpSkTU+bkvZZylC3r6poPzaDnRitZ9h6X4QV27ejZfwloLF6wc5nzwEJa5exru4RMUJ3NFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BdfeVsGg; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443Loq3d023739;
+	Sat, 4 May 2024 00:07:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=2gHxHWVt0EgLtC05azmjUJ9T0o3w1UNl8Tamh28ZgyU=; b=Bd
+	feVsGgqnlRjitK+dOOtENrmd7kZjLnQnghdams4WsChLFdpEiBvI0WoyWre995Ar
+	K+xqd5xfPcD2oLoj8b2RvjsPboUBTLNOM7PeTx5haFlMFbzcGfb//9aqcfSDLdCb
+	fXKrXhqpw0heGBvE5S5eTOdcBsDPTICOLH6Em7PIH5i2c5WycRJdnr0E3v3SB4bE
+	OqkQ7zBWWcfyInAVCFMssbLsJO2aeZy5lXaly0gNkVlI2QHxOnh+Fz5KjLUpor8m
+	Z2ltF2ytSCszP5AhwjZCPxfwUg8T1SPtP224cXMdpCmXmgqj3zVhYtCxCxzxl5As
+	TZ4HNqkpphwCuexx+LIg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvrt4j86g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 04 May 2024 00:07:48 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 44407l5w006552
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 4 May 2024 00:07:47 GMT
+Received: from [10.110.114.34] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 17:07:46 -0700
+Message-ID: <e082de17-f4f7-1923-cfe0-10916c2e3caa@quicinc.com>
+Date: Fri, 3 May 2024 17:07:45 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240503083719.899312-4-kamilh@axis.com>
-
-Hi Kamil,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net/main]
-[also build test WARNING on net-next/main linus/master v6.9-rc6 next-20240503]
-[cannot apply to horms-ipvs/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Kamil-Hor-k-2N/net-phy-bcm54811-New-link-mode-for-BroadR-Reach/20240503-164308
-base:   net/main
-patch link:    https://lore.kernel.org/r/20240503083719.899312-4-kamilh%40axis.com
-patch subject: [PATCH v2 3/3] net: phy: bcm-phy-lib: Implement BroadR-Reach link modes
-config: powerpc-randconfig-r081-20240504 (https://download.01.org/0day-ci/archive/20240504/202405040748.9mCHwtzA-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 37ae4ad0eef338776c7e2cffb3896153d43dcd90)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240504/202405040748.9mCHwtzA-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405040748.9mCHwtzA-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/net/phy/broadcom.c:13:
-   In file included from drivers/net/phy/bcm-phy-lib.h:9:
-   In file included from include/linux/brcmphy.h:5:
-   In file included from include/linux/phy.h:16:
-   In file included from include/linux/ethtool.h:18:
-   In file included from include/linux/if_ether.h:19:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:8:
-   In file included from include/linux/cacheflush.h:5:
-   In file included from arch/powerpc/include/asm/cacheflush.h:7:
-   In file included from include/linux/mm.h:2210:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> drivers/net/phy/broadcom.c:619:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-     619 |         if (of_property_read_bool(np, "enet-phy-lane-swap")) {
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/phy/broadcom.c:627:9: note: uninitialized use occurs here
-     627 |         return ret;
-         |                ^~~
-   drivers/net/phy/broadcom.c:619:2: note: remove the 'if' if its condition is always true
-     619 |         if (of_property_read_bool(np, "enet-phy-lane-swap")) {
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/phy/broadcom.c:614:9: note: initialize the variable 'ret' to silence this warning
-     614 |         int ret;
-         |                ^
-         |                 = 0
-   2 warnings generated.
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/2] drm/ci: validate drm/msm XML register files
+ against schema
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn
+ Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Helen Koike <helen.koike@collabora.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240503-fd-fix-lxml-v2-0-f80a60ce21a1@linaro.org>
+ <20240503-fd-fix-lxml-v2-2-f80a60ce21a1@linaro.org>
+ <69b593b7-109c-825f-3dbb-5e8cce63ff01@quicinc.com>
+ <CAA8EJpp4x+NEpMAGtgOmu-0NY8ycTu0iQX6-1Vv76mkKPea_Cw@mail.gmail.com>
+ <24fb0b07-af03-1341-d98c-46f4f167fbbb@quicinc.com>
+ <CAA8EJporB9jjKtT-XS4PcRSYzi+FJh1smsjnBCgy8f5JvDtjAg@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJporB9jjKtT-XS4PcRSYzi+FJh1smsjnBCgy8f5JvDtjAg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: R9H9ZhyJggZ-YTD_qcyRPMIWfyJEHLkW
+X-Proofpoint-ORIG-GUID: R9H9ZhyJggZ-YTD_qcyRPMIWfyJEHLkW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-03_17,2024-05-03_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2405030171
 
 
-vim +619 drivers/net/phy/broadcom.c
 
-b0ed0bbfb3046e Kevin Lo         2020-05-16  610  
-f1e9c8e593d6ea Kamil Horák - 2N 2024-05-03  611  static int bcm5481x_config_delay_swap(struct phy_device *phydev)
-57bb7e222804c6 Anton Vorontsov  2008-03-04  612  {
-b14995ac2527b4 Jon Mason        2016-11-04  613  	struct device_node *np = phydev->mdio.dev.of_node;
-57bb7e222804c6 Anton Vorontsov  2008-03-04  614  	int ret;
-57bb7e222804c6 Anton Vorontsov  2008-03-04  615  
-f1e9c8e593d6ea Kamil Horák - 2N 2024-05-03  616  	/* Set up the delay. */
-042cb56478152b Tao Ren          2018-11-05  617  	bcm54xx_config_clock_delay(phydev);
-57bb7e222804c6 Anton Vorontsov  2008-03-04  618  
-b14995ac2527b4 Jon Mason        2016-11-04 @619  	if (of_property_read_bool(np, "enet-phy-lane-swap")) {
-b14995ac2527b4 Jon Mason        2016-11-04  620  		/* Lane Swap - Undocumented register...magic! */
-b14995ac2527b4 Jon Mason        2016-11-04  621  		ret = bcm_phy_write_exp(phydev, MII_BCM54XX_EXP_SEL_ER + 0x9,
-b14995ac2527b4 Jon Mason        2016-11-04  622  					0x11B);
-b14995ac2527b4 Jon Mason        2016-11-04  623  		if (ret < 0)
-b14995ac2527b4 Jon Mason        2016-11-04  624  			return ret;
-b14995ac2527b4 Jon Mason        2016-11-04  625  	}
-b14995ac2527b4 Jon Mason        2016-11-04  626  
-57bb7e222804c6 Anton Vorontsov  2008-03-04  627  	return ret;
-57bb7e222804c6 Anton Vorontsov  2008-03-04  628  }
-57bb7e222804c6 Anton Vorontsov  2008-03-04  629  
+On 5/3/2024 5:02 PM, Dmitry Baryshkov wrote:
+> On Sat, 4 May 2024 at 01:38, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 5/3/2024 1:20 PM, Dmitry Baryshkov wrote:
+>>> On Fri, 3 May 2024 at 22:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 5/3/2024 11:15 AM, Dmitry Baryshkov wrote:
+>>>>> In order to validate drm/msm register definition files against schema,
+>>>>> reuse the nodebugfs build step. The validation entry is guarded by
+>>>>> the EXPERT Kconfig option and we don't want to enable that option for
+>>>>> all the builds.
+>>>>>
+>>>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>>>> ---
+>>>>>     drivers/gpu/drm/ci/build.sh  | 3 +++
+>>>>>     drivers/gpu/drm/ci/build.yml | 1 +
+>>>>>     2 files changed, 4 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+>>>>> index 106f2d40d222..28a495c0c39c 100644
+>>>>> --- a/drivers/gpu/drm/ci/build.sh
+>>>>> +++ b/drivers/gpu/drm/ci/build.sh
+>>>>> @@ -12,6 +12,9 @@ rm -rf .git/rebase-apply
+>>>>>     apt-get update
+>>>>>     apt-get install -y libssl-dev
+>>>>>
+>>>>> +# for msm header validation
+>>>>> +apt-get install -y python3-lxml
+>>>>> +
+>>>>>     if [[ "$KERNEL_ARCH" = "arm64" ]]; then
+>>>>>         GCC_ARCH="aarch64-linux-gnu"
+>>>>>         DEBIAN_ARCH="arm64"
+>>>>> diff --git a/drivers/gpu/drm/ci/build.yml b/drivers/gpu/drm/ci/build.yml
+>>>>> index 17ab38304885..9c198239033d 100644
+>>>>> --- a/drivers/gpu/drm/ci/build.yml
+>>>>> +++ b/drivers/gpu/drm/ci/build.yml
+>>>>> @@ -106,6 +106,7 @@ build-nodebugfs:arm64:
+>>>>>       extends: .build:arm64
+>>>>>       variables:
+>>>>>         DISABLE_KCONFIGS: "DEBUG_FS"
+>>>>> +    ENABLE_KCONFIGS: "EXPERT DRM_MSM_VALIDATE_XML"
+>>>>>
+>>>>
+>>>> Wouldnt this end up enabling DRM_MSM_VALIDATE_XML for any arm64 device.
+>>>>
+>>>> Cant we make this build rule msm specific?
+>>>
+>>> No need to. We just need to validate the files at least once during
+>>> the whole pipeline build.
+>>>
+>>
+>> ah okay, today the arm64 config anyway sets all arm64 vendor drm configs
+>> to y.
+>>
+>> A couple of more questions:
+>>
+>> 1) Why is this enabled only for no-debugfs option?
+>> 2) Will there be any concerns from other vendors to enable CONFIG_EXPERT
+>> in their CI runs as the arm64 config is shared across all arm64 vendors.
+> 
+> I don't get the second question. This option is only enabled for
+> no-debugfs, which isn't used for execution.
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Ah I see, makes sense.
+
+> I didn't want to add an extra build stage, just for the sake of
+> validating regs against the schema, nor did I want EXPERT to find its
+> way into the actual running kernels.
+> 
+
+This answered my second question actually. That basically I didnt also 
+want EXPERT to find its way into actual running kernels.
+
+Hence, I am fine with this change now
+
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+
+But, I will wait to hear from helen, vignesh about what they think of this.
 
