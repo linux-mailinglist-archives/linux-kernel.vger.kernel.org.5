@@ -1,144 +1,164 @@
-Return-Path: <linux-kernel+bounces-168480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A59F58BB907
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 03:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AAA38BB909
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 03:00:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 314B41F23860
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:00:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CD241F23A42
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F12C17F8;
-	Sat,  4 May 2024 01:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="auHFa091";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OlubhLYk"
-Received: from wfhigh2-smtp.messagingengine.com (wfhigh2-smtp.messagingengine.com [64.147.123.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03DF185E;
+	Sat,  4 May 2024 01:00:36 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD62AA38;
-	Sat,  4 May 2024 01:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93061859
+	for <linux-kernel@vger.kernel.org>; Sat,  4 May 2024 01:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714784410; cv=none; b=XkupvgOMaklWw9temrv7AApC9KYfaV+FDR+ujwZn8FWcCvKgCUo1KAHrI+pONZtEh7xH9eWe+tLPXAe9gUdRunXqhhG8XTMmQan60Ihxhz92Sv/i+udzXh3RsIpJyoORiHf8cRBWzSF+08c8ZzAL6vIOkq4Xn9EH8EcW7IYWxlI=
+	t=1714784436; cv=none; b=m2Fg2W7hEPgbewfold8I6gIOYeKto1tsDy5xuCSqAyrDy1YCo9ObaMErMmDnQZMlRjEqaepYfos8ajXVLbNufwlDwIbbKts0Z8ZBsPegSSwNUOgKt/DyHx4iYB0WWhq03ks+eA8Cq+x3e+X6uCcy1W2ABFQLhFDAFnxZYYrm2ZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714784410; c=relaxed/simple;
-	bh=e55VjuJ/jgCJygCBnWw0Cl8E5balwJmlAUVFvWW1wo0=;
-	h=Date:From:Subject:To:Cc:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d+5Cujmnpl2llrW/YqgHkAko3I33cC8maBxKLsAWku329IQYC/eE0yF6z9jXjmEyUhEKYwGZW7NnuofwzRcdg8ypu+AGI1DUWw8x29bV3uQ0lNvmYlAtAUBRx4L6/HIMLuBp0KizYynKdmhsdDXEV6COfR74/QBhGEO+qOgGIUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=auHFa091; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OlubhLYk; arc=none smtp.client-ip=64.147.123.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfhigh.west.internal (Postfix) with ESMTP id E0ADF1800114;
-	Fri,  3 May 2024 21:00:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Fri, 03 May 2024 21:00:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1714784406; x=1714870806; bh=ZW3WeXNrA3
-	Tgdn8rt+jXpKLBS86K+0HL1UjmI70+lcg=; b=auHFa091g2UNTX2EYm6ypvmbU3
-	yWM6mip3Bwp+BnahqAZAuDfoIrdLCaw2caP9ExsYfIuUDc1CDDwroQBJnWasttl7
-	pg2DiLv8I4MsaIxnYXwF3FuUOMfCfVFpCxHyeSjrsJYVgGrBOvw1SVGA0CNvfQUL
-	hVZ6Dl+VQB7Ylg/lWiEtJuFpWTdfpHD57osEFSLgI2OmHPAktYhyGeVdQFa29t9Y
-	SUiRtlFJJThGJIzfMc8RlqXiVMDpz7A5Mr1vOgFw29KSHgQqz8allNex0CZYitCa
-	So9gOh02tBzvczgw8s84WBUo454dmtfl+18ljY+E0lq4IZbj8ZogbtkS6AiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714784406; x=1714870806; bh=ZW3WeXNrA3Tgdn8rt+jXpKLBS86K
-	+0HL1UjmI70+lcg=; b=OlubhLYkSvdSZLRn/gKwUf19Njqy6zywJmHfiYkk9eqX
-	fgHw1TV/fEuf/lT5jg5CuFTvDTrRkbc2roNSLFOkUyD3uWTWahdBfqjWZlnO4Zng
-	nyl/pNLCN+XnoKgmyE5ITNZ+bNJwhvt1hZWVUqH4R3e/LbFRv5CiUeiTDnfjht2Y
-	qNSvLOAhjZvjSiG/65U9mJiNg7K0BBF7HOLgDmI2vI8662U4egt2E3vGVmO1QsE1
-	GgbkTWnS5cQgBphAexyfM2l8IskqeMVlwbfhyC4ctmK9SfP/XW2hRVu14H+j5J66
-	OkKnRxuQRCBA7ShszC3GQevfelAlWbasscGTQz2I+w==
-X-ME-Sender: <xms:lYg1ZrCv9GWJpnC2YxUTVJpOSh_D3dx1ipcHfXR_mfhL5Z81127fZA>
-    <xme:lYg1ZhgKPR1jkD9kUDSSp5wByMNyjYz3QQTfaBfI_GRIOjsoojw3E1lSd9nWbiEv0
-    -vN1xjbUugHtxoy4dA>
-X-ME-Received: <xmr:lYg1Zmk0j1-UwqUWU97SUcz1X9htlcdd3-ByO2y2Gf-o08lDZMr0JpTU1GHxvxrg9xg->
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvuddggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhuffvvefkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfihnhgu
-    ohhnucfurghntghhvgcuoehlshgrnhgthhgvsehlhihnuggvnhhordgtrgeqnecuggftrf
-    grthhtvghrnhepjeffueekgeeijefhvddugedtkeefveevtefghfevfeeufffgvdevleei
-    udfhtddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eplhhsrghntghhvgeslhihnhguvghnohdrtggr
-X-ME-Proxy: <xmx:lYg1ZtwSv_xgnX1E4fqcLfijgUvSSrs8RhhZzKjhMP5PBeo5zNWS6w>
-    <xmx:lYg1ZgR0YK9bydRATh88M0kXIU_MRksNr6Pii9BSoej4HyOI5EgJZg>
-    <xmx:lYg1Zgaa40AWq8xxAy1T3GiONLrw4kMm74agwtPLZhOYKR_7-KR0PQ>
-    <xmx:lYg1ZhSKb8HpoUdt67veDZOVFL9FjLFf_kh9cWvPfyMbLgLnuLtyVA>
-    <xmx:log1ZsoVVxjAZVvi7NN-CA6r_XGPClHBo74nPYLMAbCw8VNfww_pICj->
-Feedback-ID: i1719461a:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 May 2024 21:00:00 -0400 (EDT)
-Date: Fri, 03 May 2024 18:59:52 -0600
-From: Lyndon Sanche <lsanche@lyndeno.ca>
-Subject: Re: [PATCH v5] platform/x86: dell-laptop: Implement platform_profile
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: mario.limonciello@amd.com, pali@kernel.org,
-	srinivas.pandruvada@linux.intel.com, ilpo.jarvinen@linux.intel.com,
-	lkp@intel.com, Hans de Goede <hdegoede@redhat.com>, Matthew Garrett
-	<mjg59@srcf.ucam.org>, Jonathan Corbet <corbet@lwn.net>, Heiner Kallweit
-	<hkallweit1@gmail.com>, Vegard Nossum <vegard.nossum@oracle.com>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Dell.Client.Kernel@dell.com
-Message-Id: <S3SXCS.2L4SMU4H4WJF2@lyndeno.ca>
-In-Reply-To: <91e3282c-8271-4c95-a57f-88cca4ba88b5@gmx.de>
-References: <20240425172758.67831-1-lsanche@lyndeno.ca>
-	<20240501215829.4991-2-lsanche@lyndeno.ca>
-	<91e3282c-8271-4c95-a57f-88cca4ba88b5@gmx.de>
-X-Mailer: geary/44.1
+	s=arc-20240116; t=1714784436; c=relaxed/simple;
+	bh=rbrv/uO8x339Bf9QsPW4XI9G5+0LQ0kLO3wtEO7061s=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NsGdG+FzmYxYTALOZMYGlpMAQpsLvIVXTlS7yoVmwh48Ahu+LijlyIsO5TcGAD5R+VgZ3SHfYVFc/nGItL3Dhl4VbNdXIAp8nzAt2dCwCoSReTI9KgmtyfBpnHo6FafspJqi5OWYKGxP5mpCjiCb/XLRyaAlK2UL7i6U9PNrNcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3699565f54fso2735785ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 18:00:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714784434; x=1715389234;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=13VlsOafpue+rR6MEGsLRUTp3wxvRHrbzi94eouLLSg=;
+        b=Hf/axbeim+MAR4Y/9H/rrI3WzFJXkTWTUZ2nADJ3eYdPf3k5Jz/ssd8A602Ob9ZMCn
+         5LfxP/S0W6CYSzK8braHN2ssDhrd8TgQlRd3OSkHbx4jlgBktV0ycjffnUoc5XsnaBy7
+         s19xDz4xPakrGLaB0sPflqz+NZFY7wSJvnJpHeZPVqKRHAJACkAFZMiwHjEYJuMgaOPg
+         vGhsUsDWc/zyuhw5cm41ubQNowHTWufa89ptSY3PNx4JPLk4OTnkubtt4fBIXG/rrJOn
+         1bxCB6oFav87jU+Sg5aRUgGU+Pe/o9vZl7OFUt0rD9gODCKlDWRdWqetNfG3mKpyHKAS
+         Emfw==
+X-Forwarded-Encrypted: i=1; AJvYcCVdDVE4RJflmVqGxpWI3GDGqs3Dc97BRzHYQ5hxHkR7EJpaaK9xcEedLNsSIzSPyEIOnWSpFf/gVQeXWK/vyxj+YK1kCwplIhlgHHWb
+X-Gm-Message-State: AOJu0YwSuLCuj/Cd7jp122+thdxR9lGXlRZanUuvcYIjf11+BzqA+447
+	qQJdMUuzMKEz2QnMMxLqwRdhzOHFa1L03DLb2PDD2YwCxHJONefMgUUomKjlYrszA0BUDVBlajR
+	+UldbhZHt7s3ooXtcLoYv+UeydOBDlrekH3wUid6BRrGBmdFdVl8UOE8=
+X-Google-Smtp-Source: AGHT+IF1qot3FEmDqiwdE7hOJsVeGwiOubmimtdkAsqCaoz9VYHcjljE8yDi5crARTexprWo/BoMXzsP1/LOplMmCKX/hvs14DRF
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Received: by 2002:a05:6e02:17cd:b0:36b:85e:7cdc with SMTP id
+ z13-20020a056e0217cd00b0036b085e7cdcmr208245ilu.1.1714784434013; Fri, 03 May
+ 2024 18:00:34 -0700 (PDT)
+Date: Fri, 03 May 2024 18:00:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000e60e70617965d98@google.com>
+Subject: [syzbot] [bluetooth?] KFENCE: invalid free in __hci_req_sync
+From: syzbot <syzbot+27f0d8597a213f37c0b6@syzkaller.appspotmail.com>
+To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    9d1ddab261f3 Merge tag '6.9-rc5-smb-client-fixes' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=145d5280980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=545d4b3e07d6ccbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=27f0d8597a213f37c0b6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-9d1ddab2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5d5ab6e818c4/vmlinux-9d1ddab2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cf81babb0258/bzImage-9d1ddab2.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27f0d8597a213f37c0b6@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KFENCE: invalid free in kfree_skbmem+0x10e/0x200 net/core/skbuff.c:1159
+
+Invalid free of 0xffff88816db60f00 (in kfence-#175):
+ kfree_skbmem+0x10e/0x200 net/core/skbuff.c:1159
+ __kfree_skb net/core/skbuff.c:1217 [inline]
+ kfree_skb_reason+0x13a/0x210 net/core/skbuff.c:1252
+ kfree_skb include/linux/skbuff.h:1262 [inline]
+ __hci_req_sync+0x61d/0x980 net/bluetooth/hci_request.c:184
+ hci_req_sync+0x97/0xd0 net/bluetooth/hci_request.c:206
+ hci_dev_cmd+0x653/0x9c0 net/bluetooth/hci_core.c:790
+ hci_sock_ioctl+0x4f3/0x8e0 net/bluetooth/hci_sock.c:1153
+ sock_do_ioctl+0x116/0x280 net/socket.c:1222
+ sock_ioctl+0x22e/0x6c0 net/socket.c:1341
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:904 [inline]
+ __se_sys_ioctl fs/ioctl.c:890 [inline]
+ __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:890
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+kfence-#175: 0xffff88816db60f00-0xffff88816db60fef, size=240, cache=skbuff_head_cache
+
+allocated by task 64 on cpu 2 at 217.660109s:
+ skb_clone+0x190/0x3f0 net/core/skbuff.c:2063
+ hci_send_cmd_sync net/bluetooth/hci_core.c:4220 [inline]
+ hci_cmd_work+0x66a/0x710 net/bluetooth/hci_core.c:4240
+ process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+freed by task 64 on cpu 2 at 217.660313s:
+ kfree_skbmem+0x10e/0x200 net/core/skbuff.c:1159
+ __kfree_skb net/core/skbuff.c:1217 [inline]
+ kfree_skb_reason+0x13a/0x210 net/core/skbuff.c:1252
+ kfree_skb include/linux/skbuff.h:1262 [inline]
+ hci_req_sync_complete+0x16c/0x270 net/bluetooth/hci_request.c:109
+ hci_event_packet+0x963/0x1170 net/bluetooth/hci_event.c:7604
+ hci_rx_work+0x2c4/0x1610 net/bluetooth/hci_core.c:4171
+ process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+CPU: 1 PID: 11620 Comm: syz-executor.2 Not tainted 6.9.0-rc5-syzkaller-00036-g9d1ddab261f3 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+==================================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On Fri, May 3 2024 at 11:19:07 PM +02:00:00, Armin Wolf 
-<W_Armin@gmx.de> wrote:
-> Am 01.05.24 um 23:58 schrieb Lyndon Sanche:
->> +static int thermal_init(void)
->> +{
->> +	int ret;
->> +	int supported_modes;
->> +
->> +	/* If thermal modes not supported, exit without error */
->> +	ret = thermal_get_supported_modes(&supported_modes);
->> +	if (ret < 0)
->> +		return ret;
-> 
-> Hi,
-> 
-> some older models might not support the USTT commands, which would 
-> prevent dell-laptop
-> from loading on such machines.
-> Since dell-smbios-base already knows which commands are supported 
-> (stored in da_supported_commands),
-> maybe you can add a function for checking if a certain class of 
-> commands is supported and
-> skip thermal_init() if the USTT commands are not supported.
-> 
-> Thanks,
-> Armin Wolf
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-This is a good idea, I will have a look at dell-smbios-base to see 
-exactly how I can check for support. If support is not available, 
-thermal_init will skip or return 0 (depending on where I put the check).
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks,
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Lyndon
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-
+If you want to undo deduplication, reply with:
+#syz undup
 
